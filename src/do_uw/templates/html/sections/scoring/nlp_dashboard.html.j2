@@ -1,0 +1,256 @@
+{# NLP & Sentiment Dashboard — comprehensive display of filing language,
+   L-M dictionary trends, multi-source sentiment, and narrative coherence.
+   Replaces minimal nlp_analysis.html.j2 (SURF-03, SURF-08). #}
+{% if nlp_signals %}
+<h3>NLP & Sentiment Dashboard</h3>
+
+{# --- A. Filing Language Analysis with trend arrows --- #}
+<h4>Filing Language Analysis</h4>
+<table class="w-full border-collapse my-2 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase" style="width:35%">Signal</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Assessment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="bg-bg-alt">
+      <td class="p-1 font-semibold">Readability</td>
+      <td class="p-1">{{ nlp_signals.readability | default('—') }}</td>
+    </tr>
+    {% if nlp_signals.management_tone is defined and nlp_signals.management_tone is mapping %}
+    <tr>
+      <td class="p-1 font-semibold">Management Tone</td>
+      <td class="p-1">
+        <span class="{{ nlp_signals.management_tone.trend.css }}">
+          {{ nlp_signals.management_tone.value }}
+          {% if nlp_signals.management_tone.trend.arrow == 'trending_up' %}&#x2197;
+          {% elif nlp_signals.management_tone.trend.arrow == 'trending_down' %}&#x2198;
+          {% else %}&#x2192;{% endif %}
+        </span>
+      </td>
+    </tr>
+    {% elif nlp_signals.tone is defined %}
+    <tr>
+      <td class="p-1 font-semibold">Tone Assessment</td>
+      <td class="p-1">{{ nlp_signals.tone | default('—') | humanize }}</td>
+    </tr>
+    {% endif %}
+    {% if nlp_signals.hedging_language is defined and nlp_signals.hedging_language is mapping %}
+    <tr class="bg-bg-alt">
+      <td class="p-1 font-semibold">Hedging Language</td>
+      <td class="p-1">
+        <span class="{{ nlp_signals.hedging_language.trend.css }}">
+          {{ nlp_signals.hedging_language.value }}
+          {% if nlp_signals.hedging_language.trend.arrow == 'trending_up' %}&#x2197;
+          {% elif nlp_signals.hedging_language.trend.arrow == 'trending_down' %}&#x2198;
+          {% else %}&#x2192;{% endif %}
+        </span>
+      </td>
+    </tr>
+    {% endif %}
+    <tr>
+      <td class="p-1 font-semibold">Risk Language Density</td>
+      <td class="p-1">{{ nlp_signals.risk_density | default('—') }}</td>
+    </tr>
+    {% if nlp_signals.specificity_trend is defined and nlp_signals.specificity_trend is mapping %}
+    <tr class="bg-bg-alt">
+      <td class="p-1 font-semibold">Specificity Trend</td>
+      <td class="p-1">
+        <span class="{{ nlp_signals.specificity_trend.trend.css }}">
+          {{ nlp_signals.specificity_trend.value }}
+          {% if nlp_signals.specificity_trend.trend.arrow == 'trending_up' %}&#x2197;
+          {% elif nlp_signals.specificity_trend.trend.arrow == 'trending_down' %}&#x2198;
+          {% else %}&#x2192;{% endif %}
+        </span>
+      </td>
+    </tr>
+    {% endif %}
+    {% if nlp_signals.ceo_cfo_divergence is defined and nlp_signals.ceo_cfo_divergence is mapping %}
+    <tr>
+      <td class="p-1 font-semibold">CEO/CFO Alignment</td>
+      <td class="p-1">
+        <span class="{{ nlp_signals.ceo_cfo_divergence.css }}">
+          {% if nlp_signals.ceo_cfo_divergence.icon == 'check' %}&#x2713;
+          {% elif nlp_signals.ceo_cfo_divergence.icon == 'warning' %}&#x26A0;
+          {% else %}&#x2014;{% endif %}
+          {{ nlp_signals.ceo_cfo_divergence.status }}
+        </span>
+      </td>
+    </tr>
+    {% endif %}
+    {% if nlp_signals.qa_evasion is defined and nlp_signals.qa_evasion is mapping and nlp_signals.qa_evasion.value != 'N/A' %}
+    <tr class="bg-bg-alt">
+      <td class="p-1 font-semibold">Q&A Evasion Score</td>
+      <td class="p-1">
+        {{ nlp_signals.qa_evasion.value }}
+        <span class="text-xs text-gray-500 ml-1">({{ nlp_signals.qa_evasion.severity }})</span>
+      </td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>
+
+{# --- B. Loughran-McDonald Dictionary Trends --- #}
+{% if nlp_signals.lm_trends is defined and nlp_signals.lm_trends %}
+<h4>Loughran-McDonald Dictionary Trends</h4>
+<div class="my-2 p-2 bg-bg-alt rounded border border-gray-200">
+  <div class="lm-trend-row">
+    <span class="lm-label">Negative</span>
+    <div class="lm-bars">
+      {% for val in nlp_signals.lm_trends.negative %}
+      <div class="lm-bar" style="height: {{ val }}%" title="Period {{ loop.index }}: {{ nlp_signals.lm_trends.raw_negative[loop.index0] | default(val) }}"></div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="lm-trend-row">
+    <span class="lm-label">Uncertainty</span>
+    <div class="lm-bars">
+      {% for val in nlp_signals.lm_trends.uncertainty %}
+      <div class="lm-bar" style="height: {{ val }}%" title="Period {{ loop.index }}: {{ nlp_signals.lm_trends.raw_uncertainty[loop.index0] | default(val) }}"></div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="lm-trend-row">
+    <span class="lm-label">Litigious</span>
+    <div class="lm-bars">
+      {% for val in nlp_signals.lm_trends.litigious %}
+      <div class="lm-bar" style="height: {{ val }}%" title="Period {{ loop.index }}: {{ nlp_signals.lm_trends.raw_litigious[loop.index0] | default(val) }}"></div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{# --- C. Multi-Source Sentiment --- #}
+{% set has_multi_source = (nlp_signals.glassdoor_rating is defined and nlp_signals.glassdoor_rating != 'N/A') or
+                          (nlp_signals.employee_sentiment is defined and nlp_signals.employee_sentiment != 'N/A') or
+                          (nlp_signals.news_sentiment is defined and nlp_signals.news_sentiment != 'N/A') or
+                          (nlp_signals.social_media_sentiment is defined and nlp_signals.social_media_sentiment != 'N/A') %}
+{% if has_multi_source %}
+<h4>Multi-Source Sentiment</h4>
+<table class="w-full border-collapse my-2 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase" style="width:35%">Source</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Rating / Sentiment</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if nlp_signals.glassdoor_rating is defined and nlp_signals.glassdoor_rating != 'N/A' %}
+    <tr class="bg-bg-alt" {% if nlp_signals._sources is defined and nlp_signals._sources.glassdoor %}data-source="{{ nlp_signals._sources.glassdoor }}"{% endif %}>
+      <td class="p-1 font-semibold">Glassdoor Rating</td>
+      <td class="p-1 tabular-nums">{{ nlp_signals.glassdoor_rating }}/5.0</td>
+    </tr>
+    {% endif %}
+    {% if nlp_signals.glassdoor_ceo_approval is defined and nlp_signals.glassdoor_ceo_approval != 'N/A' %}
+    <tr>
+      <td class="p-1 font-semibold">CEO Approval (Glassdoor)</td>
+      <td class="p-1 tabular-nums">{{ nlp_signals.glassdoor_ceo_approval }}</td>
+    </tr>
+    {% endif %}
+    {% if nlp_signals.employee_sentiment is defined and nlp_signals.employee_sentiment != 'N/A' %}
+    <tr class="bg-bg-alt" {% if nlp_signals._sources is defined and nlp_signals._sources.employee_sentiment %}data-source="{{ nlp_signals._sources.employee_sentiment }}"{% endif %}>
+      <td class="p-1 font-semibold">Employee Sentiment</td>
+      <td class="p-1">
+        {% if nlp_signals.employee_sentiment == 'POSITIVE' %}<span class="alignment-check">{{ nlp_signals.employee_sentiment }}</span>
+        {% elif nlp_signals.employee_sentiment == 'NEGATIVE' %}<span class="alignment-alert">{{ nlp_signals.employee_sentiment }}</span>
+        {% else %}<span class="text-gray-500">{{ nlp_signals.employee_sentiment }}</span>{% endif %}
+      </td>
+    </tr>
+    {% endif %}
+    {% if nlp_signals.news_sentiment is defined and nlp_signals.news_sentiment != 'N/A' %}
+    <tr {% if nlp_signals._sources is defined and nlp_signals._sources.news_sentiment %}data-source="{{ nlp_signals._sources.news_sentiment }}"{% endif %}>
+      <td class="p-1 font-semibold">News Sentiment</td>
+      <td class="p-1">
+        {% if nlp_signals.news_sentiment == 'POSITIVE' %}<span class="alignment-check">{{ nlp_signals.news_sentiment }}</span>
+        {% elif nlp_signals.news_sentiment == 'NEGATIVE' %}<span class="alignment-alert">{{ nlp_signals.news_sentiment }}</span>
+        {% else %}<span class="text-gray-500">{{ nlp_signals.news_sentiment }}</span>{% endif %}
+      </td>
+    </tr>
+    {% endif %}
+    {% if nlp_signals.social_media_sentiment is defined and nlp_signals.social_media_sentiment != 'N/A' %}
+    <tr class="bg-bg-alt" {% if nlp_signals._sources is defined and nlp_signals._sources.social_media_sentiment %}data-source="{{ nlp_signals._sources.social_media_sentiment }}"{% endif %}>
+      <td class="p-1 font-semibold">Social Media Sentiment</td>
+      <td class="p-1">
+        {% if nlp_signals.social_media_sentiment == 'POSITIVE' %}<span class="alignment-check">{{ nlp_signals.social_media_sentiment }}</span>
+        {% elif nlp_signals.social_media_sentiment == 'NEGATIVE' %}<span class="alignment-alert">{{ nlp_signals.social_media_sentiment }}</span>
+        {% else %}<span class="text-gray-500">{{ nlp_signals.social_media_sentiment }}</span>{% endif %}
+      </td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>
+{% endif %}
+
+{# --- D. Narrative Coherence Assessment --- #}
+{% if nlp_signals.coherence is defined and nlp_signals.coherence %}
+<h4>Narrative Coherence Assessment</h4>
+<table class="w-full border-collapse my-2 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase" style="width:35%">Dimension</th>
+      <th class="text-center p-1 border-b font-heading text-xs font-semibold uppercase" style="width:10%">Status</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Assessment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="bg-bg-alt">
+      <td class="p-1 font-semibold">Strategy vs Results</td>
+      <td class="p-1 text-center">
+        <span class="{{ nlp_signals.coherence.strategy_alignment.css }}">
+          {% if nlp_signals.coherence.strategy_alignment.icon == 'check' %}&#x2713;{% elif nlp_signals.coherence.strategy_alignment.icon == 'warning' %}&#x26A0;{% else %}&#x2014;{% endif %}
+        </span>
+      </td>
+      <td class="p-1">{{ nlp_signals.coherence.strategy_alignment.status }}</td>
+    </tr>
+    <tr>
+      <td class="p-1 font-semibold">Insider vs Confidence</td>
+      <td class="p-1 text-center">
+        <span class="{{ nlp_signals.coherence.insider_alignment.css }}">
+          {% if nlp_signals.coherence.insider_alignment.icon == 'check' %}&#x2713;{% elif nlp_signals.coherence.insider_alignment.icon == 'warning' %}&#x26A0;{% else %}&#x2014;{% endif %}
+        </span>
+      </td>
+      <td class="p-1">{{ nlp_signals.coherence.insider_alignment.status }}</td>
+    </tr>
+    <tr class="bg-bg-alt">
+      <td class="p-1 font-semibold">Tone vs Financials</td>
+      <td class="p-1 text-center">
+        <span class="{{ nlp_signals.coherence.tone_alignment.css }}">
+          {% if nlp_signals.coherence.tone_alignment.icon == 'check' %}&#x2713;{% elif nlp_signals.coherence.tone_alignment.icon == 'warning' %}&#x26A0;{% else %}&#x2014;{% endif %}
+        </span>
+      </td>
+      <td class="p-1">{{ nlp_signals.coherence.tone_alignment.status }}</td>
+    </tr>
+    <tr>
+      <td class="p-1 font-semibold">Employee vs Management</td>
+      <td class="p-1 text-center">
+        <span class="{{ nlp_signals.coherence.employee_alignment.css }}">
+          {% if nlp_signals.coherence.employee_alignment.icon == 'check' %}&#x2713;{% elif nlp_signals.coherence.employee_alignment.icon == 'warning' %}&#x26A0;{% else %}&#x2014;{% endif %}
+        </span>
+      </td>
+      <td class="p-1">{{ nlp_signals.coherence.employee_alignment.status }}</td>
+    </tr>
+  </tbody>
+</table>
+<div class="my-2 p-2 bg-bg-alt rounded border border-gray-200">
+  <p class="text-sm m-0">
+    <strong>Overall Coherence:</strong>
+    <span class="{{ nlp_signals.coherence.overall.css }}">
+      {% if nlp_signals.coherence.overall.icon == 'check' %}&#x2713;{% elif nlp_signals.coherence.overall.icon == 'warning' %}&#x26A0;{% else %}&#x2014;{% endif %}
+      {{ nlp_signals.coherence.overall.status }}
+    </span>
+  </p>
+  {% if nlp_signals.coherence.flags %}
+  <ul class="text-xs text-gray-600 mt-1 mb-0 pl-4">
+    {% for flag in nlp_signals.coherence.flags %}
+    <li>{{ flag }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endif %}
+
+{% else %}
+{# Omit NLP dashboard entirely if no data #}
+{% endif %}

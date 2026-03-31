@@ -1,0 +1,47 @@
+- id: CONJ.DISTRESS.insider
+  name: Financial Distress + Insider Selling
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: Financial distress indicators combined with insider selling activity
+  provenance:
+    origin: phase_110_conjunction
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Conjunction of financial distress + insider selling signals
+    threshold_provenance:
+      source: calibrated
+      rationale: 'D&O claims experience: distress + insider selling is strongest DIC claim predictor (Altman 2020)'
+  signal_class: inference
+  group: distress_indicators
+  rap_class: host
+  rap_subcategory: host.financials
+  epistemology:
+    rule_origin: 'Altman Z-Score research and D&O bankruptcy claims experience: distress + insider selling = DIC exposure'
+    threshold_basis: 2+ of 3 conditions met triggers RED; HIGH_RISK floor due to DIC/bankruptcy claim pattern
+  evaluation:
+    mechanism: conjunction
+    conjunction_rules:
+      required_signals:
+      - FIN.FORENSIC.altman_z
+      - STOCK.INSIDER.net_selling
+      - FIN.LIQ.position
+      minimum_matches: 2
+      signal_conditions: {}
+      recommendation_floor: HIGH_RISK
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} financial distress + insider selling at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} financial distress + insider selling at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} financial distress + insider selling at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

@@ -1,0 +1,596 @@
+# Pattern Engine Algorithm Design
+# Design artifact for Phase 109 implementation.
+# Specifies four pattern detection engines that operate on signal
+# evaluation results to detect compound risk patterns invisible
+# to single-signal analysis.
+#
+# Created: Phase 106-02 (v7.0 Signal-Render Integrity)
+# Dependencies:
+#   - rap_taxonomy.yaml: H/A/E subcategory structure
+#   - rap_signal_mapping.yaml: signal -> subcategory assignments
+#   - brain_schema.py: PatternDefinition Pydantic schema
+#   - brain_correlations table: signal co-fire data in DuckDB
+#   - causal_chains.yaml: empirical filing rates and patterns
+#
+# Reference:
+#   - Beneish (1999): M-Score multi-metric fraud detection
+#   - k-nearest-neighbors: similarity-based classification
+#   - ELECTRE III: multi-criteria decision analysis
+
+version: 1
+name: "Pattern Engine Design"
+status: design_artifact
+implementation_phase: 109
+
+# ---------------------------------------------------------------
+# Engine 1: Conjunction Scan
+# ---------------------------------------------------------------
+
+engines:
+  conjunction_scan:
+    name: "Conjunction Scan"
+    purpose: >
+      Detect 3+ individually CLEAR/normal signals that, when
+      co-occurring, indicate elevated risk invisible to single-signal
+      evaluation. The "boiling frog" at the signal level -- each
+      signal alone is unremarkable, but the combination is not.
+
+    d_and_o_rationale: >
+      In D&O underwriting, the most dangerous risks often present
+      as individually explainable data points. Slight revenue
+      deceleration (normal), modest insider selling (normal), and
+      one new risk factor (normal) -- but together they may indicate
+      an emerging problem. Conjunction scan detects these patterns.
+
+    algorithm:
+      steps:
+        - step: 1
+          action: "Collect all evaluated signals with their status and rap_subcategory"
+          detail: >
+            Input: signal evaluation results for the current company.
+            Filter to signals with status in {RED, YELLOW, CLEAR}.
+            Exclude SKIPPED signals (no evaluation available).
+
+        - step: 2
+          action: "Identify CLEAR signals with known co-fire correlations"
+          detail: >
+            For each signal with status=CLEAR, look up its co-fire
+            partners from the brain_correlations table (signal_a,
+            signal_b, co_fire_rate). Retain only pairs where BOTH
+            signals are currently CLEAR and co_fire_rate > threshold.
+
+        - step: 3
+          action: "Build cross-domain conjunction groups"
+          detail: >
+            Group co-firing CLEAR signal pairs by rap_subcategory.
+            A conjunction requires signals from at least 2 different
+            rap_categories (host x agent, host x environment,
+            agent x environment). Single-domain co-fires are not
+            conjunctions -- they are just correlated signals.
+
+        - step: 4
+          action: "Evaluate conjunction significance"
+          detail: >
+            For each cross-domain group with 3+ co-firing CLEAR
+            signals, compute conjunction confidence:
+            confidence = mean(co_fire_rate) x count / expected_count
+            where expected_count = count * mean(individual_fire_rate).
+            High confidence means this combination fires together
+            more often than independent chance would predict.
+
+        - step: 5
+          action: "Flag elevated conjunctions"
+          detail: >
+            Conjunctions with confidence > 0.5 and count >= 3 are
+            flagged as pattern findings. Output includes participating
+            signals, cross-domain span, confidence score, and the
+            historical co-fire rates that motivated the flag.
+
+    data_requirements:
+      - source: "Signal evaluation results (current run)"
+        fields: ["signal_id", "status", "rap_class", "rap_subcategory"]
+      - source: "brain_correlations table (DuckDB)"
+        fields: ["signal_a", "signal_b", "co_fire_rate", "co_fire_count"]
+      - source: "rap_signal_mapping.yaml"
+        fields: ["signal_id -> rap_subcategory mapping"]
+
+    complexity:
+      pairwise: "O(n^2) for correlation lookup where n = evaluated signals"
+      three_way: "O(n^3) for 3-way conjunctions -- mitigated by only checking cross-domain pairs"
+      practical: >
+        With ~514 signals and only cross-domain combinations, the
+        practical number of pairs is bounded by
+        (host_signals x agent_signals + host_signals x env_signals
+        + agent_signals x env_signals) ~= 154*241 + 154*119 + 241*119
+        ~= 80,000 pairs. With correlation table pre-built, each
+        lookup is O(1). Total: ~80K lookups per evaluation run.
+      estimated_runtime: "<1 second"
+
+    thresholds:
+      minimum_signals: 3
+      co_fire_rate_minimum: 0.15
+      confidence_minimum: 0.5
+      cross_domain_requirement: "at least 2 of {host, agent, environment}"
+      calibration_required: true
+
+    output:
+      format:
+        - field: "conjunction_id"
+          type: "string"
+          description: "Unique identifier for this conjunction finding"
+        - field: "participating_signals"
+          type: "list[str]"
+          description: "Signal IDs in the conjunction"
+        - field: "cross_domain_span"
+          type: "list[str]"
+          description: "RAP categories spanned (e.g., [host, agent])"
+        - field: "confidence"
+          type: "float"
+          description: "Conjunction confidence score (0-1)"
+        - field: "co_fire_rates"
+          type: "dict[str, float]"
+          description: "Pairwise co-fire rates for participating signals"
+        - field: "interpretation"
+          type: "string"
+          description: "Human-readable description of the conjunction"
+
+    integration:
+      feeds_into: "Phase 110 conjunction signal rules (MECH-01)"
+      visualization: "Engine firing panel (see firing_panel section)"
+
+  # ---------------------------------------------------------------
+  # Engine 2: Peer Outlier
+  # ---------------------------------------------------------------
+
+  peer_outlier:
+    name: "Peer Outlier"
+    purpose: >
+      Detect companies that are statistical outliers across multiple
+      financial dimensions relative to sector peers, using SEC XBRL
+      Frames data. A company that is an outlier on 3+ metrics
+      simultaneously is structurally different from its peers in
+      ways that may indicate elevated risk.
+
+    d_and_o_rationale: >
+      D&O underwriting relies heavily on peer comparison. A company
+      with margins, leverage, and cash flow all significantly worse
+      than peers may be masking problems through aggressive accounting
+      or facing undisclosed deterioration. Multi-dimensional outlier
+      detection formalizes what experienced underwriters do intuitively.
+
+    algorithm:
+      steps:
+        - step: 1
+          action: "Extract key XBRL metrics for the target company"
+          detail: >
+            From the ACQUIRE stage XBRL data, extract:
+            revenue_growth, profit_margin, debt_to_equity,
+            current_ratio, inventory_turnover, receivable_days,
+            capex_to_revenue, sga_to_revenue.
+            Source: BASE.XBRL.* signals, FIN.PEER.* signals.
+
+        - step: 2
+          action: "Pull sector peer data from SEC Frames API"
+          detail: >
+            Use SEC Frames (CY taxonomy) to pull the same metrics
+            for all companies in the same GICS sector and similar
+            market cap tier (within 3x). Require minimum 10 peers
+            for statistical validity. If <10 peers in same sector
+            and cap tier, expand to adjacent sectors or cap tiers.
+
+        - step: 3
+          action: "Compute z-scores for each metric"
+          detail: >
+            For each metric, compute:
+            z_i = (company_value_i - peer_median_i) / peer_std_i
+            Use median and MAD (median absolute deviation) instead
+            of mean/std for robustness to outliers in the peer set.
+
+        - step: 4
+          action: "Evaluate outlier status"
+          detail: >
+            Multi-dimensional outlier: 3+ metrics with |z| > 2.0.
+            Single-metric extreme: any metric with |z| > 3.0 in a
+            risk-relevant direction.
+            Risk-relevant directions:
+              - Higher: debt_to_equity, receivable_days, sga_to_revenue
+              - Lower: profit_margin, current_ratio, revenue_growth
+              - Either: inventory_turnover (too high = channel stuffing,
+                too low = obsolescence), capex_to_revenue (depends on stage)
+
+        - step: 5
+          action: "Compute outlier score"
+          detail: >
+            outlier_score = sum(|z_i| for outlier metrics) / count(outlier_metrics)
+            Normalize to [0, 1] via sigmoid: confidence = 2 / (1 + exp(-outlier_score + 3)) - 1
+            This gives confidence ~0 for scores near 2, ~0.5 for score ~3, ~1.0 for score >5.
+
+    data_requirements:
+      - source: "ACQUIRE stage XBRL data (BASE.XBRL.*)"
+        fields: ["revenue", "net_income", "total_debt", "total_equity", "current_assets", "current_liabilities", "inventory", "accounts_receivable", "capex", "sga"]
+      - source: "SEC Frames API (sector peers)"
+        fields: ["Same metrics for 10+ peers in same GICS sector"]
+      - source: "BIZ.CLASS.primary (sector classification)"
+        fields: ["gics_sector"]
+
+    complexity:
+      per_metric: "O(peers) for median/MAD computation"
+      total: "O(peers x metrics) = O(n * 8) -- fast"
+      estimated_runtime: "<1 second (peer data already acquired)"
+
+    thresholds:
+      multi_dimensional_z: 2.0
+      single_metric_z: 3.0
+      minimum_peers: 10
+      minimum_outlier_metrics: 3
+      calibration_required: true
+
+    output:
+      format:
+        - field: "is_outlier"
+          type: "bool"
+          description: "Whether company qualifies as multi-dimensional outlier"
+        - field: "outlier_dimensions"
+          type: "list[dict]"
+          description: "List of outlier metrics with z-scores and peer context"
+        - field: "outlier_score"
+          type: "float"
+          description: "Overall outlier severity score (0-1)"
+        - field: "peer_count"
+          type: "int"
+          description: "Number of peers used in comparison"
+        - field: "peer_context"
+          type: "dict"
+          description: "Peer median and std for each metric"
+
+    reference: "Beneish M-Score (1999): precedent for multi-metric fraud detection via statistical outliers"
+
+  # ---------------------------------------------------------------
+  # Engine 3: Migration Drift
+  # ---------------------------------------------------------------
+
+  migration_drift:
+    name: "Migration Drift"
+    purpose: >
+      Detect gradual cross-domain deterioration that individual
+      quarterly snapshots miss. The "boiling frog" at the temporal
+      level -- each quarter's change is individually small, but the
+      cumulative multi-quarter, multi-domain drift indicates a
+      company sliding into higher risk territory.
+
+    d_and_o_rationale: >
+      Companies rarely go from healthy to catastrophic in one quarter.
+      The classic pre-filing pattern is gradual erosion: margins
+      compress slightly each quarter (host.financials), disclosure
+      language gets more cautious (agent.disclosure_conduct), and
+      analyst sentiment softens (environment.market_signals). Each
+      quarter's change is "normal." The migration drift engine detects
+      when this pattern spans 2+ RAP categories simultaneously.
+
+    algorithm:
+      steps:
+        - step: 1
+          action: "Collect quarterly metric history for each subcategory"
+          detail: >
+            For each rap_subcategory with quantitative signals, extract
+            quarterly values over 4-8 quarters from XBRL data.
+            Map XBRL metrics to rap_subcategories via rap_signal_mapping.
+            Example: FIN.TEMPORAL.margin_compression maps to
+            agent.financial_conduct; STOCK.PRICE.returns_multi_horizon
+            maps to environment.market_signals.
+
+        - step: 2
+          action: "Compute per-subcategory trend slopes"
+          detail: >
+            For each subcategory, fit a linear regression slope
+            to the quarterly metric values. Positive slope = improving;
+            negative slope = deteriorating. Use the standardized
+            slope (slope / metric_std) to compare across metrics
+            with different units.
+
+        - step: 3
+          action: "Identify cross-domain drift"
+          detail: >
+            A migration drift occurs when:
+            (a) 2+ subcategories in DIFFERENT rap_categories have
+                standardized slopes more negative than the threshold
+                (slope < -0.05 per quarter = 5% deterioration/quarter)
+            (b) The deterioration is gradual (no single quarter jump
+                exceeds 2x the slope magnitude -- excludes event-driven
+                drops that are captured by other signals)
+            Single-domain drift (e.g., only agent subcategories
+            declining) is a trend, not a migration.
+
+        - step: 4
+          action: "Compute drift score"
+          detail: >
+            drift_score = sum(|slope_j| for drifting subcategories)
+                        x (quarters_observed / 8)
+                        x cross_domain_count / 3
+            Normalize to [0, 1]. More subcategories drifting, steeper
+            slopes, more quarters observed, and more domains crossed
+            all increase the score.
+
+        - step: 5
+          action: "Generate drift narrative"
+          detail: >
+            For each drift finding, generate a human-readable
+            narrative: "Over the past N quarters, [company] shows
+            simultaneous deterioration in [subcategory 1] (slope:
+            -X%/quarter) and [subcategory 2] (slope: -Y%/quarter),
+            spanning [host] and [agent] dimensions."
+
+    data_requirements:
+      - source: "ACQUIRE stage quarterly XBRL data (BASE.XBRL.quarterly)"
+        fields: ["quarterly revenue, margins, cash flow, debt ratios, working capital metrics"]
+      - source: "Signal evaluation history (if available from brain_signal_runs)"
+        fields: ["signal_id, status, value by quarter"]
+      - source: "rap_signal_mapping.yaml"
+        fields: ["signal_id -> rap_subcategory mapping"]
+
+    complexity:
+      per_subcategory: "O(quarters) for linear regression -- trivial"
+      total: "O(subcategories x quarters) = O(20 x 8) = 160 computations"
+      estimated_runtime: "<100ms"
+
+    thresholds:
+      slope_threshold: -0.05  # per quarter (5% deterioration/quarter)
+      minimum_quarters: 4
+      maximum_quarters: 8
+      cross_domain_minimum: 2  # of 3 rap_categories
+      gradual_check: "no single quarter jump > 2x slope magnitude"
+      calibration_required: true
+
+    output:
+      format:
+        - field: "has_drift"
+          type: "bool"
+          description: "Whether cross-domain drift is detected"
+        - field: "drifting_subcategories"
+          type: "list[dict]"
+          description: "Subcategories with slopes, domains, quarters"
+        - field: "cross_domain_span"
+          type: "list[str]"
+          description: "RAP categories exhibiting drift"
+        - field: "drift_score"
+          type: "float"
+          description: "Overall drift severity (0-1)"
+        - field: "quarters_observed"
+          type: "int"
+          description: "Number of quarters of data used"
+        - field: "narrative"
+          type: "string"
+          description: "Human-readable drift description"
+
+    d_and_o_relevance: >
+      Gradual cross-domain deterioration is the classic pre-filing
+      pattern in D&O claims. Companies do not fail suddenly -- they
+      erode across multiple dimensions simultaneously over 4-8
+      quarters before the claim event occurs.
+
+  # ---------------------------------------------------------------
+  # Engine 4: Precedent Match
+  # ---------------------------------------------------------------
+
+  precedent_match:
+    name: "Precedent Match"
+    purpose: >
+      Find historical D&O cases with similar signal profiles to the
+      current company, providing precedent-based risk assessment.
+      If a company's signal fingerprint closely matches Enron's
+      pre-filing profile, that is a meaningful risk indicator
+      regardless of what the other engines find.
+
+    d_and_o_rationale: >
+      Experienced D&O underwriters make decisions based on pattern
+      recognition from past cases. Precedent Match formalizes this
+      by computing signal profile similarity against a library of
+      historical cases with known outcomes. This provides both
+      risk quantification and narrative context ("this looks like
+      Enron in Q3 2000").
+
+    algorithm:
+      steps:
+        - step: 1
+          action: "Compute current company signal fingerprint"
+          detail: >
+            For all 514 signals, create a binary vector:
+            1 = signal fired (status in {RED, YELLOW})
+            0 = signal did not fire (status = CLEAR)
+            Exclude SKIPPED signals from both numerator and denominator.
+            The fingerprint is a sparse binary vector.
+
+        - step: 2
+          action: "Apply importance weighting"
+          detail: >
+            Weight each signal in the fingerprint:
+            - CRF signals (critical_red_flag=true): 3x weight
+            - ELEVATED-threshold signals (tier >= ELEVATED): 2x weight
+            - Standard signals: 1x weight
+            This ensures that matching on CRF signals is much more
+            significant than matching on routine signals.
+
+        - step: 3
+          action: "Compute weighted Jaccard similarity against case library"
+          detail: >
+            For each case library entry, compute:
+            weighted_jaccard = sum(w_i * min(company_i, case_i))
+                             / sum(w_i * max(company_i, case_i))
+            where w_i is the signal importance weight and company_i,
+            case_i are the binary fingerprint values.
+            This is equivalent to Jaccard similarity with signal
+            importance weighting.
+
+        - step: 4
+          action: "Rank matches and apply outcome weighting"
+          detail: >
+            Rank case library entries by weighted Jaccard similarity.
+            Apply outcome severity weighting:
+            match_score = similarity x outcome_severity_factor
+            where outcome_severity_factor:
+              - Large settlement (>$50M): 1.5x
+              - Medium settlement ($5-50M): 1.0x
+              - Small settlement (<$5M): 0.8x
+              - Dismissal: 0.5x
+              - Ongoing: 1.0x
+            Cases with known bad outcomes that match are more
+            informative than cases with benign outcomes that match.
+
+        - step: 5
+          action: "Return top matches with analysis"
+          detail: >
+            Return top 5 matching cases with:
+            - Similarity score
+            - Matched signals (which signals overlap)
+            - Divergent signals (which signals differ)
+            - Case outcome (settlement, dismissal, ongoing)
+            - Key narrative context for the underwriter
+
+    data_requirements:
+      - source: "Current company signal evaluations"
+        fields: ["signal_id", "status", "critical_red_flag", "tier"]
+      - source: "Case library (case_library_design.yaml)"
+        fields: ["case_id", "signal_profile", "outcome", "outcome_date"]
+      - source: "Signal importance weights"
+        fields: ["signal_id -> weight mapping (CRF=3x, elevated=2x, standard=1x)"]
+
+    complexity:
+      per_case: "O(signals) = O(514) for similarity computation"
+      total: "O(cases x signals) -- manageable with <1000 cases"
+      practical: "With 100 seed cases: 100 x 514 = 51,400 comparisons"
+      estimated_runtime: "<200ms"
+
+    thresholds:
+      notable_match: 0.30
+      strong_match: 0.50
+      very_strong_match: 0.70
+      top_k: 5
+      minimum_case_library_size: 20
+      calibration_required: true
+
+    output:
+      format:
+        - field: "has_precedent_match"
+          type: "bool"
+          description: "Whether any case matches above notable threshold"
+        - field: "top_matches"
+          type: "list[dict]"
+          description: "Top 5 matching cases with similarity scores"
+        - field: "strongest_match"
+          type: "dict"
+          description: "Highest-similarity case with full detail"
+        - field: "match_confidence"
+          type: "float"
+          description: "Confidence in the best match (0-1)"
+        - field: "signal_overlap_summary"
+          type: "dict"
+          description: "Summary of matched vs divergent signals"
+
+    reference: "k-nearest-neighbors (kNN) classification adapted for binary signal vectors with importance weighting"
+
+# ---------------------------------------------------------------
+# Engine Coordination
+# ---------------------------------------------------------------
+
+engine_coordination:
+  description: >
+    All four engines run independently and in parallel. No engine's
+    output is input to another engine. Results are aggregated in
+    the engine firing panel for unified display.
+
+  execution_model: "parallel"
+  engine_dependencies: "none -- all engines are independent"
+
+  firing_panel:
+    description: >
+      The engine firing panel is the aggregated output view showing
+      which engines fired, at what confidence, and with what findings.
+      Displayed in the underwriting worksheet as a compact dashboard.
+    display:
+      layout: "horizontal card grid, one card per engine"
+      per_engine_card:
+        - "Engine name"
+        - "Status: FIRED / NOT_FIRED"
+        - "Confidence: 0-1 (color-coded: <0.3=gray, 0.3-0.6=yellow, >0.6=red)"
+        - "Key finding headline (1 sentence)"
+        - "Detail expandable (click to see full engine output)"
+      color_coding:
+        not_fired: "#6c757d"  # gray
+        low_confidence: "#e67700"  # yellow/orange
+        high_confidence: "#c92a2a"  # red
+
+  aggregate_pattern_score:
+    description: >
+      Optional composite score across all engines. Weighted sum of
+      engine confidences, intended as a supplementary risk indicator
+      rather than a replacement for individual engine outputs.
+    formula: >
+      pattern_score = (
+        w_conjunction * conjunction_confidence +
+        w_outlier * outlier_confidence +
+        w_drift * drift_confidence +
+        w_precedent * precedent_confidence
+      ) / sum(weights)
+    weights:
+      conjunction: 0.20
+      peer_outlier: 0.25
+      migration_drift: 0.25
+      precedent_match: 0.30
+    weight_rationale: >
+      Precedent match gets highest weight because it directly
+      references known outcomes. Peer outlier and migration drift
+      share equal weight as structural/temporal pattern detectors.
+      Conjunction scan gets lower weight because it detects weak
+      signals that require corroboration.
+    calibration_required: true
+
+# ---------------------------------------------------------------
+# Data Requirements Summary
+# ---------------------------------------------------------------
+
+data_requirements_summary:
+  engines_to_data:
+    conjunction_scan:
+      required:
+        - "Signal evaluation results (current run) -- from ANALYZE stage"
+        - "brain_correlations table -- from DuckDB (rebuilt from signal runs)"
+        - "rap_signal_mapping.yaml -- from brain/framework/"
+      new_requirements: "None -- all data sources currently available"
+
+    peer_outlier:
+      required:
+        - "Company XBRL data -- from ACQUIRE stage (BASE.XBRL.*)"
+        - "Sector peer XBRL data -- from SEC Frames API"
+        - "GICS sector classification -- from BIZ.CLASS.primary"
+      new_requirements:
+        - "SEC Frames sector peer data pull (may need dedicated acquisition step)"
+        - "Peer XBRL data cache in DuckDB for performance"
+
+    migration_drift:
+      required:
+        - "Quarterly XBRL data (4-8 quarters) -- from ACQUIRE stage"
+        - "Signal evaluation history -- from brain_signal_runs table"
+        - "rap_signal_mapping.yaml -- from brain/framework/"
+      new_requirements:
+        - "Multi-quarter XBRL data storage (currently single-period)"
+        - "Quarterly signal run history (requires multiple prior runs)"
+
+    precedent_match:
+      required:
+        - "Current signal evaluations -- from current run"
+        - "Case library entries -- from case_library_design.yaml (Phase 109)"
+        - "Signal importance weights -- derived from signal metadata"
+      new_requirements:
+        - "Case library seed data (20+ canonical cases)"
+        - "Historical signal profile reconstruction for seed cases"
+
+  acquire_stage_additions:
+    description: >
+      Phase 109 implementation may need to add to the ACQUIRE stage:
+      1. SEC Frames peer data pull for peer_outlier engine
+      2. Multi-quarter XBRL caching for migration_drift engine
+      3. Case library loading for precedent_match engine
+    implementation_note: >
+      These additions should be coordinated with the ACQUIRE stage
+      maintainer. Case library loading is a one-time seed operation
+      plus incremental updates from ongoing SCAC monitoring.

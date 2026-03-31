@@ -1,0 +1,34 @@
+{# Regulatory Proceedings — agency actions, penalties, investigations #}
+
+{% set reg_proc = lit.get('regulatory_proceedings', []) %}
+{% if reg_proc %}
+<h3>Regulatory Proceedings</h3>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Agency</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Type</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Description</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for rp in reg_proc %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 align-top font-semibold text-nowrap">
+        <span class="inline-block px-1.5 py-0.5 text-xs rounded bg-amber-100 border border-amber-200 font-semibold text-amber-800">{{ rp.agency }}</span>
+      </td>
+      <td class="p-1 align-top text-xs">{{ rp.type | title }}</td>
+      <td class="p-1 align-top text-xs">{{ rp.description }}</td>
+      <td class="p-1 align-top text-center">
+        {{ traffic_light(rp.status|upper if rp.status not in ['disclosed', 'Disclosed', 'N/A'] else 'INFO', rp.status|title) }}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+  <li>{{ reg_proc|length }} regulatory proceeding{{ 's' if reg_proc|length != 1 }} identified from 10-K filings</li>
+  <li>Regulatory actions may indicate operational compliance risks and can escalate to D&amp;O claims if officers/directors failed oversight duties</li>
+</ul>
+{% endif %}

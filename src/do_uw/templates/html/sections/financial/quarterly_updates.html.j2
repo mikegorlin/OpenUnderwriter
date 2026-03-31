@@ -1,0 +1,195 @@
+{# Quarterly Updates (Q-to-Q Comparison) — extracted from financial.html.j2 #}
+{% set qu_list = fin.get('quarterly_updates', []) %}
+{% if qu_list %}
+{# Filter to quarters with at least one non-N/A financial metric #}
+{% set ns_qu = namespace(valid=[]) %}
+{% for qu in qu_list %}
+  {% if qu.revenue != 'N/A' or qu.net_income != 'N/A' or qu.eps != 'N/A' %}
+    {% set ns_qu.valid = ns_qu.valid + [qu] %}
+  {% endif %}
+{% endfor %}
+{% set qu_valid = ns_qu.valid %}
+
+{% if qu_valid|length == 1 %}
+{# Single quarter: preserve original heading style #}
+{% set qu = qu_valid[0] %}
+<h3>Post-Annual Update: {{ qu.quarter }}</h3>
+<p class="text-xs text-gray-500 mt-1 mb-2">
+  Filed {{ qu.filing_date }} (period ending {{ qu.period_end }}).
+  Compares current quarter to same period in the prior year.
+</p>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Metric</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">{{ qu.quarter }}</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Prior Year Q</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">YoY Change</th>
+    </tr>
+  </thead>
+  <tbody class="tabular-nums">
+    {{ financial_row("Revenue", qu.revenue|format_na, prior_value=qu.prior_revenue|format_na, yoy_change=qu.revenue_change|default(''), direction="lower_is_worse") }}
+    {{ financial_row("Net Income", qu.net_income|format_na, prior_value=qu.prior_net_income|format_na, yoy_change=qu.net_income_change|default(''), direction="lower_is_worse") }}
+    {{ financial_row("Diluted EPS", qu.eps|format_na, prior_value=qu.prior_eps|format_na) }}
+  </tbody>
+</table>
+{# --- MD&A Highlights --- #}
+{% if qu.md_a_highlights %}
+<h4>Management Discussion Highlights</h4>
+<ul class="text-sm list-disc pl-5">
+  {% for highlight in qu.md_a_highlights %}
+  <li>{{ highlight }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{# --- New Legal Proceedings --- #}
+{% if qu.new_legal_proceedings %}
+<h4>New Legal Proceedings</h4>
+<ul class="text-sm list-disc pl-5">
+  {% for proc in qu.new_legal_proceedings %}
+  <li>{{ proc }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{# --- Legal Proceeding Updates --- #}
+{% if qu.legal_updates %}
+<h4>Legal Proceeding Updates</h4>
+<ul class="text-sm list-disc pl-5">
+  {% for update in qu.legal_updates %}
+  <li>{{ update }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{# --- Going Concern --- #}
+{% if qu.going_concern %}
+<div class="border-l-4 border-red-700 bg-red-50 pl-4 py-2 my-3">
+  <p class="text-sm text-red-800 font-semibold m-0">Going Concern: Yes{% if qu.going_concern_detail %} &mdash; {{ qu.going_concern_detail }}{% endif %}</p>
+</div>
+{% endif %}
+{# --- Material Weaknesses --- #}
+{% if qu.material_weaknesses %}
+<h4>Material Weaknesses</h4>
+<ul class="text-sm list-disc pl-5">
+  {% for mw in qu.material_weaknesses %}
+  <li>{{ mw }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{# --- Subsequent Events --- #}
+{% if qu.subsequent_events %}
+<h4>Subsequent Events</h4>
+<ul class="text-sm list-disc pl-5">
+  {% for event in qu.subsequent_events %}
+  <li>{{ event }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% elif qu_valid|length > 1 %}
+{# Multiple quarters: loop with trend summary #}
+<h3>Quarterly Updates ({{ qu_valid|length }} Quarters)</h3>
+{% for qu in qu_valid %}
+<div class="{% if not loop.first %}mt-4 pt-3 border-t border-gray-200{% endif %} page-break-inside-avoid">
+  <h4>{{ 'Most Recent' if loop.first else 'Prior' }}: {{ qu.quarter }}</h4>
+  <p class="text-xs text-gray-500 mt-1 mb-2">
+    Filed {{ qu.filing_date }} (period ending {{ qu.period_end }}).
+    Compares current quarter to same period in the prior year.
+  </p>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Metric</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">{{ qu.quarter }}</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Prior Year Q</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">YoY Change</th>
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {{ financial_row("Revenue", qu.revenue|format_na, prior_value=qu.prior_revenue|format_na, yoy_change=qu.revenue_change|default(''), direction="lower_is_worse") }}
+      {{ financial_row("Net Income", qu.net_income|format_na, prior_value=qu.prior_net_income|format_na, yoy_change=qu.net_income_change|default(''), direction="lower_is_worse") }}
+      {{ financial_row("Diluted EPS", qu.eps|format_na, prior_value=qu.prior_eps|format_na) }}
+    </tbody>
+  </table>
+  {# --- MD&A Highlights --- #}
+  {% if qu.md_a_highlights %}
+  <h4>Management Discussion Highlights</h4>
+  <ul class="text-sm list-disc pl-5">
+    {% for highlight in qu.md_a_highlights %}
+    <li>{{ highlight }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {# --- New Legal Proceedings --- #}
+  {% if qu.new_legal_proceedings %}
+  <h4>New Legal Proceedings</h4>
+  <ul class="text-sm list-disc pl-5">
+    {% for proc in qu.new_legal_proceedings %}
+    <li>{{ proc }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {# --- Legal Proceeding Updates --- #}
+  {% if qu.legal_updates %}
+  <h4>Legal Proceeding Updates</h4>
+  <ul class="text-sm list-disc pl-5">
+    {% for update in qu.legal_updates %}
+    <li>{{ update }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {# --- Going Concern --- #}
+  {% if qu.going_concern %}
+  <div class="border-l-4 border-red-700 bg-red-50 pl-4 py-2 my-3">
+    <p class="text-sm text-red-800 font-semibold m-0">Going Concern: Yes{% if qu.going_concern_detail %} &mdash; {{ qu.going_concern_detail }}{% endif %}</p>
+  </div>
+  {% endif %}
+  {# --- Material Weaknesses --- #}
+  {% if qu.material_weaknesses %}
+  <h4>Material Weaknesses</h4>
+  <ul class="text-sm list-disc pl-5">
+    {% for mw in qu.material_weaknesses %}
+    <li>{{ mw }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {# --- Subsequent Events --- #}
+  {% if qu.subsequent_events %}
+  <h4>Subsequent Events</h4>
+  <ul class="text-sm list-disc pl-5">
+    {% for event in qu.subsequent_events %}
+    <li>{{ event }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endfor %}
+
+{# --- Quarterly Trend Summary Table --- #}
+<div class="bg-bg-alt border border-gray-200 rounded p-3 my-3 page-break-inside-avoid">
+  <h4 class="text-sm font-bold m-0 mb-2">Quarterly Trend Summary</h4>
+  <table class="w-full border-collapse text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Quarter</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Revenue</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Net Income</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">EPS</th>
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for qu in qu_valid %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 font-heading text-xs font-semibold text-navy">{{ qu.quarter }}</td>
+        <td class="p-1 text-right">{{ qu.revenue }}</td>
+        <td class="p-1 text-right">{{ qu.net_income }}</td>
+        <td class="p-1 text-right">{{ qu.eps }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="text-xs text-gray-500 mt-2 mb-0">
+    Quarters shown most-recent first. Revenue and net income trends over multiple quarters indicate directional momentum.
+  </p>
+</div>
+{% endif %}
+{% endif %}

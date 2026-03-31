@@ -1,0 +1,16 @@
+{# ═══════════════════════════════════════════════════════════════════════════
+   MANIFEST SECTION 6.5: FORWARD-LOOKING ANALYSIS — Scenarios, calendar, credibility, short-seller
+   ═══════════════════════════════════════════════════════════════════════════ #}
+{% if b.forward_scenarios or b.forward_calendar or b.forward_credibility or b.short_seller_alerts or b.short_conviction %}
+<div id="forward-looking" style="margin-top:14px">
+  <div style="background:#1F3A5C;color:white;padding:6px 10px;border-radius:4px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+    <div><span style="font-size:10pt;font-weight:800;letter-spacing:0.3px">Forward-Looking Analysis</span><br><span style="font-size:7.5pt;color:rgba(255,255,255,0.6)">Risk scenarios, key dates, management credibility, short-seller monitoring</span></div>
+  </div>
+  <div style="padding:0 4px">
+    {% include "sections/forward_looking/scenarios.html.j2" %}
+    {% include "sections/forward_looking/key_dates.html.j2" %}
+    {% include "sections/forward_looking/credibility_enhanced.html.j2" %}
+    {% include "sections/forward_looking/short_seller_alerts.html.j2" %}
+  </div>
+</div>
+{% endif %}

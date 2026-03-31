@@ -1,0 +1,243 @@
+{# Epistemological Trace — Signal Provenance Audit Trail (Phase 114-03).
+   Renders ALL signals (triggered, clean, skipped, deferred) grouped by
+   H/A/E dimension with full provenance columns. This is the compliance
+   audit trail proving every signal was evaluated with traceable data. #}
+
+{% set trace = epistemological_trace|default({}) %}
+{% if trace.get('trace_available', false) %}
+{% set rows = trace.get('rows_by_dimension', {}) %}
+{% set total = trace.get('trace_total', 0) %}
+
+{# Count signals by status across all dimensions #}
+{% set ns = namespace(triggered=0, clear=0, skipped=0, deferred=0, show_threshold=false, show_eval=false, show_contrib=false) %}
+{% for dim, dim_rows in rows.items() %}
+  {% for r in dim_rows %}
+    {% if r.status == 'TRIGGERED' %}{% set ns.triggered = ns.triggered + 1 %}
+    {% elif r.status == 'CLEAR' %}{% set ns.clear = ns.clear + 1 %}
+    {% elif r.status == 'SKIPPED' %}{% set ns.skipped = ns.skipped + 1 %}
+    {% elif r.status == 'DEFERRED' %}{% set ns.deferred = ns.deferred + 1 %}
+    {% endif %}
+    {% if r.threshold_level or r.threshold_context %}{% set ns.show_threshold = true %}{% endif %}
+    {% if r.mechanism and r.mechanism != '—' %}{% set ns.show_eval = true %}{% endif %}
+    {% if r.rap_subcategory %}{% set ns.show_contrib = true %}{% endif %}
+  {% endfor %}
+{% endfor %}
+
+<section id="epistemological-trace" class="page-break">
+  <h2>Epistemological Trace &mdash; Signal Provenance Audit Trail</h2>
+
+  <p class="text-xs text-gray-500 mb-3">
+    Complete provenance record for every signal evaluated. Triggered signals identify risk;
+    clean signals prove due diligence; skipped/deferred signals document data gaps.
+  </p>
+
+  {# --- Summary Stats Bar --- #}
+  <div class="trace-summary-bar">
+    <div class="trace-stat">
+      <span class="trace-stat-value">{{ total }}</span>
+      <span class="trace-stat-label">Total Signals</span>
+    </div>
+    <div class="trace-stat trace-stat--triggered">
+      <span class="trace-stat-value">{{ ns.triggered }}</span>
+      <span class="trace-stat-label">Triggered</span>
+    </div>
+    <div class="trace-stat trace-stat--clear">
+      <span class="trace-stat-value">{{ ns.clear }}</span>
+      <span class="trace-stat-label">Clean</span>
+    </div>
+    <div class="trace-stat trace-stat--skipped">
+      <span class="trace-stat-value">{{ ns.skipped }}</span>
+      <span class="trace-stat-label">Skipped</span>
+    </div>
+    <div class="trace-stat trace-stat--deferred">
+      <span class="trace-stat-value">{{ ns.deferred }}</span>
+      <span class="trace-stat-label">Deferred</span>
+    </div>
+  </div>
+
+  {# --- Dimension Group Labels --- #}
+  {% set dim_labels = {
+    'host': 'Host (Structural Risk)',
+    'agent': 'Agent (Behavioral Risk)',
+    'environment': 'Environment (External Risk)'
+  } %}
+
+  {% set dim_colors = {
+    'host': '#1D4ED8',
+    'agent': '#D97706',
+    'environment': '#059669'
+  } %}
+
+  {# --- Per-Dimension Tables --- #}
+  {% for dim in ['host', 'agent', 'environment'] %}
+    {% set dim_rows = rows.get(dim, []) %}
+    {% if dim_rows %}
+    {# Per-group column checks — only show columns that have real data in THIS group #}
+    {% set ns_grp = namespace(show_threshold=false, show_eval=false, show_contrib=false) %}
+    {% for r in dim_rows %}
+      {% if r.threshold_level or r.threshold_context %}{% set ns_grp.show_threshold = true %}{% endif %}
+      {% if r.mechanism and r.mechanism != '—' and r.mechanism != '' %}{% set ns_grp.show_eval = true %}{% endif %}
+      {% if r.rap_subcategory %}{% set ns_grp.show_contrib = true %}{% endif %}
+    {% endfor %}
+    <div class="trace-group">
+      <div class="trace-group-header" style="border-left-color: {{ dim_colors.get(dim, '#6B7280') }};">
+        <span class="trace-group-title">{{ dim_labels.get(dim, dim|title) }}</span>
+        <span class="trace-group-count">{{ dim_rows|length }} signal{{ 's' if dim_rows|length != 1 else '' }}</span>
+      </div>
+
+      <div class="trace-table-wrapper">
+        <table class="trace-table">
+          <thead>
+            <tr>
+              <th class="trace-col-id">Signal ID</th>
+              <th class="trace-col-status">Status</th>
+              <th class="trace-col-data">Raw Data</th>
+              <th class="trace-col-source">Source</th>
+              {% if ns_grp.show_threshold %}<th class="trace-col-threshold">Threshold Applied</th>{% endif %}
+              <th class="trace-col-confidence">Confidence</th>
+              <th class="trace-col-srctype">Source Type</th>
+              {% if ns_grp.show_eval %}<th class="trace-col-eval">Evaluation Result</th>{% endif %}
+              {% if ns_grp.show_contrib %}<th class="trace-col-contrib">Score Contribution</th>{% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in dim_rows %}
+            <tr class="{{ 'trace-row-alt' if loop.index is odd else '' }}">
+              <td class="trace-cell-id">{{ r.signal_id }}</td>
+              <td>
+                {% if r.status == 'TRIGGERED' %}
+                  <span class="trace-status-badge trace-status--triggered">TRIGGERED</span>
+                {% elif r.status == 'CLEAR' %}
+                  <span class="trace-status-badge trace-status--clear">CLEAR</span>
+                {% elif r.status == 'SKIPPED' %}
+                  <span class="trace-status-badge trace-status--skipped">SKIPPED</span>
+                {% elif r.status == 'DEFERRED' %}
+                  <span class="trace-status-badge trace-status--deferred">DEFERRED</span>
+                {% elif r.status == 'ELEVATED' %}
+                  <span class="trace-status-badge trace-status--elevated">ELEVATED</span>
+                {% else %}
+                  <span class="trace-status-badge trace-status--info">{{ r.status }}</span>
+                {% endif %}
+              </td>
+              <td class="trace-cell-data">{{ r.value | format_signal_value if r.value is not none else '—' }}</td>
+              <td class="trace-cell-source">{{ r.source | humanize_source if r.source else '—' }}</td>
+              {% if ns_grp.show_threshold %}
+              <td class="trace-cell-threshold">
+                {% if r.threshold_level %}{{ r.threshold_level }}{% endif %}
+                {% if r.threshold_context %} ({{ r.threshold_context }}){% endif %}
+                {% if not r.threshold_level and not r.threshold_context %}—{% endif %}
+              </td>
+              {% endif %}
+              <td>
+                {% if r.confidence == 'HIGH' %}
+                  <span class="confidence-badge confidence--high">HIGH</span>
+                {% elif r.confidence == 'MEDIUM' %}
+                  <span class="confidence-badge confidence--medium">MEDIUM</span>
+                {% elif r.confidence == 'LOW' %}
+                  <span class="confidence-badge confidence--low">LOW</span>
+                {% else %}
+                  <span class="confidence-badge">{{ r.confidence }}</span>
+                {% endif %}
+              </td>
+              <td class="trace-cell-srctype">{{ r.source_type|default('—') }}</td>
+              {% if ns_grp.show_eval %}<td class="trace-cell-eval">{{ r.mechanism|default('—') }}</td>{% endif %}
+              {% if ns_grp.show_contrib %}<td class="trace-cell-contrib text-right-nums">
+                {% if r.rap_subcategory %}{{ r.rap_subcategory }}{% else %}—{% endif %}
+              </td>{% endif %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+  {% endfor %}
+
+  {# --- Unknown dimension signals (fallback) --- #}
+  {% for dim, dim_rows in rows.items() %}
+    {% if dim not in ['host', 'agent', 'environment'] and dim_rows %}
+    {# Per-group column checks — only show columns that have real data in THIS group #}
+    {% set ns_grp = namespace(show_threshold=false, show_eval=false, show_contrib=false) %}
+    {% for r in dim_rows %}
+      {% if r.threshold_level or r.threshold_context %}{% set ns_grp.show_threshold = true %}{% endif %}
+      {% if r.mechanism and r.mechanism != '—' and r.mechanism != '' %}{% set ns_grp.show_eval = true %}{% endif %}
+      {% if r.rap_subcategory %}{% set ns_grp.show_contrib = true %}{% endif %}
+    {% endfor %}
+    <div class="trace-group">
+      <div class="trace-group-header">
+        <span class="trace-group-title">{{ dim|title }}</span>
+        <span class="trace-group-count">{{ dim_rows|length }} signal{{ 's' if dim_rows|length != 1 else '' }}</span>
+      </div>
+      <div class="trace-table-wrapper">
+        <table class="trace-table">
+          <thead>
+            <tr>
+              <th class="trace-col-id">Signal ID</th>
+              <th class="trace-col-status">Status</th>
+              <th class="trace-col-data">Raw Data</th>
+              <th class="trace-col-source">Source</th>
+              {% if ns_grp.show_threshold %}<th class="trace-col-threshold">Threshold Applied</th>{% endif %}
+              <th class="trace-col-confidence">Confidence</th>
+              <th class="trace-col-srctype">Source Type</th>
+              {% if ns_grp.show_eval %}<th class="trace-col-eval">Evaluation Result</th>{% endif %}
+              {% if ns_grp.show_contrib %}<th class="trace-col-contrib">Score Contribution</th>{% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in dim_rows %}
+            <tr class="{{ 'trace-row-alt' if loop.index is odd else '' }}">
+              <td class="trace-cell-id">{{ r.signal_id }}</td>
+              <td>
+                {% if r.status == 'TRIGGERED' %}
+                  <span class="trace-status-badge trace-status--triggered">TRIGGERED</span>
+                {% elif r.status == 'CLEAR' %}
+                  <span class="trace-status-badge trace-status--clear">CLEAR</span>
+                {% elif r.status == 'SKIPPED' %}
+                  <span class="trace-status-badge trace-status--skipped">SKIPPED</span>
+                {% elif r.status == 'DEFERRED' %}
+                  <span class="trace-status-badge trace-status--deferred">DEFERRED</span>
+                {% else %}
+                  <span class="trace-status-badge trace-status--info">{{ r.status }}</span>
+                {% endif %}
+              </td>
+              <td class="trace-cell-data">{{ r.value | format_signal_value if r.value is not none else '—' }}</td>
+              <td class="trace-cell-source">{{ r.source | humanize_source if r.source else '—' }}</td>
+              {% if ns_grp.show_threshold %}
+              <td class="trace-cell-threshold">
+                {% if r.threshold_level %}{{ r.threshold_level }}{% endif %}
+                {% if r.threshold_context %} ({{ r.threshold_context }}){% endif %}
+                {% if not r.threshold_level and not r.threshold_context %}—{% endif %}
+              </td>
+              {% endif %}
+              <td>
+                {% if r.confidence == 'HIGH' %}
+                  <span class="confidence-badge confidence--high">HIGH</span>
+                {% elif r.confidence == 'MEDIUM' %}
+                  <span class="confidence-badge confidence--medium">MEDIUM</span>
+                {% else %}
+                  <span class="confidence-badge confidence--low">LOW</span>
+                {% endif %}
+              </td>
+              <td class="trace-cell-srctype">{{ r.source_type|default('—') }}</td>
+              {% if ns_grp.show_eval %}<td class="trace-cell-eval">{{ r.mechanism|default('—') }}</td>{% endif %}
+              {% if ns_grp.show_contrib %}<td class="trace-cell-contrib text-right-nums">
+                {% if r.rap_subcategory %}{{ r.rap_subcategory }}{% else %}—{% endif %}
+              </td>{% endif %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+  {% endfor %}
+
+</section>
+
+{% else %}
+{# Graceful degradation: no trace data available #}
+<section id="epistemological-trace" class="page-break">
+  <h2>Epistemological Trace &mdash; Signal Provenance Audit Trail</h2>
+  <p class="text-sm text-gray-500 italic">No signal evaluation data available for provenance trace.</p>
+</section>
+{% endif %}

@@ -1,0 +1,46 @@
+- id: ABS.DISC.stock_comp
+  name: Missing Stock Compensation Disclosure
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: 'Expected disclosure absent: has_equity_compensation_plan'
+  provenance:
+    origin: phase_110_absence
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Absence detection for EXEC.COMP.equity_mix
+    threshold_provenance:
+      source: standard
+      rationale: Companies with equity plans must disclose; absence hides compensation risk
+  signal_class: inference
+  group: transparency_disclosure
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  epistemology:
+    rule_origin: ASC 718 stock compensation disclosure; material for D&O dilution and incentive analysis
+    threshold_basis: Companies with equity plans must disclose; absence hides compensation risk
+  evaluation:
+    mechanism: absence
+    absence_rules:
+      expectation_type: company_profile
+      expected_signals:
+      - EXEC.COMP.equity_mix
+      condition: has_equity_compensation_plan
+      expected_status: TRIGGERED
+      absence_trigger: SKIPPED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} missing stock compensation disclosure at {value} represents agent risk (executive/director
+        actions and decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} missing stock compensation disclosure at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} missing stock compensation disclosure at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

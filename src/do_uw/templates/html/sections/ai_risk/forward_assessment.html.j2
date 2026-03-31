@@ -1,0 +1,21 @@
+{# Forward Indicators & Strategic Assessment — extracted from ai_risk.html.j2 #}
+{% if ai is not defined %}{% set ai = (ai_risk if ai_risk is defined and ai_risk else {}) %}{% endif %}
+
+  {# --- Forward Indicators --- #}
+  {% set fi = ai.get('forward_indicators', []) %}
+  {% if fi %}
+  <h3>Forward Indicators</h3>
+  <ul class="list-disc ml-5 text-sm text-gray-700 space-y-1">
+    {% for indicator in fi %}
+    <li>{{ indicator }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {# --- Strategic Assessment --- #}
+  {% if ai.get('strategic_assessment') %}
+  <h3>Strategic Assessment</h3>
+  <p class="text-sm text-gray-700 leading-relaxed">
+    {{ ai.strategic_assessment }}
+  </p>
+  {% endif %}

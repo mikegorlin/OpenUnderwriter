@@ -1,0 +1,76 @@
+## Section 8: AI Transformation Risk -- Business Model Disruption & Competitive Threats
+
+{% if ai_risk %}
+**Overall AI Risk Score: {{ ai_risk.overall_score | round(0) }}/100** ({{ ai_risk.industry_model_id }}) | **Disclosure Trend:** {{ ai_risk.disclosure_trend }}
+
+### Risk Sub-Dimensions
+
+| Dimension | Score (/10) | Weight | Threat Level |
+|-----------|------------|--------|--------------|
+{% for dim in ai_risk.sub_dimensions %}| {{ dim.name | dim_display_name }} | {{ dim.score | round(1) }} | {{ (dim.weight * 100) | round(0) }}% | {{ dim.threat_level }} |
+{% endfor %}
+
+### Peer AI Comparison
+
+{% if ai_risk.peer_comparison_available %}- **Company AI Mentions:** {{ ai_risk.competitive_position.company_ai_mentions }} | **Peer Average:** {{ ai_risk.competitive_position.peer_avg_mentions | round(1) }} | **Stance:** {{ ai_risk.competitive_position.adoption_stance }}
+{% else %}Peer comparison unavailable.
+{% endif %}
+
+### Industry-Specific Assessment
+
+{{ ai_risk.narrative }}
+
+### Forward-Looking Indicators
+
+{% for indicator in ai_risk.forward_indicators %}- {{ indicator }}
+{% endfor %}{% if not ai_risk.forward_indicators %}No forward indicators identified.
+{% endif %}
+{% else %}
+*AI risk assessment unavailable.*
+{% endif %}
+{{ triggered_block(7) }}
+
+---
+
+## Coverage Gaps -- Data Not Available
+{% if coverage_gaps is defined and coverage_gaps %}
+*The following checks could not be evaluated because required data was not acquired. These items are NOT cleared -- they represent gaps in coverage that should be considered in the underwriting decision.*
+
+{% for section_label, items in coverage_gaps.items() %}
+**{{ section_label }}** ({{ items|length }} checks)
+{% for item in items %}- `{{ item.id }}` {{ item.name }}: {{ item.reason }}
+{% endfor %}
+{% endfor %}
+{% if gap_stats is defined %}**Coverage:** {{ gap_stats.evaluated }} of {{ gap_stats.total }} checks evaluated ({{ gap_stats.coverage_pct }}% coverage), {{ gap_stats.unavailable }} data-unavailable{% endif %}
+{% elif gap_stats is defined and gap_stats.total > 0 %}
+All checks evaluated -- no coverage gaps identified.
+{% else %}
+*No check results available.*
+{% endif %}
+
+{% if calibration_notes is defined and calibration_notes %}
+---
+
+{{ calibration_notes }}
+{% endif %}
+
+---
+
+## Appendix: Meeting Prep Companion -- Diligence Questions & Expected Responses
+
+{% if meeting_questions %}
+Questions generated from gaps, red flags, and forward indicators. Prioritized by scoring impact.
+
+{% for q in meeting_questions %}
+**Q{{ loop.index }}. [{{ q.category }}] {{ q.question }}**
+*Context:* {{ q.context }}
+*Reassuring:* {{ q.good_answer }} | *Concerning:* {{ q.bad_answer }}
+*If Concerning:* {{ q.follow_up }}
+{% endfor %}
+{% else %}
+*No meeting prep questions generated. All data points have sufficient confidence and coverage.*
+{% endif %}
+
+---
+
+*Generated {{ gen_date }} | Angry Dolphin Underwriting | Confidential*

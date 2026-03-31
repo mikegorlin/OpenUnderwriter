@@ -1,0 +1,40 @@
+{
+  "$schema": "executive_scoring_schema",
+  "version": "1.0",
+  "description": "Role weights, dimension ranges, time decay, and aggregate thresholds for executive forensics risk scoring.",
+  "role_weights": {
+    "CEO": 3.0,
+    "CFO": 2.5,
+    "COO": 2.0,
+    "GC": 2.0,
+    "CAO": 2.0,
+    "CTO": 1.5,
+    "CLO": 2.0,
+    "CRO": 1.5,
+    "CISO": 1.5,
+    "Director": 1.0,
+    "Chairman": 2.0,
+    "Lead Independent Director": 1.5,
+    "Other": 1.0
+  },
+  "dimension_max_scores": {
+    "prior_litigation": 25,
+    "regulatory_enforcement": 25,
+    "prior_company_failures": 15,
+    "insider_trading_patterns": 10,
+    "negative_news": 10,
+    "tenure_stability": 5
+  },
+  "time_decay": {
+    "half_life_years": 5,
+    "minimum_weight": 0.1,
+    "description": "Older findings receive exponentially decaying weight. A finding 5 years old has 50% weight; 10 years old has 25%."
+  },
+  "aggregate_thresholds": {
+    "low": 20,
+    "moderate": 35,
+    "elevated": 50,
+    "high": 70,
+    "critical": 85
+  }
+}

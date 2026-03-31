@@ -1,0 +1,700 @@
+# Compensation & Capital Return Signals — XBRL-sourced D&O risk indicators
+# Domain: fin/comp_capital.yaml  |  Count: 5
+- id: FIN.COMP.sbc_dilution
+  name: Stock-Based Compensation Dilution
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F6
+  - F8
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - income_statement
+    - equity_compensation_note
+  threshold:
+    type: tiered
+    red: SBC > 20% of net income — excessive shareholder dilution
+    yellow: SBC > 10% of net income — material dilution concern
+    clear: SBC <= 10% of net income
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:ShareBasedCompensation
+    - us-gaap:AllocatedShareBasedCompensationExpense
+    - us-gaap:NetIncomeLoss
+    expected_type: numeric
+    no_data_sentinel: SBC data not found in XBRL
+    validation_rule: sbc >= 0
+  data_strategy:
+    field_key: xbrl_sbc_dilution_pct
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: SBC >10% of net income indicates material shareholder dilution per proxy advisory firm guidelines and shareholder activist thresholds
+    render_target: key_metrics
+    formula: stock_based_compensation / net_income
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_sbc_dilution_pct
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Shareholder dilution analysis: excessive SBC erodes per-share value and creates the governance concern that drives ''say on pay'' failures, proxy contests, and derivative suits alleging excessive executive compensation'
+    threshold_basis: 'SBC >10% of net income: material dilution threshold based on ISS/Glass Lewis say-on-pay guidelines; >20%: excessive dilution triggering shareholder activist intervention'
+  rap_class: agent
+  rap_subcategory: agent.compensation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} stock-based compensation at {value} of net income (threshold: >20%) signals excessive shareholder dilution (F6/F8). SBC at this level erodes per-share value substantially — proxy advisory firms will flag this for ''against'' say-on-pay recommendations, creating the governance controversy that invites derivative suits and shareholder activist campaigns.'
+      TRIGGERED_YELLOW: '{company} stock-based compensation at {value} of net income (threshold: >10%) indicates material dilution concern (F6/F8). Monitor for say-on-pay vote results and ISS/Glass Lewis recommendations — SBC-driven dilution is a leading indicator of shareholder governance challenges.'
+      CLEAR: '{company} stock-based compensation at {value} of net income is within normal parameters (F6/F8) — compensation-related dilution does not indicate outsized governance risk.'
+
+- id: FIN.COMP.unvested_cost
+  name: Unvested SBC Pipeline
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - equity_compensation_note
+  threshold:
+    type: tiered
+    red: Unvested SBC cost > 5x annual SBC expense — massive future dilution pipeline
+    yellow: Unvested SBC cost > 3x annual SBC expense — significant future dilution
+    clear: Unvested SBC cost <= 3x annual SBC expense
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:EmployeeServiceShareBasedCompensationNonvestedAwardsTotalCompensationCostNotYetRecognized
+    - us-gaap:ShareBasedCompensation
+    expected_type: numeric
+    no_data_sentinel: Unvested SBC cost data not found in XBRL
+    validation_rule: unvested_cost >= 0
+  data_strategy:
+    field_key: xbrl_unvested_sbc_ratio
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Unvested SBC >3x annual expense signals growing dilution pipeline that will suppress future EPS as awards vest
+    render_target: key_metrics
+    formula: unvested_sbc_cost / annual_sbc_expense
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_unvested_sbc_ratio
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Future dilution analysis: unvested SBC represents committed future dilution that will flow through the income statement — a growing pipeline signals accelerating dilution trajectory'
+    threshold_basis: 'Unvested >3x annual expense: significant pipeline indicating SBC expense will remain elevated or grow; >5x: massive committed dilution that will materially suppress future EPS'
+  rap_class: agent
+  rap_subcategory: agent.compensation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} unvested SBC pipeline at {value}x annual expense (threshold: >5x) signals massive committed future dilution (F6). This level of unvested awards means SBC expense will remain elevated for years — when investors realize the full dilution impact on forward EPS, the repricing creates SCA risk, especially if management highlighted ''adjusted'' (ex-SBC) metrics.'
+      TRIGGERED_YELLOW: '{company} unvested SBC pipeline at {value}x annual expense (threshold: >3x) indicates significant future dilution commitment (F6). Monitor the vesting schedule and grant activity — an expanding pipeline signals accelerating dilution that may surprise investors focused on adjusted earnings.'
+      CLEAR: '{company} unvested SBC pipeline at {value}x annual expense is within normal parameters (F6) — committed dilution pipeline does not indicate outsized future EPS compression.'
+
+- id: FIN.COMP.rsu_grants
+  name: RSU Grant Trend
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - equity_compensation_note
+  threshold:
+    type: tiered
+    red: RSU grants increasing > 30% YoY — rapidly accelerating dilution
+    yellow: RSU grants increasing > 20% YoY — accelerating dilution trend
+    clear: RSU grants growth <= 20% YoY or declining
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:ShareBasedCompensationArrangementByShareBasedPaymentAwardEquityInstrumentsOtherThanOptionsGrantsInPeriod
+    - us-gaap:ShareBasedCompensationArrangementByShareBasedPaymentAwardEquityInstrumentsOtherThanOptionsGrantsInPeriodWeightedAverageGrantDateFairValue
+    expected_type: numeric
+    no_data_sentinel: RSU grant data not found in XBRL
+    validation_rule: rsu_grants >= 0
+  data_strategy:
+    field_key: xbrl_rsu_grant_growth
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: RSU grant growth >20% YoY indicates accelerating dilution per equity compensation trend analysis and proxy advisory standards
+    render_target: key_metrics
+    formula: (rsu_grants_current - rsu_grants_prior) / rsu_grants_prior
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_rsu_grant_growth
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Equity compensation trend analysis: accelerating RSU grants signal growing reliance on equity compensation, which compounds dilution and creates governance controversy when share counts grow faster than revenue'
+    threshold_basis: 'RSU growth >20% YoY: accelerating dilution trend; >30%: rapid acceleration indicating potential retention/competitive pressure driving excessive grants'
+  rap_class: agent
+  rap_subcategory: agent.compensation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} RSU grants growing at {value} YoY (threshold: >30%) signals rapidly accelerating dilution (F6). Grant volumes increasing at this rate indicate either a retention crisis requiring above-market equity awards or a compensation philosophy that systematically favors insiders over shareholders — both create governance risk and invite proxy advisory opposition.'
+      TRIGGERED_YELLOW: '{company} RSU grants growing at {value} YoY (threshold: >20%) indicates an accelerating dilution trend (F6). Monitor for board rationale in the proxy statement — grant acceleration without corresponding performance may trigger say-on-pay opposition and shareholder proposals.'
+      CLEAR: '{company} RSU grant trend at {value} YoY is within normal parameters (F6) — equity compensation grant activity is not accelerating dilution.'
+
+- id: FIN.CAP.buyback_capacity
+  name: Buyback Authorization Capacity
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_10Q
+  data_locations:
+    SEC_10K:
+    - equity_note
+    - stockholders_equity_note
+    SEC_10Q:
+    - equity_note
+  threshold:
+    type: tiered
+    red: Remaining buyback authorization < 10% of original — near-exhausted, may need new auth or will stop repurchases
+    yellow: Remaining buyback authorization < 25% of original — running low on capacity
+    clear: Remaining buyback authorization >= 25% of original
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:StockRepurchaseProgramRemainingAuthorizedRepurchaseAmount1
+    - us-gaap:StockRepurchaseProgramAuthorizedAmount1
+    - us-gaap:StockRepurchasedAndRetiredDuringPeriodValue
+    expected_type: numeric
+    no_data_sentinel: Buyback authorization data not found in XBRL
+    validation_rule: remaining_auth >= 0
+  data_strategy:
+    field_key: xbrl_buyback_remaining_pct
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Buyback capacity <25% signals potential need for new board authorization or cessation of repurchase activity, which can signal financial constraints
+    render_target: key_metrics
+    formula: buyback_remaining_auth / buyback_original_auth
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_buyback_remaining_pct
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Capital return analysis: buyback programs support stock prices — when authorization runs out without renewal, cessation of repurchases can trigger stock declines, especially for companies where buybacks materially reduce share count'
+    threshold_basis: 'Remaining <25% of original: low capacity signals potential program completion; <10%: near-exhausted, watch for new authorization or stock support removal'
+  rap_class: agent
+  rap_subcategory: agent.capital_allocation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} buyback authorization at {value} remaining of original (threshold: <10%) signals near-exhausted repurchase capacity (F6). Running out of buyback authorization means the company will either need new board approval or stop repurchasing — cessation of buybacks can remove a material source of stock price support, and failure to renew may signal management has lost confidence in the stock.'
+      TRIGGERED_YELLOW: '{company} buyback authorization at {value} remaining of original (threshold: <25%) indicates the repurchase program is running low (F6). Monitor for new authorization announcements — the transition from active to exhausted buyback programs often coincides with increased stock volatility.'
+      CLEAR: '{company} buyback authorization at {value} remaining of original is adequate (F6) — sufficient capacity for continued repurchase activity.'
+
+- id: FIN.CAP.dividend_sustainability
+  name: Dividend Sustainability
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - cash_flow_statement
+    - income_statement
+  threshold:
+    type: tiered
+    red: Dividends paid > 100% of free cash flow — unsustainable payout
+    yellow: Dividends paid > 80% of free cash flow — sustainability concern
+    clear: Dividends paid <= 80% of free cash flow
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.4'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:PaymentsOfDividends
+    - us-gaap:PaymentsOfDividendsCommonStock
+    - us-gaap:NetCashProvidedByUsedInOperatingActivities
+    - us-gaap:PaymentsToAcquirePropertyPlantAndEquipment
+    expected_type: numeric
+    no_data_sentinel: Dividend and FCF data not found in XBRL
+    validation_rule: payout_ratio >= 0
+  data_strategy:
+    field_key: xbrl_dividend_payout_ratio
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Dividend payout >80% of FCF signals sustainability risk per income investor analysis and credit rating agency payout guidelines
+    render_target: key_metrics
+    formula: dividends_paid / (operating_cash_flow - capex)
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_dividend_payout_ratio
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Dividend sustainability analysis: payout ratios above FCF indicate the dividend is being funded by debt or asset sales — unsustainable payouts eventually lead to dividend cuts, which trigger sharp stock declines among income investors'
+    threshold_basis: 'Payout >80% of FCF: limited margin of safety per credit rating agency guidelines; >100%: mathematically unsustainable without external funding'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} dividend payout at {value} of free cash flow (threshold: >100%) signals an unsustainable dividend (F3/F6). Paying dividends in excess of FCF requires debt issuance or asset sales to fund the distribution — when the inevitable dividend cut arrives, the resulting stock decline among income-focused investors creates SCA risk, especially if management previously reaffirmed the dividend.'
+      TRIGGERED_YELLOW: '{company} dividend payout at {value} of free cash flow (threshold: >80%) indicates dividend sustainability concern (F3/F6). Limited FCF coverage means any operational deterioration could force a dividend reduction — monitor for management commentary on dividend commitment and free cash flow trends.'
+      CLEAR: '{company} dividend payout at {value} of free cash flow is well-covered (F3/F6) — adequate FCF provides a margin of safety for dividend sustainability.'
+
+- id: FIN.CAP.allocation_balance
+  name: Capital Allocation Balance
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  - F6
+  peril_ids: []
+  chain_roles:
+    capital_misallocation: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - cash_flow_statement
+  threshold:
+    type: tiered
+    red: Total distributions > 120% of FCF — funding shareholder returns with debt
+    yellow: Share buybacks > 80% of FCF — overly aggressive capital return
+    clear: Capital allocation within sustainable range
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.2'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:PaymentsOfDividends
+    - us-gaap:PaymentsForRepurchaseOfCommonStock
+    - us-gaap:PaymentsToAcquirePropertyPlantAndEquipment
+    - us-gaap:RepaymentsOfDebt
+    expected_type: numeric
+    no_data_sentinel: Cash flow allocation data not found in XBRL
+    validation_rule: distribution_pct >= 0
+  data_strategy:
+    field_key: computed_capital_allocation
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_tier_a_computable
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by: tier_a_build
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Total distributions >120% of FCF indicates debt-funded returns per credit analysis; buybacks >80% of FCF signals aggressive capital return that leaves limited margin for operations
+    render_target: capital_allocation
+    formula: (dividends + buybacks + capex + debt_repayment) / FCF
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: computed_capital_allocation
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Capital allocation analysis: companies funding shareholder returns with debt erode balance sheet quality. When returns exceed FCF sustainably, the resulting leverage increase creates distress risk and exposes management to allegations of prioritizing short-term shareholder returns over financial stability'
+    threshold_basis: 'Total distributions >120% of FCF: debt-funded returns per corporate finance analysis; buybacks >80% of FCF: aggressive return posture that reduces operational flexibility'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} total capital distributions at {value} of free cash flow (threshold: >120%) signals debt-funded shareholder returns (F3/F6). Consistently distributing more than the company generates in free cash flow requires incremental borrowing — this erodes balance sheet quality and creates vulnerability to covenant breaches when earnings decline.'
+      TRIGGERED_YELLOW: '{company} share buybacks consuming {value} of free cash flow (threshold: >80%) indicates overly aggressive capital return (F3/F6). Heavy buyback spending leaves limited FCF for operations, debt service, and growth investment — monitor for signs of balance sheet deterioration.'
+      CLEAR: '{company} capital allocation is balanced relative to free cash flow (F3/F6) — sustainable return of capital with adequate reinvestment.'
+
+- id: FIN.CF.debt_service_coverage
+  name: Cash Flow Debt Service Coverage
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    distress_to_bankruptcy: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - cash_flow_statement
+    - income_statement
+  threshold:
+    type: tiered
+    red: FCF / total debt service < 1.0x — cash flow insufficient to cover debt obligations
+    yellow: FCF / total debt service between 1.0x and 2.0x — thin coverage margin
+    clear: FCF / total debt service >= 2.0x — adequate coverage
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - CREDITORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.2'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:NetCashProvidedByOperatingActivities
+    - us-gaap:PaymentsToAcquirePropertyPlantAndEquipment
+    - us-gaap:InterestPaid
+    - us-gaap:RepaymentsOfDebt
+    expected_type: numeric
+    no_data_sentinel: Cash flow debt service data not found
+    validation_rule: coverage_ratio >= 0
+  data_strategy:
+    field_key: computed_debt_service_coverage
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_tier_a_computable
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by: tier_a_build
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: FCF/debt service <1.0x means insufficient cash to meet obligations per credit rating agency DSCR thresholds; 1.0-2.0x provides thin margin against earnings volatility
+    render_target: cash_flow_health
+    formula: free_cash_flow / (interest_expense + debt_repayment)
+  display:
+    value_format: ratio
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: computed_debt_service_coverage
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Credit analysis: debt service coverage ratio is the primary measure of a company''s ability to meet its debt obligations from operating cash flows. Sub-1.0x coverage signals imminent refinancing need or default risk'
+    threshold_basis: 'DSCR <1.0x: cash flow insufficient for debt service per credit rating agency standards; 1.0-2.0x: thin coverage providing limited buffer against earnings volatility'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} debt service coverage at {value} (threshold: <1.0x) signals cash flow insufficient to cover debt obligations (F3). The company cannot fund interest and debt repayment from free cash flow — this requires asset sales, new borrowing, or equity issuance to avoid default, creating acute D&O litigation risk.'
+      TRIGGERED_YELLOW: '{company} debt service coverage at {value} (threshold: 1.0-2.0x) indicates thin debt service margin (F3). Limited headroom means any operational deterioration could push coverage below 1.0x — monitor cash flow trends and upcoming maturity schedule.'
+      CLEAR: '{company} debt service coverage at {value} provides adequate margin (F3) — free cash flow comfortably covers debt obligations.'
+
+- id: FIN.DEBT.refinancing_risk
+  name: Refinancing Risk
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    distress_to_bankruptcy: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - balance_sheet
+    - debt_note
+  threshold:
+    type: tiered
+    red: Short-term debt > 40% of total debt AND days cash < 90 — acute refinancing risk with insufficient liquidity buffer
+    yellow: Short-term debt > 30% of total debt — elevated near-term maturity concentration
+    clear: Short-term debt <= 30% of total debt or adequate cash buffer
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - CREDITORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:DebtCurrent
+    - us-gaap:ShortTermBorrowings
+    - us-gaap:LongTermDebt
+    - us-gaap:CashAndCashEquivalentsAtCarryingValue
+    expected_type: numeric
+    no_data_sentinel: Debt maturity data not found in XBRL
+    validation_rule: st_debt_pct between 0 and 100
+  data_strategy:
+    field_key: computed_refinancing_risk
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_tier_a_computable
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by: tier_a_build
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Short-term debt >40% with insufficient cash creates acute refinancing wall; >30% signals elevated concentration per maturity analysis
+    render_target: debt_structure
+    formula: short_term_debt / total_debt combined with days_cash_on_hand check
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: computed_refinancing_risk
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Credit analysis: refinancing risk combines maturity concentration with liquidity adequacy. Companies with heavy near-term maturities AND insufficient cash face acute default risk when credit markets tighten'
+    threshold_basis: 'Short-term debt >40% of total with days cash <90: acute refinancing wall per credit analysis; >30%: elevated concentration per maturity schedule analysis'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} short-term debt at {value} of total debt with limited cash buffer (threshold: >40% AND days cash <90) signals acute refinancing risk (F3). Concentrated near-term maturities without sufficient liquidity create a refinancing wall — inability to roll over debt triggers going-concern disclosures and potential default events that are primary SCA catalysts.'
+      TRIGGERED_YELLOW: '{company} short-term debt at {value} of total debt (threshold: >30%) indicates elevated maturity concentration (F3). Monitor upcoming maturities against available liquidity and credit facility capacity — bunched maturities amplify the impact of any credit deterioration.'
+      CLEAR: '{company} refinancing risk profile is manageable (F3) — well-distributed maturities with adequate liquidity buffer.'
+
+- id: FIN.DISTRESS.bankruptcy_composite
+  name: Bankruptcy Risk Composite
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    distress_to_bankruptcy: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - balance_sheet
+    - income_statement
+    - cash_flow_statement
+  threshold:
+    type: tiered
+    red: Composite bankruptcy risk score > 50 — multiple distress indicators converging
+    yellow: Composite bankruptcy risk score > 25 — elevated distress warning
+    clear: Composite bankruptcy risk score <= 25
+  tier: 1
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.1'
+  extraction_hints:
+    field_patterns:
+    - altman_z_score
+    - days_cash_on_hand
+    - going_concern
+    - current_ratio
+    expected_type: numeric
+    no_data_sentinel: Insufficient data for bankruptcy composite
+    validation_rule: score between 0 and 100
+  data_strategy:
+    field_key: computed_bankruptcy_composite
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: triggered
+  provenance:
+    origin: phase_tier_a_computable
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by: tier_a_build
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Composite of Altman Z-Score, cash runway, going-concern disclosure, and current ratio — converging signals more predictive than any single model per academic distress prediction research
+    render_target: distress_panel
+    formula: altman_z_pts + going_concern_pts + current_ratio_pts + days_cash_pts
+  display:
+    value_format: score
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: computed_bankruptcy_composite
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Multi-model distress prediction: combining Altman Z-Score, cash runway, going-concern flags, and liquidity ratios produces more reliable distress prediction than any single model — per Altman/Hotchkiss (2006) and academic literature on composite financial distress models'
+    threshold_basis: 'Score >50: multiple converging distress indicators from independent models (high confidence); >25: elevated warning from partial indicator convergence'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} bankruptcy composite score at {value}/100 (threshold: >50) signals multiple converging distress indicators (F3). This composite combines Altman Z-Score, cash runway, going-concern disclosures, and liquidity ratios — convergence across independent distress models significantly increases the probability of financial failure and associated D&O litigation.'
+      TRIGGERED_YELLOW: '{company} bankruptcy composite score at {value}/100 (threshold: >25) indicates elevated distress warning (F3). Some distress indicators are triggered but not yet converging across all models — monitor for deterioration in any remaining clear indicators.'
+      CLEAR: '{company} bankruptcy composite score at {value}/100 indicates no convergent distress signals (F3) — financial distress risk is low based on multi-model assessment.'

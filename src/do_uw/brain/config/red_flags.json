@@ -1,0 +1,253 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-01-28",
+  "source": "SYSTEM/03_SCORING_ENGINE.md lines 352-388",
+  "description": "Critical Red Flags set a CEILING on Quality Score. A company with active SCA cannot score higher than the ceiling, regardless of other factors.",
+  "escalation_triggers": [
+    {
+      "id": "CRF-01",
+      "legacy_id": "NT-001",
+      "name": "Active Securities Class Action",
+      "condition": "Company has pending securities class action lawsuit",
+      "max_tier": "WALK",
+      "max_quality_score": 30,
+      "source_signal": "Stanford SCAC search",
+      "action": "BACKWARD mode analysis, escalate to senior underwriter",
+      "auto_decline": false,
+      "new_business_context": "Prior carrier's problem - potential entry point at right price/attachment"
+    },
+    {
+      "id": "CRF-02",
+      "legacy_id": "NT-002",
+      "name": "Wells Notice Disclosed",
+      "condition": "Active SEC enforcement Wells Notice disclosed in filings",
+      "max_tier": "WALK",
+      "max_quality_score": 30,
+      "source_signal": "10-K, 8-K Item 8.01",
+      "action": "Escalate to senior underwriter, consider excess only",
+      "auto_decline": false,
+      "new_business_context": "May resolve before your policy"
+    },
+    {
+      "id": "CRF-03",
+      "legacy_id": "NT-003",
+      "name": "DOJ Criminal Investigation",
+      "condition": "Active DOJ criminal investigation disclosed",
+      "max_tier": "WALK",
+      "max_quality_score": 30,
+      "source_signal": "DOJ.gov, 10-K legal proceedings",
+      "action": "Escalate to senior underwriter, likely decline",
+      "auto_decline": false
+    },
+    {
+      "id": "CRF-04",
+      "legacy_id": "NT-004",
+      "name": "Going Concern Opinion",
+      "condition": "Auditor issued going concern qualification in most recent audit",
+      "max_tier": "WATCH",
+      "max_quality_score": 50,
+      "source_signal": "10-K auditor report",
+      "action": "WALK tier ceiling, financial distress review, Side A DIC opportunity",
+      "auto_decline": false,
+      "side_a_note": "Going concern = Side A value increases"
+    },
+    {
+      "id": "CRF-05",
+      "legacy_id": "NT-005",
+      "name": "Restatement in Past 12 Months",
+      "condition": "Material restatement announced within last 12 months",
+      "max_tier": "WATCH",
+      "max_quality_score": 50,
+      "source_signal": "8-K Item 4.02 (Non-reliance)",
+      "action": "Full restatement analysis required",
+      "auto_decline": false
+    },
+    {
+      "id": "CRF-06",
+      "legacy_id": "NT-006",
+      "name": "SPAC Under $5",
+      "condition": "SPAC merger <18 months ago AND current stock price <$5",
+      "max_tier": "WATCH",
+      "max_quality_score": 50,
+      "source_signal": "8-K merger completion date, current stock price",
+      "action": "Enhanced scrutiny, likely WALK or decline",
+      "auto_decline": false
+    },
+    {
+      "id": "CRF-07",
+      "legacy_id": "NT-007",
+      "name": "Short Seller Report",
+      "condition": "Named in activist short seller report within 6 months",
+      "max_tier": "WATCH",
+      "max_quality_score": 50,
+      "source_signal": "Hindenburg, Citron, Muddy Waters, Spruce Point, Kerrisdale research sites",
+      "action": "Full allegations review, response quality assessment",
+      "auto_decline": false,
+      "notable_sources": ["Hindenburg Research", "Citron Research", "Muddy Waters", "Spruce Point", "Kerrisdale Capital"]
+    },
+    {
+      "id": "CRF-08",
+      "legacy_id": "NT-008",
+      "name": "Catastrophic Stock Drop",
+      "condition": "Stock decline >60% from 52-week high, company-specific (not sector/market)",
+      "max_tier": "WATCH",
+      "max_quality_score": 50,
+      "source_signal": "Yahoo Finance + attribution analysis",
+      "action": "Event analysis, disclosure quality review",
+      "auto_decline": false,
+      "attribution_requirement": "Must confirm company-specific vs sector/market"
+    },
+    {
+      "id": "CRF-09",
+      "legacy_id": "NT-009",
+      "name": "Recent Drop - 7 Day",
+      "condition": "Stock drop >10% in last 7 days",
+      "max_tier": "WATCH",
+      "max_quality_score": 50,
+      "source_signal": "Yahoo Finance",
+      "action": "PAUSE BINDING until drop analyzed - may be binding INTO exposure window",
+      "auto_decline": false,
+      "urgency": "URGENT - within filing window"
+    },
+    {
+      "id": "CRF-10",
+      "legacy_id": "NT-010",
+      "name": "Recent Drop - 30 Day",
+      "condition": "Stock drop >15% in last 30 days",
+      "max_tier": "WATCH",
+      "max_quality_score": 50,
+      "source_signal": "Yahoo Finance",
+      "action": "Attribution analysis required - within typical 89-day filing window",
+      "auto_decline": false
+    },
+    {
+      "id": "CRF-11",
+      "legacy_id": "NT-011",
+      "name": "Recent Drop - 90 Day",
+      "condition": "Stock drop >25% in last 90 days",
+      "max_tier": "WATCH",
+      "max_quality_score": 50,
+      "source_signal": "Yahoo Finance + attribution",
+      "action": "Attribution analysis, still in primary exposure window",
+      "auto_decline": false
+    },
+    {
+      "id": "CRF-12",
+      "name": "Active DOJ Criminal Investigation",
+      "condition": "Active Department of Justice criminal investigation disclosed",
+      "detection_logic": "Check LIT.REG.* for DOJ investigation evidence in check results",
+      "max_tier": "REFER",
+      "max_quality_score": 20,
+      "source_signal": "10-K legal proceedings, regulatory data, check results",
+      "action": "Immediate referral to senior underwriter",
+      "auto_decline": false
+    },
+    {
+      "id": "CRF-13",
+      "name": "Distress Zone (Altman Z < 1.81)",
+      "condition": "Altman Z-Score below 1.81 indicating financial distress zone",
+      "detection_logic": "Check FIN.ACCT.altman_z_score value < 1.81 in check results",
+      "max_tier": "REFER",
+      "max_quality_score": 25,
+      "source_signal": "Distress indicators from ExtractedFinancials",
+      "action": "Financial distress review, Side A analysis",
+      "auto_decline": false
+    },
+    {
+      "id": "CRF-14",
+      "name": "Caremark Claim Survived Dismissal",
+      "condition": "Caremark/oversight duty claim has survived motion to dismiss",
+      "detection_logic": "Check LIT.OTHER.* for Caremark-related litigation in check results",
+      "max_tier": "REFER",
+      "max_quality_score": 25,
+      "source_signal": "Derivative suits, litigation data",
+      "action": "Board oversight duty review",
+      "auto_decline": false
+    },
+    {
+      "id": "CRF-15",
+      "name": "Executive Forensics Aggregate > 50",
+      "condition": "Board aggregate executive risk score exceeds 50 (elevated)",
+      "detection_logic": "Check state.analysis.executive_risk.weighted_score > 50",
+      "max_tier": "REFER",
+      "max_quality_score": 30,
+      "source_signal": "Executive forensics engine output",
+      "action": "Enhanced executive scrutiny review",
+      "auto_decline": false
+    },
+    {
+      "id": "CRF-16",
+      "name": "Financial Integrity Score < 20 (Critical)",
+      "condition": "Financial Integrity Score in CRITICAL zone",
+      "detection_logic": "Check state.analysis.forensic_composites.financial_integrity_score.zone == CRITICAL",
+      "max_tier": "REFER",
+      "max_quality_score": 25,
+      "source_signal": "Forensic composites engine output",
+      "action": "Forensic accounting review required",
+      "auto_decline": false
+    },
+    {
+      "id": "CRF-17",
+      "name": "Whistleblower/Qui Tam Disclosure",
+      "condition": "Whistleblower or qui tam complaint disclosed in filings",
+      "detection_logic": "Check NLP.WHISTLE.language_detected TRIGGERED in check results",
+      "max_tier": "REFER",
+      "max_quality_score": 30,
+      "source_signal": "NLP signal engine, litigation data",
+      "action": "Whistleblower complaint assessment",
+      "auto_decline": false
+    }
+  ],
+  "processing_rules": {
+    "check_order": "Check ALL triggers BEFORE calculating factor scores",
+    "ceiling_logic": "Quality Score = MIN(calculated_score, lowest_triggered_ceiling)",
+    "multiple_triggers": "Use the LOWEST ceiling when multiple triggers fire",
+    "escalation_required": "Any trigger = mandatory escalation to senior underwriter",
+    "backward_mode": "Active SCA (CRF-01) triggers BACKWARD analysis mode"
+  },
+  "renewal_context": {
+    "description": "Critical red flags have different implications for renewals vs new business",
+    "rules": [
+      {
+        "trigger": "Active SCA",
+        "new_business": "Prior carrier's problem - entry point opportunity",
+        "renewal": "You're sitting on the claim - NO TOUCH"
+      },
+      {
+        "trigger": "Wells Notice",
+        "new_business": "May resolve before your policy - WATCH position",
+        "renewal": "Your problem if escalates - WALK unless exceptional pricing"
+      },
+      {
+        "trigger": "Going Concern",
+        "new_business": "Side A DIC opportunity",
+        "renewal": "Financial distress review"
+      }
+    ]
+  },
+  "binding_decision_protocol": {
+    "CRF-09": {
+      "action": "PAUSE BINDING",
+      "steps": [
+        "Get attribution: Company-specific or market/sector?",
+        "Check for trigger event (earnings, guidance, news)",
+        "If company-specific + earnings/guidance trigger = HIGH ALERT"
+      ]
+    },
+    "CRF-10": {
+      "action": "ENHANCED_REVIEW",
+      "steps": [
+        "Attribution analysis required",
+        "Within 89-day typical filing window",
+        "Review for any material events"
+      ]
+    },
+    "CRF-11": {
+      "action": "STANDARD_REVIEW",
+      "steps": [
+        "Attribution analysis",
+        "Still in exposure window but less urgent"
+      ]
+    }
+  }
+}

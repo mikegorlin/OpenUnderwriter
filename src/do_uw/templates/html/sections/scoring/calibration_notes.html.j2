@@ -1,0 +1,17 @@
+{# Calibration Notes — extracted from scoring.html.j2 #}
+{% set cal_notes = sc.get('calibration_notes', []) %}
+{% if cal_notes %}
+<h3>Calibration Notes</h3>
+<div class="bg-gold-light border border-gold rounded p-3 my-3 page-break-inside-avoid">
+  <p class="font-heading text-xs font-semibold uppercase tracking-wide text-navy m-0 mb-2">Items Requiring Expert Review</p>
+  <ul class="text-sm space-y-1 m-0 pl-4">
+    {% for note in cal_notes %}
+    <li class="text-gray-700">{{ note | humanize_evidence }}</li>
+    {% endfor %}
+  </ul>
+</div>
+<p class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed">
+  Calibration notes flag areas where automated scoring may need human review.
+  These items represent edge cases, data quality concerns, or novel risk patterns not fully captured by the scoring model.
+</p>
+{% endif %}

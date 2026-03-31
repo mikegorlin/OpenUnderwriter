@@ -1,0 +1,172 @@
+## Section 3: Financial Health -- Capitalization, Cash Generation & Distress Indicators
+{{ density_indicator("financial") }}
+{% if financials %}
+{% if financial_narrative %}{{ financial_narrative }}
+
+{% endif %}
+### Key Financial Metrics{% if financials.latest_period %} ({{ financials.latest_period }}{% if financials.prior_period %} vs {{ financials.prior_period }}{% endif %}){% endif %}
+
+{% if financials.has_income %}
+{% if financials.prior_period -%}
+| Metric | {{ financials.latest_period or "Latest" }} | {{ financials.prior_period }} | YoY |
+|--------|-------|-------|-----|
+| Revenue | {{ financials.revenue or "N/A" }} | {{ financials.prior_revenue or "N/A" }} | {{ financials.revenue_yoy }} |
+| Net Income | {{ financials.net_income or "N/A" }} | {{ financials.prior_net_income or "N/A" }} | {{ financials.net_income_yoy }} |
+{% else -%}
+| Metric | Value |
+|--------|-------|
+| Revenue | {{ financials.revenue or "N/A" }} |
+| Net Income | {{ financials.net_income or "N/A" }} |
+{% endif -%}
+{% if financials.gross_profit is defined and financials.gross_profit %}| Gross Profit | {{ financials.gross_profit }}{% if financials.gross_margin is defined %} ({{ financials.gross_margin }} margin){% endif %} |
+{% endif %}{% if financials.operating_income is defined and financials.operating_income %}| Operating Income | {{ financials.operating_income }}{% if financials.operating_margin is defined %} ({{ financials.operating_margin }} margin){% endif %} |
+{% endif %}{% if financials.diluted_eps is defined and financials.diluted_eps %}| Diluted EPS | {{ financials.diluted_eps }} |
+{% endif %}{% if financials.rd_expense is defined and financials.rd_expense %}| R&D Expense | {{ financials.rd_expense }} |
+{% endif %}{% if financials.sga_expense is defined and financials.sga_expense %}| SG&A Expense | {{ financials.sga_expense }} |
+{% endif %}
+{% if financials.filing_source %}*Source: {{ financials.filing_source }}*
+{% endif %}{% endif %}
+
+{% if financials.income_statement_rows is defined and financials.income_statement_rows %}
+### Income Statement (All Line Items)
+
+{% set periods = financials.statement_periods %}
+| Line Item |{% for p in periods %} {{ p }} |{% endfor %}{% if periods|length >= 2 %} YoY |{% endif %}
+
+|-----------|{% for p in periods %}--------|{% endfor %}{% if periods|length >= 2 %}------|{% endif %}
+
+{% for row in financials.income_statement_rows -%}
+| {{ row.label }} |{% for p in periods %} {{ row.period_values[p] }} |{% endfor %}{% if periods|length >= 2 %} {{ row.yoy_change or "" }} |{% endif %}
+
+{% endfor %}
+{% endif %}
+
+{% if financials.balance_sheet_rows is defined and financials.balance_sheet_rows %}
+### Balance Sheet (All Line Items)
+
+{% set bs_periods = financials.statement_periods %}
+| Line Item |{% for p in bs_periods %} {{ p }} |{% endfor %}{% if bs_periods|length >= 2 %} YoY |{% endif %}
+
+|-----------|{% for p in bs_periods %}--------|{% endfor %}{% if bs_periods|length >= 2 %}------|{% endif %}
+
+{% for row in financials.balance_sheet_rows -%}
+| {{ row.label }} |{% for p in bs_periods %} {{ row.period_values[p] }} |{% endfor %}{% if bs_periods|length >= 2 %} {{ row.yoy_change or "" }} |{% endif %}
+
+{% endfor %}
+{% endif %}
+
+{% if financials.cash_flow_rows is defined and financials.cash_flow_rows %}
+### Cash Flow Statement (All Line Items)
+
+{% set cf_periods = financials.statement_periods %}
+| Line Item |{% for p in cf_periods %} {{ p }} |{% endfor %}{% if cf_periods|length >= 2 %} YoY |{% endif %}
+
+|-----------|{% for p in cf_periods %}--------|{% endfor %}{% if cf_periods|length >= 2 %}------|{% endif %}
+
+{% for row in financials.cash_flow_rows -%}
+| {{ row.label }} |{% for p in cf_periods %} {{ row.period_values[p] }} |{% endfor %}{% if cf_periods|length >= 2 %} {{ row.yoy_change or "" }} |{% endif %}
+
+{% endfor %}
+{% endif %}
+
+{% if financials.total_assets is defined and financials.total_assets %}
+### Balance Sheet Snapshot
+
+| Metric | Value |
+|--------|-------|
+| Total Assets | {{ financials.total_assets }} |
+| Total Liabilities | {{ financials.total_liabilities or "N/A" }} |
+| Stockholders' Equity | {{ financials.total_equity or "N/A" }} |
+| Cash & Equivalents | {{ financials.cash or "N/A" }} |
+{% endif %}
+{% if financials.operating_cf is defined and financials.operating_cf %}
+### Cash Flow Highlights
+
+| Metric | Value |
+|--------|-------|
+| Operating Cash Flow | {{ financials.operating_cf }} |
+{% if financials.capex is defined and financials.capex %}| Capital Expenditures | {{ financials.capex }} |
+{% endif %}{% if financials.buybacks is defined and financials.buybacks %}| Share Buybacks | {{ financials.buybacks }} |
+{% endif %}{% if financials.dividends is defined and financials.dividends %}| Dividends Paid | {{ financials.dividends }} |
+{% endif %}{% endif %}
+
+{% if financials.quarterly_updates is defined and financials.quarterly_updates %}
+{% set qu = financials.quarterly_updates[0] %}
+### Recent Quarterly Update ({{ qu.quarter }}, filed {{ qu.filing_date }})
+
+| Metric | Current | Prior Year | Change |
+|--------|---------|-----------|--------|
+| Revenue | {{ qu.revenue }} | {{ qu.prior_revenue }} | {{ qu.revenue_change }} |
+| Net Income | {{ qu.net_income }} | {{ qu.prior_net_income }} | {{ qu.net_income_change }} |
+| EPS | {{ qu.eps }} | {{ qu.prior_eps }} | |
+
+{% if qu.md_a_highlights %}
+**Material Changes (MD&A):**
+{% for highlight in qu.md_a_highlights %}- {{ highlight }}
+{% endfor %}
+{% endif %}
+{% if qu.new_legal_proceedings %}
+**New Legal Proceedings:**
+{% for proc in qu.new_legal_proceedings %}- {{ proc }}
+{% endfor %}
+{% endif %}
+{% if qu.going_concern %}
+**Going Concern:** Yes{% if qu.going_concern_detail %} -- {{ qu.going_concern_detail }}{% endif %}
+
+{% endif %}
+{% if qu.material_weaknesses %}
+**Material Weaknesses:**
+{% for mw in qu.material_weaknesses %}- {{ mw }}
+{% endfor %}
+{% endif %}
+{% if qu.subsequent_events %}
+**Subsequent Events:**
+{% for event in qu.subsequent_events %}- {{ event }}
+{% endfor %}
+{% endif %}
+{% endif %}
+
+### Distress Indicators
+
+| Model | Score | Zone | Benchmark |
+|-------|-------|------|-----------|
+| Altman Z-Score | {{ financials.z_score or "N/A" }} | {{ financials.z_zone or "N/A" }} | >2.99 = safe |
+| Ohlson O-Score | {{ financials.o_score or "N/A" }} | {{ financials.o_zone or "N/A" }} | <0.50 = safe |
+| Beneish M-Score | {{ financials.beneish_score or "N/A" }} | {{ financials.beneish_zone or "N/A" }} | <-1.78 = normal |
+| Piotroski F-Score | {{ financials.piotroski_score or "N/A" }} | {{ financials.piotroski_zone or "N/A" }} | 7-9 = strong |
+
+{% if financials.debt_summary %}
+### Capital Structure
+
+{{ financials.debt_summary }}
+{% endif %}
+{% if financials.liquidity %}
+### Liquidity Position
+
+{{ financials.liquidity }}
+{% endif %}
+{% if financials.earnings_quality %}
+### Earnings Quality
+
+{{ financials.earnings_quality }}
+{% endif %}
+{% if financials.tax_etr %}**Effective Tax Rate:** {{ financials.tax_etr }}
+{% endif %}
+
+### Audit Risk Assessment
+
+| Auditor | Big 4 | Tenure | Material Weaknesses | Going Concern |
+|---------|-------|--------|-------------------|--------------|
+| {{ financials.auditor_name or "N/A" }} | {{ financials.is_big4 or "N/A" }} | {{ financials.auditor_tenure or "N/A" }} | {{ financials.material_weaknesses or 0 }} | {{ financials.going_concern or "No" }} |
+
+{% if financials.peers %}
+### Peer Group Comparison
+
+| Ticker | Name | Market Cap | Score |
+|--------|------|-----------|-------|
+{% for peer in financials.peers %}| {{ peer.ticker }} | {{ peer.name }} | {{ peer.market_cap }} | {{ peer.score }} |
+{% endfor %}{% endif %}
+{{ triggered_block(3) }}
+{% else %}
+*Financial data not available.*
+{% endif %}

@@ -1,0 +1,56 @@
+{# Risk Classification & Tier — extracted from executive.html.j2 #}
+
+  {# --- Risk Classification (derived, calibration-dependent) --- #}
+  {% set ir = es.get('inherent_risk') %}
+  {% if ir or classification %}
+  <div class="my-3">
+    {% set risk_rows = [] %}
+    {% if ir %}
+    {% set _ = risk_rows.append({'key': 'Market Cap Tier', 'value': ir.market_cap_tier | format_na | humanize}) %}
+    {% set _ = risk_rows.append({'key': 'Sector SCA Filing Rate', 'value': ir.sector_base_rate | format_na}) %}
+    {% endif %}
+    {% if classification %}
+    {% set _ = risk_rows.append({'key': 'Annual Filing Probability', 'value': classification.base_filing_rate_pct ~ ' (sector ' ~ classification.cap_filing_multiplier ~ ' cap, ' ~ classification.ipo_multiplier ~ ' IPO adj.)'}) %}
+    {% set _ = risk_rows.append({'key': 'Expected Settlement Range', 'value': classification.severity_band_low_m ~ ' -- ' ~ classification.severity_band_high_m}) %}
+    {% set _ = risk_rows.append({'key': 'Stock Drop Exposure (DDL)', 'value': classification.ddl_exposure_base_m}) %}
+    {% endif %}
+    {% if ir %}
+    {% set _ = risk_rows.append({'key': 'Quality-Adjusted Rate', 'value': ir.adjusted_rate | format_na}) %}
+    {% endif %}
+    {{ kv_table(risk_rows, title="Risk Classification") }}
+  </div>
+  {% endif %}
+
+  {# --- Tier Classification with score breakdown --- #}
+  <div class="flex items-center gap-4 my-3 flex-wrap">
+    {% if es.get('tier_label') %}
+      {{ tier_badge(es.tier_label) }}
+    {% endif %}
+    {% if es.get('quality_score') %}
+      <span class="font-heading text-sm">
+        Quality Score: <strong>{{ es.quality_score }}</strong>
+      </span>
+    {% endif %}
+    {% if es.get('composite_score') %}
+      <span class="font-heading text-sm">
+        Composite: <strong>{{ es.composite_score }}</strong>
+      </span>
+    {% endif %}
+    {% if es.get('tier_action') %}
+      <span class="font-heading text-xs text-gray-500 italic">
+        &mdash; {{ es.tier_action }}
+      </span>
+    {% endif %}
+  </div>
+
+  {# Factor breakdown and ceiling (from Word doc parity) #}
+  {% if factor_breakdown or ceiling_line %}
+  <div class="bg-bg-alt border border-gray-200 rounded p-3 my-2 text-sm page-break-inside-avoid">
+    {% if factor_breakdown %}
+    <p class="m-0"><strong>Factor Breakdown:</strong> {{ factor_breakdown }}</p>
+    {% endif %}
+    {% if ceiling_line %}
+    <p class="m-0 mt-1 text-red-700 font-semibold"><strong>Score Ceiling:</strong> {{ ceiling_line }}</p>
+    {% endif %}
+  </div>
+  {% endif %}

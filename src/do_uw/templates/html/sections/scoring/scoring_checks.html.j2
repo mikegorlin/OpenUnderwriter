@@ -1,0 +1,11 @@
+{# Forward-Looking Check Results — collapsed by default (audit reference) #}
+{% set section_checks = signal_results_by_section.get('NLP', []) + signal_results_by_section.get('FWRD', []) %}
+{% if section_checks %}
+{% set triggered = section_checks | selectattr('status', 'equalto', 'TRIGGERED') | list %}
+{% if triggered %}
+<details style="margin:8px 0">
+  <summary style="font-size:9pt;font-weight:700;color:#6B7280;cursor:pointer;padding:4px 0">Signal Details — {{ triggered | length }} flagged of {{ section_checks | length }} checked</summary>
+  {{ check_summary(section_checks) }}
+</details>
+{% endif %}
+{% endif %}

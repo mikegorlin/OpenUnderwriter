@@ -1,0 +1,116 @@
+{
+  "$schema": "forensic_models_schema",
+  "version": "1.0",
+  "description": "Weights and thresholds for Financial Integrity Score (FIS), Revenue Quality Score (RQS), and Cash Flow Quality Score (CFQS) forensic composites.",
+  "financial_integrity_score": {
+    "weights": {
+      "manipulation_detection": 0.3,
+      "accrual_quality": 0.2,
+      "revenue_quality": 0.2,
+      "cash_flow_quality": 0.15,
+      "audit_risk": 0.15
+    },
+    "zones": {
+      "HIGH_INTEGRITY": [
+        80,
+        100
+      ],
+      "ADEQUATE": [
+        60,
+        80
+      ],
+      "CONCERNING": [
+        40,
+        60
+      ],
+      "WEAK": [
+        20,
+        40
+      ],
+      "CRITICAL": [
+        0,
+        20
+      ]
+    },
+    "manipulation_detection_models": {
+      "beneish_m_score": {
+        "weight": 0.4,
+        "red_threshold": -1.78,
+        "yellow_threshold": -2.22,
+        "description": "Beneish M-Score: probability of earnings manipulation"
+      },
+      "dechow_f_score": {
+        "weight": 0.35,
+        "red_threshold": 1.85,
+        "yellow_threshold": 1.4,
+        "description": "Dechow F-Score: probability of accounting misstatement"
+      },
+      "montier_c_score": {
+        "weight": 0.25,
+        "red_threshold": 5,
+        "yellow_threshold": 3,
+        "max_score": 6,
+        "description": "Montier C-Score: composite quality screen (0-6, higher = worse)"
+      }
+    }
+  },
+  "revenue_quality_score": {
+    "weights": {
+      "dso_trend": 0.3,
+      "ar_divergence": 0.25,
+      "q4_concentration": 0.25,
+      "deferred_revenue": 0.2
+    },
+    "zones": {
+      "HIGH_INTEGRITY": [
+        80,
+        100
+      ],
+      "ADEQUATE": [
+        60,
+        80
+      ],
+      "CONCERNING": [
+        40,
+        60
+      ],
+      "WEAK": [
+        20,
+        40
+      ],
+      "CRITICAL": [
+        0,
+        20
+      ]
+    }
+  },
+  "cash_flow_quality_score": {
+    "weights": {
+      "quality_of_earnings": 0.4,
+      "cash_conversion": 0.35,
+      "capex_adequacy": 0.25
+    },
+    "zones": {
+      "HIGH_INTEGRITY": [
+        80,
+        100
+      ],
+      "ADEQUATE": [
+        60,
+        80
+      ],
+      "CONCERNING": [
+        40,
+        60
+      ],
+      "WEAK": [
+        20,
+        40
+      ],
+      "CRITICAL": [
+        0,
+        20
+      ]
+    }
+  }
+}

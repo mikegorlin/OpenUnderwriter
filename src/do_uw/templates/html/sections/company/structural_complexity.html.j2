@@ -1,0 +1,123 @@
+{# Structural Complexity - 5 opacity dimensions with D&O context (Phase 100) #}
+{% set sc = company.structural_complexity_signals if company.structural_complexity_signals else {} %}
+{% if company.has_structural_complexity is defined and company.has_structural_complexity and sc %}
+<div class="subsection" id="structural-complexity">
+  <h4>Structural Complexity</h4>
+  <p class="text-xs text-gray-500 mt-0 mb-2">Opacity indicators that increase discovery risk and complicate D&amp;O claim defense</p>
+  <table class="kv-table">
+    <tbody>
+      {# Disclosure Complexity #}
+      {% if sc.disclosure_complexity %}
+      {% set dc = sc.disclosure_complexity %}
+      <tr>
+        <td class="kv-label">Disclosure Complexity</td>
+        <td class="kv-value">
+          {% if dc.color == 'red' %}
+          <span class="badge-pill bg-red-700 text-white">{{ dc.level }}</span>
+          {% elif dc.color == 'amber' %}
+          <span class="badge-pill bg-amber-500 text-white">{{ dc.level }}</span>
+          {% else %}
+          <span class="badge-pill bg-emerald-600 text-white">{{ dc.level }}</span>
+          {% endif %}
+          {% if dc.risk_factor_count or dc.critical_accounting_count or dc.fls_density %}
+          <br>
+          <span class="text-xs text-gray-500">
+            {% if dc.risk_factor_count %}{{ dc.risk_factor_count }} risk factor{{ "s" if dc.risk_factor_count != 1 }}{% endif %}
+            {% if dc.critical_accounting_count %}{% if dc.risk_factor_count %} | {% endif %}{{ dc.critical_accounting_count }} critical accounting polic{{ "ies" if dc.critical_accounting_count != 1 else "y" }}{% endif %}
+            {% if dc.fls_density %}{% if dc.risk_factor_count or dc.critical_accounting_count %} | {% endif %}Forward-looking statement density: {{ dc.fls_density }}{% endif %}
+          </span>
+          {% endif %}
+          <br><span class="text-xs text-gray-400 italic">Higher complexity = more surface area for misstatement/omission claims</span>
+        </td>
+      </tr>
+      {% endif %}
+
+      {# Non-GAAP Usage #}
+      {% if sc.nongaap %}
+      {% set ng = sc.nongaap %}
+      <tr>
+        <td class="kv-label">Non-GAAP Usage</td>
+        <td class="kv-value">
+          {% if ng.color == 'red' %}
+          <span class="badge-pill bg-red-700 text-white">{{ ng.level }}</span>
+          {% elif ng.color == 'amber' %}
+          <span class="badge-pill bg-amber-500 text-white">{{ ng.level }}</span>
+          {% else %}
+          <span class="badge-pill bg-emerald-600 text-white">{{ ng.level }}</span>
+          {% endif %}
+          {% if ng.count %}
+          <span class="text-xs text-gray-500 ml-1">{{ ng.count }} non-GAAP measure{{ "s" if ng.count != 1 }} referenced</span>
+          {% endif %}
+          <br><span class="text-xs text-gray-400 italic">Non-GAAP metrics are frequent targets in securities fraud allegations</span>
+        </td>
+      </tr>
+      {% endif %}
+
+      {# Related Party Density #}
+      {% if sc.related_parties %}
+      {% set rp = sc.related_parties %}
+      <tr>
+        <td class="kv-label">Related Party Transactions</td>
+        <td class="kv-value">
+          {% if rp.color == 'red' %}
+          <span class="badge-pill bg-red-700 text-white">{{ rp.level }}</span>
+          {% elif rp.color == 'amber' %}
+          <span class="badge-pill bg-amber-500 text-white">{{ rp.level }}</span>
+          {% else %}
+          <span class="badge-pill bg-emerald-600 text-white">{{ rp.level }}</span>
+          {% endif %}
+          {% if rp.count %}
+          <span class="text-xs text-gray-500 ml-1">{{ rp.count }} disclosure{{ "s" if rp.count != 1 }}</span>
+          {% endif %}
+          <br><span class="text-xs text-gray-400 italic">Related party transactions raise breach of fiduciary duty exposure</span>
+        </td>
+      </tr>
+      {% endif %}
+
+      {# Off-Balance-Sheet Exposure #}
+      {% if sc.obs_exposure %}
+      {% set obs = sc.obs_exposure %}
+      <tr>
+        <td class="kv-label">Off-Balance-Sheet Exposure</td>
+        <td class="kv-value">
+          {% if obs.color == 'red' %}
+          <span class="badge-pill bg-red-700 text-white">{{ obs.level }}</span>
+          {% elif obs.color == 'amber' %}
+          <span class="badge-pill bg-amber-500 text-white">{{ obs.level }}</span>
+          {% else %}
+          <span class="badge-pill bg-emerald-600 text-white">{{ obs.level }}</span>
+          {% endif %}
+          {% if obs.score %}
+          <span class="text-xs text-gray-500 ml-1">{{ obs.score }} OBS arrangement{{ "s" if obs.score != 1 }}</span>
+          {% endif %}
+          <br><span class="text-xs text-gray-400 italic">OBS items can trigger surprise liability disclosures and stock drops</span>
+        </td>
+      </tr>
+      {% endif %}
+
+      {# Holding Structure Depth #}
+      {% if sc.holding_structure %}
+      {% set hl = sc.holding_structure %}
+      <tr>
+        <td class="kv-label">Holding Structure Depth</td>
+        <td class="kv-value">
+          {% if hl.color == 'red' %}
+          <span class="badge-pill bg-red-700 text-white">{{ hl.level }}</span>
+          {% elif hl.color == 'amber' %}
+          <span class="badge-pill bg-amber-500 text-white">{{ hl.level }}</span>
+          {% else %}
+          <span class="badge-pill bg-emerald-600 text-white">{{ hl.level }}</span>
+          {% endif %}
+          {% if hl.count %}
+          <span class="text-xs text-gray-500 ml-1">{{ hl.count }} holding layer{{ "s" if hl.count != 1 }}</span>
+          {% endif %}
+          <br><span class="text-xs text-gray-400 italic">Deep holding structures complicate D&amp;O allocation and coverage disputes</span>
+        </td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="text-sm text-gray-400 italic">No structural complexity data available.</p>
+{% endif %}

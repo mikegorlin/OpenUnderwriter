@@ -1,0 +1,87 @@
+{# Red Flags -- critical risk flags and material findings only.
+   Only shows CRITICAL/HIGH items or CRF ceiling flags.
+   LOW-severity factor summaries are NOT red flags — they're routine scoring.
+   Rework: 2026-03-17 workshop directive. #}
+
+{% set sc = scoring or {} %}
+{% set risk_findings = sc.get('risk_findings', []) %}
+{% set all_flags = sc.get('red_flags', []) %}
+
+{# Separate findings by severity tier #}
+{% set critical_findings = [] %}
+{% set other_findings = [] %}
+{% for rf in risk_findings %}
+  {% if rf.severity in ('CRITICAL', 'HIGH') %}
+    {% set _ = critical_findings.append(rf) %}
+  {% else %}
+    {% set _ = other_findings.append(rf) %}
+  {% endif %}
+{% endfor %}
+
+<section id="red-flags" class="page-break">
+  <h2>Red Flags</h2>
+
+  {% if all_flags %}
+  <div style="background:#fef2f2; border:2px solid #B91C1C; border-radius:6px; padding:0.75rem; margin-bottom:0.75rem;">
+    <div style="font-size:0.75rem; font-weight:800; color:#B91C1C; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.375rem;">
+      Critical Risk Flags — Score Ceilings Active
+    </div>
+    {% for flag in all_flags %}
+    <div style="padding:0.25rem 0; border-bottom:1px solid #fecaca; font-size:0.75rem;">
+      <strong>{{ flag.get('name', flag.get('id', '—')) | humanize_field }}</strong>:
+      {{ flag.get('description', '—') | humanize_evidence }}
+      {% if flag.get('ceiling') and flag.ceiling != 'N/A' %}
+      <span style="color:#B91C1C; font-weight:700;">(Ceiling: {{ flag.ceiling }})</span>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# All risk findings table — shows every item from red_flag_summary #}
+  {% if risk_findings %}
+  <table class="data-grid-table" style="font-size:0.75rem; width:100%;">
+    <thead>
+      <tr>
+        <th style="width:80px">Severity</th>
+        <th>Finding</th>
+        <th style="width:100px; text-align:right">Impact</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for rf in risk_findings %}
+      <tr>
+        <td>
+          <span style="padding:0.1rem 0.4rem; border-radius:3px; font-size:0.625rem; font-weight:800; color:#fff;
+            {% if rf.severity == 'CRITICAL' %}background:#7F1D1D{% elif rf.severity == 'HIGH' %}background:#B91C1C{% elif rf.severity == 'MODERATE' %}background:#EA580C{% else %}background:#6B7280{% endif %}">
+            {{ rf.severity }}
+          </span>
+        </td>
+        <td>{{ rf.description | humanize_evidence }}</td>
+        <td style="text-align:right; font-weight:600;">{{ rf.scoring_impact | humanize_impact }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if not all_flags and not risk_findings %}
+  <div style="background:#ecfdf5; border:1px solid #6ee7b7; border-radius:6px; padding:0.75rem 1rem; font-size:0.8125rem; color:#065f46;">
+    <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+      <span style="font-size:1.25rem;">✓</span>
+      <strong style="font-size:0.875rem;">No Critical Red Flags Identified</strong>
+    </div>
+    <p style="margin:0 0 0.5rem; line-height:1.5;">
+      All scoring factors within normal ranges. No Critical Risk Flag (CRF) ceiling conditions were triggered.
+    </p>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.25rem 1rem; font-size:0.6875rem; color:#047857;">
+      <span>✓ No SEC enforcement actions</span>
+      <span>✓ No material restatements</span>
+      <span>✓ No going concern qualifications</span>
+      <span>✓ No material weakness findings</span>
+      <span>✓ No insider selling clusters</span>
+      <span>✓ No significant stock drops (>50%)</span>
+    </div>
+  </div>
+  {% endif %}
+</section>

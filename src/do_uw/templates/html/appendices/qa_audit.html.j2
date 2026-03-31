@@ -1,0 +1,146 @@
+{# QA / Audit Appendix — check-level audit trail grouped by section.
+   Shows TRIGGERED and INFO signals with full detail.
+   CLEAR and SKIPPED signals are summarized by count (full detail in Signal Audit).
+   Section id="qa-audit" for sidebar TOC anchor.
+   Uses signal_results_by_section from html_renderer._group_signals_by_section(). #}
+
+{% if signal_results_by_section %}
+<section id="qa-audit" class="page-break">
+  <h2>QA / Audit Trail</h2>
+  <p class="text-xs text-gray-500 mb-3">
+    Checks that produced findings (TRIGGERED / INFO). CLEAR and SKIPPED checks
+    are counted per section below; see Signal Disposition Audit for full detail.
+  </p>
+
+  {# Compute overall counts #}
+  {% set ns = namespace(total=0, triggered=0, info=0, clear=0, skipped=0) %}
+  {% for section_checks in signal_results_by_section.values() %}
+    {% for check in section_checks %}
+      {% set ns.total = ns.total + 1 %}
+      {% set st = (check.get('status') or check.get('ceiling') or 'UNKNOWN') | upper %}
+      {% if st == 'TRIGGERED' or st == 'ELEVATED' %}{% set ns.triggered = ns.triggered + 1 %}
+      {% elif st == 'CLEAR' %}{% set ns.clear = ns.clear + 1 %}
+      {% elif st == 'SKIPPED' %}{% set ns.skipped = ns.skipped + 1 %}
+      {% else %}{% set ns.info = ns.info + 1 %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+
+  {# Summary cards #}
+  <div class="grid grid-cols-5 gap-3 my-3">
+    <div class="bg-bg-alt border border-gray-200 rounded p-2 text-center">
+      <p class="text-[10px] uppercase tracking-wide text-gray-500 m-0">Total</p>
+      <p class="text-lg font-bold text-navy m-0 tabular-nums">{{ ns.total }}</p>
+    </div>
+    <div class="bg-bg-alt border border-gray-200 rounded p-2 text-center">
+      <p class="text-[10px] uppercase tracking-wide text-gray-500 m-0">Triggered</p>
+      <p class="text-lg font-bold text-risk-red m-0 tabular-nums">{{ ns.triggered }}</p>
+    </div>
+    <div class="bg-bg-alt border border-gray-200 rounded p-2 text-center">
+      <p class="text-[10px] uppercase tracking-wide text-gray-500 m-0">Info</p>
+      <p class="text-lg font-bold text-risk-blue m-0 tabular-nums">{{ ns.info }}</p>
+    </div>
+    <div class="bg-bg-alt border border-gray-200 rounded p-2 text-center">
+      <p class="text-[10px] uppercase tracking-wide text-gray-500 m-0">Clear</p>
+      <p class="text-lg font-bold text-green-600 m-0 tabular-nums">{{ ns.clear }}</p>
+    </div>
+    <div class="bg-bg-alt border border-gray-200 rounded p-2 text-center">
+      <p class="text-[10px] uppercase tracking-wide text-gray-500 m-0">Skipped</p>
+      <p class="text-lg font-bold text-risk-amber m-0 tabular-nums">{{ ns.skipped }}</p>
+    </div>
+  </div>
+
+  {% for section_name, checks in signal_results_by_section.items() %}
+  {% if checks %}
+  {# Filter to TRIGGERED, ELEVATED, and INFO only #}
+  {% set actionable = [] %}
+  {% set sec_clear = namespace(n=0) %}
+  {% set sec_skipped = namespace(n=0) %}
+  {% for check in checks %}
+    {% set st = (check.get('status') or check.get('ceiling') or 'UNKNOWN') | upper %}
+    {% if st == 'TRIGGERED' or st == 'ELEVATED' or st == 'INFO' or st == 'UNKNOWN' %}
+      {% set _ = actionable.append(check) %}
+    {% elif st == 'CLEAR' %}
+      {% set sec_clear.n = sec_clear.n + 1 %}
+    {% elif st == 'SKIPPED' %}
+      {% set sec_skipped.n = sec_skipped.n + 1 %}
+    {% endif %}
+  {% endfor %}
+  <div class="qa-section-group">
+    <h3 class="qa-section-title">{{ section_name | replace('_', ' ') | title }}
+      <span class="text-xs font-normal text-gray-400 ml-2">
+        {{ checks | length }} checks
+        {% if sec_clear.n %}&middot; {{ sec_clear.n }} clear{% endif %}
+        {% if sec_skipped.n %}&middot; {{ sec_skipped.n }} skipped{% endif %}
+      </span>
+    </h3>
+    {% if actionable %}
+    {# Check if Finding/Source columns have real data #}
+    {% set ns_qa = namespace(show_finding=false, show_source=false) %}
+    {% for check in actionable %}
+      {% set val = check.get('value') %}
+      {% set reason = check.get('data_status_reason', '') %}
+      {% set finding = (val | format_signal_value) if (val is not none and val != '') else (reason | humanize_source if reason else '—') %}
+      {% set src_text = check.get('filing_ref', '') or '—' %}
+      {% if finding and finding != '—' and finding != '' %}{% set ns_qa.show_finding = true %}{% endif %}
+      {% if src_text and src_text != '—' and src_text != '' %}{% set ns_qa.show_source = true %}{% endif %}
+    {% endfor %}
+    <table class="w-full border-collapse text-xs qa-table">
+      <thead>
+        <tr class="bg-navy text-white">
+          <th class="text-left px-2 py-1 w-20">Check ID</th>
+          <th class="text-left px-2 py-1 w-40">Check</th>
+          {% if ns_qa.show_finding %}<th class="text-left px-2 py-1">Finding / Verified</th>{% endif %}
+          {% if ns_qa.show_source %}<th class="text-left px-2 py-1 w-28">Source</th>{% endif %}
+          <th class="text-left px-2 py-1 w-16">Conf.</th>
+          <th class="text-left px-2 py-1 w-20">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for check in actionable %}
+        {% set status = (check.get('status') or check.get('ceiling') or 'UNKNOWN') | upper %}
+        {% set conf = (check.get('confidence') or 'MEDIUM') | upper %}
+        {% set val = check.get('value') %}
+        {% set reason = check.get('data_status_reason', '') %}
+        {% set finding = (val | format_signal_value) if (val is not none and val != '') else (reason | humanize_source if reason else '—') %}
+        {% set src_text = check.get('filing_ref', '') or '—' %}
+        <tr class="{{ 'bg-red-50' if status == 'TRIGGERED' else ('bg-amber-50' if status == 'ELEVATED' else '') }}">
+          <td class="px-2 py-1 font-mono font-semibold">{{ check.get('signal_id', '—') }}</td>
+          <td class="px-2 py-1 font-semibold">{{ check.get('signal_name', check.get('signal_id', '—')) }}</td>
+          {% if ns_qa.show_finding %}<td class="px-2 py-1">{{ finding | truncate(120) }}</td>{% endif %}
+          {% if ns_qa.show_source %}<td class="px-2 py-1 text-gray-500">{{ src_text | humanize_source | truncate(40) }}</td>{% endif %}
+          <td class="px-2 py-1">
+            {% if conf == 'HIGH' %}
+              <span class="qa-conf qa-conf-high">HIGH</span>
+            {% elif conf == 'MEDIUM' %}
+              <span class="qa-conf qa-conf-med">MED</span>
+            {% else %}
+              <span class="qa-conf qa-conf-low">LOW</span>
+            {% endif %}
+          </td>
+          <td class="px-2 py-1">{{ traffic_light(status, status) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="text-xs text-gray-400 italic ml-2">All {{ checks | length }} checks clear or skipped.</p>
+    {% endif %}
+  </div>
+  {% endif %}
+  {% endfor %}
+
+  <p class="text-xs text-gray-400 mt-4">
+    Total checks: {{ ns.total }}
+    &bull; Generated: {{ generation_date }}
+  </p>
+  {% if gap_search_summary and gap_search_summary.get('updated', 0) > 0 %}
+  <p class="text-xs text-gray-400 mt-2">
+    Gap search: {{ gap_search_summary.get('updated', 0) }} checks re-evaluated
+    ({{ gap_search_summary.get('triggered', 0) }} TRIGGERED,
+     {{ gap_search_summary.get('clear', 0) }} CLEAR) &mdash;
+    confidence=LOW, source=WEB (gap)
+  </p>
+  {% endif %}
+</section>
+{% endif %}

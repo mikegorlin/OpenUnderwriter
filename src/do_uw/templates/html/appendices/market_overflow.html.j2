@@ -1,0 +1,103 @@
+{# Market Data Full Detail — Audit appendix with overflow data.
+   Renders inside Zone 4 (audit layer <div>).
+   Contains full insider transaction list and full stock drop history.
+   Charts are in the main Stock & Market section — not duplicated here.
+   Phase 123-02: Market Condensation overflow. #}
+{% set mkt = market or {} %}
+
+<div id="audit-market-overflow" class="audit-section">
+  <h3>Market Data &mdash; Full Detail</h3>
+  <p class="text-xs text-gray-500 mb-3">Overflow data for audit review. Full stock charts are in the Stock &amp; Market section above.</p>
+
+  {# --- Full Insider Transactions --- #}
+  {% set ins = mkt.get('insider_data', {}) %}
+  {% set all_sales = ins.get('transactions', []) + ins.get('transactions_overflow', []) %}
+  {% set all_other = ins.get('other_transactions', []) + ins.get('other_transactions_overflow', []) %}
+  {% if all_sales or all_other %}
+  <h4 class="text-xs font-semibold text-gray-700 mt-4 mb-2">Full Insider Transactions ({{ all_sales|length }} sales, {{ all_other|length }} other)</h4>
+  {% if all_sales %}
+  {# Check if any sale has a real value #}
+  {% set ns_sv = namespace(show_value=false) %}
+  {% for t in all_sales %}{% if t.value and t.value != 'N/A' and t.value != '—' and t.value != '$0' %}{% set ns_sv.show_value = true %}{% endif %}{% endfor %}
+  <table class="w-full border-collapse my-2 text-xs">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="text-left px-2 py-1 border-b font-semibold">Insider</th>
+        <th class="text-left px-2 py-1 border-b font-semibold">Date</th>
+        <th class="text-center px-2 py-1 border-b font-semibold">Type</th>
+        <th class="text-right px-2 py-1 border-b font-semibold">Shares</th>
+        {% if ns_sv.show_value %}<th class="text-right px-2 py-1 border-b font-semibold">Value</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody class="tabular-nums text-gray-600">
+      {% for t in all_sales %}
+      <tr class="{{ 'bg-gray-50' if loop.index is odd else 'bg-white' }}">
+        <td class="px-2 py-1 border-b border-gray-100">{{ t.name }} <span class="text-gray-400">{{ t.title }}</span></td>
+        <td class="px-2 py-1 border-b border-gray-100">{{ t.date }}</td>
+        <td class="px-2 py-1 border-b border-gray-100 text-center">SELL{% if t.is_10b5_1 %} <span class="text-blue-600 text-xs">10b5-1</span>{% endif %}</td>
+        <td class="px-2 py-1 border-b border-gray-100 text-right">{{ t.shares }}</td>
+        {% if ns_sv.show_value %}<td class="px-2 py-1 border-b border-gray-100 text-right">{{ t.value }}</td>{% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {% if all_other %}
+  {# Check if any other transaction has a real value #}
+  {% set ns_ov = namespace(show_value=false) %}
+  {% for t in all_other %}{% if t.value and t.value != 'N/A' and t.value != '—' and t.value != '$0' %}{% set ns_ov.show_value = true %}{% endif %}{% endfor %}
+  <table class="w-full border-collapse my-2 text-xs">
+    <thead>
+      <tr class="bg-gray-50">
+        <th class="text-left px-2 py-1 border-b font-semibold">Insider</th>
+        <th class="text-left px-2 py-1 border-b font-semibold">Date</th>
+        <th class="text-center px-2 py-1 border-b font-semibold">Type</th>
+        <th class="text-right px-2 py-1 border-b font-semibold">Shares</th>
+        {% if ns_ov.show_value %}<th class="text-right px-2 py-1 border-b font-semibold">Value</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody class="tabular-nums text-gray-600">
+      {% for t in all_other %}
+      <tr class="{{ 'bg-gray-50' if loop.index is odd else 'bg-white' }}">
+        <td class="px-2 py-1 border-b border-gray-100">{{ t.name }} <span class="text-gray-400">{{ t.title }}</span></td>
+        <td class="px-2 py-1 border-b border-gray-100">{{ t.date }}</td>
+        <td class="px-2 py-1 border-b border-gray-100 text-center">{{ t.type }}</td>
+        <td class="px-2 py-1 border-b border-gray-100 text-right">{{ t.shares }}</td>
+        {% if ns_ov.show_value %}<td class="px-2 py-1 border-b border-gray-100 text-right">{{ t.value }}</td>{% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {% endif %}
+
+  {# --- Full Stock Drops --- #}
+  {% set all_drops = mkt.get('drop_events_overflow', []) %}
+  {% if all_drops %}
+  <h4 class="text-xs font-semibold text-gray-700 mt-4 mb-2">Full Stock Drop History ({{ all_drops|length }} events)</h4>
+  <table class="w-full border-collapse my-2 text-xs">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="text-left px-2 py-1 border-b font-semibold">Date</th>
+        <th class="text-right px-2 py-1 border-b font-semibold">Drop</th>
+        <th class="text-center px-2 py-1 border-b font-semibold">Type</th>
+        <th class="text-left px-2 py-1 border-b font-semibold">Trigger</th>
+        <th class="text-center px-2 py-1 border-b font-semibold">Company-Specific</th>
+        <th class="text-right px-2 py-1 border-b font-semibold">Recovery</th>
+      </tr>
+    </thead>
+    <tbody class="tabular-nums text-gray-600">
+      {% for evt in all_drops %}
+      <tr class="{{ 'bg-red-50' if evt.company_specific == 'Yes' else 'bg-gray-50' if loop.index is odd else 'bg-white' }}">
+        <td class="px-2 py-1 border-b border-gray-100 font-semibold">{{ evt.date }}</td>
+        <td class="px-2 py-1 border-b border-gray-100 text-right text-red-600 font-semibold">-{{ evt.drop_pct }}</td>
+        <td class="px-2 py-1 border-b border-gray-100 text-center">{{ evt.type | replace('_', ' ') }}</td>
+        <td class="px-2 py-1 border-b border-gray-100">{{ evt.trigger }}</td>
+        <td class="px-2 py-1 border-b border-gray-100 text-center">{{ evt.company_specific }}</td>
+        <td class="px-2 py-1 border-b border-gray-100 text-right">{{ evt.recovery }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</div>

@@ -1,0 +1,354 @@
+# D&O Underwriting Decision Framework
+# Source of truth for translating H/A/E composite scores into underwriting
+# recommendations with multi-dimensional outputs.
+#
+# Created: Phase 102-03 (v7.0 Signal-Render Integrity)
+# DuckDB is rebuilt from this file via `brain build`.
+#
+# Purpose: Codifies how an experienced D&O underwriter translates risk
+# scores into recommendations -- not a binary bind/decline, but a nuanced
+# recommendation space covering pricing, layer comfort, terms, monitoring,
+# referral, and communication patterns.
+#
+# IMPORTANT: This framework produces RECOMMENDATIONS, not decisions.
+# The underwriter always has final authority. The system surfaces risk
+# signals and suggests an appropriate posture -- the UW may agree,
+# override, or adjust based on context the system cannot capture
+# (broker relationships, market conditions, strategic priorities, etc.).
+#
+# Dependencies:
+#   - rap_taxonomy.yaml: H/A/E composite scores drive tier assignment
+#   - perils.yaml: peril severity informs layer comfort and pricing guidance
+#   - risk_model.yaml: factor dimensions inform signal weighting
+
+version: 2
+name: "D&O Underwriting Decision Framework"
+description: >
+  Five-tier recommendation framework that translates H/A/E composite risk
+  scores into underwriting guidance. Each tier produces recommendations
+  across six dimensions: pricing, layer comfort, terms/conditions, monitoring
+  triggers, referral criteria, and communication patterns. Calibrated for
+  Liberty's excess-only market position with product-specific adjustments
+  for ABC vs Side A coverage. The underwriter always has final authority
+  to accept, override, or adjust any recommendation.
+
+# ---------------------------------------------------------------
+# Section 1: Recommendation Tiers
+# ---------------------------------------------------------------
+# Five tiers reflecting the practical spectrum of underwriting judgment.
+# Each tier maps to a clear underwriting action -- what Liberty would
+# actually do with this risk.
+#
+# Entry criteria use composite scores from RAP taxonomy (0-1 normalized).
+# Tier assignment follows "highest applicable tier wins" logic:
+#   PROHIBITED > HIGH_RISK > ELEVATED > STANDARD > PREFERRED
+# CRF (Critical Red Flag) counts interact with tier assignment via
+# ELECTRE discordance -- CRFs are non-compensatory vetoes.
+#
+# Calibration notes:
+#   - Composite score ranges are conceptual (0-1 normalized) -- actual
+#     calibration happens in Phase 107 implementation
+#   - Entry criteria use OR logic between conditions (any condition met
+#     = tier applies)
+#   - Highest applicable tier wins
+#   - CRF counts interact with tier assignment but don't solely determine it
+#   - All tiers produce RECOMMENDATIONS -- the UW decides
+
+recommendation_tiers:
+  - id: PREFERRED
+    label: "Preferred Risk"
+    description: "Strong fundamentals across all H/A/E dimensions. Pursue this risk on any layer."
+    color: "#2b8a3e"
+    entry_criteria:
+      host_composite: "<=0.25"
+      agent_composite: "<=0.20"
+      environment_composite: "<=0.30"
+      crf_count: 0
+    recommended_posture: "Actively pursue. Comfortable on any layer position and product."
+
+  - id: STANDARD
+    label: "Standard Risk"
+    description: "Good account. Quotable on primary or excess, generally acceptable risk profile."
+    color: "#1864ab"
+    entry_criteria:
+      host_composite: "<=0.45"
+      agent_composite: "<=0.40"
+      environment_composite: "<=0.50"
+      crf_count: 0
+    recommended_posture: "Quote at standard terms. Good account for primary or excess."
+
+  - id: ELEVATED
+    label: "Elevated Risk"
+    description: "Multiple flags present. Consider excess-only positioning rather than primary."
+    color: "#e67700"
+    entry_criteria:
+      any_composite_above: 0.50
+      or_crf_count: ">=1"
+    recommended_posture: "Flags warrant caution. Consider excess-only, higher attachment, or reduced limit. Price should reflect identified risks."
+
+  - id: HIGH_RISK
+    label: "High Risk"
+    description: "Significant risk profile. Generally needs Side A or substantial premium to justify participation."
+    color: "#c92a2a"
+    entry_criteria:
+      any_composite_above: 0.70
+      or_crf_count: ">=3"
+    recommended_posture: "Significant risk. Side A DIC or substantial premium required to justify. High attachment, minimum limit."
+
+  - id: PROHIBITED
+    label: "Prohibited"
+    description: "Risk profile outside underwriting appetite. Cannot write."
+    color: "#343a40"
+    entry_criteria:
+      active_fraud: true
+      or_active_sec_enforcement: true
+      or_zone_of_insolvency: true
+      or_crf_veto: true
+    recommended_posture: "Cannot write. Document reason for audit trail."
+
+# ---------------------------------------------------------------
+# Section 2: Recommendation Outputs
+# ---------------------------------------------------------------
+# Six output dimensions rendered in the worksheet for each risk.
+# These are RECOMMENDATIONS the underwriter considers -- not
+# mandates. The UW may adjust any dimension based on their
+# judgment and context the system doesn't have.
+
+recommendation_outputs:
+  pricing_guidance:
+    description: "Suggested rate-on-line adjustment relative to standard market pricing"
+    by_tier:
+      PREFERRED: "ROL discount 10-20% from market. Compete aggressively."
+      STANDARD: "Market ROL. Standard pricing."
+      ELEVATED: "ROL premium 15-30% above market. Price reflects identified risks."
+      HIGH_RISK: "Significant ROL premium required. Minimum 2x market if participating."
+      PROHIBITED: "N/A -- cannot write."
+
+  layer_comfort:
+    description: "Suggested tower positioning and limit deployment"
+    by_tier:
+      PREFERRED: "Comfortable anywhere in tower. Full limit deployment."
+      STANDARD: "Comfortable in most positions. Standard limit deployment."
+      ELEVATED: "Consider higher attachment. Reduced limit. Avoid ground-up excess."
+      HIGH_RISK: "Side A DIC preferred. Very high attachment. Minimum limit only."
+      PROHIBITED: "N/A -- cannot write."
+
+  terms_conditions:
+    description: "Suggested policy terms, exclusions, and structural modifications"
+    by_tier:
+      PREFERRED: "Standard terms. Broad ABC coverage."
+      STANDARD: "Standard terms. ABC or Side A as requested."
+      ELEVATED: "Consider: specific exclusions for identified risks, enhanced warranties, reduced breadth, annual term."
+      HIGH_RISK: "Side A only. Maximum exclusions, annual only, restrictive terms. Significant premium for ABC consideration."
+      PROHIBITED: "N/A -- cannot write."
+
+  monitoring_triggers:
+    description: "Suggested events that should trigger mid-term review or early renewal discussion"
+    by_tier:
+      PREFERRED: "Standard monitoring. Annual review."
+      STANDARD: "Standard monitoring. Flag if any CRF emerges."
+      ELEVATED:
+        - "Quarterly financial monitoring for identified risk signals"
+        - "Alert on SEC filing delays or restatement announcements"
+        - "Alert on executive departure of CEO, CFO, or GC"
+        - "Alert on new SCA filing or regulatory investigation"
+      HIGH_RISK:
+        - "All ELEVATED triggers plus:"
+        - "Monthly stock price monitoring (>20% decline = immediate review)"
+        - "Any material change in identified risk factors"
+        - "Board composition changes"
+      PROHIBITED: "N/A -- cannot write."
+
+  referral_criteria:
+    description: "Suggested escalation thresholds"
+    by_tier:
+      PREFERRED: "No referral needed. Document in standard workflow."
+      STANDARD: "No referral needed unless limit >$25M or unusual structure."
+      ELEVATED: "Referral to senior UW for any of: limit >$15M, low attachment, multi-year term, or first-time account."
+      HIGH_RISK: "Mandatory referral to committee. Written memo required with risk assessment and rationale for participation."
+      PROHIBITED: "No referral -- automatic decline with documentation."
+
+  communication_pattern:
+    description: "Suggested communication tone with brokers and internally"
+    by_tier:
+      PREFERRED: "Enthusiastic. 'We'd like to be part of this program.'"
+      STANDARD: "Professional. 'We can offer terms on this placement.'"
+      ELEVATED: "Measured. 'We can offer terms subject to [conditions]. Our analysis identified [concerns] which our pricing reflects.'"
+      HIGH_RISK: "Direct. 'This risk presents significant challenges. We could consider participation as Side A / at substantial premium under specific conditions.'"
+      PROHIBITED: "Brief. 'We're unable to offer terms on this risk.'"
+
+# ---------------------------------------------------------------
+# Section 3: Liberty Excess-Only Calibration
+# ---------------------------------------------------------------
+# Liberty is ALWAYS excess, NEVER primary. This fundamentally shapes
+# the recommendation framework. Attachment point, product type (ABC vs
+# Side A), and tower context all modify how H/A/E scores translate
+# into actual underwriting recommendations.
+
+liberty_calibration:
+  position: "excess_only"
+  products: ["ABC", "Side_A"]
+
+  attachment_considerations:
+    description: "Liberty's risk varies dramatically by attachment point"
+    rules:
+      - "At low attachment ($5-10M xs SIR), Liberty's exposure is nearly primary-like. Apply more conservative tier thresholds."
+      - "At high attachment ($50M+), many risk factors are attenuated. Host risks matter more than Agent risks (because Agent risks = claims that may not reach Liberty's layer)."
+      - "For Side A, Agent risks matter more (Side A responds to individual director liability, not entity)."
+      - "Liberty never provides the SIR or the primary -- structural features of the account below Liberty's attachment are critical context."
+
+  product_considerations:
+    ABC:
+      description: "Side A + B + C (entity securities) coverage"
+      risk_emphasis: "All H/A/E dimensions relevant. Entity coverage means severity (damages quantum) matters most."
+      layer_note: "ABC at low attachment = higher risk weight. ABC at high attachment = severity-dependent."
+    Side_A:
+      description: "Directors & Officers personal coverage only"
+      risk_emphasis: "Agent conduct dominates. Individual director/officer behavior drives claims against the person."
+      layer_note: "Side A DIC at any attachment = focus on Agent signals and governance controls."
+
+  tower_context:
+    description: "The quality and structure of layers below Liberty affects Liberty's risk"
+    factors:
+      - "Strong primary carrier (Chubb, Travelers) at SIR = better defense coordination"
+      - "Multiple quota share layers below = more parties with aligned interests"
+      - "Thin tower (Liberty close to SIR) = higher effective exposure"
+      - "Full tower (Liberty at high excess) = significant buffer"
+
+  real_world_patterns:
+    description: "How Liberty actually makes D&O decisions (from 25 years underwriting experience)"
+    patterns:
+      - pattern: "Follow the lead"
+        description: "When Chubb or Travelers is on the primary, Liberty takes comfort in their underwriting judgment. Lead carrier's presence is a positive signal."
+        framework_impact: "Reduce effective tier by one level when strong lead is present."
+
+      - pattern: "Market discipline"
+        description: "If the rest of the market is willing to write the tower, it provides external validation. A full tower with quality carriers = market has vetted the risk."
+        framework_impact: "Tower completeness and carrier quality are Environment factors that affect tier."
+
+      - pattern: "Attachment point comfort"
+        description: "At $50M excess, a $10M fraud allegation settles well below Liberty's layer. Liberty's real risk is catastrophic claims -- which correlate more with Host (company size, complexity) than Agent (specific conduct)."
+        framework_impact: "At high attachment, weight Host composite more than Agent composite."
+
+      - pattern: "Renewal vs. new business"
+        description: "Renewals with clean claims history get favorable treatment. New business requires more scrutiny."
+        framework_impact: "Prior policy period (no claims) is a mitigating factor equivalent to reducing Agent composite."
+
+      - pattern: "Broker relationship"
+        description: "Major brokers (Marsh, Aon, WTW) package risks with submission quality and market knowledge. Their involvement is a soft positive."
+        framework_impact: "Submission quality and broker tier are process factors, not scored but noted."
+
+# ---------------------------------------------------------------
+# Section 4: H/A/E Interaction Model
+# ---------------------------------------------------------------
+# H/A/E dimensions are multiplicative, not additive (P = H x A x E).
+# This section defines the interaction semantics -- how combinations
+# of dimension scores translate to underwriting judgment beyond what
+# individual scores would predict.
+
+interaction_model:
+  description: "H/A/E dimensions are multiplicative, not additive. This section defines the interaction semantics."
+
+  key_interactions:
+    - interaction: "High Host + High Agent"
+      meaning: "Big, complex company with bad management behavior. Classic catastrophic SCA scenario."
+      examples: "Enron, Wirecard, FTX"
+      recommendation: "Multiplicative amplification. Tier jumps 2+ levels above what additive would suggest."
+
+    - interaction: "High Host + Low Agent"
+      meaning: "Big, complex company with clean management. Structural risk is there but not being exploited."
+      examples: "Large banks in stable periods, mature industrial companies"
+      recommendation: "Writable at STANDARD to ELEVATED. Host risk is the premium driver, not the deal-breaker."
+
+    - interaction: "Low Host + High Agent"
+      meaning: "Small/simple company with bad management behavior. Potential loss is capped by company size."
+      examples: "Small-cap fraud, micro-cap manipulation"
+      recommendation: "For excess carrier: manageable if attachment is above likely loss quantum. For Side A: still concerning."
+
+    - interaction: "High Agent + High Environment"
+      meaning: "Bad behavior in a hostile market. Short sellers circling, stock declining. Claim is imminent or active."
+      examples: "Post-Hindenburg Research report companies"
+      recommendation: "Near-certain claim filing. Only write if already on the tower at renewal with strong attachment."
+
+    - interaction: "Low Agent + High Environment"
+      meaning: "Clean company caught in market turmoil. Sector-wide litigation wave or macro event."
+      examples: "Companies in sector-wide downturn, COVID-era claims"
+      recommendation: "Writable -- environmental factors are transient. Price the cycle, don't decline the company."
+
+    - interaction: "High all three"
+      meaning: "Maximum risk. All dimensions elevated."
+      examples: "Active fraud investigation at large company in hostile market"
+      recommendation: "PROHIBITED tier. Cannot write."
+
+  crf_override:
+    description: "Critical Red Flags (CRFs) are non-compensatory. No amount of favorable Host or Environment can offset an active fraud investigation (Agent)."
+    mechanism: "ELECTRE discordance -- CRF veto overrides composite scores"
+    examples:
+      - "Active SEC enforcement action = PROHIBITED regardless of Host/Environment"
+      - "Announced restatement of material magnitude = minimum ELEVATED"
+      - "Zone of insolvency = PROHIBITED regardless of Agent/Environment"
+
+# ---------------------------------------------------------------
+# Section 5: Worksheet Integration Spec
+# ---------------------------------------------------------------
+# Defines how the recommendation framework renders in the underwriting
+# worksheet. Designed for Phase 112 implementation. The worksheet
+# is the primary output the underwriter interacts with.
+#
+# CRITICAL: The worksheet presents the system's RECOMMENDATION.
+# The underwriter records their DECISION separately. The system
+# never decides -- it informs.
+
+worksheet_integration:
+  recommendation_header:
+    description: "Top of worksheet -- the first thing the underwriter sees"
+    components:
+      - "Risk tier badge (color-coded, tier label) -- labeled as 'System Recommendation'"
+      - "H/A/E composite scores (3 numbers)"
+      - "One-sentence recommended posture"
+      - "Key concern bullets (max 3)"
+      - "Suggested action (from tier's recommended_posture)"
+    presentation_note: "Frame as 'Based on signal analysis, this risk profiles as [TIER]' -- not 'This risk IS [TIER]'"
+
+  decision_documentation:
+    description: "Where the UW records their actual decision (may differ from recommendation)"
+    fields:
+      - field: "system_recommendation"
+        type: "auto"
+        description: "What the system recommends based on H/A/E analysis"
+      - field: "uw_decision"
+        type: "human_input"
+        description: "What the UW actually decided (the UW always has final authority)"
+        options: ["bind", "decline", "refer", "hold", "conditional_bind"]
+      - field: "uw_rationale"
+        type: "human_input"
+        description: "Why the UW agrees or disagrees with the system recommendation"
+      - field: "conditions"
+        type: "human_input"
+        description: "Terms, exclusions, monitoring requirements if binding"
+      - field: "override_flag"
+        type: "computed"
+        description: "true if uw_decision differs materially from system_recommendation"
+      - field: "override_rationale_required"
+        type: "computed"
+        description: "true if override_flag is true -- UW must document why they diverged"
+
+  signal_to_recommendation_trace:
+    description: "How each recommendation dimension traces back to signals"
+    trace_path: "Signal evaluation -> H/A/E composite -> Tier assignment -> Recommendation dimension"
+
+  peril_context:
+    description: "Peril severity information displayed alongside recommendations"
+    components:
+      - "Active perils from causal_chains.yaml matched to current signals"
+      - "Historical filing rates for triggered causal chains"
+      - "Median severity estimates for applicable perils"
+      - "Peril-specific monitoring triggers"
+
+  rap_composite:
+    description: "H/A/E composite score display with dimensional breakdown"
+    components:
+      - "Overall composite (P = H x A x E product)"
+      - "Per-dimension score with subcategory breakdown"
+      - "Signal count per dimension (total, elevated, critical)"
+      - "Trend indicators where prior-period data available"

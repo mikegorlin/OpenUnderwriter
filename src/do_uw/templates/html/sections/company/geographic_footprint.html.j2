@@ -1,0 +1,9 @@
+{# Geographic Footprint — extracted from company.html.j2 #}
+{% set geo = co.get('geographic_footprint', []) %}
+{% if geo %}
+<h3>Geographic Footprint</h3>
+{{ data_table(
+  ['Country / Region', 'Revenue %'],
+  geo|map(attribute='region')|list|zip(geo|map(attribute='detail')|list)|list
+) }}
+{% endif %}

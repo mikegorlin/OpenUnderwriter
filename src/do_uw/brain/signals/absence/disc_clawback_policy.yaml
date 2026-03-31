@@ -1,0 +1,46 @@
+- id: ABS.DISC.clawback_policy
+  name: Missing Clawback Policy Disclosure
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: 'Expected disclosure absent: market_cap > $1B and post_2023'
+  provenance:
+    origin: phase_110_absence
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Absence detection for GOV.COMP.clawback
+    threshold_provenance:
+      source: standard
+      rationale: Post-2023 SEC requirement for listed companies >$1B market cap
+  signal_class: inference
+  group: transparency_disclosure
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  epistemology:
+    rule_origin: SEC Rule 10D-1 (2023) requires listed companies to adopt and disclose clawback policies
+    threshold_basis: Post-2023 SEC requirement for listed companies >$1B market cap
+  evaluation:
+    mechanism: absence
+    absence_rules:
+      expectation_type: company_profile
+      expected_signals:
+      - GOV.COMP.clawback
+      condition: market_cap > $1B and post_2023
+      expected_status: TRIGGERED
+      absence_trigger: SKIPPED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} missing clawback policy disclosure at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} missing clawback policy disclosure at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} missing clawback policy disclosure at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

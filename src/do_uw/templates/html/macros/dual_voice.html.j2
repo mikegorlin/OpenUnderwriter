@@ -1,0 +1,25 @@
+{# Dual-voice block macro for worksheet sections.
+   Renders "What Was Said" (factual) and "Underwriting Commentary" (risk)
+   side by side with confidence badge. Phase 130-02. #}
+
+{% macro dual_voice_block(commentary, section_label='') %}
+{% if commentary and (commentary.what_was_said or commentary.underwriting_commentary) %}
+<div class="dual-voice">
+  <div class="dual-voice__factual">
+    <div class="dual-voice__header">What Was Said</div>
+    <div class="dual-voice__body">{{ commentary.what_was_said }}</div>
+  </div>
+  <div class="dual-voice__commentary">
+    <div class="dual-voice__header">
+      Underwriting Commentary
+      {% if commentary.confidence %}
+      <span class="confidence-badge confidence-badge--{{ commentary.confidence | lower }}">
+        {{ commentary.confidence }}
+      </span>
+      {% endif %}
+    </div>
+    <div class="dual-voice__body">{{ commentary.underwriting_commentary }}</div>
+  </div>
+</div>
+{% endif %}
+{% endmacro %}

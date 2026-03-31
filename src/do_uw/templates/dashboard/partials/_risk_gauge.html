@@ -1,0 +1,18 @@
+{# Inline risk gauge macro using DaisyUI progress bar.
+   Renders a progress bar with risk-colored fill and text overlay.
+#}
+
+{% macro risk_gauge(label, value, max_val, level_class) %}
+<div class="mb-2">
+  <div class="flex justify-between text-xs mb-1">
+    <span class="font-medium">{{ label }}</span>
+    <span class="opacity-70">{{ value }}/{{ max_val }}</span>
+  </div>
+  {% set pct = (value / max_val * 100) if max_val > 0 else 0 %}
+  <div class="w-full bg-base-300 rounded-full h-3 overflow-hidden">
+    <div class="h-full rounded-full transition-all duration-300 {{ level_class }}"
+         style="width: {{ pct|int }}%; min-width: 2px;">
+    </div>
+  </div>
+</div>
+{% endmacro %}

@@ -1,0 +1,107 @@
+{# Full Financial Statement Tables — all three stacked vertically.
+   Income Statement, Balance Sheet, and Cash Flow shown together with
+   section headers. No tabs — underwriters need all three visible at once.
+   Requires: fin, stmt_periods to be set in calling context. #}
+
+  {% set stmt_periods = fin.get('statement_periods', []) %}
+
+  {% set has_income = fin.get('income_statement_rows') %}
+  {% set has_balance = fin.get('balance_sheet_rows') %}
+  {% set has_cashflow = fin.get('cash_flow_rows') %}
+
+  {% if has_income or has_balance or has_cashflow %}
+
+  {# --- Income Statement --- #}
+  {% if has_income %}
+  <h4>Income Statement</h4>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Line Item</th>
+        {% for p in stmt_periods %}
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">{{ p }}</th>
+        {% endfor %}
+        {% if stmt_periods|length >= 2 %}
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">YoY</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for row in fin.income_statement_rows %}
+      <tr class="{{ 'bg-bg-alt' if loop.index0 % 2 == 1 else 'bg-white' }}">
+        <td class="p-1 font-heading text-xs font-semibold text-navy">{{ row.label }}</td>
+        {% for p in stmt_periods %}
+        <td class="p-1 text-right">{{ row.period_values[p] | format_na }}</td>
+        {% endfor %}
+        {% if stmt_periods|length >= 2 %}
+        <td class="p-1 text-right">{{ row.yoy_change if row.yoy_change else '' }}</td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {# --- Balance Sheet --- #}
+  {% if has_balance %}
+  <h4>Balance Sheet</h4>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Line Item</th>
+        {% for p in stmt_periods %}
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">{{ p }}</th>
+        {% endfor %}
+        {% if stmt_periods|length >= 2 %}
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">YoY</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for row in fin.balance_sheet_rows %}
+      <tr class="{{ 'bg-bg-alt' if loop.index0 % 2 == 1 else 'bg-white' }}">
+        <td class="p-1 font-heading text-xs font-semibold text-navy">{{ row.label }}</td>
+        {% for p in stmt_periods %}
+        <td class="p-1 text-right">{{ row.period_values[p] | format_na }}</td>
+        {% endfor %}
+        {% if stmt_periods|length >= 2 %}
+        <td class="p-1 text-right">{{ row.yoy_change if row.yoy_change else '' }}</td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {# --- Cash Flow Statement --- #}
+  {% if has_cashflow %}
+  <h4>Cash Flow Statement</h4>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Line Item</th>
+        {% for p in stmt_periods %}
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">{{ p }}</th>
+        {% endfor %}
+        {% if stmt_periods|length >= 2 %}
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">YoY</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for row in fin.cash_flow_rows %}
+      <tr class="{{ 'bg-bg-alt' if loop.index0 % 2 == 1 else 'bg-white' }}">
+        <td class="p-1 font-heading text-xs font-semibold text-navy">{{ row.label }}</td>
+        {% for p in stmt_periods %}
+        <td class="p-1 text-right">{{ row.period_values[p] | format_na }}</td>
+        {% endfor %}
+        {% if stmt_periods|length >= 2 %}
+        <td class="p-1 text-right">{{ row.yoy_change if row.yoy_change else '' }}</td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% endif %}

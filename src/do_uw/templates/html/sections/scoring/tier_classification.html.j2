@@ -1,0 +1,46 @@
+{# Tier Classification — extracted from scoring.html.j2 #}
+{% if sc %}
+<h3>Tier Classification</h3>
+<div class="grid grid-cols-3 gap-2 my-3">
+  <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+    <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Quality Score</p>
+    <p class="text-2xl font-bold text-navy m-0">{{ sc.get('quality_score', 'N/A') }}</p>
+  </div>
+  <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+    <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Composite Score</p>
+    <p class="text-2xl font-bold text-navy m-0">{{ sc.get('composite_score', 'N/A') }}</p>
+  </div>
+  <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+    <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Tier</p>
+    <div class="mt-1">
+      {% if sc.get('tier') %}
+        {{ tier_badge(sc.tier) }}
+      {% else %}
+        <span class="text-2xl font-bold text-gray-400">—</span>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{# Tier detail table #}
+{% if sc.get('tier_action') %}
+{{ kv_table([
+  {'key': 'Total Risk Points', 'value': sc.get('total_risk_points', 'N/A')},
+  {'key': 'Tier Range', 'value': sc.get('tier_score_range', 'N/A')},
+  {'key': 'Action Guidance', 'value': sc.get('tier_action', 'N/A')},
+  {'key': 'Probability Range', 'value': sc.get('tier_probability_range', 'N/A')},
+  {'key': 'Binding Ceiling', 'value': sc.get('binding_ceiling', '—')},
+]) }}
+{% endif %}
+{# Why this tier — algorithmic explanation with counterfactual analysis #}
+{% if sc.get('tier_explanation') %}
+<div class="bg-bg-alt border border-gray-200 rounded p-3 my-3 text-sm text-gray-700">
+  <p class="font-heading text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Why {{ sc.get('tier', 'N/A') }}?</p>
+  <p class="m-0">{{ sc.tier_explanation }}</p>
+</div>
+{% endif %}
+<ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc pl-4 space-y-0.5">
+  <li>Quality score reflects overall D&amp;O insurability — higher scores indicate lower claim risk</li>
+  <li>Tier determines underwriting action: WIN (bind), WRITE (standard terms), WATCH (enhanced review), WALK (decline or heavily restrict)</li>
+  <li>Binding ceiling limits maximum policy terms when specific red flags are present</li>
+</ul>
+{% endif %}

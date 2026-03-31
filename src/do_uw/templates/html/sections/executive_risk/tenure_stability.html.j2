@@ -1,0 +1,39 @@
+{# Executive Risk -- Tenure & Stability facet template.
+   Renders EXEC.TENURE.* and EXEC.DEPARTURE.* signals as a metric table.
+   Part of facet dispatch for executive_risk section (Phase 62-01). #}
+
+{% set exec_signals = signal_results_by_section.get('EXEC', []) %}
+{% set tenure_signals = [] %}
+{% for sig in exec_signals %}
+  {% if sig.signal_id.startswith('EXEC.TENURE.') or sig.signal_id.startswith('EXEC.DEPARTURE.') %}
+    {% set _ = tenure_signals.append(sig) %}
+  {% endif %}
+{% endfor %}
+
+{% if tenure_signals %}
+<h3>Tenure & Stability</h3>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Indicator</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Assessment</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Evidence</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for sig in tenure_signals %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }} {{ 'bg-red-50' if sig.status == 'FAIL' else '' }}">
+      <td class="p-1 font-semibold">{{ sig.signal_name | humanize }}</td>
+      <td class="p-1 {{ 'text-risk-red font-semibold' if sig.status == 'FAIL' else 'text-gray-600' }}">
+        {{ sig.formatted_value | default(sig.value | default('—'), true) }}
+      </td>
+      <td class="p-1 text-xs text-gray-500">{{ sig.evidence | default('', true) | humanize_evidence }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+  <li>C-suite turnover within 12-18 months of a securities class action is a common pattern; new CEO/CFO appointments may signal underlying issues</li>
+  <li>CFO departures are particularly significant for D&amp;O underwriting as they frequently precede financial restatements</li>
+</ul>
+{% endif %}

@@ -1,0 +1,1207 @@
+- id: FWRD.EVENT.earnings_calendar
+  name: Upcoming Earnings Date
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L3
+  required_data:
+  - MARKET_PRICE
+  - SEC_8K
+  data_locations:
+    MARKET_PRICE:
+    - next_earnings_date
+    SEC_8K:
+    - earnings_schedule
+  threshold:
+    type: tiered
+    red: '>2 material earnings events in policy period'
+    yellow: '>0 material earnings events in policy period'
+    clear: < 1
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_8K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: event_catalysts
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_8K
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Upcoming Earnings Date at {value} (threshold: >2 material earnings events in policy period)
+        signals elevated Governance Failures / Breach of Fiduciary Duty risk (F6). Upcoming earnings represent the primary
+        scheduled disclosure event. Earnings misses are the #1 trigger for SCA filings, with 67% of SCAs alleging misstatements
+        in connection with earnings guidance or reporting. Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone
+        analysis.'
+      TRIGGERED_YELLOW: '{company} Upcoming Earnings Date at {value} (threshold: >0 material earnings events in policy period)
+        is in the caution zone for Governance Failures / Breach of Fiduciary Duty (F6). Monitor for deterioration — trend
+        direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Upcoming Earnings Date at {value} is within acceptable range for Governance Failures / Breach of Fiduciary
+        Duty (F6) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.EVENT.guidance_risk
+  name: Guidance Risk
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_8K
+  data_locations:
+    SEC_8K:
+    - item_2_02
+    - earnings_transcripts
+  threshold:
+    type: tiered
+    red: Likely miss (run-rate significantly below guidance)
+    yellow: Uncertain (marginal, guidance recently lowered)
+    clear: On track (run-rate supports guidance)
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  - '3.7'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_8K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_event_catalysts
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_8K
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Guidance Risk at {value} (threshold: Likely miss (run-rate significantly below guidance))
+        signals elevated Governance Failures / Breach of Fiduciary Duty risk (F6). Guidance risk signals elevated probability
+        of missing stated targets. Guidance misses provide the strongest scienter evidence because management chose to make
+        specific forward-looking statements they failed to meet. Forward-looking risk threshold from D&O claims experience
+        and NERA/Cornerstone analysis.'
+      TRIGGERED_YELLOW: '{company} Guidance Risk at {value} (threshold: Uncertain (marginal, guidance recently lowered)) is
+        in the caution zone for Governance Failures / Breach of Fiduciary Duty (F6). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Guidance Risk at {value} is within acceptable range for Governance Failures / Breach of Fiduciary
+        Duty (F6) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.EVENT.catalyst_dates
+  name: Catalyst Dates
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1a_risk_factors
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: event_catalysts
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} catalyst dates at {value} represents agent risk (executive/director actions and decisions
+        that create D&O exposure) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} catalyst dates at {value} is a moderate indicator for D&O risk assessment, warranting review
+        of supporting evidence: {evidence}.'
+      CLEAR: '{company} catalyst dates at {value} is within normal parameters for D&O risk assessment — no D&O concern at
+        this level.'
+- id: FWRD.EVENT.debt_maturity
+  name: Debt Maturity 12mo
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - debt_footnote
+  threshold:
+    type: tiered
+    red: '>$100M maturing + no refinancing in place'
+    yellow: '>$50M maturing'
+    clear: Minimal maturities or refinancing complete
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  - '3.2'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: event_catalysts
+    formula: ''
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: M&A activity as D&O risk driver -- integration failures, goodwill impairment, and value
+      destruction claims'
+    threshold_basis: M&A risk assessment based on deal size relative to acquirer, serial acquirer patterns, and integration
+      complexity per D&O claims data
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Debt Maturity 12mo at {value} (threshold: >$100M maturing + no refinancing in place) signals
+        elevated Financial Irregularities / Restatement Risk risk (F3). Concentrated debt maturities create refinancing risk
+        windows where failure to secure replacement financing forces material adverse disclosure -- a classic corrective disclosure
+        trigger in 10b-5 actions.'
+      TRIGGERED_YELLOW: '{company} Debt Maturity 12mo at {value} (threshold: >$50M maturing) is in the caution zone for Financial
+        Irregularities / Restatement Risk (F3). Monitor for deterioration — trend direction and peer comparison inform the
+        D&O risk assessment.'
+      CLEAR: '{company} Debt Maturity 12mo at {value} is within acceptable range for Financial Irregularities / Restatement
+        Risk (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.EVENT.covenant_test
+  name: Covenant Test Dates
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - debt_footnote
+  threshold:
+    type: tiered
+    red: Test <90 days + marginal compliance (<10% headroom)
+    yellow: Test in policy period
+    clear: Comfortable compliance (>20% headroom)
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  - '3.2'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_event_catalysts
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Covenant Test Dates at {value} (threshold: Test <90 days + marginal compliance (<10% headroom))
+        signals elevated Financial Irregularities / Restatement Risk risk (F3). Covenant breach or near-breach forces immediate
+        disclosure under Item 2.04 of Form 8-K, creating the corrective disclosure event that initiates SCA filings and establishes
+        the scienter timeline. Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis.'
+      TRIGGERED_YELLOW: '{company} Covenant Test Dates at {value} (threshold: Test in policy period) is in the caution zone
+        for Financial Irregularities / Restatement Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Covenant Test Dates at {value} is within acceptable range for Financial Irregularities / Restatement
+        Risk (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.EVENT.lockup_expiry
+  name: Lock-up Expiration
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles:
+    ipo_to_section11: trigger
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - s1_prospectus
+  threshold:
+    type: display
+  execution_mode: SECTOR_CONDITIONAL
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forward_looking_event_catalysts
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} lock-up expiration at {value} represents agent risk (executive/director actions and decisions
+        that create D&O exposure) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} lock-up expiration at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} lock-up expiration at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'
+- id: FWRD.EVENT.warrant_expiry
+  name: Warrant Expiration
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - equity_notes
+  threshold:
+    type: display
+  execution_mode: SECTOR_CONDITIONAL
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forward_looking_event_catalysts
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} warrant expiration at {value} represents agent risk (executive/director actions and decisions
+        that create D&O exposure) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} warrant expiration at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} warrant expiration at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'
+- id: FWRD.EVENT.contract_renewal
+  name: Contract Renewal Dates
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F9
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - material_contracts
+  threshold:
+    type: tiered
+    yellow: '>10% revenue at risk from contract expiration'
+    clear: <10% revenue at risk
+    red: '>25% revenue at risk from contract expiration in policy period'
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_event_catalysts
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Contract Renewal Dates at {value} (threshold: >25% revenue at risk from contract expiration
+        in policy period) signals elevated SEC Enforcement / Regulatory Compliance risk (F9). Upcoming contract renewal dates
+        create binary outcome risk. Non-renewal of material contracts forces disclosure and earnings impact that triggers
+        SCA filings alleging management concealed relationship deterioration. Forward-looking risk threshold from D&O claims
+        experience and NERA/Cornerstone analysis.'
+      TRIGGERED_YELLOW: '{company} Contract Renewal Dates at {value} (threshold: >10% revenue at risk from contract expiration)
+        is in the caution zone for SEC Enforcement / Regulatory Compliance (F9). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Contract Renewal Dates at {value} is within acceptable range for SEC Enforcement / Regulatory Compliance
+        (F9) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.EVENT.regulatory_decision
+  name: Regulatory Decision Dates
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F5
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1a_risk_factors
+  threshold:
+    type: tiered
+    yellow: Material regulatory decision in policy period
+    clear: No pending regulatory decisions
+    red: Binary regulatory decision with >10% revenue impact in policy period
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  - '5.5'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: event_catalysts
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Regulatory Decision Dates at {value} (threshold: Binary regulatory decision with >10% revenue
+        impact in policy period) signals elevated Regulatory Action / Government Investigation risk (F5). Pending regulatory
+        decisions create binary outcome risk. Adverse regulatory decisions force material disclosure and frequently trigger
+        SCA filings alleging management overstated regulatory approval likelihood. Forward-looking risk threshold from D&O
+        claims experience and NERA/Cornerstone analysis.'
+      TRIGGERED_YELLOW: '{company} Regulatory Decision Dates at {value} (threshold: Material regulatory decision in policy
+        period) is in the caution zone for Regulatory Action / Government Investigation (F5). Monitor for deterioration —
+        trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Regulatory Decision Dates at {value} is within acceptable range for Regulatory Action / Government
+        Investigation (F5) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.EVENT.litigation_milestone
+  name: Litigation Milestones
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SCAC_SEARCH
+  - SEC_10K
+  data_locations:
+    SCAC_SEARCH:
+    - case_docket
+    SEC_10K:
+    - item_3_legal_proceedings
+  threshold:
+    type: tiered
+    yellow: Material litigation milestone in policy period
+    clear: No milestones or no active litigation
+    red: Trial date or class cert hearing in policy period with material exposure
+  tier: 2
+  depth: 4
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  - '5.1'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: event_catalysts
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Litigation Milestones at {value} (threshold: Trial date or class cert hearing in policy period
+        with material exposure) signals elevated Litigation History / Settlement Patterns risk (F1). Upcoming litigation milestones
+        create binary outcome risk. Adverse rulings force reserve increases and disclosure that trigger additional SCA filings
+        or settlement pressure. Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis.'
+      TRIGGERED_YELLOW: '{company} Litigation Milestones at {value} (threshold: Material litigation milestone in policy period)
+        is in the caution zone for Litigation History / Settlement Patterns (F1). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Litigation Milestones at {value} is within acceptable range for Litigation History / Settlement Patterns
+        (F1) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.EVENT.shareholder_mtg
+  execution_mode: AUTO
+  name: Shareholder Meeting Date
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - meeting_date
+  threshold:
+    type: info
+  tier: 2
+  depth: 1
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forward_looking_event_catalysts
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} shareholder meeting date at {value} represents agent risk (executive/director actions and
+        decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} shareholder meeting date at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} shareholder meeting date at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'
+- id: FWRD.EVENT.ma_closing
+  name: M&A Closing Date
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F8
+  peril_ids: []
+  chain_roles:
+    ma_to_claims: trigger
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_8K
+  data_locations:
+    SEC_8K:
+    - item_1_01
+  threshold:
+    type: tiered
+    yellow: M&A closing in policy period
+    clear: No pending M&A or closed
+    red: Material M&A closing in policy period with integration risk
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  - '1.6'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_8K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_event_catalysts
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_8K
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: M&A activity as D&O risk driver -- integration failures, goodwill impairment, and value
+      destruction claims'
+    threshold_basis: M&A risk assessment based on deal size relative to acquirer, serial acquirer patterns, and integration
+      complexity per D&O claims data
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} M&A Closing Date at {value} (threshold: Material M&A closing in policy period with integration
+        risk) signals elevated Market Position / Business Risk risk (F8). Pending M&A closings create automatic merger objection
+        litigation risk. Nearly all material M&A transactions generate shareholder lawsuits challenging deal terms, process,
+        or disclosure adequacy.'
+      TRIGGERED_YELLOW: '{company} M&A Closing Date at {value} (threshold: M&A closing in policy period) is in the caution
+        zone for Market Position / Business Risk (F8). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} M&A Closing Date at {value} is within acceptable range for Market Position / Business Risk (F8) —
+        this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.EVENT.synergy
+  name: Synergy Realization
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F8
+  peril_ids: []
+  chain_roles:
+    ma_to_claims: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_8K
+  data_locations:
+    SEC_8K:
+    - earnings_releases
+  threshold:
+    type: tiered
+    red: Synergy targets missed
+    yellow: Synergy targets at risk
+    clear: On track or no synergy claims
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_8K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_event_catalysts
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_8K
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Synergy Realization at {value} (threshold: Synergy targets missed) signals elevated Market
+        Position / Business Risk risk (F8). Synergy shortfalls from acquisitions force goodwill impairment write-downs. When
+        stated synergies fail to materialize, plaintiffs allege management overstated deal benefits to secure shareholder
+        approval. Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis.'
+      TRIGGERED_YELLOW: '{company} Synergy Realization at {value} (threshold: Synergy targets at risk) is in the caution zone
+        for Market Position / Business Risk (F8). Monitor for deterioration — trend direction and peer comparison inform the
+        D&O risk assessment.'
+      CLEAR: '{company} Synergy Realization at {value} is within acceptable range for Market Position / Business Risk (F8)
+        — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.EVENT.customer_retention
+  name: Customer Retention
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_8K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+    SEC_8K:
+    - all_items
+  threshold:
+    type: tiered
+    red: Key customer loss disclosed or at risk
+    yellow: Customer concentration risk in transition
+    clear: Customer base stable
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  - '1.9'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_event_catalysts
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Customer Retention at {value} (threshold: Key customer loss disclosed or at risk) signals
+        elevated Emerging Risk / Forward-Looking Exposure risk (F10). Post-acquisition customer retention failures indicate
+        deal thesis deterioration. Revenue attrition from lost customers creates earnings miss risk and supports claims management
+        overstated acquisition benefits. Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis.'
+      TRIGGERED_YELLOW: '{company} Customer Retention at {value} (threshold: Customer concentration risk in transition) is
+        in the caution zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Customer Retention at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure
+        (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.EVENT.employee_retention
+  name: Employee Retention
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_8K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+    SEC_8K:
+    - all_items
+  threshold:
+    type: tiered
+    red: Key employee departures or mass attrition
+    yellow: Retention risk disclosed
+    clear: Workforce stable
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  - '1.9'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_event_catalysts
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Employee Retention at {value} (threshold: Key employee departures or mass attrition) signals
+        elevated Emerging Risk / Forward-Looking Exposure risk (F10). Post-acquisition employee retention failures signal
+        integration problems. Key employee departures destroy acquired value and support claims management failed to disclose
+        integration risks in the acquisition proxy. Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone
+        analysis.'
+      TRIGGERED_YELLOW: '{company} Employee Retention at {value} (threshold: Retention risk disclosed) is in the caution zone
+        for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Employee Retention at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure
+        (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.EVENT.integration
+  name: Integration
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_8K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+    SEC_8K:
+    - all_items
+  threshold:
+    type: tiered
+    red: Integration problems disclosed OR missed milestones
+    yellow: Integration in progress with disclosed challenges
+    clear: No pending integration or on track
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_event_catalysts
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Integration at {value} (threshold: Integration problems disclosed OR missed milestones) signals
+        elevated Emerging Risk / Forward-Looking Exposure risk (F10). M&A integration risk creates an extended window of operational
+        vulnerability. Integration failures force earnings guidance reductions that trigger SCA filings alleging management
+        overstated synergy and integration projections. Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone
+        analysis.'
+      TRIGGERED_YELLOW: '{company} Integration at {value} (threshold: Integration in progress with disclosed challenges) is
+        in the caution zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Integration at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure (F10)
+        — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.EVENT.proxy_deadline
+  execution_mode: AUTO
+  name: Proxy Deadline
+  work_type: extract
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_8K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+    SEC_8K:
+    - all_items
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.11'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forward_looking_event_catalysts
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} proxy deadline at {value} represents agent risk (executive/director actions and decisions
+        that create D&O exposure) (scoring factor F10) — this level is associated with Emerging Risk / Forward-Looking Exposure
+        exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} proxy deadline at {value} is a moderate indicator for Emerging Risk / Forward-Looking Exposure
+        (scoring factor F10), warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} proxy deadline at {value} is within normal parameters for Emerging Risk / Forward-Looking Exposure
+        (scoring factor F10) — no D&O concern at this level.'

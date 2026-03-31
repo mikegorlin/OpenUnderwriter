@@ -1,0 +1,132 @@
+# Seed Correlation Table for Conjunction Scan Engine
+#
+# Curated co-fire pairs derived from D&O domain knowledge.
+# These provide day-one correlation data when no DuckDB run history
+# exists. Empirical correlations from brain_correlations table
+# supplement/override these seeds as pipeline run history builds.
+#
+# Format: signal_a and signal_b are normalized (alphabetically sorted)
+# to ensure consistent lookup regardless of query order.
+#
+# co_fire_rate: probability both signals are CLEAR simultaneously in
+# companies that later experienced D&O claims (0.0-1.0).
+#
+# Phase 109: Pattern Engines + Named Patterns
+# Source: D&O underwriting practice, SCAC filing analysis, Cornerstone Research
+
+version: 1
+name: "Seed Correlations"
+description: "Curated signal co-fire pairs for Conjunction Scan cold start"
+
+thresholds:
+  co_fire_rate_minimum: 0.15
+  minimum_signals: 3
+  confidence_minimum: 0.5
+
+seed_correlations:
+  # Host x Agent: Financial deterioration + insider behavior
+  - signal_a: FIN.TEMPORAL.margin_compression
+    signal_b: GOV.INSIDER.cluster_sales
+    co_fire_rate: 0.35
+    rationale: "Insider selling often precedes margin deterioration disclosure; insiders act on non-public knowledge of deteriorating fundamentals"
+
+  - signal_a: FIN.GUIDE.track_record
+    signal_b: GOV.INSIDER.cluster_sales
+    co_fire_rate: 0.30
+    rationale: "Guidance misses combined with insider selling suggest insiders knew guidance was unrealistic"
+
+  - signal_a: FIN.TEMPORAL.margin_compression
+    signal_b: GOV.EFFECT.material_weakness
+    co_fire_rate: 0.45
+    rationale: "Material weakness in internal controls often accompanies margin deterioration that was not properly disclosed"
+
+  # Host x Environment: Financial health + market signals
+  - signal_a: FIN.TEMPORAL.margin_compression
+    signal_b: STOCK.PRICE.recent_drop_alert
+    co_fire_rate: 0.30
+    rationale: "Margin compression and stock drops often co-occur as market prices in deteriorating fundamentals"
+
+  - signal_a: FIN.GUIDE.track_record
+    signal_b: STOCK.PRICE.recent_drop_alert
+    co_fire_rate: 0.40
+    rationale: "Guidance misses strongly correlated with stock drops; classic pre-SCA filing pattern"
+
+  - signal_a: FIN.QUALITY.revenue_recognition_risk
+    signal_b: STOCK.SHORT.elevated
+    co_fire_rate: 0.35
+    rationale: "Short sellers target companies with revenue quality concerns; elevated short interest follows recognition risk signals"
+
+  # Agent x Environment: Governance + market signals
+  - signal_a: GOV.INSIDER.cluster_sales
+    signal_b: STOCK.PRICE.recent_drop_alert
+    co_fire_rate: 0.32
+    rationale: "Insider selling preceding stock drops is a classic pre-filing pattern in D&O claims"
+
+  - signal_a: GOV.EFFECT.material_weakness
+    signal_b: STOCK.SHORT.elevated
+    co_fire_rate: 0.28
+    rationale: "Short sellers identify governance weaknesses; material weakness disclosure attracts short interest"
+
+  # Host x Host (cross-subcategory): Financial forensic patterns
+  - signal_a: FIN.FORENSIC.dsri_elevated
+    signal_b: FIN.QUALITY.revenue_recognition_risk
+    co_fire_rate: 0.45
+    rationale: "Days Sales in Receivables Index elevation with revenue recognition concerns indicates potential channel stuffing"
+
+  - signal_a: FIN.FORENSIC.m_score_composite
+    signal_b: GOV.EFFECT.material_weakness
+    co_fire_rate: 0.55
+    rationale: "M-Score composite and material weakness are both forensic indicators of financial reporting problems"
+
+  # Agent x Agent (cross-subcategory): Disclosure + compensation
+  - signal_a: GOV.COMP.ceo_pay_gap
+    signal_b: GOV.INSIDER.cluster_sales
+    co_fire_rate: 0.25
+    rationale: "Excessive CEO compensation combined with insider selling suggests misaligned incentives"
+
+  - signal_a: GOV.BOARD.independence_concern
+    signal_b: GOV.EFFECT.material_weakness
+    co_fire_rate: 0.30
+    rationale: "Weak board independence and internal control weakness reflect overlapping governance failures"
+
+  # Three-domain patterns (host + agent + environment)
+  - signal_a: FIN.TEMPORAL.margin_compression
+    signal_b: LIT.ENFORCEMENT.sec_investigation
+    co_fire_rate: 0.38
+    rationale: "SEC investigations often triggered by margin compression that was not properly disclosed"
+
+  - signal_a: GOV.INSIDER.cluster_sales
+    signal_b: LIT.ENFORCEMENT.sec_investigation
+    co_fire_rate: 0.42
+    rationale: "Insider selling during SEC investigation period is a strong D&O claim indicator"
+
+  - signal_a: FIN.GUIDE.track_record
+    signal_b: LIT.SCAC.active_filing
+    co_fire_rate: 0.50
+    rationale: "Active SCAC filings frequently cite guidance failures as a basis for securities fraud claims"
+
+  # Additional cross-domain pairs
+  - signal_a: FIN.FORENSIC.m_score_composite
+    signal_b: FIN.TEMPORAL.margin_compression
+    co_fire_rate: 0.40
+    rationale: "M-Score elevation combined with margin compression indicates manipulated financials masking deterioration"
+
+  - signal_a: GOV.BOARD.independence_concern
+    signal_b: GOV.INSIDER.cluster_sales
+    co_fire_rate: 0.22
+    rationale: "Weak board oversight may enable unchecked insider selling patterns"
+
+  - signal_a: FIN.QUALITY.revenue_recognition_risk
+    signal_b: FIN.TEMPORAL.margin_compression
+    co_fire_rate: 0.38
+    rationale: "Revenue recognition risk with margin compression suggests aggressive accounting to mask deterioration"
+
+  - signal_a: STOCK.PRICE.recent_drop_alert
+    signal_b: STOCK.SHORT.elevated
+    co_fire_rate: 0.35
+    rationale: "Short interest elevation often precedes or coincides with price drops; both are environment signals"
+
+  - signal_a: GOV.COMP.ceo_pay_gap
+    signal_b: FIN.GUIDE.track_record
+    co_fire_rate: 0.20
+    rationale: "High CEO pay with missed guidance suggests compensation driven by short-term targets rather than sustainable performance"

@@ -1,0 +1,151 @@
+- id: BASE.NEWS.blind_spot_pre
+  name: Pre-Acquisition Blind Spot Discovery
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: WEB_SEARCH
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: key_findings
+    formula: ''
+  acquisition:
+    sources:
+    - type: WEB_SEARCH
+      fields:
+      - acquired_data.news.blind_spot_pre
+      fallback_to: null
+  description: 'Pre-acquisition blind spot search: company + risk terms, executive names + litigation terms. Runs at START
+    of ACQUIRE before structured APIs. Catches short seller reports, state AG actions, employee lawsuits.
+
+    '
+  group: key_findings
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: pre-acquisition blind spot search (proactive risk discovery) -- broad web search is a first-class
+      acquisition method per project architecture'
+    threshold_basis: Binary data availability -- news search either returns relevant results or does not; no risk threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} pre-acquisition blind spot discovery at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} pre-acquisition blind spot discovery at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} pre-acquisition blind spot discovery at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'
+- id: BASE.NEWS.blind_spot_post
+  name: Post-Acquisition Blind Spot Discovery
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: WEB_SEARCH
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: key_findings
+    formula: ''
+  acquisition:
+    sources:
+    - type: WEB_SEARCH
+      fields:
+      - acquired_data.news.blind_spot_post
+      fallback_to: null
+  description: 'Post-acquisition exploratory search targeting gaps found after structured acquisition completes. Validates
+    and extends findings from structured sources.
+
+    '
+  group: key_findings
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: post-acquisition blind spot search (validation of structured data) -- broad web search
+      is a first-class acquisition method per project architecture'
+    threshold_basis: Binary data availability -- news search either returns relevant results or does not; no risk threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} post-acquisition blind spot discovery at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} post-acquisition blind spot discovery at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} post-acquisition blind spot discovery at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'
+- id: BASE.NEWS.company_news
+  name: General Company News Sentiment
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: WEB_SEARCH
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: key_findings
+    formula: ''
+  acquisition:
+    sources:
+    - type: WEB_SEARCH
+      fields:
+      - extracted.sentiment
+      - acquired_data.news.general
+      fallback_to: null
+  description: 'General company news and sentiment analysis via Brave Search. Covers recent headlines, analyst commentary,
+    industry developments.
+
+    '
+  group: key_findings
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: company news sentiment analysis -- broad web search is a first-class acquisition method
+      per project architecture'
+    threshold_basis: Binary data availability -- news search either returns relevant results or does not; no risk threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} general company news sentiment at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} general company news sentiment at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} general company news sentiment at {value} is within normal parameters for D&O risk assessment — no
+        D&O concern at this level.'

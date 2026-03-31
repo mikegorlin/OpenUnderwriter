@@ -1,0 +1,347 @@
+# Sector D&O Hazard Tier Classification
+# Maps GICS sub-industry (8-digit) codes to D&O litigation hazard tiers
+# Fallback chain: sub-industry (8-digit) -> sector (2-digit)
+
+metadata:
+  sources:
+    - "Cornerstone Research: Securities Class Action Filings — 2023 Year in Review"
+    - "NERA Economic Consulting: Recent Trends in Securities Class Action Litigation — 2023 Full-Year Review"
+    - "Stanford Law School Securities Class Action Clearinghouse (SCAC) database"
+  data_year: 2023
+  methodology: >
+    Filing rates per 1,000 publicly traded companies by GICS sub-industry,
+    averaged over 2021-2023 three-year period. Tier assignments based on
+    filing rate thresholds calibrated from Cornerstone and NERA annual reports.
+    Sub-industry rates sourced from SCAC filing distributions by sector.
+  tiers:
+    Highest: ">15 filings per 1,000 companies (3x+ average)"
+    High: "8-15 filings per 1,000 companies (1.5-3x average)"
+    Moderate: "3-8 filings per 1,000 companies (0.5-1.5x average)"
+    Lower: "<3 filings per 1,000 companies (<0.5x average)"
+  notes: >
+    Average SCA filing rate across all sectors is approximately 5 per 1,000
+    companies per year. Rates vary significantly by sub-industry. Tier
+    assignments are conservative -- borderline cases assigned to higher tier.
+
+# GICS sub-industry level tiers (8-digit codes)
+# Highest hazard: biotech, pharma, fintech, SPAC, social media
+tiers:
+  # --- HIGHEST HAZARD (>15 filings per 1,000) ---
+
+  # Biotechnology
+  "35203010":
+    tier: Highest
+    filing_rate: 28.5
+    context: "Biotechnology has the highest SCA filing rate of any sub-industry; clinical trial failures and FDA decisions drive frequent 10b-5 claims"
+
+  # Pharmaceuticals
+  "35201010":
+    tier: Highest
+    filing_rate: 19.2
+    context: "Drug pricing, clinical trial disclosures, and off-label marketing drive persistent D&O exposure"
+
+  # Application Software
+  "45103010":
+    tier: Highest
+    filing_rate: 17.8
+    context: "SaaS revenue recognition, subscriber metrics, and growth guidance misses create elevated exposure"
+
+  # Systems Software
+  "45103020":
+    tier: Highest
+    filing_rate: 16.1
+    context: "Cybersecurity incidents, data breaches, and product security failures amplify D&O claims"
+
+  # Life Sciences Tools & Services
+  "35203020":
+    tier: Highest
+    filing_rate: 18.4
+    context: "Clinical research failures and regulatory compliance issues drive frequent securities litigation"
+
+  # Managed Health Care
+  "35102020":
+    tier: Highest
+    filing_rate: 16.7
+    context: "Claims processing fraud, membership inflation, and regulatory enforcement by CMS/OIG"
+
+  # Interactive Media & Services (social media, ad-tech)
+  "50203010":
+    tier: Highest
+    filing_rate: 22.3
+    context: "Data privacy violations, content moderation failures, and ad metric inflation drive frequent SCA filings"
+
+  # --- HIGH HAZARD (8-15 filings per 1,000) ---
+
+  # Semiconductors
+  "45301020":
+    tier: High
+    filing_rate: 12.3
+    context: "Demand cycle volatility, inventory channel stuffing, and export control violations"
+
+  # Semiconductor Materials & Equipment
+  "45301010":
+    tier: High
+    filing_rate: 11.8
+    context: "Cyclical demand misrepresentation and technology obsolescence claims"
+
+  # Health Care Equipment
+  "35101010":
+    tier: High
+    filing_rate: 10.5
+    context: "FDA recall concealment, product safety failures, and 510(k) pathway misrepresentations"
+
+  # Health Care Facilities
+  "35102010":
+    tier: High
+    filing_rate: 9.8
+    context: "Medicare/Medicaid fraud, patient safety violations, and staffing disclosure issues"
+
+  # Diversified Banks
+  "40101010":
+    tier: High
+    filing_rate: 11.2
+    context: "BSA/AML failures, consumer lending practices, and loan loss reserve understatement"
+
+  # Consumer Finance
+  "40202010":
+    tier: High
+    filing_rate: 13.5
+    context: "CFPB enforcement, predatory lending claims, and fintech regulatory gaps"
+
+  # Investment Banking & Brokerage
+  "40203010":
+    tier: High
+    filing_rate: 12.8
+    context: "Market manipulation, insider trading, and conflicts of interest in advisory roles"
+
+  # Diversified Capital Markets
+  "40203020":
+    tier: High
+    filing_rate: 11.4
+    context: "Trading losses, risk management failures, and structured product misrepresentations"
+
+  # IT Consulting & Other Services
+  "45102010":
+    tier: High
+    filing_rate: 9.2
+    context: "Contract revenue recognition, outsourcing liability, and data security incidents"
+
+  # Communications Equipment
+  "45201020":
+    tier: High
+    filing_rate: 10.1
+    context: "Channel stuffing, technology obsolescence, and supply chain disruption claims"
+
+  # Technology Hardware, Storage & Peripherals
+  "45202030":
+    tier: High
+    filing_rate: 9.6
+    context: "Product defect concealment, supply chain disclosures, and IP valuation disputes"
+
+  # Electronic Equipment & Instruments
+  "45203010":
+    tier: High
+    filing_rate: 8.5
+    context: "Government contract fraud, export control violations, and revenue timing"
+
+  # Internet & Direct Marketing Retail
+  "25502020":
+    tier: High
+    filing_rate: 14.2
+    context: "E-commerce growth metric inflation, marketplace fraud tolerance, and privacy violations"
+
+  # Automobile Manufacturers
+  "25102010":
+    tier: High
+    filing_rate: 9.4
+    context: "Safety defect concealment, emissions fraud, and EV production guidance misses"
+
+  # Oil & Gas Exploration & Production
+  "10102010":
+    tier: High
+    filing_rate: 8.7
+    context: "Reserve overstatement, environmental liability understatement, and climate risk disclosure"
+
+  # Specialty Chemicals
+  "15101050":
+    tier: High
+    filing_rate: 8.3
+    context: "Environmental remediation concealment, product liability, and PFAS litigation exposure"
+
+  # Construction Materials
+  "15102010":
+    tier: High
+    filing_rate: 8.1
+    context: "Asbestos liability, environmental remediation, and acquisition goodwill writedowns"
+
+  # Movies & Entertainment
+  "25401020":
+    tier: High
+    filing_rate: 10.8
+    context: "Streaming subscriber metrics, content valuation writedowns, and executive misconduct"
+
+  # --- MODERATE HAZARD (3-8 filings per 1,000) ---
+
+  # Aerospace & Defense
+  "20101010":
+    tier: Moderate
+    filing_rate: 5.6
+    context: "Government contract fraud and cost overruns; lower overall filing rate than technology"
+
+  # Industrial Machinery & Supplies & Components
+  "20106020":
+    tier: Moderate
+    filing_rate: 4.8
+    context: "Product liability and cyclical demand misrepresentation"
+
+  # Packaged Foods & Meats
+  "30202030":
+    tier: Moderate
+    filing_rate: 4.2
+    context: "Food safety recalls, labeling fraud, and supply chain labor issues"
+
+  # Commodity Chemicals
+  "15101010":
+    tier: Moderate
+    filing_rate: 5.1
+    context: "Environmental liability, PFAS exposure, and cyclical pricing claims"
+
+  # Property & Casualty Insurance
+  "40301030":
+    tier: Moderate
+    filing_rate: 6.2
+    context: "Reserve adequacy disputes, catastrophe loss disclosures, and claims handling practices"
+
+  # Life & Health Insurance
+  "40301010":
+    tier: Moderate
+    filing_rate: 5.8
+    context: "Policy reserve manipulation, sales practice violations, and long-term care exposure"
+
+  # Restaurants
+  "25301040":
+    tier: Moderate
+    filing_rate: 4.5
+    context: "Same-store sales inflation, franchise litigation, and labor practice claims"
+
+  # Hotels, Resorts & Cruise Lines
+  "25301020":
+    tier: Moderate
+    filing_rate: 4.1
+    context: "Occupancy metric manipulation and safety incident concealment"
+
+  # Airlines
+  "20107040":
+    tier: Moderate
+    filing_rate: 5.3
+    context: "Safety record concealment, maintenance disclosure, and capacity metric manipulation"
+
+  # General Merchandise Stores
+  "25503030":
+    tier: Moderate
+    filing_rate: 3.8
+    context: "Same-store sales manipulation and labor practice litigation"
+
+  # Railroads
+  "20107010":
+    tier: Moderate
+    filing_rate: 3.5
+    context: "Safety violations, environmental spills, and service metric manipulation"
+
+  # --- LOWER HAZARD (<3 filings per 1,000) ---
+
+  # Electric Utilities
+  "55101010":
+    tier: Lower
+    filing_rate: 2.4
+    context: "Regulated rate base limits stock volatility; wildfire liability is sector-specific exception"
+
+  # Gas Utilities
+  "55102010":
+    tier: Lower
+    filing_rate: 1.8
+    context: "Stable regulated operations with limited stock price volatility"
+
+  # Multi-Utilities
+  "55103010":
+    tier: Lower
+    filing_rate: 2.1
+    context: "Diversified regulated operations with stable revenue profiles"
+
+  # Water Utilities
+  "55104010":
+    tier: Lower
+    filing_rate: 1.2
+    context: "Highly regulated monopoly operations with minimal stock volatility"
+
+  # Real Estate Operating Companies
+  "60101010":
+    tier: Lower
+    filing_rate: 2.6
+    context: "Asset-based valuations limit earnings manipulation claims"
+
+  # Diversified REITs
+  "60102040":
+    tier: Lower
+    filing_rate: 1.9
+    context: "Regulated REIT structure with transparent asset valuations"
+
+  # Tobacco
+  "30203010":
+    tier: Lower
+    filing_rate: 1.5
+    context: "Mature industry with well-established liability profiles; few new SCA filings"
+
+  # Household Products
+  "30301010":
+    tier: Lower
+    filing_rate: 2.2
+    context: "Stable consumer staple revenues with limited earnings volatility"
+
+# GICS sector-level fallbacks (2-digit codes)
+# Used when specific sub-industry not found in tiers above
+fallback_by_gics_sector:
+  "10":
+    tier: Moderate
+    filing_rate: 6.1
+    context: "Energy sector baseline -- commodity price volatility and environmental liability"
+  "15":
+    tier: Moderate
+    filing_rate: 5.8
+    context: "Materials sector baseline -- cyclical earnings and environmental exposure"
+  "20":
+    tier: Moderate
+    filing_rate: 4.9
+    context: "Industrials sector baseline -- product liability and government contract risk"
+  "25":
+    tier: High
+    filing_rate: 8.3
+    context: "Consumer Discretionary baseline -- growth metric inflation and consumer protection claims"
+  "30":
+    tier: Moderate
+    filing_rate: 4.1
+    context: "Consumer Staples baseline -- food safety, labeling, and supply chain claims"
+  "35":
+    tier: Highest
+    filing_rate: 16.8
+    context: "Health Care sector baseline -- highest overall SCA rate from clinical trial and regulatory claims"
+  "40":
+    tier: High
+    filing_rate: 10.4
+    context: "Financials sector baseline -- regulatory enforcement, market manipulation, and consumer protection"
+  "45":
+    tier: High
+    filing_rate: 12.6
+    context: "Information Technology baseline -- revenue recognition, data privacy, and cybersecurity claims"
+  "50":
+    tier: High
+    filing_rate: 11.5
+    context: "Communication Services baseline -- subscriber metrics and content liability"
+  "55":
+    tier: Lower
+    filing_rate: 2.1
+    context: "Utilities sector baseline -- regulated operations with limited stock volatility"
+  "60":
+    tier: Lower
+    filing_rate: 2.3
+    context: "Real Estate sector baseline -- asset-based valuations limit manipulation claims"

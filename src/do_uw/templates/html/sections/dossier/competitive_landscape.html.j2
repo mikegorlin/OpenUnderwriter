@@ -1,0 +1,88 @@
+{# Competitive Landscape & Moat Assessment — Phase 119 (DOSSIER-07) #}
+{# Renders peer comparison table + moat assessment + competitive D&O commentary. #}
+
+{% if has_competitive_data %}
+<div class="page-break-inside-avoid mt-4">
+  <h3 class="font-heading text-base font-semibold text-navy mb-2">Competitive Landscape & Moat Assessment</h3>
+
+  {# Peer Comparison Table #}
+  {% if comp_peers %}
+  <h4 class="font-heading text-sm font-semibold uppercase tracking-wider text-navy mb-2">Peer Comparison</h4>
+  <div class="overflow-x-auto">
+    <table class="data-table w-full border-collapse text-sm mb-3">
+      <thead>
+        <tr class="bg-navy text-white">
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Company</th>
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2">Ticker</th>
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right px-2 py-2">Market Cap</th>
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right px-2 py-2">Revenue</th>
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right px-2 py-2">Margin</th>
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right px-2 py-2">Growth</th>
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right px-2 py-2">R&D</th>
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right px-2 py-2">Mkt Share</th>
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left px-2 py-2">SCA History</th>
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">D&O Relevance</th>
+        </tr>
+      </thead>
+      <tbody class="tabular-nums">
+        {% for peer in comp_peers %}
+        <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+          <td class="p-1 font-semibold">{{ peer.company }}</td>
+          <td class="px-2 py-2 text-center">{{ peer.ticker }}</td>
+          <td class="px-2 py-2 text-right">{{ peer.market_cap }}</td>
+          <td class="px-2 py-2 text-right">{{ peer.revenue }}</td>
+          <td class="px-2 py-2 text-right">{{ peer.margin }}</td>
+          <td class="px-2 py-2 text-right">{{ peer.growth }}</td>
+          <td class="px-2 py-2 text-right">{{ peer.rd_spend }}</td>
+          <td class="px-2 py-2 text-right">{{ peer.market_share }}</td>
+          <td class="px-2 py-2 text-xs">{{ peer.sca_history }}</td>
+          <td class="p-1 text-xs do-callout">{{ peer.do_relevance }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  {# Moat Assessment Table #}
+  {% if comp_moats %}
+  <h4 class="font-heading text-sm font-semibold uppercase tracking-wider text-navy mb-2">Moat Assessment</h4>
+  <table class="data-table w-full border-collapse text-sm mb-3">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Dimension</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2">Present</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2">Strength</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2">Durability</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Evidence</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">D&O Risk If Eroded</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for moat in comp_moats %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 font-semibold">{{ moat.dimension }}</td>
+        <td class="px-2 py-2 text-center {{ 'text-green-700' if moat.present == 'Yes' else 'text-risk-red' }}">{{ moat.present }}</td>
+        <td class="px-2 py-2 text-center">{{ moat.strength }}</td>
+        <td class="px-2 py-2 text-center">{{ moat.durability }}</td>
+        <td class="p-1 text-xs">{{ moat.evidence }}</td>
+        <td class="p-1 text-xs do-callout">{{ moat.do_risk }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {# Competitive Position Narrative #}
+  {% if comp_narrative %}
+  <p class="text-sm text-gray-700 leading-relaxed mb-2">{{ comp_narrative }}</p>
+  {% endif %}
+
+  {# D&O Commentary #}
+  {% if comp_do %}
+  <div class="border-l-4 border-amber-500 bg-amber-50 pl-3 py-2 mt-2">
+    <p class="text-sm do-callout m-0">{{ comp_do }}</p>
+  </div>
+  {% endif %}
+</div>
+{% endif %}

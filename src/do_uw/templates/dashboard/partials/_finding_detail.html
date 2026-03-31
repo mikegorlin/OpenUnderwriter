@@ -1,0 +1,61 @@
+{# Individual finding deep-dive partial.
+   Shows evidence narrative, source citation, confidence level,
+   D&O underwriting context, scoring impact, and evidence list.
+   Loaded via hx-get into the finding's collapse content.
+#}
+
+<div class="border-l-4 pl-3 mt-2 mb-1" style="border-color: var(--ad-navy);">
+  <!-- Finding label and value -->
+  <div class="mb-2">
+    <p class="text-sm font-semibold" style="color: var(--ad-navy);">{{ finding.label }}</p>
+    <p class="text-sm opacity-80">{{ finding.value }}</p>
+  </div>
+
+  <!-- Confidence badge -->
+  <div class="mb-2">
+    <span class="text-xs opacity-60">Confidence:</span>
+    {% if finding.confidence == "HIGH" %}
+    <span class="badge badge-info badge-xs">HIGH</span>
+    {% elif finding.confidence == "MEDIUM" %}
+    <span class="badge badge-warning badge-xs">MEDIUM</span>
+    {% else %}
+    <span class="badge badge-ghost badge-xs">LOW</span>
+    {% endif %}
+  </div>
+
+  <!-- Source citation -->
+  {% if finding.source %}
+  <div class="mb-2 source-citation">
+    <span class="text-xs opacity-60">Source:</span>
+    <span class="text-xs font-mono">{{ finding.source }}</span>
+  </div>
+  {% endif %}
+
+  <!-- D&O Underwriting context -->
+  {% if finding.do_context %}
+  <div class="mb-2 p-2 rounded" style="background-color: var(--fmt-improving);">
+    <p class="text-xs font-semibold opacity-70 mb-1">Underwriting Context</p>
+    <p class="text-xs">{{ finding.do_context }}</p>
+  </div>
+  {% endif %}
+
+  <!-- Scoring impact -->
+  {% if finding.scoring_impact %}
+  <div class="mb-2">
+    <span class="text-xs opacity-60">Scoring Impact:</span>
+    <span class="text-xs">{{ finding.scoring_impact }}</span>
+  </div>
+  {% endif %}
+
+  <!-- Evidence list -->
+  {% if finding.evidence %}
+  <div class="mt-2">
+    <p class="text-xs font-semibold opacity-60 mb-1">Evidence</p>
+    <ul class="list-disc list-inside text-xs space-y-1 opacity-80">
+      {% for ev in finding.evidence %}
+      <li>{{ ev }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</div>

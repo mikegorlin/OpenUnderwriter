@@ -1,0 +1,55 @@
+- id: CTX.GOV.board_size
+  name: Board Size in Company Size Context
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of GOV.BOARD.size through size_tier lens
+    threshold_provenance:
+      source: calibrated
+      rationale: Board size norms from Spencer Stuart annual survey by company size tier
+  signal_class: inference
+  group: board_composition
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  epistemology:
+    rule_origin: Spencer Stuart Board Index data on board size by company market cap
+    threshold_basis: Board size norms from Spencer Stuart annual survey by company size tier
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: GOV.BOARD.size
+      context_dimensions:
+      - size_tier
+      context_adjustments:
+        small_cap:
+          threshold_adjustment: 0.6
+          rationale: 'Small-cap: 5-7 directors typical and adequate'
+        mid_cap:
+          threshold_adjustment: 0.8
+          rationale: 'Mid-cap: 7-9 directors expected'
+        large_cap:
+          threshold_adjustment: 1.0
+          rationale: 'Large-cap: 9-12 directors standard'
+        mega_cap:
+          threshold_adjustment: 1.2
+          rationale: 'Mega-cap: 11-14 directors with committee depth expected'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} board size in company size context at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} board size in company size context at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} board size in company size context at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

@@ -1,0 +1,76 @@
+{
+  "claim_types": {
+    "10b-5": {
+      "display_name": "Section 10(b) / Rule 10b-5",
+      "sol_years": 2,
+      "repose_years": 5,
+      "sol_trigger": "discovery",
+      "repose_trigger": "violation",
+      "coverage_type": "SCA_SIDE_A"
+    },
+    "Section_11": {
+      "display_name": "Securities Act Section 11",
+      "sol_years": 1,
+      "repose_years": 3,
+      "sol_trigger": "discovery",
+      "repose_trigger": "offering",
+      "coverage_type": "SCA_SIDE_C"
+    },
+    "Section_14a": {
+      "display_name": "Exchange Act Section 14(a)",
+      "sol_years": 1,
+      "repose_years": 3,
+      "sol_trigger": "discovery",
+      "repose_trigger": "proxy_solicitation",
+      "coverage_type": "SCA_SIDE_B"
+    },
+    "derivative": {
+      "display_name": "Shareholder Derivative",
+      "sol_years": 3,
+      "repose_years": 6,
+      "sol_trigger": "demand_refusal",
+      "repose_trigger": "breach",
+      "coverage_type": "DERIVATIVE_SIDE_A"
+    },
+    "FCPA": {
+      "display_name": "Foreign Corrupt Practices Act",
+      "sol_years": 5,
+      "repose_years": 5,
+      "sol_trigger": "violation",
+      "repose_trigger": "violation",
+      "coverage_type": "REGULATORY_ENTITY"
+    },
+    "antitrust": {
+      "display_name": "Antitrust / Sherman Act",
+      "sol_years": 4,
+      "repose_years": 4,
+      "sol_trigger": "violation",
+      "repose_trigger": "violation",
+      "coverage_type": "REGULATORY_ENTITY"
+    },
+    "ERISA": {
+      "display_name": "ERISA Fiduciary Duty",
+      "sol_years": 3,
+      "repose_years": 6,
+      "sol_trigger": "discovery",
+      "repose_trigger": "violation",
+      "coverage_type": "EMPLOYMENT_ENTITY"
+    },
+    "employment_discrimination": {
+      "display_name": "Employment Discrimination",
+      "sol_years": 2,
+      "repose_years": 2,
+      "sol_trigger": "violation",
+      "repose_trigger": "violation",
+      "coverage_type": "EMPLOYMENT_ENTITY"
+    },
+    "environmental": {
+      "display_name": "Environmental (CERCLA/Clean Air/Water)",
+      "sol_years": 5,
+      "repose_years": 5,
+      "sol_trigger": "discovery",
+      "repose_trigger": "violation",
+      "coverage_type": "REGULATORY_ENTITY"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{# Compact cover header bar for D&O Underwriting Worksheet PDF.
+   Replaces the full-page cover with a single-line branded header showing
+   company identity, risk tier, scores, date, and Angry Dolphin branding.
+   No page break -- flows directly into executive summary. #}
+
+{% set es = executive_summary or {} %}
+
+<div class="cover-header">
+  <div class="cover-header-left">
+    <span class="cover-header-company">{{ company_name | default("Company") }}</span>
+    {% if ticker %}
+      <span class="cover-header-ticker">({{ ticker }})</span>
+    {% endif %}
+  </div>
+  <div class="cover-header-center">
+    {% if es.get('tier_label') %}
+      {{ tier_badge(es.tier_label) }}
+    {% endif %}
+    {% if es.get('quality_score') %}
+      <span class="cover-header-score">Quality: <strong>{{ es.quality_score }}</strong></span>
+    {% endif %}
+    {% if es.get('composite_score') %}
+      <span class="cover-header-score">Composite: <strong>{{ es.composite_score }}</strong></span>
+    {% endif %}
+  </div>
+  <div class="cover-header-right">
+    <span class="cover-header-brand">Angry Dolphin</span>
+    <span class="cover-header-subtitle">D&amp;O Underwriting Worksheet</span>
+    <span class="cover-header-date">{{ generation_date | default("N/A") }}</span>
+  </div>
+</div>

@@ -1,0 +1,48 @@
+{# Annual Financial Comparison (YoY) — extracted from financial.html.j2 #}
+{% from "components/sparkline.html.j2" import sparkline %}
+{% if fin.get('has_income') %}
+{% if fin.prior_period %}
+<h3>Annual Financial Comparison ({{ fin.latest_period|default('Current') }} vs {{ fin.prior_period }})</h3>
+{% else %}
+<h3>Annual Financial Summary ({{ fin.latest_period|default('Current') }})</h3>
+{% endif %}
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Metric</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">{{ fin.latest_period|default('Current') }}</th>
+      {% if fin.prior_period %}
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">{{ fin.prior_period }}</th>
+      {% endif %}
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">YoY Change</th>
+    </tr>
+  </thead>
+  <tbody class="tabular-nums">
+    {{ financial_row("Revenue " ~ sparkline(fin.get('revenue_sparkline', ''), "Revenue trend"), fin.revenue|default('—'), prior_value=fin.prior_revenue|default(''), yoy_change=fin.revenue_yoy|default(''), direction="lower_is_worse") }}
+    {{ financial_row("Net Income " ~ sparkline(fin.get('net_income_sparkline', ''), "Net income trend"), fin.net_income|default('—'), prior_value=fin.prior_net_income|default(''), yoy_change=fin.net_income_yoy|default(''), direction="lower_is_worse") }}
+    {% if fin.get('diluted_eps') %}
+    {{ financial_row("Diluted EPS", fin.diluted_eps, prior_value=fin.prior_diluted_eps|default(''), yoy_change=fin.eps_yoy|default(''), direction="lower_is_worse") }}
+    {% endif %}
+    {% if fin.get('operating_margin') %}
+    {{ financial_row("Operating Margin", fin.operating_margin, prior_value=fin.prior_operating_margin|default(''), yoy_change=fin.operating_margin_yoy|default('')) }}
+    {% endif %}
+    {% if fin.get('total_assets') %}
+    {{ financial_row("Total Assets", fin.total_assets, prior_value=fin.prior_total_assets|default(''), yoy_change=fin.total_assets_yoy|default('')) }}
+    {% endif %}
+    {% if fin.get('total_equity') %}
+    {{ financial_row("Stockholders' Equity", fin.total_equity, prior_value=fin.prior_total_equity|default(''), yoy_change=fin.total_equity_yoy|default('')) }}
+    {% endif %}
+    {% if fin.get('debt_summary') %}
+    {{ financial_row("Leverage", fin.debt_summary) }}
+    {% endif %}
+    {% if fin.get('liquidity') %}
+    {{ financial_row("Liquidity", fin.liquidity) }}
+    {% endif %}
+  </tbody>
+</table>
+{% if fin.get('filing_source') %}
+<p class="font-mono text-xs text-gray-400 mt-1">Source: {{ fin.filing_source }}</p>
+{% endif %}
+{% else %}
+{{ gap_notice("Financial Statements", "Income statement data not available") }}
+{% endif %}

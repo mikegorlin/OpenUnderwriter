@@ -1,0 +1,7 @@
+{# Business Description — extracted from company.html.j2 #}
+{% if co.get('business_description') %}
+<h3>Business Description</h3>
+<p class="text-sm text-gray-700 leading-relaxed">
+  {{ co.business_description }}
+</p>
+{% endif %}

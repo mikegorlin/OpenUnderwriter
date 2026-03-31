@@ -1,0 +1,27 @@
+{# Monitoring Triggers -- post-bind surveillance table (Phase 117 -- FORWARD-04) #}
+{% set mon = monitoring_data | default({}) %}
+{% if mon.get('monitoring_available', false) %}
+<h3 id="monitoring-triggers">Monitoring Triggers</h3>
+<p class="text-xs text-gray-500 mb-2">Company-specific thresholds for ongoing post-bind surveillance. All values derived from current company data.</p>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Trigger</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Action</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Threshold</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Current Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for trigger in mon.triggers %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ trigger.trigger_name }}</td>
+      <td class="p-1 text-xs">{{ trigger.action }}</td>
+      <td class="p-1 font-mono text-xs">{{ trigger.threshold }}</td>
+      <td class="p-1 font-mono text-xs">{{ trigger.current_value | default('--', true) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p class="text-xs text-gray-400">{{ mon.trigger_count }} monitoring trigger(s) configured</p>
+{% endif %}

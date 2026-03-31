@@ -1,0 +1,61 @@
+- id: CTX.FIN.leverage_sector
+  name: Leverage in Sector Context
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of FIN.DEBT.leverage_ratio through sector lens
+    threshold_provenance:
+      source: calibrated
+      rationale: Sector leverage norms from Damodaran online database, updated annually
+  signal_class: inference
+  group: key_metrics
+  rap_class: host
+  rap_subcategory: host.financials
+  epistemology:
+    rule_origin: 'Aswath Damodaran industry leverage datasets: optimal leverage varies dramatically by sector'
+    threshold_basis: Sector leverage norms from Damodaran online database, updated annually
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: FIN.DEBT.leverage_ratio
+      context_dimensions:
+      - sector
+      context_adjustments:
+        financial:
+          threshold_adjustment: 2.0
+          rationale: 'Financial sector: high leverage is structural (banks, insurers)'
+        utilities:
+          threshold_adjustment: 1.8
+          rationale: 'Utilities: regulated leverage is normal and expected'
+        real_estate:
+          threshold_adjustment: 1.7
+          rationale: 'REITs: leverage is core to business model'
+        tech:
+          threshold_adjustment: 0.6
+          rationale: 'Tech: leverage is unusual and concerning'
+        healthcare:
+          threshold_adjustment: 0.8
+          rationale: 'Healthcare: moderate leverage expected for capex'
+        consumer:
+          threshold_adjustment: 0.9
+          rationale: 'Consumer: moderate leverage for inventory/growth'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} leverage in sector context at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} leverage in sector context at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} leverage in sector context at {value} is within normal parameters for D&O risk assessment — no D&O
+        concern at this level.'

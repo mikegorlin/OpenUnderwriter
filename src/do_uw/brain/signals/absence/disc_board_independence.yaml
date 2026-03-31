@@ -1,0 +1,46 @@
+- id: ABS.DISC.board_independence
+  name: Missing Board Independence Disclosure
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: 'Expected disclosure absent: NYSE/NASDAQ listing standards require majority independent board disclosure'
+  provenance:
+    origin: phase_110_absence
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Absence detection for GOV.BOARD.independence
+    threshold_provenance:
+      source: standard
+      rationale: Exchange listing requirement; absence is governance red flag
+  signal_class: inference
+  group: transparency_disclosure
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  epistemology:
+    rule_origin: NYSE Listed Company Manual Section 303A and NASDAQ Rule 5605
+    threshold_basis: Exchange listing requirement; absence is governance red flag
+  evaluation:
+    mechanism: absence
+    absence_rules:
+      expectation_type: always_expected
+      expected_signals:
+      - GOV.BOARD.independence
+      condition: NYSE/NASDAQ listing standards require majority independent board disclosure
+      expected_status: TRIGGERED
+      absence_trigger: SKIPPED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} missing board independence disclosure at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} missing board independence disclosure at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} missing board independence disclosure at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

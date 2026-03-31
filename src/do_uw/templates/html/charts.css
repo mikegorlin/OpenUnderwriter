@@ -1,0 +1,54 @@
+/* =======================================================================
+   charts.css — Chart and financial tab styles (CHART-04, CHART-06).
+   Split from components.css to keep each file under the 500-line limit.
+   Loaded via base.html.j2 inline <style> include.
+   ======================================================================= */
+
+/* =====================================================================
+   CSS-only financial statement tabs (CHART-04) — no JavaScript
+   ===================================================================== */
+.financial-tabs { position: relative; margin: 0.75rem 0; }
+.tab-radio { display: none; }
+.tab-nav { display: flex; gap: 0; border-bottom: 2px solid var(--do-navy, #0B1D3A); }
+.tab-label {
+  padding: 8px 20px; cursor: pointer; font-weight: 600; font-size: 10pt;
+  color: var(--do-navy, #0B1D3A); background: #f1f5f9;
+  border: 1px solid #e2e8f0; border-bottom: none;
+  border-radius: 4px 4px 0 0; transition: background 0.15s;
+}
+.tab-label:hover { background: #e2e8f0; }
+.tab-content { display: none; }
+#tab-income:checked ~ .tab-nav .tab-label[for="tab-income"],
+#tab-balance:checked ~ .tab-nav .tab-label[for="tab-balance"],
+#tab-cashflow:checked ~ .tab-nav .tab-label[for="tab-cashflow"],
+#trend-tab-income:checked ~ .tab-nav .tab-label[for="trend-tab-income"],
+#trend-tab-balance:checked ~ .tab-nav .tab-label[for="trend-tab-balance"],
+#trend-tab-cashflow:checked ~ .tab-nav .tab-label[for="trend-tab-cashflow"] {
+  background: var(--do-navy, #0B1D3A); color: white;
+  border-color: var(--do-navy, #0B1D3A);
+  border-bottom: 2px solid var(--do-gold, #D4A843);
+}
+#tab-income:checked ~ .tab-content-income,
+#tab-balance:checked ~ .tab-content-balance,
+#tab-cashflow:checked ~ .tab-content-cashflow,
+#trend-tab-income:checked ~ .trend-tab-content-income,
+#trend-tab-balance:checked ~ .trend-tab-content-balance,
+#trend-tab-cashflow:checked ~ .trend-tab-content-cashflow { display: block; }
+
+/* =====================================================================
+   SVG chart responsive sizing
+   ===================================================================== */
+.chart-svg svg { width: 100%; height: auto; }
+
+/* =====================================================================
+   Print/PDF styles for charts and tabs
+   ===================================================================== */
+@media print {
+  /* Financial tabs: show all content, hide tab UI in print/PDF */
+  .tab-radio, .tab-nav { display: none !important; }
+  .tab-content { display: block !important; break-before: auto; }
+  .tab-content + .tab-content { break-before: page; }
+
+  /* SVG charts: render at appropriate size in print */
+  .chart-svg svg { max-width: 100%; height: auto; }
+}

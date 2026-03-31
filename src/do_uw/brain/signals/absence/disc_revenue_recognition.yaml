@@ -1,0 +1,46 @@
+- id: ABS.DISC.revenue_recognition
+  name: Missing Revenue Recognition Policy Disclosure
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: 'Expected disclosure absent: SEC focus area for all registrants'
+  provenance:
+    origin: phase_110_absence
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Absence detection for FIN.ACCT.revenue_recognition
+    threshold_provenance:
+      source: standard
+      rationale: SEC comment letter priority; absence raises revenue quality concerns
+  signal_class: inference
+  group: transparency_disclosure
+  rap_class: host
+  rap_subcategory: host.financials
+  epistemology:
+    rule_origin: ASC 606 revenue recognition disclosure and SEC staff comment letter focus area
+    threshold_basis: SEC comment letter priority; absence raises revenue quality concerns
+  evaluation:
+    mechanism: absence
+    absence_rules:
+      expectation_type: peer_comparison
+      expected_signals:
+      - FIN.ACCT.revenue_recognition
+      condition: SEC focus area for all registrants
+      expected_status: TRIGGERED
+      absence_trigger: SKIPPED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} missing revenue recognition policy disclosure at {value} represents host risk (company-level
+        characteristics that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} missing revenue recognition policy disclosure at {value} is a moderate indicator for D&O
+        risk assessment, warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} missing revenue recognition policy disclosure at {value} is within normal parameters for D&O risk
+        assessment — no D&O concern at this level.'

@@ -1,0 +1,52 @@
+{# Stock Drop Catalyst & D&O Assessment — Phase 119 #}
+{# Extends the stock drops table with catalyst analysis and D&O assessment narratives. #}
+{# Renders BELOW the existing stock_drops.html.j2 table. #}
+
+{% if has_catalyst_data %}
+<div class="mt-4 page-break-inside-avoid">
+  <h4 class="font-heading text-sm font-semibold uppercase tracking-wider text-navy mb-2">Catalyst & D&O Assessment</h4>
+  <div class="space-y-3">
+    {% for evt in enhanced_drop_events %}
+    {% if evt.do_assessment %}
+    <div class="border-l-4 border-amber-500 bg-amber-50 pl-3 py-2">
+      <p class="text-sm font-semibold text-gray-800 m-0">
+        {{ evt.date }} &mdash; {{ evt.drop_pct }} decline
+        {% if evt.trigger %}&mdash; {{ evt.trigger }}{% endif %}
+      </p>
+      <p class="text-sm do-callout m-0 mt-1">{{ evt.do_assessment }}</p>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% if drop_narrative %}
+<div class="mt-3 page-break-inside-avoid">
+  <p class="text-sm text-gray-700 leading-relaxed">{{ drop_narrative }}</p>
+</div>
+{% endif %}
+
+{% if stock_patterns %}
+<div class="mt-3 page-break-inside-avoid">
+  <h4 class="font-heading text-sm font-semibold uppercase tracking-wider text-navy mb-2">Stock Patterns Detected</h4>
+  <table class="data-table w-full border-collapse text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Pattern</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Description</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">D&O Relevance</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for pat in stock_patterns %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 font-semibold text-xs">{{ pat.type | replace('_', ' ') | title }}</td>
+        <td class="p-1 text-xs">{{ pat.description }}</td>
+        <td class="p-1 text-xs do-callout">{{ pat.do_relevance }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}

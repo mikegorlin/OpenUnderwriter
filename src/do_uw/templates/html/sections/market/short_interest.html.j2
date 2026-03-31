@@ -1,0 +1,29 @@
+{# Short Interest — extracted from market.html.j2 #}
+  {# --- Short Interest --- #}
+  <h3>Short Interest</h3>
+  {{ kv_table([
+    {'key': 'Short % of Float', 'value': mkt.short_pct|default('—')},
+    {'key': 'Short % of Shares Out', 'value': mkt.get('short_pct_shares_out', 'N/A')},
+    {'key': 'Shares Short', 'value': mkt.get('shares_short', 'N/A')},
+    {'key': 'Shares Short (Prior Month)', 'value': mkt.get('shares_short_prior', 'N/A')},
+    {'key': 'Days to Cover', 'value': mkt.days_to_cover|default('—')},
+    {'key': '6-Month Trend', 'value': mkt.get('short_trend_6m', 'N/A')},
+  ]) }}
+  {# Short interest interpretation #}
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    {% if mkt.get('short_pct') and mkt.get('short_pct') != 'N/A' %}
+    {% set short_str = mkt.get('short_pct', '')|string|replace('%', '') %}
+    {% if short_str|float(default=0) >= 10 %}
+    <li>Short interest of {{ mkt.short_pct }} is elevated&mdash;heavy short positioning often indicates institutional skepticism and can precede stock drops or short-seller reports that trigger D&amp;O claims</li>
+    {% elif short_str|float(default=0) >= 5 %}
+    <li>Short interest of {{ mkt.short_pct }} is moderate; monitor for increases as rising short interest can signal emerging negative sentiment</li>
+    {% else %}
+    <li>Short interest is low, indicating limited bearish positioning&mdash;a positive market signal for D&amp;O underwriting purposes</li>
+    {% endif %}
+    {% endif %}
+    {% if mkt.get('days_to_cover') and mkt.get('days_to_cover') != 'N/A' %}
+    {% if mkt.get('days_to_cover')|float(default=0) > 5 %}
+    <li>Days-to-cover of {{ mkt.days_to_cover }} indicates significant short overhang that could amplify stock price declines</li>
+    {% endif %}
+    {% endif %}
+  </ul>

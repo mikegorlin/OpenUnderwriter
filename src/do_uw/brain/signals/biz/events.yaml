@@ -1,0 +1,527 @@
+# Phase 95: Corporate Event Extraction signals
+# Domain: biz/events.yaml  |  Count: 5
+- id: BIZ.EVENT.ma_history
+  name: M&A Activity Risk
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  - F8
+  peril_ids: []
+  chain_roles:
+    ma_to_claims: trigger
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_8K
+  data_locations:
+    SEC_10K:
+    - item_7_mda
+    - item_8_financials
+    SEC_8K:
+    - item_2_01
+  threshold:
+    type: tiered
+    red: Serial acquirer (3+ acquisitions in 3 years) with goodwill >40% of assets
+    yellow: 1-2 acquisitions in 3 years OR goodwill >25% of assets
+    clear: No significant M&A activity
+  claims_correlation: 0.7
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.3'
+  data_strategy:
+    field_key: event_ma_risk_score
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6.0_company_profile
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author: system
+    added_by: Phase95
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: Serial acquirer + goodwill concentration are established D&O risk factors
+    render_target: corporate_events
+    formula: serial_acquirer + goodwill_to_assets + acquisition_count
+  display:
+    value_format: numeric
+    source_type: SEC_10K
+    threshold_context: Serial acquirer flag + goodwill/assets ratio
+  group: corporate_events
+  signal_class: evaluative
+  field_path: event_ma_risk_score
+  depends_on:
+  - signal: FIN.FORENSIC.serial_acquirer
+    field: forensic_serial_acquirer
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - analysis.xbrl_forensics.ma_forensics
+    - type: SEC_8K
+      fields:
+      - acquired_data.filings.8-K
+  evaluation:
+    formula: serial_acquirer + goodwill_to_assets + acquisition_count
+    thresholds:
+    - op: '>'
+      value: 2
+      label: RED
+    - op: '>'
+      value: 0
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'M&A risk: {value}'
+    - level: standard
+      template: M&A activity risk score {value} — {status_label}
+    - level: deep
+      fields:
+      - event_ma_risk_score
+      - forensic_serial_acquirer
+      - forensic_goodwill_to_assets
+    context_templates:
+      TRIGGERED: 'M&A integration risk detected: score {value} (serial acquirer and/or goodwill concentration)'
+      CLEAR: No significant M&A integration risk
+    do_context:
+      TRIGGERED_RED: '{company} M&A Activity Risk at {value} (threshold: Serial acquirer (3+ acquisitions in 3 years) with
+        goodwill >40% of assets) signals elevated Financial Irregularities / Restatement Risk risk (F3, F8). Active M&A creates automatic merger objection litigation risk. Nearly every material transaction generates shareholder lawsuits challenging deal terms, board process, or proxy disclosure adequacy. Serial acquirer + goodwill concentration are established D&O risk factors.'
+      TRIGGERED_YELLOW: '{company} M&A Activity Risk at {value} (threshold: 1-2 acquisitions in 3 years OR goodwill >25% of
+        assets) is in the caution zone for Financial Irregularities / Restatement Risk (F3, F8). Monitor for deterioration
+        — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} M&A Activity Risk at {value} is within acceptable range for Financial Irregularities / Restatement
+        Risk (F3, F8) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'D&O claims analysis: serial acquirer pattern from SCAC filing frequency data -- M&A integration failures
+      are a top-5 SCA trigger'
+    threshold_basis: Serial acquirer + goodwill concentration are established D&O risk factors
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+- id: BIZ.EVENT.ipo_exposure
+  name: IPO/Offering Exposure Window
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F2
+  peril_ids: []
+  chain_roles:
+    ipo_to_section11: trigger
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_S1
+  - SEC_S3
+  - MARKET_PRICE
+  data_locations:
+    SEC_S1:
+    - offering_details
+    SEC_S3:
+    - offering_details
+    MARKET_PRICE:
+    - current_price
+  threshold:
+    type: tiered
+    red: Active Section 11 window with offering <1 year old
+    yellow: Active Section 11 window 1-3 years old
+    clear: No active Section 11 exposure
+  claims_correlation: 0.8
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.3'
+  data_strategy:
+    field_key: event_ipo_exposure_score
+    primary_source: SEC_S1
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6.0_company_profile
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author: system
+    added_by: Phase95
+    data_source: SEC_S1
+    threshold_provenance:
+      source: standard
+      rationale: Section 11 windows create strict liability for material misstatements in offering documents
+    render_target: corporate_events
+    formula: active_section_11_windows
+  display:
+    value_format: numeric
+    source_type: SEC_S1
+    threshold_context: Active Section 11 statute of limitations windows
+  group: corporate_events
+  signal_class: evaluative
+  field_path: event_ipo_exposure_score
+  depends_on: []
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_S1
+      fields:
+      - extracted.market.capital_markets
+    - type: MARKET_PRICE
+      fields:
+      - extracted.market.capital_markets.offerings_3yr
+  evaluation:
+    formula: active_section_11_windows
+    thresholds:
+    - op: '>'
+      value: 0
+      label: RED
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Section 11 windows: {value}'
+    - level: standard
+      template: 'IPO/Offering exposure: {value} active window(s) — {status_label}'
+    - level: deep
+      fields:
+      - event_ipo_exposure_score
+      - active_section_11_windows
+    context_templates:
+      TRIGGERED: 'Active Section 11 exposure: {value} open window(s)'
+      CLEAR: No active offering liability windows
+    do_context:
+      TRIGGERED_RED: '{company} IPO/Offering Exposure Window at {value} (threshold: Active Section 11 window with offering
+        <1 year old) signals elevated Stock Decline / Securities Fraud risk (F2). IPO/offering exposure windows create Section 11/12 liability under the Securities Act of 1933. These strict liability claims require no scienter proof and have lower dismissal rates than 10b-5 claims.
+        Section 11 windows create strict liability for material misstatements in offering documents.'
+      TRIGGERED_YELLOW: '{company} IPO/Offering Exposure Window at {value} (threshold: Active Section 11 window 1-3 years
+        old) is in the caution zone for Stock Decline / Securities Fraud (F2). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} IPO/Offering Exposure Window at {value} is within acceptable range for Stock Decline / Securities
+        Fraud (F2) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'Securities Act Section 11 strict liability: IPO/SPO within statute of limitations creates strict liability
+      window for material misstatements in offering documents'
+    threshold_basis: Section 11 windows create strict liability for material misstatements in offering documents
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+- id: BIZ.EVENT.restatements
+  name: Restatement & Material Weakness Timeline
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  - F1
+  peril_ids: []
+  chain_roles:
+    restatement_to_sca: trigger
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_8K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+    - item_9a_controls
+    SEC_8K:
+    - item_4_02
+  threshold:
+    type: tiered
+    red: Any restatement OR material weakness in lookback period
+    yellow: Significant deficiency or remediated material weakness
+    clear: Clean audit history
+  claims_correlation: 0.9
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '1.3'
+  data_strategy:
+    field_key: event_restatement_severity
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6.0_company_profile
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author: system
+    added_by: Phase95
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: Restatements are the strongest predictor of SCA filing
+    render_target: corporate_events
+    formula: restatement_count + material_weakness_flag
+  display:
+    value_format: numeric
+    source_type: SEC_10K
+    threshold_context: Restatement and material weakness event count
+  group: corporate_events
+  signal_class: evaluative
+  field_path: event_restatement_severity
+  depends_on:
+  - signal: FIN.ACCT.restatement
+    field: xbrl_restatement_count
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - extracted.financials.audit.restatements
+      - extracted.financials.audit.material_weaknesses
+    - type: SEC_8K
+      fields:
+      - acquired_data.filings.8-K
+  evaluation:
+    formula: restatement_count + material_weakness_flag
+    thresholds:
+    - op: '>'
+      value: 0
+      label: RED
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Restatement risk: {value}'
+    - level: standard
+      template: Restatement/MW severity {value} — {status_label}
+    - level: deep
+      fields:
+      - event_restatement_severity
+      - xbrl_restatement_count
+      - xbrl_material_weakness_flag
+    context_templates:
+      TRIGGERED: 'Restatement/MW risk: {value} event(s) in review period'
+      CLEAR: No restatements or material weaknesses
+    do_context:
+      TRIGGERED_RED: '{company} Restatement & Material Weakness Timeline at {value} (threshold: Any restatement OR material
+        weakness in lookback period) signals elevated Financial Irregularities / Restatement Risk risk (F3, F1). Internal control deficiencies create the conditions for financial misstatement. Material weaknesses are cited in virtually every restatement-driven SCA as evidence that management was reckless in certifying financial statements under SOX 302/906. Restatements are the strongest predictor of SCA filing.'
+      TRIGGERED_YELLOW: '{company} Restatement & Material Weakness Timeline at {value} (threshold: Significant deficiency
+        or remediated material weakness) is in the caution zone for Financial Irregularities / Restatement Risk (F3, F1).
+        Monitor for deterioration — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Restatement & Material Weakness Timeline at {value} is within acceptable range for Financial Irregularities
+        / Restatement Risk (F3, F1) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'D&O claims analysis: restatements are the strongest single predictor of SCA filing (SCAC database)'
+    threshold_basis: Restatements are the strongest predictor of SCA filing
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+- id: BIZ.EVENT.capital_changes
+  name: Capital Structure Changes
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_8K
+  - SEC_10K
+  data_locations:
+    SEC_8K:
+    - item_2_03
+    SEC_10K:
+    - item_7_mda
+    - item_8_financials
+  threshold:
+    type: tiered
+    red: Multiple significant capital events (debt issuance >20% of assets OR dividend cut)
+    yellow: Single material capital event in lookback period
+    clear: Stable capital structure
+  claims_correlation: 0.5
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.3'
+  data_strategy:
+    field_key: event_capital_change_count
+    primary_source: SEC_8K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6.0_company_profile
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author: system
+    added_by: Phase95
+    data_source: SEC_8K
+    threshold_provenance:
+      source: standard
+      rationale: Capital structure events signal financial stress or transformation
+    render_target: corporate_events
+    formula: capital_event_count
+  display:
+    value_format: count
+    source_type: SEC_8K
+    threshold_context: Count of material capital structure events
+  group: corporate_events
+  signal_class: evaluative
+  field_path: event_capital_change_count
+  depends_on: []
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_8K
+      fields:
+      - extracted.market.capital_markets.offerings_3yr
+    - type: SEC_10K
+      fields:
+      - extracted.market.capital_markets
+  evaluation:
+    formula: capital_event_count
+    thresholds:
+    - op: '>'
+      value: 2
+      label: RED
+    - op: '>'
+      value: 0
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Capital events: {value}'
+    - level: standard
+      template: 'Capital structure activity: {value} event(s) — {status_label}'
+    - level: deep
+      fields:
+      - event_capital_change_count
+    context_templates:
+      TRIGGERED: 'Capital structure activity: {value} material event(s)'
+      CLEAR: Stable capital structure
+    do_context:
+      TRIGGERED_RED: '{company} Capital Structure Changes at {value} (threshold: Multiple significant capital events (debt
+        issuance >20% of assets OR dividend cut)) signals elevated Litigation History / Settlement Patterns risk (F1, F6).
+        Capital structure changes create disclosure obligations and may dilute existing shareholders. Debt issuance, equity offerings, or conversions force material disclosures that become SCA corrective disclosure dates. Capital structure events signal financial stress or transformation.'
+      TRIGGERED_YELLOW: '{company} Capital Structure Changes at {value} (threshold: Single material capital event in lookback
+        period) is in the caution zone for Litigation History / Settlement Patterns (F1, F6). Monitor for deterioration —
+        trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Capital Structure Changes at {value} is within acceptable range for Litigation History / Settlement
+        Patterns (F1, F6) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'D&O claims analysis: capital structure events (equity raises, debt restructuring) signal financial stress
+      or transformation risk'
+    threshold_basis: Capital structure events signal financial stress or transformation
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+- id: BIZ.EVENT.business_changes
+  name: Business Pivots & Restructurings
+  work_type: extract
+  layer: signal
+  factors:
+  - F8
+  peril_ids: []
+  chain_roles:
+    ma_to_claims: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: '>3 major changes in 3 years (high transformation risk)'
+    yellow: 1-3 changes (moderate transition risk)
+    clear: Stable business model
+  claims_correlation: 0.4
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.3'
+  data_strategy:
+    field_key: event_business_change_count
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6.0_company_profile
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author: system
+    added_by: Phase95
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: Business transformation increases D&O risk through governance challenges
+    render_target: corporate_events
+    formula: business_change_count
+  display:
+    value_format: count
+    source_type: SEC_10K
+    threshold_context: Count of major business changes/pivots
+  group: corporate_events
+  signal_class: evaluative
+  field_path: event_business_change_count
+  depends_on: []
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - company.business_changes
+      - company.event_timeline
+  evaluation:
+    formula: business_change_count
+    thresholds:
+    - op: '>'
+      value: 3
+      label: RED
+    - op: '>'
+      value: 0
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Business changes: {value}'
+    - level: standard
+      template: 'Business transformation: {value} change(s) — {status_label}'
+    - level: deep
+      fields:
+      - event_business_change_count
+    context_templates:
+      TRIGGERED: 'Business transformation: {value} material change(s) detected'
+      CLEAR: Stable business model -- no major pivots
+    do_context:
+      TRIGGERED_RED: '{company} Business Pivots & Restructurings at {value} (threshold: >3 major changes in 3 years (high
+        transformation risk)) signals elevated Market Position / Business Risk risk (F8). Business pivots and restructurings create write-down risk and operational disruption. Restructuring charges trigger SCA filings when plaintiffs allege management concealed the deterioration that necessitated the pivot. Business transformation increases D&O risk through governance challenges.'
+      TRIGGERED_YELLOW: '{company} Business Pivots & Restructurings at {value} (threshold: 1-3 changes (moderate transition
+        risk)) is in the caution zone for Market Position / Business Risk (F8). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Business Pivots & Restructurings at {value} is within acceptable range for Market Position / Business
+        Risk (F8) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'D&O claims analysis: business transformation (restructuring, divestitures, pivots) increases D&O risk through
+      governance challenges and earnings disruption'
+    threshold_basis: Business transformation increases D&O risk through governance challenges
+  rap_class: agent
+  rap_subcategory: agent.corporate_events

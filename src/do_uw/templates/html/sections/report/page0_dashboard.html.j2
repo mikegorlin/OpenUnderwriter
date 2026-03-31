@@ -1,0 +1,375 @@
+{# ══════════════ 5-YEAR STRIP ══════════════ #}
+<div id="scorecard">
+<div id="beta-5yr">
+{% if b.stock_chart_5y_svg %}
+<div style="background:#1A1A2E;border:1px solid #2A2D3A;border-radius:6px;margin-top:4px;overflow:hidden">
+  <div style="padding:3px 10px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:7.5pt;font-weight:700;color:#D4A843;letter-spacing:0.5px">{{ b.ticker }} — 5 YEAR PERFORMANCE</span>
+    <span style="font-size:7pt;color:#6B7280">Weekly</span>
+  </div>
+  <div style="padding:0 4px 2px">{{ b.stock_chart_5y_svg | safe }}</div>
+</div>
+{% endif %}
+
+{# ══════════════ MINI CARDS ROW — 6 cards, colored backgrounds ══════════════ #}
+<table style="width:100%;border-collapse:separate;border-spacing:2px;margin-top:4px"><tr>
+
+  {# ── Card 1: Market Cap & Valuation — CR: bg #F5F3FF, border #DDD6FE, title color #7C3AED ── #}
+  <td style="width:16.6%;vertical-align:top;background:#F5F3FF;border:1px solid #DDD6FE;border-radius:4px;padding:5px 6px">
+    <div style="font-size:8pt;color:#7C3AED;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:4px">Market Cap & Valuation</div>
+    <div style="font-size:15pt;font-weight:800;line-height:1">{{ b.market_cap }}</div>
+    <div style="font-size:8pt;color:#6B7280;margin-top:3px">{{ b.mcap_label }} · Decile {{ b.mcap_decile }}</div>
+    {# Decile dots SVG — CR: 10 rounded squares #}
+    <div style="margin-top:4px">{{ b.mcap_decile_svg | safe }}</div>
+    {# EV/Revenue range slider #}
+    {{ b.ev_revenue_slider_svg | safe }}
+    {# Supporting details — CR: border-top colored, 6.5pt pairs #}
+    <div style="margin-top:6px;padding-top:4px;border-top:1px solid #EDE9FE">
+      {% if b.enterprise_value and b.enterprise_value != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7.5pt;color:#6B7280">Enterprise Value</span><span style="font-size:7.5pt;font-weight:600;white-space:nowrap;">{{ b.enterprise_value }}</span></div>{% endif %}
+      {% if b.shares_outstanding and b.shares_outstanding != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7.5pt;color:#6B7280">Shares</span><span style="font-size:7.5pt;font-weight:600;white-space:nowrap;">{{ b.shares_outstanding }}</span></div>{% endif %}
+      {% if b.rev_per_employee and b.rev_per_employee != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7.5pt;color:#6B7280">Rev / Employee</span><span style="font-size:7.5pt;font-weight:600;white-space:nowrap;">{{ b.rev_per_employee }}</span></div>{% endif %}
+      {% if b.employees and b.employees != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7.5pt;color:#6B7280">Employees</span><span style="font-size:7.5pt;font-weight:600;white-space:nowrap;">{{ b.employees }}</span></div>{% endif %}
+    </div>
+  </td>
+
+  {# ── Card 2: Stock Price & Range — CR: bg #FFF7ED, border #FED7AA, title color #C2410C ── #}
+  <td style="width:16.6%;vertical-align:top;background:#FFF7ED;border:1px solid #FED7AA;border-radius:4px;padding:5px 6px">
+    <div style="font-size:8pt;color:#C2410C;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:4px">Stock Price & Range</div>
+    <div style="font-size:15pt;font-weight:800;line-height:1">{{ b.stock_price }}</div>
+    <div style="font-size:8pt;color:#C2410C;font-weight:600;margin-top:3px">{{ b.pct_from_high }}</div>
+    {# 52W range slider — CR: green fill + rounded marker #}
+    {{ b.range_slider_svg | safe }}
+    {# Supporting details #}
+    <div style="margin-top:6px;padding-top:4px;border-top:1px solid #FED7AA">
+      {% if b.high_52w and b.high_52w != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7.5pt;color:#6B7280">52W High</span><span style="font-size:7.5pt;font-weight:600;white-space:nowrap;">{{ b.high_52w }}</span></div>{% endif %}
+      {% if b.low_52w and b.low_52w != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7.5pt;color:#6B7280">52W Low</span><span style="font-size:7.5pt;font-weight:600;white-space:nowrap;">{{ b.low_52w }}</span></div>{% endif %}
+      {% if b.next_earnings and b.next_earnings != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7.5pt;color:#6B7280">Next Earnings</span><span style="font-size:7.5pt;font-weight:600;white-space:nowrap;">{{ b.next_earnings }}</span></div>{% endif %}
+    </div>
+  </td>
+
+  {# ── Card 3: Revenue & Growth — CR: bg #F0FDF4, border #BBF7D0, title color #16A34A ── #}
+  <td style="width:16.6%;vertical-align:top;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:4px;padding:5px 6px">
+    <div style="font-size:8pt;color:#16A34A;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:4px">Revenue & Growth</div>
+    <div style="font-size:15pt;font-weight:800;line-height:1">{{ b.revenue }}</div>
+    <div style="font-size:8pt;color:#6B7280;margin-top:3px">Annual revenue {{ b.revenue_source_label if b.revenue_source_label else '' }}</div>
+    {# Revenue sparkline — CR: 120×32, blue stroke #}
+    {% if b.revenue_sparkline_svg %}<div style="margin-top:5px">{{ b.revenue_sparkline_svg | safe }}</div>{% endif %}
+    {# Supporting details #}
+    <div style="margin-top:6px;padding-top:4px;border-top:1px solid #BBF7D0">
+      <div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7.5pt;color:#6B7280">EV/Revenue</span><span style="font-size:7.5pt;font-weight:600;white-space:nowrap;">{{ b.ev_revenue }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7.5pt;color:#6B7280">EBITDA Margin</span><span style="font-size:7.5pt;font-weight:600;white-space:nowrap;">{{ b.ebitda_margin }}</span></div>
+    </div>
+  </td>
+
+  {# ── Card 4: Profitability & Cash Flow — compact design ── #}
+  <td style="width:16.6%;vertical-align:top;background:#FEF2F2;border:1px solid #FECACA;border-radius:4px;padding:5px 6px">
+    <div style="font-size:8pt;color:#DC2626;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:3px">Profitability & Cash Flow</div>
+    <div style="font-size:12pt;font-weight:800;color:#111827;line-height:1">{{ b.ebitda }}</div>
+    <div style="font-size:8pt;color:#16A34A;font-weight:600;margin-top:2px">EBITDA</div>
+    {# EBITDA sparkline — thin red stroke, 120×24 #}
+    {% if b.ebitda_sparkline_svg %}<div style="margin-top:3px">{{ b.ebitda_sparkline_svg | safe }}</div>{% endif %}
+    {# Earnings Beat/Miss — compact 8px circles + summary #}
+    {% if b.earnings_beats_svg %}
+    <div style="margin-top:3px;display:flex;align-items:center;gap:4px">
+      <div>{{ b.earnings_beats_svg | safe }}</div>
+      {% if b.earnings_beats_summary %}<span style="font-size:8pt;color:#9CA3AF">{{ b.earnings_beats_summary }}</span>{% endif %}
+    </div>
+    {% endif %}
+    {# FCF — thin divider, compact #}
+    {% if b.fcf_sparkline_svg %}
+    <div style="margin-top:4px;padding-top:3px;border-top:1px solid #FECACA">
+      <div style="font-size:8pt;color:#6B7280;font-weight:600">Free Cash Flow</div>
+      <div style="margin-top:2px">{{ b.fcf_sparkline_svg | safe }}</div>
+    </div>
+    {% endif %}
+  </td>
+
+  {# ── Card 5: Balance Sheet — enriched risk story ── #}
+  <td style="width:16.6%;vertical-align:top;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:4px;padding:5px 6px">
+    <div style="font-size:8pt;color:#16A34A;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:4px">Balance Sheet</div>
+    {# Hero: Total Assets with equity/liabilities split #}
+    <div style="font-size:15pt;font-weight:800;line-height:1">{{ b.total_assets }}</div>
+    <div style="font-size:8pt;color:#6B7280;margin-top:2px">Total assets</div>
+    {# Assets = Equity + Liabilities mini breakdown #}
+    {% if b.total_equity and b.total_equity != 'N/A' %}
+    <div style="display:flex;gap:2px;margin-top:3px">
+      <div style="flex:1;background:#D1FAE5;border-radius:2px;padding:2px 3px;text-align:center">
+        <div style="font-size:8pt;font-weight:700;color:#065F46">{{ b.total_equity }}</div>
+        <div style="font-size:5pt;color:#065F46;text-transform:uppercase">Equity</div>
+      </div>
+      {% if b.total_liabilities and b.total_liabilities != 'N/A' %}
+      <div style="flex:1;background:#FEE2E2;border-radius:2px;padding:2px 3px;text-align:center">
+        <div style="font-size:8pt;font-weight:700;color:#991B1B">{{ b.total_liabilities }}</div>
+        <div style="font-size:5pt;color:#991B1B;text-transform:uppercase">Liabilities</div>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+    {# Cash/Debt composition bar #}
+    {{ b.composition_bar_svg | safe }}
+    {# ── Liquidity & Leverage ── #}
+    <div style="margin-top:5px;padding-top:3px;border-top:1px solid #BBF7D0">
+      {# Row: Cash vs Debt #}
+      {% if b.total_cash and b.total_cash != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7pt;color:#6B7280">Cash</span><span style="font-size:7pt;font-weight:600;white-space:nowrap;color:#16A34A">{{ b.total_cash }}</span></div>{% endif %}
+      {% if b.total_debt and b.total_debt != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7pt;color:#6B7280">Total Debt</span><span style="font-size:7pt;font-weight:600;white-space:nowrap;color:#DC2626">{{ b.total_debt }}</span></div>{% endif %}
+      {% if b.net_cash and b.net_cash != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7pt;color:#6B7280">Net Cash</span><span style="font-size:7pt;font-weight:600;white-space:nowrap;{% if b.net_cash_raw is not none and b.net_cash_raw < 0 %}color:#DC2626{% else %}color:#16A34A{% endif %}">{{ b.net_cash }}</span></div>{% endif %}
+    </div>
+    {# ── Ratios ── #}
+    <div style="margin-top:3px;padding-top:3px;border-top:1px dotted #D1FAE5">
+      {% if b.debt_to_equity and b.debt_to_equity != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7pt;color:#6B7280">D/E Ratio</span><span style="font-size:7pt;font-weight:600;white-space:nowrap;{% if b.debt_to_equity_raw is not none and b.debt_to_equity_raw > 200 %}color:#DC2626{% elif b.debt_to_equity_raw is not none and b.debt_to_equity_raw > 100 %}color:#D97706{% endif %}">{{ b.debt_to_equity }}</span></div>{% endif %}
+      {% if b.current_ratio and b.current_ratio != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7pt;color:#6B7280">Current</span><span style="font-size:7pt;font-weight:600;white-space:nowrap;">{{ b.current_ratio }}</span></div>{% endif %}
+      {% if b.quick_ratio and b.quick_ratio != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7pt;color:#6B7280">Quick</span><span style="font-size:7pt;font-weight:600;white-space:nowrap;">{{ b.quick_ratio }}</span></div>{% endif %}
+      {% if b.interest_coverage and b.interest_coverage != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7pt;color:#6B7280">Int. Cov.</span><span style="font-size:7pt;font-weight:600;white-space:nowrap;{% if b.interest_coverage_raw is not none and b.interest_coverage_raw < 2.0 %}color:#DC2626{% elif b.interest_coverage_raw is not none and b.interest_coverage_raw < 4.0 %}color:#D97706{% endif %}">{{ b.interest_coverage }}</span></div>{% endif %}
+      {% if b.net_debt_ebitda and b.net_debt_ebitda != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7pt;color:#6B7280">ND/EBITDA</span><span style="font-size:7pt;font-weight:600;white-space:nowrap;{% if b.net_debt_ebitda_raw is not none and b.net_debt_ebitda_raw > 4.0 %}color:#DC2626{% elif b.net_debt_ebitda_raw is not none and b.net_debt_ebitda_raw > 3.0 %}color:#D97706{% endif %}">{{ b.net_debt_ebitda }}</span></div>{% endif %}
+    </div>
+    {# ── Risk Indicators ── #}
+    {% if (b.goodwill_pct_equity and b.goodwill_pct_equity != 'N/A') or (b.working_capital and b.working_capital != 'N/A') %}
+    <div style="margin-top:3px;padding-top:3px;border-top:1px dotted #D1FAE5">
+      {% if b.goodwill_amt and b.goodwill_amt != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7pt;color:#6B7280">Goodwill</span><span style="font-size:7pt;font-weight:600;white-space:nowrap;">{{ b.goodwill_amt }}</span></div>{% endif %}
+      {% if b.goodwill_pct_equity and b.goodwill_pct_equity != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7pt;color:#6B7280">GW/Equity</span><span style="font-size:7pt;font-weight:600;white-space:nowrap;{% if b.goodwill_pct_equity_raw is not none and b.goodwill_pct_equity_raw > 50 %}color:#DC2626{% elif b.goodwill_pct_equity_raw is not none and b.goodwill_pct_equity_raw > 30 %}color:#D97706{% endif %}">{{ b.goodwill_pct_equity }}</span></div>{% endif %}
+      {% if b.working_capital and b.working_capital != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7pt;color:#6B7280">Work. Cap.</span><span style="font-size:7pt;font-weight:600;white-space:nowrap;{% if b.working_capital_raw is not none and b.working_capital_raw < 0 %}color:#DC2626{% endif %}">{{ b.working_capital }}</span></div>{% endif %}
+    </div>
+    {% endif %}
+    {# ── D&O Context ── #}
+    {% if b.bs_do_context %}
+    <div style="margin-top:4px;padding:3px 4px;background:#ECFDF5;border-radius:2px;border-left:2px solid #16A34A">
+      <div style="font-size:6pt;color:#065F46;line-height:1.3">{{ b.bs_do_context }}</div>
+    </div>
+    {% endif %}
+  </td>
+
+  {# ── Card 6: Valuation Multiples — bg #EFF6FF, border #BFDBFE, title color #1D4ED8 ── #}
+  <td style="width:16.6%;vertical-align:top;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;padding:5px 6px">
+    <div style="font-size:8pt;color:#1D4ED8;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:4px">Valuation</div>
+    <div style="font-size:15pt;font-weight:800;line-height:1">{{ b.val_trailing_pe }}</div>
+    <div style="font-size:8pt;color:#6B7280;margin-top:3px">Trailing P/E</div>
+    {# Supporting details #}
+    <div style="margin-top:6px;padding-top:4px;border-top:1px solid #BFDBFE">
+      {% if b.val_forward_pe and b.val_forward_pe != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7.5pt;color:#6B7280">Forward P/E</span><span style="font-size:7.5pt;font-weight:600;white-space:nowrap;">{{ b.val_forward_pe }}</span></div>{% endif %}
+      {% if b.val_ev_ebitda and b.val_ev_ebitda != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7.5pt;color:#6B7280">EV/EBITDA</span><span style="font-size:7.5pt;font-weight:600;white-space:nowrap;">{{ b.val_ev_ebitda }}</span></div>{% endif %}
+      {% if b.val_price_to_book and b.val_price_to_book != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7.5pt;color:#6B7280">P/Book</span><span style="font-size:7.5pt;font-weight:600;white-space:nowrap;">{{ b.val_price_to_book }}</span></div>{% endif %}
+      {% if b.val_price_to_sales and b.val_price_to_sales != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7.5pt;color:#6B7280">P/Sales</span><span style="font-size:7.5pt;font-weight:600;white-space:nowrap;">{{ b.val_price_to_sales }}</span></div>{% endif %}
+      {% if b.val_trailing_eps and b.val_trailing_eps != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7.5pt;color:#6B7280">Trailing EPS</span><span style="font-size:7.5pt;font-weight:600;white-space:nowrap;">{{ b.val_trailing_eps }}</span></div>{% endif %}
+      {% if b.val_forward_eps and b.val_forward_eps != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1px 0"><span style="font-size:7.5pt;color:#6B7280">Forward EPS</span><span style="font-size:7.5pt;font-weight:600;white-space:nowrap;">{{ b.val_forward_eps }}</span></div>{% endif %}
+    </div>
+  </td>
+
+</tr></table>
+
+{# 5-year strip moved to right under header #}
+
+{# ══════════════ LITIGATION STATUS BAR — Clear badge system for SCAs, derivatives, other actions ══════════════ #}
+<div id="beta-litigation"></div>
+<div style="background:{% if b.has_any_active_litigation %}#FEF2F2{% else %}#F0FDF4{% endif %};border:1px solid {% if b.has_any_active_litigation %}#FECACA{% else %}#BBF7D0{% endif %};border-radius:5px;padding:8px 10px;margin-top:5px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+    <span style="font-size:10pt;font-weight:700;color:#1F3A5C">Litigation &amp; Regulatory Status</span>
+    <div style="display:flex;gap:4px;flex-wrap:wrap">
+      {# SCA badge #}
+      {% if b.active_sca_count > 0 %}
+      <span style="padding:2px 8px;border-radius:10px;font-size:8pt;font-weight:700;background:#DC2626;color:white">{{ b.active_sca_count }} Active SCA{{ 's' if b.active_sca_count > 1 }}</span>
+      {% else %}
+      <span style="padding:2px 8px;border-radius:10px;font-size:8pt;font-weight:600;background:#D1FAE5;color:#065F46">No Active SCAs</span>
+      {% endif %}
+      {# Derivative suits badge #}
+      {% if b.derivative_count is defined and b.derivative_count > 0 %}
+      <span style="padding:2px 8px;border-radius:10px;font-size:8pt;font-weight:700;background:#DC2626;color:white">{{ b.derivative_count }} Derivative</span>
+      {% else %}
+      <span style="padding:2px 8px;border-radius:10px;font-size:8pt;font-weight:600;background:#D1FAE5;color:#065F46">No Derivatives</span>
+      {% endif %}
+      {# Other active litigation badge #}
+      {% if b.other_active_cases %}
+      <span style="padding:2px 8px;border-radius:10px;font-size:8pt;font-weight:700;background:#F59E0B;color:white">{{ b.other_active_cases | length }} Other Action{{ 's' if b.other_active_cases | length > 1 }}</span>
+      {% endif %}
+    </div>
+  </div>
+
+  {# Active SCAs with case names #}
+  {% if b.active_sca_count > 0 %}
+  <div style="font-size:9.5pt;color:#374151;margin-top:3px;padding-left:2px">
+    <span style="display:inline-block;width:8px;height:8px;border-radius:4px;background:#DC2626;vertical-align:middle;margin-right:4px"></span>
+    <b style="color:#DC2626">Securities Class Actions:</b> {% for name in b.active_sca_names %}{{ name }}{% if not loop.last %}; {% endif %}{% endfor %}
+  </div>
+  {% endif %}
+
+  {# Other active litigation (product liability, consumer, etc.) #}
+  {% if b.other_active_cases %}
+  {% for case in b.other_active_cases %}
+  <div style="font-size:9.5pt;color:#374151;margin-top:3px;padding-left:2px">
+    <span style="display:inline-block;width:8px;height:8px;border-radius:4px;background:#F59E0B;vertical-align:middle;margin-right:4px"></span>
+    <b style="color:#92400E">{{ case.type }}:</b> {{ case.name }}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  {# Regulatory agency status #}
+  {% if b.reg_agencies_active %}
+  <div style="font-size:9.5pt;color:#374151;margin-top:3px;padding-left:2px">
+    <span style="display:inline-block;width:8px;height:8px;border-radius:4px;background:#DC2626;vertical-align:middle;margin-right:4px"></span>
+    <b style="color:#DC2626">Regulatory Active:</b> {{ b.reg_agencies_active | join(', ') }}
+  </div>
+  {% endif %}
+  {% if b.reg_agencies_clear %}
+  <div style="font-size:9.5pt;color:#374151;margin-top:3px;padding-left:2px">
+    <span style="display:inline-block;width:8px;height:8px;border-radius:4px;background:#16A34A;vertical-align:middle;margin-right:4px"></span>
+    <b style="color:#16A34A">Regulatory Clear:</b> {{ b.reg_agencies_clear | join(', ') }}
+  </div>
+  {% endif %}
+
+  {# D&O Litigation History tier summary #}
+  {% if b.lit_summary %}
+  <div style="border-left:3px solid {{ b.lit_tier_color }};padding:5px 10px;margin-top:6px;background:rgba({{ '220,38,38' if b.lit_tier == 'CRITICAL' else '217,119,6' if b.lit_tier == 'WATCH' else '99,102,241' if b.lit_tier == 'MONITOR' else '22,163,106' }},0.06);border-radius:0 4px 4px 0">
+    <div style="font-size:9pt;font-weight:700;color:{{ b.lit_tier_color }}">
+      <span style="display:inline-block;width:8px;height:8px;border-radius:4px;background:{{ b.lit_tier_color }};vertical-align:middle;margin-right:4px"></span>D&amp;O Litigation History &mdash; {{ b.lit_tier }}
+    </div>
+    <div style="font-size:9.5pt;color:#374151;margin-top:2px;line-height:1.4">{{ b.lit_summary }}</div>
+  </div>
+  {% endif %}
+</div>
+
+{# ══════════════ NAVY PROFESSIONAL COMBO CHART (Basic D&O Chart 1) ══════════════ #}
+{% if b.stock_chart_svg %}
+<div id="beta-combo-chart"></div>
+<div style="margin-top:5px">{{ b.stock_chart_svg | safe }}</div>
+{% endif %}
+
+
+{# ══════════════ KEY RISK FINDINGS — CR: white bg with red header, numbered circles ══════════════ #}
+<div id="beta-findings"></div>
+<div style="background:white;border:1px solid #E5E7EB;border-radius:5px;margin-top:5px;overflow:hidden">
+  {# Header — CR: background:#FEF2F2, padding:6px 10px, border-bottom:#FECACA #}
+  <div style="background:#FEF2F2;padding:6px 10px;border-bottom:1px solid #FECACA;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:10pt;font-weight:700;color:#DC2626">Key Risk Findings</span>
+    <div style="display:flex;gap:4px">
+      {% if b.red_count > 0 %}<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:8pt;font-weight:700;background:#DC2626;color:white">{{ b.red_count }} Red</span>{% endif %}
+      {% if b.yellow_count > 0 %}<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:8pt;font-weight:700;background:#F59E0B;color:white">{{ b.yellow_count }} Yellow</span>{% endif %}
+    </div>
+  </div>
+  {# Findings list — CR: numbered circles, headline + badge, description below #}
+  <div style="padding:4px 10px">
+    {% for f in b.key_findings %}
+    <div style="padding:6px 0;{% if not loop.last %}border-bottom:1px solid #F3F4F6;{% endif %}">
+      {# Row 1: Number + Risk factor headline + tags + severity badge #}
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <div style="width:20px;height:20px;border-radius:10px;background:{% if f.severity == 'red' %}#DC2626{% elif f.severity == 'yellow' %}#F59E0B{% else %}#6B7280{% endif %};color:white;font-size:8pt;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ loop.index }}</div>
+        <span style="font-size:9.5pt;font-weight:700;color:#111827">{{ f.headline }}</span>
+        {% if f.headline_tags %}{{ f.headline_tags | safe }}{% endif %}
+        {% if f.is_risk_factor is defined and f.is_risk_factor %}
+          <span style="padding:1px 7px;border-radius:8px;font-size:7.5pt;font-weight:600;background:{% if f.severity == 'red' %}#FEE2E2;color:#991B1B{% else %}#FEF3C7;color:#92400E{% endif %}">{{ f.badge_value }}</span>
+        {% else %}
+          <span style="padding:1px 7px;border-radius:8px;font-size:8pt;font-weight:700;background:{% if f.severity == 'red' %}#DC2626{% else %}#F59E0B{% endif %};color:white">{{ f.badge_value }}/{{ f.max }}</span>
+          {% if f.signal_count %}<span style="font-size:7pt;color:#9CA3AF">{{ f.signal_count }} signals</span>{% endif %}
+        {% endif %}
+      </div>
+      {# Row 2: Evidence bullets — 10-K disclosure + confirming signals #}
+      {% if f.evidence_bullets %}
+      <div style="margin:4px 0 0 26px">
+        {% for bullet in f.evidence_bullets %}
+        <div style="display:flex;gap:4px;padding:2px 0;font-size:8.5pt;color:#4B5563;line-height:1.45">
+          <span style="color:#9CA3AF;flex-shrink:0">•</span>
+          <span>{{ bullet | strip_jargon | safe }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+    {% if not b.key_findings %}
+    <div style="padding:8px 0;font-size:9pt;color:#16A34A;font-weight:600">No significant risk factors identified — clean risk profile</div>
+    {% endif %}
+  </div>
+  {# Fix 1: Score vs. findings context annotation — helps underwriters reconcile quantitative score with qualitative risk findings #}
+  {% if b.red_count and b.red_count > 0 %}
+  <div style="padding:4px 10px 6px;font-size:7.5pt;color:#6B7280;line-height:1.5;font-style:italic;border-top:1px solid #F3F4F6">
+    Note: The quality score ({{ b.quality_score }}, {{ b.tier_name }}) reflects weighted quantitative signal analysis across all 10 scoring factors. Key Risk Findings above are qualitative assessments derived from 10-K disclosures and independent research — both perspectives inform the underwriting decision. A high score with RED findings typically indicates strong financials offset by specific disclosure-level concerns.
+  </div>
+  {% endif %}
+</div>
+
+{# ══════════════ UNDERWRITER PRIORITY METRICS — earnings, estimates, plaintiff exposure, analyst, dates ══════════════ #}
+<div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">
+
+  {# ── Earnings Beat Streak ── #}
+  {% if b.earnings_beat_streak %}
+  <div style="flex:1;min-width:140px;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:8px 10px">
+    <div style="font-size:7pt;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:4px">EPS Beat Streak</div>
+    <div style="display:flex;align-items:baseline;gap:6px">
+      <span style="font-size:18pt;font-weight:800;color:{{ b.earnings_beat_color }}">{{ b.earnings_beat_streak }}</span>
+      <span style="font-size:8pt;color:{{ b.earnings_beat_color }};font-weight:600">{{ b.earnings_beat_label }}</span>
+    </div>
+    <div style="font-size:7pt;color:#9CA3AF;margin-top:2px">Guidance miss is the #1 SCA trigger</div>
+  </div>
+  {% endif %}
+
+  {# ── Forward Estimate Spread ── #}
+  {% if b.estimate_spreads %}
+  <div style="flex:1.5;min-width:200px;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:8px 10px">
+    <div style="font-size:7pt;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:4px">Estimate Spread <span style="font-weight:400;text-transform:none">(wider = higher miss risk)</span></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      {% for s in b.estimate_spreads %}
+      <div style="text-align:center">
+        <div style="font-size:14pt;font-weight:800;color:{{ s.color }}">{{ s.spread_pct }}</div>
+        <div style="font-size:8pt;color:#6B7280;font-weight:600">{{ s.label }}</div>
+        <div style="font-size:6pt;color:#9CA3AF">{{ s.low }}–{{ s.high }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# ── Analyst Trend (90-day) ── #}
+  {% if b.analyst_trend %}
+  <div style="flex:1;min-width:160px;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:8px 10px">
+    <div style="font-size:7pt;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:4px">Analyst Trend <span style="font-weight:400;text-transform:none">(90 days)</span></div>
+    <div style="display:flex;align-items:baseline;gap:6px">
+      <span style="font-size:14pt;font-weight:800;color:{{ b.analyst_trend.direction_color }}">{{ b.analyst_trend.direction }}</span>
+    </div>
+    <div style="font-size:7.5pt;color:#4B5563;margin-top:2px">{{ b.analyst_trend.summary }}</div>
+    {% if b.analyst_trend.initiates > 0 %}<div style="font-size:7pt;color:#9CA3AF">+{{ b.analyst_trend.initiates }} new coverage</div>{% endif %}
+  </div>
+  {% endif %}
+
+  {# ── Key Dates Calendar ── #}
+  {% if b.key_dates %}
+  <div style="flex:1;min-width:150px;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:8px 10px">
+    <div style="font-size:7pt;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:4px">Key Dates</div>
+    {% for d in b.key_dates %}
+    <div style="display:flex;justify-content:space-between;padding:1px 0;font-size:7.5pt">
+      <span style="color:#4B5563;font-weight:600">{{ d.event }}</span>
+      <span style="color:#111827;font-weight:700;font-variant-numeric:tabular-nums">{{ d.date }}</span>
+    </div>
+    {% endfor %}
+    {% if b.next_earnings_estimate %}
+    <div style="margin-top:3px;padding-top:3px;border-top:1px solid #F3F4F6;font-size:7pt;color:#9CA3AF">
+      EPS Est: {{ b.next_earnings_estimate.low }}–{{ b.next_earnings_estimate.high }} (avg {{ b.next_earnings_estimate.avg }})
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+</div>
+
+{# ── Plaintiff Exposure Matrix ── #}
+{% if b.plaintiff_exposure %}
+<div style="background:white;border:1px solid #E5E7EB;border-radius:5px;margin-top:5px;padding:8px 10px">
+  <div style="font-size:7pt;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:6px">Plaintiff Exposure Matrix</div>
+  <table style="width:100%;border-collapse:collapse;font-size:8pt">
+    {% for pe in b.plaintiff_exposure %}
+    <tr>
+      <td style="padding:2px 4px;font-weight:600;width:110px;color:#374151">{{ pe.type }}</td>
+      <td style="padding:2px 4px;width:90px">
+        <div style="display:flex;gap:1px">
+          {% for i in range(5) %}
+          <div style="width:14px;height:10px;border-radius:2px;background:{% if i < pe.level %}{{ pe.color }}{% else %}#E5E7EB{% endif %}"></div>
+          {% endfor %}
+        </div>
+      </td>
+      <td style="padding:2px 4px;font-size:7pt;color:#6B7280">{{ pe.prob }}</td>
+      <td style="padding:2px 4px;font-size:7pt;color:#6B7280">/</td>
+      <td style="padding:2px 4px;font-size:7pt;color:#6B7280">{{ pe.sev }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endif %}
+
+</div>{# close scorecard wrapper #}

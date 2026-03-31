@@ -1,0 +1,82 @@
+{# Company Profile — extracted from executive.html.j2 #}
+
+  {# --- Company Profile (objective facts: identity + classification + size) --- #}
+  {% set snap = es.get('snapshot') %}
+  {% set co = company or {} %}
+  {% if snap %}
+  <div class="my-3">
+    {# Build paired KV pairs for CIQ-density 4-column layout #}
+    {% set profile_pairs = [] %}
+    {% if snap.company_name %}{% set _ = profile_pairs.append(("Legal Name", snap.company_name | format_na)) %}{% endif %}
+    {% if snap.ticker %}{% set _ = profile_pairs.append(("Ticker / Exchange", snap.ticker ~ " — " ~ (snap.exchange | format_na))) %}{% endif %}
+    {% set _ = profile_pairs.append(("CIK", co.cik | default('—') | format_na)) %}
+    {% set _ = profile_pairs.append(("State / FPI / FY End", (co.state_of_inc | default('—') | format_na) ~ " | FPI: " ~ (fpi_status | default('No')) ~ " | FY End: " ~ (fiscal_year_end | default('—')))) %}
+    {% set _ = profile_pairs.append(("SIC", (sic_code | default('—')) ~ " — " ~ (sic_description | default('')))) %}
+    {% if gics_code %}{% set _ = profile_pairs.append(("GICS", gics_code ~ (" — " ~ gics_name if gics_name else ""))) %}{% endif %}
+    {% if naics_code %}{% set _ = profile_pairs.append(("NAICS", naics_code)) %}{% endif %}
+    {% set _ = profile_pairs.append(("Sector / Industry", (sector | format_na) ~ (" — " ~ snap.industry if snap.industry and snap.industry != sector else ""))) %}
+    {{ paired_kv_table(profile_pairs, "Company Profile") }}
+
+    {# Two-column layout: Size Metrics | Classification Context #}
+    {% set sp = spectrums or {} %}
+    <div class="two-col-profile">
+      <div class="profile-col">
+        {# Size Metrics with spectrum bars #}
+        <div class="bg-bg-alt border border-gray-200 rounded p-3">
+          <p class="font-heading text-xs font-semibold uppercase tracking-wider text-navy m-0 mb-2">Size Metrics</p>
+          {% set mcap_sp = sp.get('market_cap') %}
+          {% if mcap_sp %}
+            {{ spectrum_bar(snap.market_cap | format_na, "Market Cap", mcap_sp.tier_label, mcap_sp.position_pct) }}
+          {% else %}
+            {{ spectrum_bar(snap.market_cap | format_na, "Market Cap", "N/A", 0) }}
+          {% endif %}
+          {% set rev_sp = sp.get('revenue') %}
+          {% if rev_sp %}
+            {{ spectrum_bar(snap.revenue | format_na, "Revenue", rev_sp.tier_label, rev_sp.position_pct) }}
+          {% else %}
+            {{ spectrum_bar(snap.revenue | format_na, "Revenue", "N/A", 0) }}
+          {% endif %}
+          {% set emp_sp = sp.get('employees') %}
+          {% if emp_sp %}
+            {{ spectrum_bar(snap.employees | format_na, "Employees", emp_sp.tier_label, emp_sp.position_pct) }}
+          {% else %}
+            {{ spectrum_bar(snap.employees | format_na, "Employees", "N/A", 0) }}
+          {% endif %}
+          {% set yrs_sp = sp.get('years_public') %}
+          {% if classification and classification.years_public %}
+            {% if yrs_sp %}
+              {{ spectrum_bar(classification.years_public, "Years Public", yrs_sp.tier_label, yrs_sp.position_pct) }}
+            {% else %}
+              {{ spectrum_bar(classification.years_public, "Years Public", "N/A", 0) }}
+            {% endif %}
+          {% endif %}
+          {% if co.subsidiary_count %}
+          <div class="flex items-center gap-2 py-1">
+            <span class="w-24 text-xs font-heading font-semibold text-navy shrink-0">Subsidiaries</span>
+            <span class="w-20 text-sm tabular-nums text-right shrink-0">{{ co.subsidiary_count }}</span>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="profile-col">
+        {# Classification & Context #}
+        <div class="bg-bg-alt border border-gray-200 rounded p-3">
+          <p class="font-heading text-xs font-semibold uppercase tracking-wider text-navy m-0 mb-2">Classification</p>
+          {% set class_pairs = [] %}
+          {% if sic_code %}{% set _ = class_pairs.append(("SIC Code", (sic_code | string) ~ " — " ~ (sic_description | default('')))) %}{% endif %}
+          {% if gics_code %}{% set _ = class_pairs.append(("GICS", (gics_code | string) ~ (" — " ~ gics_name if gics_name else ""))) %}{% endif %}
+          {% if naics_code %}{% set _ = class_pairs.append(("NAICS", naics_code | string)) %}{% endif %}
+          {% if co.state_of_inc %}{% set _ = class_pairs.append(("State of Inc.", co.state_of_inc | format_na ~ (" — Chancery Court jurisdiction" if co.state_of_inc == "DE" else ""))) %}{% endif %}
+          {% if fiscal_year_end %}{% set _ = class_pairs.append(("Fiscal Year End", fiscal_year_end | format_na)) %}{% endif %}
+          {% if fpi_status %}{% set _ = class_pairs.append(("Foreign Private Issuer", fpi_status | format_na)) %}{% endif %}
+          {% if co.subsidiary_count %}{% set _ = class_pairs.append(("Subsidiaries", co.subsidiary_count | string)) %}{% endif %}
+          {% if class_pairs %}
+          {{ kv_table(class_pairs) }}
+          {% else %}
+          <p class="text-xs text-gray-400 italic m-0">No classification data available</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}

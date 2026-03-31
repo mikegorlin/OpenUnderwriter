@@ -1,0 +1,806 @@
+- id: GOV.RIGHTS.dual_class
+  name: Dual Class
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: Dual-class with >50% voting control by insiders
+    yellow: Dual-class structure present
+    clear: Single class, one-share-one-vote
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: dual_class
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: structural_governance
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: structural_governance
+  signal_class: evaluative
+  field_path: dual_class
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'ISS Governance QualityScore: dual-class share structure as governance
+      concern -- unequal voting rights entrench management'
+    threshold_basis: 'Dual-class with >10:1 voting ratio = RED: ISS governance concern;
+      any dual-class = YELLOW per governance best practice'
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Dual Class at {value} (threshold: Dual-class with
+        >50% voting control by insiders) signals elevated Emerging Risk / Forward-Looking
+        Exposure risk (F10). Dual-class share structure concentrates voting control
+        and insulates management from shareholder accountability. Courts give less
+        deference to boards that cannot be meaningfully challenged through the shareholder
+        franchise. Dual-class with >10:1 voting ratio = RED: ISS governance concern;
+        any dual-class = YELLOW per governance best practice.'
+      TRIGGERED_YELLOW: '{company} Dual Class at {value} (threshold: Dual-class structure
+        present) is in the caution zone for Emerging Risk / Forward-Looking Exposure
+        (F10). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Dual Class at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.RIGHTS.voting_rights
+  name: Voting Rights
+  work_type: extract
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: dual_class
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: structural_governance
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: structural_governance
+  signal_class: evaluative
+  field_path: dual_class
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS proxy voting guidelines and shareholder rights best practices
+    threshold_basis: Shareholder rights threshold from ISS governance standards and
+      proxy advisory research
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} voting rights at {value} represents host risk (company-level
+        characteristics that attract or deter D&O claims) (scoring factor F10) — this
+        level is associated with Emerging Risk / Forward-Looking Exposure exposure
+        based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} voting rights at {value} is a moderate indicator
+        for Emerging Risk / Forward-Looking Exposure (scoring factor F10), warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} voting rights at {value} is within normal parameters for Emerging
+        Risk / Forward-Looking Exposure (scoring factor F10) — no D&O concern at this
+        level.'
+- id: GOV.RIGHTS.bylaws
+  execution_mode: AUTO
+  name: Bylaws
+  work_type: extract
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: bylaw_provisions
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: structural_governance
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: structural_governance
+  signal_class: evaluative
+  field_path: bylaw_provisions
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS proxy voting guidelines and shareholder rights best practices
+    threshold_basis: Shareholder rights threshold from ISS governance standards and
+      proxy advisory research
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} bylaws at {value} represents host risk (company-level
+        characteristics that attract or deter D&O claims) (scoring factor F10) — this
+        level is associated with Emerging Risk / Forward-Looking Exposure exposure
+        based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} bylaws at {value} is a moderate indicator for Emerging
+        Risk / Forward-Looking Exposure (scoring factor F10), warranting review of
+        supporting evidence: {evidence}.'
+      CLEAR: '{company} bylaws at {value} is within normal parameters for Emerging
+        Risk / Forward-Looking Exposure (scoring factor F10) — no D&O concern at this
+        level.'
+- id: GOV.RIGHTS.takeover
+  execution_mode: AUTO
+  name: Takeover
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: Poison pill in effect OR multiple anti-takeover provisions
+    yellow: Poison pill on shelf OR 1-2 anti-takeover provisions
+    clear: Minimal anti-takeover provisions
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: takeover_defenses
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: structural_governance
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: structural_governance
+  signal_class: evaluative
+  field_path: takeover_defenses
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS proxy voting guidelines and shareholder rights best practices
+    threshold_basis: Shareholder rights threshold from ISS governance standards and
+      proxy advisory research
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Takeover at {value} (threshold: Poison pill in effect
+        OR multiple anti-takeover provisions) signals elevated Emerging Risk / Forward-Looking
+        Exposure risk (F10). Anti-takeover provisions entrench current management
+        and reduce market discipline. Entrenched boards face heightened derivative
+        claim exposure under Revlon/Unocal standards when they block value-maximizing
+        transactions. Shareholder rights threshold from ISS governance standards and
+        proxy advisory research.'
+      TRIGGERED_YELLOW: '{company} Takeover at {value} (threshold: Poison pill on
+        shelf OR 1-2 anti-takeover provisions) is in the caution zone for Emerging
+        Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Takeover at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.RIGHTS.proxy_access
+  execution_mode: AUTO
+  name: Proxy Access
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: No proxy access AND no special meeting rights
+    yellow: Restrictive proxy access (>5% ownership, >3 year holding)
+    clear: Proxy access at 3%/3-year standard or better
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: proxy_access_threshold
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: structural_governance
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: structural_governance
+  signal_class: evaluative
+  field_path: proxy_access_threshold
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS proxy voting guidelines and shareholder rights best practices
+    threshold_basis: Shareholder rights threshold from ISS governance standards and
+      proxy advisory research
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Proxy Access at {value} (threshold: No proxy access
+        AND no special meeting rights) signals elevated Emerging Risk / Forward-Looking
+        Exposure risk (F10). Restricted proxy access limits shareholder ability to
+        nominate director candidates, reducing board accountability. Governance restrictions
+        that limit shareholder voice support demand futility arguments in derivative
+        actions. Shareholder rights threshold from ISS governance standards and proxy
+        advisory research.'
+      TRIGGERED_YELLOW: '{company} Proxy Access at {value} (threshold: Restrictive
+        proxy access (>5% ownership, >3 year holding)) is in the caution zone for
+        Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration
+        — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Proxy Access at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.RIGHTS.forum_select
+  execution_mode: AUTO
+  name: Forum Select
+  work_type: extract
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: forum_selection_clause
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: structural_governance
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: structural_governance
+  signal_class: evaluative
+  field_path: forum_selection_clause
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS proxy voting guidelines and shareholder rights best practices
+    threshold_basis: Shareholder rights threshold from ISS governance standards and
+      proxy advisory research
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} forum select at {value} represents host risk (company-level
+        characteristics that attract or deter D&O claims) (scoring factor F10) — this
+        level is associated with Emerging Risk / Forward-Looking Exposure exposure
+        based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} forum select at {value} is a moderate indicator
+        for Emerging Risk / Forward-Looking Exposure (scoring factor F10), warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} forum select at {value} is within normal parameters for Emerging
+        Risk / Forward-Looking Exposure (scoring factor F10) — no D&O concern at this
+        level.'
+- id: GOV.RIGHTS.supermajority
+  execution_mode: AUTO
+  name: Supermajority
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: Supermajority required for bylaw amendments AND board removal
+    yellow: Supermajority for some provisions
+    clear: Simple majority for all provisions
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: supermajority_required
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: structural_governance
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: structural_governance
+  signal_class: evaluative
+  field_path: supermajority_required
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'ISS proxy voting guidelines: supermajority voting requirements as
+      anti-takeover provision'
+    threshold_basis: 'Supermajority provisions = RED: ISS recommends against as they
+      entrench management; simple majority = CLEAR'
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Supermajority at {value} (threshold: Supermajority
+        required for bylaw amendments AND board removal) signals elevated Emerging
+        Risk / Forward-Looking Exposure risk (F10). Supermajority voting requirements
+        entrench existing governance provisions and prevent shareholders from implementing
+        reforms. This lock-in effect supports claims that the board prioritized self-perpetuation
+        over shareholder interests. Supermajority provisions = RED: ISS recommends
+        against as they entrench management; simple majority = CLEAR.'
+      TRIGGERED_YELLOW: '{company} Supermajority at {value} (threshold: Supermajority
+        for some provisions) is in the caution zone for Emerging Risk / Forward-Looking
+        Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Supermajority at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.RIGHTS.action_consent
+  execution_mode: AUTO
+  name: Action Consent
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: No written consent AND no special meeting right
+    yellow: Written consent restricted
+    clear: Written consent permitted
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: action_by_consent
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: structural_governance
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: structural_governance
+  signal_class: evaluative
+  field_path: action_by_consent
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS proxy voting guidelines and shareholder rights best practices
+    threshold_basis: Shareholder rights threshold from ISS governance standards and
+      proxy advisory research
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Action Consent at {value} (threshold: No written consent
+        AND no special meeting right) signals elevated Emerging Risk / Forward-Looking
+        Exposure risk (F10). Restrictions on shareholder action by written consent
+        limit the ability to act between annual meetings, reducing board accountability
+        and supporting entrenchment theories in derivative claims. Shareholder rights
+        threshold from ISS governance standards and proxy advisory research.'
+      TRIGGERED_YELLOW: '{company} Action Consent at {value} (threshold: Written consent
+        restricted) is in the caution zone for Emerging Risk / Forward-Looking Exposure
+        (F10). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Action Consent at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.RIGHTS.special_mtg
+  execution_mode: AUTO
+  name: Special Mtg
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: Special meeting rights denied or >25% threshold
+    yellow: Special meeting at 15-25% threshold
+    clear: Special meeting at <15% threshold
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: special_meeting_threshold
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: structural_governance
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: structural_governance
+  signal_class: evaluative
+  field_path: special_meeting_threshold
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS proxy voting guidelines and shareholder rights best practices
+    threshold_basis: Shareholder rights threshold from ISS governance standards and
+      proxy advisory research
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Special Mtg at {value} (threshold: Special meeting
+        rights denied or >25% threshold) signals elevated Emerging Risk / Forward-Looking
+        Exposure risk (F10). Restrictions on calling special meetings prevent shareholders
+        from forcing timely board consideration of urgent matters, supporting claims
+        that the board structure is designed to insulate management from accountability.
+        Shareholder rights threshold from ISS governance standards and proxy advisory
+        research.'
+      TRIGGERED_YELLOW: '{company} Special Mtg at {value} (threshold: Special meeting
+        at 15-25% threshold) is in the caution zone for Emerging Risk / Forward-Looking
+        Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Special Mtg at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.RIGHTS.classified
+  execution_mode: AUTO
+  name: Classified
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles:
+    governance_to_derivative: mitigator
+    activist_to_derivative: mitigator
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: Classified board with no declassification proposal
+    yellow: Classified board with declassification underway
+    clear: Annual election of all directors
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: classified_board
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: structural_governance
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: structural_governance
+  signal_class: evaluative
+  field_path: classified_board
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS proxy voting guidelines and shareholder rights best practices
+    threshold_basis: Shareholder rights threshold from ISS governance standards and
+      proxy advisory research
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Classified at {value} (threshold: Classified board
+        with no declassification proposal) signals elevated Emerging Risk / Forward-Looking
+        Exposure risk (F10). Classified board structure prevents shareholders from
+        replacing a majority of directors in a single election, entrenching existing
+        management and reducing the threat of proxy contests that would otherwise
+        discipline governance. Shareholder rights threshold from ISS governance standards
+        and proxy advisory research.'
+      TRIGGERED_YELLOW: '{company} Classified at {value} (threshold: Classified board
+        with declassification underway) is in the caution zone for Emerging Risk /
+        Forward-Looking Exposure (F10). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Classified at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'

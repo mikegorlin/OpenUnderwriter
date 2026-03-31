@@ -1,0 +1,58 @@
+- id: CTX.FIN.capex_sector
+  name: Capital Expenditure in Sector Context
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of FIN.INVEST.capex_ratio through sector lens
+    threshold_provenance:
+      source: calibrated
+      rationale: Sector capex norms from S&P CapIQ industry statistics
+  signal_class: inference
+  group: key_metrics
+  rap_class: host
+  rap_subcategory: host.financials
+  epistemology:
+    rule_origin: Industry capital intensity benchmarks from S&P Capital IQ
+    threshold_basis: Sector capex norms from S&P CapIQ industry statistics
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: FIN.INVEST.capex_ratio
+      context_dimensions:
+      - sector
+      context_adjustments:
+        tech:
+          threshold_adjustment: 0.7
+          rationale: 'Tech: high capex unusual (asset-light model)'
+        industrial:
+          threshold_adjustment: 1.5
+          rationale: 'Industrial: high capex is structural and expected'
+        energy:
+          threshold_adjustment: 1.8
+          rationale: 'Energy: very high capex is core to business'
+        utilities:
+          threshold_adjustment: 2.0
+          rationale: 'Utilities: regulated capex programs are normal'
+        financial:
+          threshold_adjustment: 0.5
+          rationale: 'Financial: significant capex is unusual and concerning'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} capital expenditure in sector context at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} capital expenditure in sector context at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} capital expenditure in sector context at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

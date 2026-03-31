@@ -1,0 +1,86 @@
+{# Earnings Guidance Track Record — extracted from market.html.j2 #}
+  {# --- Earnings Guidance Track Record --- #}
+  {% set eg = mkt.get('earnings_guidance', {}) %}
+  {% if eg %}
+  <h3>Earnings Guidance Track Record</h3>
+  {{ kv_table([
+    {'key': 'Provides Guidance', 'value': eg.get('provides_guidance', 'N/A')},
+    {'key': 'Guidance Detail', 'value': eg.get('guidance_detail', 'N/A')},
+    {'key': 'Guidance Frequency', 'value': eg.get('guidance_frequency', 'N/A')},
+    {'key': 'Beat Rate', 'value': eg.get('beat_rate', 'N/A')},
+    {'key': 'Consecutive Misses', 'value': eg.get('consecutive_misses', '0')},
+    {'key': 'Guidance Withdrawals', 'value': eg.get('withdrawals', '0')},
+    {'key': 'Philosophy', 'value': eg.get('philosophy', 'N/A')},
+  ]) }}
+  {% if eg.get('guidance_history') %}
+  <div class="mt-2 mb-2">
+    <p class="text-xs font-semibold text-navy m-0 mb-1">Guidance Changes</p>
+    <ul class="text-xs text-gray-700 m-0 pl-4">
+      {% for change in eg.guidance_history %}
+      <li>{{ change }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  {# Guidance D&O interpretation #}
+  <ul class="text-xs text-gray-500 mt-1 mb-2 leading-relaxed list-disc ml-4 space-y-0.5">
+    {% set beat_str = eg.get('beat_rate', '')|string|replace('%', '') %}
+    {% set beat_val = beat_str|float(default=-1) %}
+    {% if beat_val >= 90 %}
+    <li>Beat rate of {{ eg.beat_rate }} indicates highly reliable guidance &mdash; reduces earnings surprise SCA exposure, though may signal management is setting expectations conservatively</li>
+    {% elif beat_val >= 0 and beat_val < 60 %}
+    <li>Beat rate of {{ eg.beat_rate }} is below the S&amp;P 500 average (~75%) &mdash; frequent misses erode analyst trust and increase the probability of stock drops that trigger SCA filings</li>
+    {% endif %}
+    {% if eg.get('provides_guidance', 'N/A') == 'No' or eg.get('provides_guidance', 'N/A') == 'no' %}
+    <li>Company does not provide forward earnings guidance &mdash; reduces guidance-miss SCA exposure but increases risk of negative surprise claims</li>
+    {% endif %}
+    {% if eg.get('withdrawals', '0')|int >= 1 %}
+    <li>Guidance withdrawal{{ 's' if eg.get('withdrawals', '0')|int > 1 }} detected &mdash; guidance withdrawal during an SCA class period strengthens plaintiffs' loss causation arguments</li>
+    {% endif %}
+  </ul>
+  {% if eg.get('consecutive_misses', '0')|int >= 2 %}
+  <div class="border-l-4 border-red-600 bg-red-50 pl-3 py-2 my-2 page-break-inside-avoid">
+    <p class="text-sm font-semibold text-red-800 m-0">Consecutive Earnings Misses: {{ eg.consecutive_misses }}</p>
+    <p class="text-xs text-red-700 m-0 mt-1">Companies with 2+ consecutive misses face SCA filing rates 4.1x the industry baseline. Primary trigger for 10(b) claims; demonstrates scienter.</p>
+  </div>
+  {% endif %}
+  {# Quarter-by-quarter detail table #}
+  {% set qtrs = eg.get('quarters', []) %}
+  {% if qtrs %}
+  {# Check which optional columns have real data #}
+  {% set ns_qtr = namespace(show_miss_mag=false, show_stock_rxn=false) %}
+  {% for q in qtrs %}
+    {% if q.miss_mag and q.miss_mag != '—' and q.miss_mag != '' and q.miss_mag != 'N/A' %}{% set ns_qtr.show_miss_mag = true %}{% endif %}
+    {% if q.stock_reaction and q.stock_reaction != '—' and q.stock_reaction != '' and q.stock_reaction != 'N/A' %}{% set ns_qtr.show_stock_rxn = true %}{% endif %}
+  {% endfor %}
+  <h4>Quarter-by-Quarter Results</h4>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Quarter</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Est. EPS</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Actual EPS</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2">Result</th>
+        {% if ns_qtr.show_miss_mag %}<th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Miss Mag.</th>{% endif %}
+        {% if ns_qtr.show_stock_rxn %}<th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Stock Rxn</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for q in qtrs %}
+      <tr class="{{ 'bg-red-50' if q.result == 'MISS' else 'bg-blue-50' if q.result == 'BEAT' else 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 font-semibold">{{ q.quarter }}</td>
+        <td class="p-1 text-right">{{ q.guidance }}</td>
+        <td class="p-1 text-right">{{ q.actual }}</td>
+        <td class="px-2 py-2 text-center">
+          {% if q.result == 'MISS' %}<span class="text-risk-red font-semibold">{{ q.result }}</span>
+          {% elif q.result == 'BEAT' %}<span class="text-risk-blue font-semibold">{{ q.result }}</span>
+          {% else %}{{ q.result }}{% endif %}
+        </td>
+        {% if ns_qtr.show_miss_mag %}<td class="p-1 text-right">{{ q.miss_mag }}</td>{% endif %}
+        {% if ns_qtr.show_stock_rxn %}<td class="p-1 text-right">{{ q.stock_reaction }}</td>{% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {% endif %}

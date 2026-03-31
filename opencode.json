@@ -1,0 +1,62 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["oh-my-openagent"],
+  "mcp": {
+    "edgartools": {
+      "type": "local",
+      "command": ["../../../.venv/bin/python", "-m", "edgar.ai.mcp.server"],
+      "enabled": true,
+      "environment": {
+        "EDGAR_IDENTITY": "do-uw/0.1.0 (contact@example.com)"
+      }
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": true
+    },
+    "brave-search": {
+      "type": "local",
+      "command": ["./node_modules/.bin/brave-search-mcp-server"],
+      "enabled": false,
+      "environment": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      }
+    },
+    "playwright": {
+      "type": "local",
+      "command": ["./node_modules/.bin/playwright-mcp"],
+      "enabled": true
+    },
+    "fetch": {
+      "type": "local",
+      "command": ["./node_modules/.bin/fetch-mcp"],
+      "enabled": true
+    },
+    "github": {
+      "type": "local",
+      "command": ["./node_modules/.bin/github-mcp"],
+      "enabled": false,
+      "environment": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "supabase": {
+      "type": "local",
+      "command": ["./node_modules/.bin/supabase-mcp-claude"],
+      "enabled": true,
+      "environment": {
+        "SUPABASE_URL": "${SUPABASE_URL}",
+        "SUPABASE_ANON_KEY": "${SUPABASE_ANON_KEY}",
+        "SUPABASE_SERVICE_ROLE_KEY": "${SUPABASE_SERVICE_ROLE_KEY}",
+        "MCP_API_KEY": "${MCP_API_KEY}"
+      }
+    },
+    "duckdb": {
+      "type": "local",
+      "command": ["./node_modules/.bin/duckdb-mcp"],
+      "enabled": false,
+      "comment": "Package installation incomplete; dist files missing"
+    }
+  }
+}

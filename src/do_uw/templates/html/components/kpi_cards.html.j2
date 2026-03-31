@@ -1,0 +1,25 @@
+{# KPI Summary Cards component (INFO-06).
+   Renders a compact CSS grid of key metrics at the top of a section.
+   Usage: {% include "components/kpi_cards.html.j2" with context %}
+   where kpi_strip = {"cards": [...], "count": N} #}
+
+{% macro kpi_strip(strip) %}
+{% if strip and strip.cards %}
+<div class="kpi-strip kpi-strip--{{ strip.count }}">
+  {% for card in strip.cards %}
+  <div class="kpi-card {{ 'kpi-card--' ~ card.severity if card.severity else '' }}">
+    <div class="kpi-card-value">
+      {{ card.value }}
+      {% if card.trend_svg %}
+      <span class="kpi-card-trend">{{ card.trend_svg | safe }}</span>
+      {% endif %}
+    </div>
+    <div class="kpi-card-label">{{ card.label }}</div>
+    {% if card.sub_label %}
+    <div class="kpi-card-sub">{{ card.sub_label }}</div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endmacro %}

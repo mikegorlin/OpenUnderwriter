@@ -1,0 +1,259 @@
+{# Devil's Advocate Section (Phase 110-02)
+   Renders adversarial critique caveats at equal prominence to scoring section.
+   4 subsections: False Positives, Blind Spots, Contradictions, Data Gaps.
+   Each caveat card: headline, explanation, confidence bar, evidence, source badge. #}
+
+{% if adversarial is defined and adversarial.adversarial_available %}
+<section class="section adversarial-critique" id="adversarial-critique">
+  <style>
+    .adv-section { margin-top: 16px; }
+    .adv-summary {
+      font-size: 0.88rem;
+      color: #495057;
+      margin: 8px 0 16px;
+      line-height: 1.5;
+      padding: 12px 16px;
+      background: #f8f9fa;
+      border-left: 4px solid #6c757d;
+      border-radius: 0 6px 6px 0;
+    }
+    .adv-subsection-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin: 16px 0 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .adv-subsection-title .adv-count {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: 10px;
+      color: #fff;
+    }
+    .adv-count-amber { background: #e65100; }
+    .adv-count-blue { background: #1565c0; }
+    .adv-count-purple { background: #6a1b9a; }
+    .adv-count-gray { background: #616161; }
+
+    .adv-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 12px;
+      margin: 8px 0 16px;
+    }
+    .adv-card {
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .adv-card-header {
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .adv-card-header.amber { background: linear-gradient(135deg, #fff8e1, #ffe0b2); color: #e65100; }
+    .adv-card-header.blue { background: linear-gradient(135deg, #e3f2fd, #bbdefb); color: #1565c0; }
+    .adv-card-header.purple { background: linear-gradient(135deg, #f3e5f5, #e1bee7); color: #6a1b9a; }
+    .adv-card-header.gray { background: linear-gradient(135deg, #f5f5f5, #e0e0e0); color: #616161; }
+
+    .adv-severity-badge {
+      font-size: 0.68rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .adv-severity-badge.warning { background: #ffcdd2; color: #c62828; }
+    .adv-severity-badge.caution { background: #fff9c4; color: #f57f17; }
+    .adv-severity-badge.info { background: #e8eaf6; color: #3949ab; }
+
+    .adv-card-body {
+      padding: 10px 12px;
+      font-size: 0.78rem;
+      color: #495057;
+      line-height: 1.45;
+    }
+    .adv-headline {
+      font-weight: 600;
+      margin: 0 0 6px;
+    }
+    .adv-explanation {
+      margin: 0 0 8px;
+      color: #6c757d;
+    }
+    .adv-confidence-bar {
+      height: 4px;
+      background: #e9ecef;
+      border-radius: 2px;
+      margin: 6px 0;
+      overflow: hidden;
+    }
+    .adv-confidence-fill {
+      height: 100%;
+      border-radius: 2px;
+    }
+    .adv-confidence-fill.amber { background: linear-gradient(90deg, #e65100, #ff8f00); }
+    .adv-confidence-fill.blue { background: linear-gradient(90deg, #1565c0, #42a5f5); }
+    .adv-confidence-fill.purple { background: linear-gradient(90deg, #6a1b9a, #ab47bc); }
+    .adv-confidence-fill.gray { background: linear-gradient(90deg, #616161, #9e9e9e); }
+
+    .adv-evidence {
+      margin: 6px 0 0;
+      padding-left: 16px;
+      font-size: 0.72rem;
+      color: #868e96;
+    }
+    .adv-evidence li { margin-bottom: 2px; }
+    .adv-source-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-top: 4px;
+    }
+    .adv-source-tag.llm { background: #e8f5e9; color: #2e7d32; }
+    .adv-source-tag.template { background: #f3e5f5; color: #7b1fa2; }
+
+    .adv-empty {
+      text-align: center;
+      padding: 24px;
+      color: #868e96;
+      font-size: 0.88rem;
+      font-style: italic;
+    }
+    .adv-empty-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .adv-signal-link {
+      font-size: 0.68rem;
+      color: #adb5bd;
+      margin-top: 4px;
+    }
+  </style>
+
+  <h2>Devil's Advocate</h2>
+  <p style="font-size:0.82rem; color:#868e96; margin:4px 0 8px;">
+    Systematic challenge to the scoring recommendation &middot;
+    {{ adversarial.total_caveats }} caveat{{ 's' if adversarial.total_caveats != 1 else '' }} found
+  </p>
+
+  {# Summary #}
+  {% if adversarial.summary %}
+    <div class="adv-summary">{{ adversarial.summary }}</div>
+  {% endif %}
+
+  {% if adversarial.total_caveats == 0 %}
+    <div class="adv-empty">
+      <span class="adv-empty-icon">&#10003;</span>
+      No adversarial findings &mdash; assessment appears consistent and complete.
+    </div>
+  {% else %}
+
+    {# False Positives #}
+    {% if adversarial.false_positives %}
+    <div class="adv-section">
+      <div class="adv-subsection-title">
+        &#9888; Possible False Positives
+        <span class="adv-count adv-count-amber">{{ adversarial.false_positives | length }}</span>
+      </div>
+      <div class="adv-grid">
+        {% for c in adversarial.false_positives %}
+          {{ _render_caveat_card(c, "amber") }}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    {# Blind Spots (False Negatives) #}
+    {% if adversarial.false_negatives %}
+    <div class="adv-section">
+      <div class="adv-subsection-title">
+        &#128065; Potential Blind Spots
+        <span class="adv-count adv-count-blue">{{ adversarial.false_negatives | length }}</span>
+      </div>
+      <div class="adv-grid">
+        {% for c in adversarial.false_negatives %}
+          {{ _render_caveat_card(c, "blue") }}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    {# Contradictions #}
+    {% if adversarial.contradictions %}
+    <div class="adv-section">
+      <div class="adv-subsection-title">
+        &#8644; Contradictory Signals
+        <span class="adv-count adv-count-purple">{{ adversarial.contradictions | length }}</span>
+      </div>
+      <div class="adv-grid">
+        {% for c in adversarial.contradictions %}
+          {{ _render_caveat_card(c, "purple") }}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    {# Data Gaps #}
+    {% if adversarial.completeness_issues %}
+    <div class="adv-section">
+      <div class="adv-subsection-title">
+        &#9744; Data Gaps
+        <span class="adv-count adv-count-gray">{{ adversarial.completeness_issues | length }}</span>
+      </div>
+      <div class="adv-grid">
+        {% for c in adversarial.completeness_issues %}
+          {{ _render_caveat_card(c, "gray") }}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  {% endif %}
+</section>
+{% endif %}
+
+{# Macro: render a single caveat card #}
+{% macro _render_caveat_card(c, color) %}
+<div class="adv-card">
+  <div class="adv-card-header {{ color }}">
+    <span>{{ c.type_label }}</span>
+    <span class="adv-severity-badge {{ c.severity }}">{{ c.severity | upper }}</span>
+  </div>
+  <div class="adv-card-body">
+    <p class="adv-headline">{{ c.headline }}</p>
+    {% if c.explanation %}
+      <p class="adv-explanation">{{ c.explanation }}</p>
+    {% endif %}
+    <div class="adv-confidence-bar">
+      <div class="adv-confidence-fill {{ color }}" style="width: {{ c.confidence_pct }}%"></div>
+    </div>
+    {% if c.evidence %}
+      <ul class="adv-evidence">
+        {% for e in c.evidence[:4] %}
+          <li>{{ e }}</li>
+        {% endfor %}
+        {% if c.evidence | length > 4 %}
+          <li style="color:#adb5bd">+ {{ c.evidence | length - 4 }} more</li>
+        {% endif %}
+      </ul>
+    {% endif %}
+    {% if c.target_signal_id %}
+      <div class="adv-signal-link">Signal: {{ c.target_signal_id }}</div>
+    {% endif %}
+    <span class="adv-source-tag {{ c.narrative_source }}">
+      {{ 'AI-generated' if c.narrative_source == 'llm' else 'Rule-based' }}
+    </span>
+  </div>
+</div>
+{% endmacro %}

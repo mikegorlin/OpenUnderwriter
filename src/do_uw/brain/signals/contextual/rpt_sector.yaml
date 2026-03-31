@@ -1,0 +1,55 @@
+- id: CTX.RISK.rpt_sector
+  name: Related-Party Risk in Sector Context
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of GOV.RPT.related_party through sector lens
+    threshold_provenance:
+      source: calibrated
+      rationale: RPT prevalence data from Kohlbeck & Mayhew by sector classification
+  signal_class: inference
+  group: structural_governance
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  epistemology:
+    rule_origin: 'Academic research on RPT frequency by industry: some sectors have structural RPTs'
+    threshold_basis: RPT prevalence data from Kohlbeck & Mayhew by sector classification
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: GOV.RPT.related_party
+      context_dimensions:
+      - sector
+      context_adjustments:
+        real_estate:
+          threshold_adjustment: 1.5
+          rationale: 'Real estate: RPTs are structural (property management, leases)'
+        financial:
+          threshold_adjustment: 1.2
+          rationale: 'Financial: intercompany transactions are common'
+        tech:
+          threshold_adjustment: 0.6
+          rationale: 'Tech: RPTs are unusual and concerning'
+        consumer:
+          threshold_adjustment: 0.7
+          rationale: 'Consumer: RPTs are uncommon and raise flags'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} related-party risk in sector context at {value} represents agent risk (executive/director
+        actions and decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} related-party risk in sector context at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} related-party risk in sector context at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

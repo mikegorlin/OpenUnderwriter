@@ -1,0 +1,70 @@
+# Domain 8: Underwriting Decision
+# "Given everything above, what's the call?"
+# The synthesis domain. These questions force the underwriter to weigh
+# the evidence and reach a conclusion. This is where the worksheet
+# earns its keep.
+
+domain: underwriting_decision
+domain_label: "Underwriting Decision"
+order: 8
+description: >
+  Synthesis questions that tie Domains 1-7 together into an underwriting
+  decision. These are the questions the underwriter must answer before
+  signing the binder. Each one requires weighing competing evidence.
+
+questions:
+  - question_id: UW-01
+    text: "What's the overall risk tier and does the score match your gut?"
+    weight: 10
+    data_sources: [scoring.risk_tier, scoring.total_score]
+    answer_template: "Risk tier: {tier}. Score: {score}/100. Key drivers: {top_factors}."
+    upgrade_criteria: "Score aligns with qualitative assessment, no surprises"
+    downgrade_criteria: "Score seems too low — qualitative factors worse than quantitative capture"
+
+  - question_id: UW-02
+    text: "What are the top 3 reasons to write this risk?"
+    weight: 9
+    data_sources: [scoring.upgrade_factors]
+    answer_template: "{top_upgrades}"
+    upgrade_criteria: "Clear, company-specific strengths (not just 'large company')"
+    downgrade_criteria: "Can't articulate 3 distinct positive factors"
+
+  - question_id: UW-03
+    text: "What are the top 3 reasons NOT to write this risk?"
+    weight: 9
+    data_sources: [scoring.downgrade_factors, analysis.red_flags]
+    answer_template: "{top_downgrades}"
+    upgrade_criteria: "Manageable risks with mitigation"
+    downgrade_criteria: "Existential risks — any single factor could generate total limits claim"
+
+  - question_id: UW-04
+    text: "What specific conditions or exclusions would you require?"
+    weight: 8
+    data_sources: [scoring.allegation_mapping, analysis.red_flags]
+    answer_template: "{recommended_conditions}"
+    upgrade_criteria: "Standard terms sufficient"
+    downgrade_criteria: "Need specific exclusion (crypto, opioid, PFAS), retention bump, or sublimit"
+
+  - question_id: UW-05
+    text: "What's the right price for this risk at the proposed attachment?"
+    weight: 10
+    data_sources: [scoring.risk_tier, supabase_pricing, benchmark.peer_comparison]
+    answer_template: "Indicated rate: {indicated_rate}. Market rate: {market_rate}. Recommended: {recommended}."
+    upgrade_criteria: "Adequate rate for the exposure, room for profit"
+    downgrade_criteria: "Market rate below indicated, pressure to compete on price"
+
+  - question_id: UW-06
+    text: "What would make you decline this risk?"
+    weight: 8
+    data_sources: [scoring.red_flags, analysis.signals]
+    answer_template: "{decline_triggers}"
+    upgrade_criteria: "No decline triggers present"
+    downgrade_criteria: "Active SEC investigation, restatement, insolvency risk, or management fraud"
+
+  - question_id: UW-07
+    text: "What follow-up information do you need from the broker?"
+    weight: 7
+    data_sources: [analysis.gap_filler_questions, analysis.low_confidence_data]
+    answer_template: "{information_requests}"
+    upgrade_criteria: "All key data available from public sources"
+    downgrade_criteria: "Critical gaps: missing financials, unknown litigation, governance black holes"

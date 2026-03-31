@@ -1,0 +1,339 @@
+{# How This Company Makes Money — Comprehensive Business Model Infographic
+   Extreme detail: business cycle → revenue streams → quality tiers → segments →
+   geography → profitability → waterfall → red flags with D&O context.
+   Bloomberg/CIQ-quality data density. Every pixel earns its place. #}
+{% set mf = dossier_flows | default({}) %}
+{% if mf.get('money_flows_available', false) %}
+
+<style>
+/* ═══════════════ MONEY INFOGRAPHIC ═══════════════ */
+.mi { font-family: var(--font-body, 'Inter', system-ui, sans-serif); margin: 0.5rem 0 1rem 0; }
+.mi-hdr { display:flex; align-items:baseline; gap:0.5rem; margin-bottom:0.3rem; }
+.mi-hdr h3 { font-size:14pt; font-weight:800; margin:0; color:#111827; letter-spacing:-0.3px; }
+.mi-hdr .mi-sub { font-size:8.5pt; color:#6B7280; font-style:italic; }
+.mi-label { font-size:7pt; text-transform:uppercase; letter-spacing:0.8px; color:#9CA3AF; font-weight:700; margin:10px 0 4px 0; }
+.mi-two { display:grid; grid-template-columns:5fr 3fr; gap:0.5rem; margin-bottom:0.5rem; }
+.mi-three { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.5rem; margin-bottom:0.5rem; }
+
+/* ── Metrics Strip ── */
+.mi-strip { display:flex; flex-wrap:wrap; gap:0; background:#F9FAFB; border:1px solid #E5E7EB; border-radius:4px; overflow:hidden; margin-bottom:0.5rem; }
+.mi-cell { flex:1 1 auto; min-width:90px; padding:5px 8px; border-right:1px solid #E5E7EB; text-align:center; }
+.mi-cell:last-child { border-right:none; }
+.mi-cell .c-lbl { font-size:6.5pt; text-transform:uppercase; letter-spacing:0.4px; color:#9CA3AF; font-weight:600; line-height:1; margin-bottom:1px; }
+.mi-cell .c-val { font-size:10pt; font-weight:700; color:#111827; font-variant-numeric:tabular-nums; line-height:1.2; }
+
+/* ── Total Revenue Hero ── */
+.mi-hero { background:linear-gradient(135deg,#0F172A 0%,#1E3A5F 50%,#1E40AF 100%); color:white; border-radius:6px; padding:12px 16px; text-align:center; margin-bottom:8px; position:relative; overflow:hidden; }
+.mi-hero::after { content:''; position:absolute; top:-20px; right:-20px; width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,0.04); }
+.mi-hero .hero-lbl { font-size:7pt; text-transform:uppercase; letter-spacing:1.5px; opacity:0.7; }
+.mi-hero .hero-amt { font-size:26pt; font-weight:900; font-variant-numeric:tabular-nums; line-height:1; margin:2px 0; letter-spacing:-0.5px; }
+.mi-hero .hero-sub { font-size:9pt; color:#86EFAC; }
+.mi-hero .hero-cust { font-size:8pt; opacity:0.6; margin-top:4px; }
+
+/* ── Revenue Streams ── */
+.mi-stream { background:#FFF; border:1px solid #E5E7EB; border-radius:5px; padding:8px 10px 8px 13px; margin-bottom:5px; position:relative; overflow:hidden; }
+.mi-stream::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; }
+.mi-stream.s0::before { background:#2563EB; }
+.mi-stream.s1::before { background:#059669; }
+.mi-stream.s2::before { background:#D97706; }
+.mi-stream.s3::before { background:#7C3AED; }
+.mi-stream .s-row { display:flex; align-items:baseline; gap:6px; }
+.mi-stream .s-name { font-size:9.5pt; font-weight:700; color:#111827; }
+.mi-stream .s-dollar { font-size:12pt; font-weight:800; font-variant-numeric:tabular-nums; color:#111827; }
+.mi-stream .s-pct { font-size:8pt; font-weight:600; color:#6B7280; background:#F3F4F6; padding:1px 5px; border-radius:3px; }
+.mi-stream .s-quality { display:inline-block; font-size:6.5pt; font-weight:700; padding:1px 5px; border-radius:3px; text-transform:uppercase; margin-left:4px; }
+.mi-stream .sq-recurring { background:#D1FAE5; color:#065F46; }
+.mi-stream .sq-sticky { background:#DBEAFE; color:#1E40AF; }
+.mi-stream .sq-project { background:#FEF3C7; color:#92400E; }
+.mi-stream .s-desc { font-size:7.5pt; color:#6B7280; line-height:1.35; margin-top:3px; }
+.mi-stream .s-do { font-size:7pt; color:#9A3412; background:#FFF7ED; padding:2px 6px; border-radius:3px; margin-top:3px; display:inline-block; line-height:1.3; }
+.mi-stream .s-bar { height:5px; background:#F3F4F6; border-radius:3px; margin-top:5px; overflow:hidden; }
+.mi-stream .s-bar-fill { height:100%; border-radius:3px; }
+.s0 .s-bar-fill { background:#2563EB; }
+.s1 .s-bar-fill { background:#059669; }
+.s2 .s-bar-fill { background:#D97706; }
+.s3 .s-bar-fill { background:#7C3AED; }
+
+/* ── Flywheel Diagram ── */
+.mi-flywheel { background:#F0F9FF; border:1px solid #BAE6FD; border-radius:6px; padding:10px 12px; margin-bottom:8px; }
+.mi-flywheel .fw-title { font-size:8pt; font-weight:700; color:#0C4A6E; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+.mi-flywheel .fw-steps { display:flex; align-items:center; gap:0; flex-wrap:wrap; }
+.mi-flywheel .fw-step { background:white; border:1px solid #BAE6FD; border-radius:4px; padding:4px 8px; font-size:7.5pt; color:#0C4A6E; font-weight:600; text-align:center; flex:1; min-width:80px; }
+.mi-flywheel .fw-arrow { font-size:14pt; color:#0EA5E9; padding:0 2px; flex-shrink:0; line-height:1; }
+.mi-flywheel .fw-note { font-size:7pt; color:#0369A1; margin-top:6px; line-height:1.3; font-style:italic; }
+
+/* ── Red Flags Panel ── */
+.mi-flags { background:#FFF7ED; border:1px solid #FDBA74; border-radius:5px; padding:8px 10px; }
+.mi-flags .fl-title { font-size:8pt; text-transform:uppercase; letter-spacing:0.5px; color:#9A3412; font-weight:700; margin-bottom:6px; display:flex; align-items:center; gap:4px; }
+.mi-flags .fl-item { padding:5px 0; border-bottom:1px solid #FED7AA; }
+.mi-flags .fl-item:last-child { border-bottom:none; }
+.mi-flags .fl-lbl { font-size:8.5pt; font-weight:700; color:#9A3412; display:flex; align-items:center; gap:4px; }
+.mi-flags .fl-detail { font-size:7pt; color:#78350F; margin-top:1px; line-height:1.3; }
+.sev-dot { display:inline-block; width:6px; height:6px; border-radius:50%; }
+.sev-HIGH { background:#DC2626; }
+.sev-MEDIUM { background:#F59E0B; }
+.sev-LOW { background:#6B7280; }
+
+/* ── Profitability Gauges ── */
+.mi-profit { display:flex; gap:0; background:#FFF; border:1px solid #E5E7EB; border-radius:4px; overflow:hidden; margin-bottom:6px; }
+.mi-profit .pg { flex:1; padding:6px 6px; border-right:1px solid #F3F4F6; text-align:center; }
+.mi-profit .pg:last-child { border-right:none; }
+.mi-profit .pg-lbl { font-size:6pt; text-transform:uppercase; letter-spacing:0.3px; color:#9CA3AF; font-weight:600; margin-bottom:2px; }
+.mi-profit .pg-val { font-size:13pt; font-weight:800; font-variant-numeric:tabular-nums; color:#111827; }
+
+/* ── Segment Table ── */
+.mi-seg { width:100%; border-collapse:collapse; font-size:8.5pt; margin-bottom:0.5rem; }
+.mi-seg th { font-size:6.5pt; text-transform:uppercase; letter-spacing:0.5px; color:#6B7280; font-weight:600; padding:4px 6px; border-bottom:2px solid #E5E7EB; text-align:left; }
+.mi-seg th.r { text-align:right; }
+.mi-seg td { padding:5px 6px; border-bottom:1px solid #F3F4F6; font-variant-numeric:tabular-nums; }
+.mi-seg td.r { text-align:right; }
+.mi-seg .sn { font-weight:700; color:#111827; }
+.hc { display:inline-block; font-size:6.5pt; font-weight:700; padding:1px 5px; border-radius:3px; text-transform:uppercase; }
+.hc-up { background:#D1FAE5; color:#065F46; }
+.hc-dn { background:#FEE2E2; color:#991B1B; }
+.hc-flat { background:#F3F4F6; color:#6B7280; }
+
+/* ── Geographic Bars ── */
+.mi-geo-row { display:flex; align-items:center; gap:5px; margin-bottom:3px; }
+.mi-geo-lbl { font-size:7.5pt; color:#374151; min-width:80px; text-align:right; font-weight:500; }
+.mi-geo-track { flex:1; height:16px; background:#F3F4F6; border-radius:2px; overflow:hidden; }
+.mi-geo-fill { height:100%; border-radius:2px; background:#3B82F6; }
+.mi-geo-fill.flagged { background:#EF4444; }
+.mi-geo-pct { font-size:7.5pt; font-weight:700; color:#374151; min-width:30px; font-variant-numeric:tabular-nums; }
+.mi-geo-dollar { font-size:7pt; color:#9CA3AF; min-width:48px; }
+
+/* ── Waterfall Bridge ── */
+.mi-wf { width:100%; border-collapse:collapse; font-size:8pt; margin-bottom:0.5rem; }
+.mi-wf th { font-size:6.5pt; text-transform:uppercase; letter-spacing:0.4px; color:#6B7280; font-weight:600; padding:3px 5px; border-bottom:2px solid #E5E7EB; text-align:left; }
+.mi-wf th.r { text-align:right; }
+.mi-wf td { padding:4px 5px; border-bottom:1px solid #F3F4F6; font-variant-numeric:tabular-nums; }
+.mi-wf td.r { text-align:right; }
+.mi-wf .wf-pos { color:#059669; font-weight:600; }
+.mi-wf .wf-neg { color:#DC2626; font-weight:600; }
+.mi-wf .wf-total { font-weight:800; color:#111827; background:#F9FAFB; }
+.mi-wf .wf-note { font-size:7pt; color:#9CA3AF; }
+
+/* ── Narrative ── */
+.mi-narr { background:#F9FAFB; border-left:3px solid #3B82F6; padding:8px 10px; font-size:8.5pt; color:#374151; line-height:1.5; margin-top:0.5rem; }
+
+/* ── Print ── */
+@media print {
+  .mi { page-break-inside:avoid; }
+  .mi-hero,.mi-strip,.mi-stream .s-bar-fill,.mi-geo-fill,.mi-flags,.hc,.sev-dot,.mi-profit,.mi-flywheel,.mi-stream .s-quality,.mi-stream .s-do { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+}
+</style>
+
+<div class="mi" id="dossier-money-flows">
+
+  {# ═══ HEADER ═══ #}
+  <div class="mi-hdr">
+    <h3>How {{ mf.company_name | default('This Company') }} Makes Money</h3>
+    {% if mf.sector %}<span class="mi-sub">{{ mf.sector }}</span>{% endif %}
+  </div>
+
+  {# ═══ KEY METRICS STRIP ═══ #}
+  {% if mf.key_metrics %}
+  <div class="mi-strip">
+    {% for m in mf.key_metrics %}
+    <div class="mi-cell">
+      <div class="c-lbl">{{ m.label }}</div>
+      <div class="c-val">{{ m.value }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# ═══ MAIN LAYOUT: Revenue + Flywheel + Red Flags ═══ #}
+  <div class="mi-two">
+
+    {# ── LEFT COLUMN: Business Summary + Revenue Streams + Profitability ── #}
+    <div>
+
+      {# Business Summary #}
+      {% if mf.business_summary %}
+      <div style="font-size:8.5pt; color:#374151; line-height:1.5; margin-bottom:8px;">
+        {{ mf.business_summary }}
+      </div>
+      {% endif %}
+
+      {# Flow Diagram (from LLM extraction) #}
+      {% if mf.flow_diagram %}
+      <div class="mi-flywheel">
+        <div class="fw-title">&#x1f504; How {{ mf.company_name | default('the Company') }} Makes Money</div>
+        <div class="fw-note">{{ mf.flow_diagram }}</div>
+      </div>
+      {% endif %}
+
+      {# Revenue Stream Cards — data-driven from mf.revenue_streams #}
+      {% set streams = mf.revenue_streams %}
+      {% if streams and streams is iterable and streams | length > 0 %}
+      <div class="mi-label">Revenue Streams</div>
+      {% for stream in streams %}
+      {% set colors = ['s0', 's1', 's2', 's3'] %}
+      <div class="mi-stream {{ colors[loop.index0 % 4] }}">
+        <div class="s-row">
+          <span class="s-name">{{ stream.name | default('Segment') }}</span>
+          {% if stream.quality %}<span class="s-quality sq-sticky">{{ stream.quality }}</span>{% endif %}
+        </div>
+        <div class="s-row" style="margin-top:2px">
+          {% if stream.revenue %}<span class="s-dollar">{{ stream.revenue }}</span>{% endif %}
+          {% if stream.pct %}<span class="s-pct">{{ stream.pct }}%</span>{% endif %}
+        </div>
+        {% if stream.description %}<div class="s-desc">{{ stream.description }}</div>{% endif %}
+        {% if stream.do_context %}<div class="s-do">&#9888; {{ stream.do_context }}</div>{% endif %}
+        {% if stream.pct %}<div class="s-bar"><div class="s-bar-fill" style="width:{{ stream.pct }}%"></div></div>{% endif %}
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      {# Profitability Gauges #}
+      {% if mf.profitability %}
+      <div class="mi-label">Profitability</div>
+      <div class="mi-profit">
+        {% for p in mf.profitability %}
+        <div class="pg">
+          <div class="pg-lbl">{{ p.label }}</div>
+          <div class="pg-val">{{ p.value }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    </div>
+
+    {# ── RIGHT COLUMN: Red Flags ── #}
+    <div>
+      {% if mf.red_flags %}
+      <div class="mi-flags">
+        <div class="fl-title">
+          <span style="font-size:12pt">&#128681;</span> Underwriting Red Flags ({{ mf.red_flags | length }})
+        </div>
+        {% for flag in mf.red_flags %}
+        <div class="fl-item">
+          <div class="fl-lbl">
+            <span class="sev-dot sev-{{ flag.severity }}"></span>
+            {{ flag.label }}
+          </div>
+          <div class="fl-detail">{{ flag.detail }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {# Emerging Risks Panel #}
+      {% if mf.emerging_risks %}
+      <div style="margin-top:8px; background:#FFF7ED; border:1px solid #FDBA74; border-radius:5px; padding:8px 10px;">
+        <div class="mi-label" style="margin-top:0; color:#9A3412;">Emerging Risks</div>
+        {% for er in mf.emerging_risks[:5] %}
+        <div style="font-size:7.5pt; color:#78350F; line-height:1.4; margin-bottom:4px; {% if not loop.last %}border-bottom:1px solid #FED7AA; padding-bottom:4px;{% endif %}">
+          <strong>{{ er.risk[:120] }}</strong>
+          {% if er.probability %}<span style="font-size:6.5pt; background:#FEE2E2; color:#991B1B; padding:1px 4px; border-radius:2px; margin-left:3px;">{{ er.probability }}</span>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+
+  {# ═══ SEGMENT PERFORMANCE + GEOGRAPHY ═══ #}
+  <div class="mi-two">
+
+    {# LEFT: Segment Table #}
+    <div>
+      {% set _real_segs = mf.segments | selectattr('name') | list if mf.segments else [] %}
+      {% if _real_segs %}
+      <div class="mi-label">Operating Segments</div>
+      <table class="mi-seg">
+        <thead>
+          <tr>
+            <th>Segment</th>
+            <th>Stage</th>
+            <th class="r">Margin</th>
+            <th class="r">Prior</th>
+            <th class="r">&#916; bps</th>
+            <th class="r">Growth</th>
+            <th>Trend</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for seg in _real_segs %}
+          <tr>
+            <td class="sn">{{ seg.name }}</td>
+            <td>{{ seg.stage }}</td>
+            <td class="r">{{ seg.margin }}</td>
+            <td class="r">{{ seg.prior_margin }}</td>
+            <td class="r">{{ seg.change_bps }}</td>
+            <td class="r">{{ seg.growth }}</td>
+            <td>
+              <span class="hc {% if seg.health == 'improving' %}hc-up{% elif seg.health == 'declining' %}hc-dn{% else %}hc-flat{% endif %}">
+                {% if seg.health == 'improving' %}&#9650;{% elif seg.health == 'declining' %}&#9660;{% else %}&#9644;{% endif %}
+                {{ seg.health }}
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {# Segment insights are in the data — no hardcoded text #}
+      {% endif %}
+    </div>
+
+    {# RIGHT: Geographic Revenue #}
+    <div>
+      {% if mf.geographic %}
+      <div class="mi-label">Geographic Revenue Mix</div>
+      <div>
+        {% for geo in mf.geographic %}
+        <div class="mi-geo-row">
+          <span class="mi-geo-lbl">{{ geo.region }}</span>
+          <div class="mi-geo-track">
+            <div class="mi-geo-fill {% if 'china' in geo.region | lower %}flagged{% endif %}" style="width:{{ geo.pct }}%"></div>
+          </div>
+          <span class="mi-geo-pct">{{ geo.pct }}%</span>
+          <span class="mi-geo-dollar">{{ geo.dollar }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {# Geographic insights are in the data — no hardcoded text #}
+      {% endif %}
+    </div>
+
+  </div>
+
+  {# ═══ REVENUE WATERFALL BRIDGE ═══ #}
+  {% set _wf_with_data = mf.waterfall | selectattr('value') | list if mf.waterfall else [] %}
+  {% if _wf_with_data | length > 2 %}
+  <div class="mi-label">Revenue Bridge: FY2024 &rarr; FY2025</div>
+  <table class="mi-wf">
+    <thead>
+      <tr>
+        <th style="width:50%">Component</th>
+        <th class="r" style="width:22%">Amount</th>
+        <th style="width:28%">Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for w in mf.waterfall %}
+      {% if w.value %}
+      <tr{% if loop.first or loop.last %} class="wf-total"{% endif %}>
+        <td class="sn">{{ w.label }}</td>
+        <td class="r {% if '-' in w.value or '(' in w.value %}wf-neg{% elif '+' in w.value %}wf-pos{% endif %}">{{ w.value }}</td>
+        <td class="wf-note">{{ w.narrative }}</td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {# ═══ NARRATIVE ═══ #}
+  {% if mf.flow_narrative %}
+  <div class="mi-narr">
+    <strong>How the money flows:</strong> {{ mf.flow_narrative }}
+  </div>
+  {% endif %}
+
+</div>
+
+{% endif %}

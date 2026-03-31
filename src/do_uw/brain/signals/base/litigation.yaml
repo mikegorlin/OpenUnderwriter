@@ -1,0 +1,148 @@
+- id: BASE.LIT.scac
+  name: Stanford SCAC Securities Class Action Search
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: COURT_RECORDS
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: active_matters
+    formula: ''
+  acquisition:
+    sources:
+    - type: SCAC_SEARCH
+      fields:
+      - extracted.litigation.securities_class_actions
+      - extracted.litigation.sca_summary
+      fallback_to: null
+  description: 'Stanford Securities Class Action Clearinghouse search for active and historical securities class actions.
+    Primary litigation source.
+
+    '
+  group: active_matters
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: Stanford SCAC database search availability for litigation risk assessment'
+    threshold_basis: Binary data availability -- litigation search either returns results or does not; no risk threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} stanford scac securities class action search at {value} represents host risk (company-level
+        characteristics that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} stanford scac securities class action search at {value} is a moderate indicator for D&O
+        risk assessment, warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} stanford scac securities class action search at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'
+- id: BASE.LIT.10k_item3
+  name: 10-K Item 3 Legal Proceedings
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: COURT_RECORDS
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: active_matters
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - extracted.litigation.other_legal_matters
+      - extracted.litigation.contingent_liabilities
+      fallback_to: null
+  description: 'Legal proceedings from 10-K Item 3 and contingent liability footnotes. LLM-extracted structured litigation
+    data from filing text.
+
+    '
+  group: active_matters
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: 10-K Item 3 Legal Proceedings search availability for litigation risk assessment'
+    threshold_basis: Binary data availability -- litigation search either returns results or does not; no risk threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} 10-k item 3 legal proceedings at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} 10-k item 3 legal proceedings at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} 10-k item 3 legal proceedings at {value} is within normal parameters for D&O risk assessment — no
+        D&O concern at this level.'
+- id: BASE.LIT.courtlistener
+  name: CourtListener Federal Court Search
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: COURT_RECORDS
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: active_matters
+    formula: ''
+  acquisition:
+    sources:
+    - type: COURTLISTENER
+      fields:
+      - extracted.litigation.federal_dockets
+      fallback_to: null
+  description: 'CourtListener RECAP docket search for federal court cases. Supplements SCAC with non-securities federal litigation.
+
+    '
+  group: active_matters
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: CourtListener RECAP docket search availability for litigation risk assessment'
+    threshold_basis: Binary data availability -- litigation search either returns results or does not; no risk threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} courtlistener federal court search at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} courtlistener federal court search at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} courtlistener federal court search at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

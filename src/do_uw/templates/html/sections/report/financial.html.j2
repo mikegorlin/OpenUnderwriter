@@ -1,0 +1,349 @@
+{# ═══════════════════════════════════════════════════════════════════════════
+   MANIFEST SECTION 4: FINANCIALS — Key metrics, margins, forensic scores
+   ═══════════════════════════════════════════════════════════════════════════ #}
+{% set fn = b.fin %}
+{% if fn %}
+<div id="financial-health" style="margin-top:14px">
+  <div style="background:#1F3A5C;color:white;padding:6px 10px;border-radius:4px;margin-bottom:6px">
+    <span style="font-size:10pt;font-weight:800;letter-spacing:0.3px">Financial Analysis</span><br>
+    <span style="font-size:7.5pt;color:rgba(255,255,255,0.6)">Key metrics, margins, and forensic scores</span>
+  </div>
+
+  {% if fn._stage_banner is defined and fn._stage_banner %}
+  <div style="background:#FEF3C7;border-left:4px solid #F59E0B;padding:8px 12px;margin-bottom:8px;font-size:9pt;color:#92400E;border-radius:0 4px 4px 0">
+    {{ fn._stage_banner }}
+  </div>
+  {% endif %}
+
+  {# ── LLM Critical Insight ── #}
+  {% with insight_id="financial" %}{% include "components/section_insight.html.j2" %}{% endwith %}
+
+  {# 8 Metric cards — financial snapshot at a glance #}
+  <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px">
+    {% for card in [
+      {"label":"Revenue","value":fn.revenue,"color":"#1D4ED8","prov": (fn.revenue_as_of ~ " · " ~ fn.revenue_source ~ " · " ~ fn.revenue_confidence) if fn.get('revenue_source') and fn.revenue_source != 'N/A' else ""},
+      {"label":"EBITDA","value":fn.ebitda,"color":"#7C3AED"},
+      {"label":"Net Income","value":fn.net_income,"color":"#16A34A"},
+      {"label":"Oper. Cash Flow","value":fn.ocf,"color":"#0891B2"},
+      {"label":"Free Cash Flow","value":fn.fcf,"color":"#2563EB"},
+      {"label":"Cash","value":fn.cash,"color":"#16A34A"},
+      {"label":"Debt","value":fn.debt,"color":"#DC2626"},
+      {"label":"Current Ratio","value":fn.current_ratio,"color":"#D97706"}
+    ] %}
+    <div style="flex:1;min-width:11%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:8px 10px;text-align:center">
+      <div style="font-size:13pt;font-weight:800;color:#374151">{{ card.value }}</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">{{ card.label }}</div>
+      {% if card.get('prov') and card.prov %}<div style="font-size:5.5pt;color:#9CA3AF;margin-top:1px">{{ card.prov }}</div>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  {# Margin trend cards + Forensic scores side by side #}
+  <table style="width:100%;border-collapse:separate;border-spacing:4px 0"><tr>
+    {# Margins #}
+    <td style="width:50%;vertical-align:top">
+      <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Margin Profile</span></div>
+      <table style="width:100%;border-collapse:collapse">
+        {% for row in [
+          {"label":"Gross Margin","value":fn.gross_margin},
+          {"label":"Operating Margin","value":fn.op_margin},
+          {"label":"Net Margin","value":fn.net_margin},
+          {"label":"EBITDA Margin","value":fn.ebitda_margin},
+          {"label":"Goodwill / Assets","value":fn.goodwill_pct}
+        ] %}
+        {% if row.value and row.value != 'N/A' %}
+        <tr style="border-bottom:1px solid #F3F4F6">
+          <td style="font-size:10.5pt;color:#374151;padding:3px 0">{{ row.label }}</td>
+          <td style="font-size:9pt;font-weight:700;color:#111827;text-align:right;padding:3px 0">{{ row.value }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </table>
+    </td>
+    {# Forensic Scores #}
+    <td style="width:50%;vertical-align:top">
+      <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Forensic & Distress Scores</span></div>
+      <table style="width:100%;border-collapse:collapse">
+        {% for row in [
+          {"label":"Beneish M-Score","value":fn.beneish_score,"zone":fn.beneish_zone,"color":fn.beneish_color},
+          {"label":"Altman Z-Score","value":fn.altman_score,"zone":fn.altman_zone,"color":fn.altman_color},
+          {"label":"Piotroski F-Score","value":fn.piotroski_score,"zone":fn.piotroski_zone,"color":fn.piotroski_color},
+          {"label":"Ohlson O-Score","value":fn.ohlson_score,"zone":fn.ohlson_zone,"color":fn.ohlson_color}
+        ] %}
+        {% if row.value and row.value != 'N/A' %}
+        <tr style="border-bottom:1px solid #F3F4F6">
+          <td style="font-size:10.5pt;color:#374151;padding:3px 0">{{ row.label }}</td>
+          <td style="font-size:9pt;font-weight:700;color:#111827;text-align:right;padding:3px 0">{{ row.value }}</td>
+          <td style="text-align:right;padding:3px 0"><span style="font-size:7pt;font-weight:600;color:white;background:{{ row.color }};padding:1px 6px;border-radius:8px">{{ row.zone }}</span></td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </table>
+    </td>
+  </tr></table>
+
+  {# Forensic verdict — Altman/Beneish/Piotroski summary #}
+  {% set _altman_z = fn.altman_zone or '' %}
+  {% set _beneish_z = fn.beneish_zone or '' %}
+  {% if _altman_z or _beneish_z %}
+  <div style="font-size:8.5pt;color:#374151;background:#F9FAFB;border-left:3px solid {% if 'Distress' in _altman_z or 'Manipulator' in _beneish_z %}#DC2626{% elif 'Gray' in _altman_z or 'Caution' in _beneish_z %}#D97706{% else %}#1F3A5C{% endif %};padding:4px 10px;margin-bottom:6px;line-height:1.4">
+    Altman Z-Score: <b>{{ fn.altman_score }}</b> ({{ _altman_z }}){% if fn.beneish_score and fn.beneish_score != 'N/A' %} · Beneish M-Score: <b>{{ fn.beneish_score }}</b> ({{ _beneish_z }}){% endif %}{% if fn.piotroski_score and fn.piotroski_score != 'N/A' %} · Piotroski F-Score: <b>{{ fn.piotroski_score }}</b> ({{ fn.piotroski_zone }}){% endif %}.
+  </div>
+  {% endif %}
+
+  {# Section opener narrative #}
+  {% if fn.section_opener %}
+  <div style="font-size:10.5pt;color:#1F3A5C;line-height:1.6;margin:4px 0 8px;padding:10px 14px;background:#F0F4F8;border:1px solid #1F3A5C;border-radius:5px;border-left:4px solid #1F3A5C">
+    {{ fn.section_opener }}
+  </div>
+  {% elif fn.narrative %}
+  <div style="font-size:10.5pt;color:#1F3A5C;line-height:1.6;margin:4px 0 8px;padding:10px 14px;background:#F0F4F8;border:1px solid #1F3A5C;border-radius:5px;border-left:4px solid #1F3A5C">
+    {{ fn.narrative | strip_md }}
+  </div>
+  {% endif %}
+
+  {# Growth & Returns + Per-Share metrics side by side #}
+  {% if fn.revenue_growth != 'N/A' or fn.return_on_equity != 'N/A' or fn.quick_ratio != 'N/A' %}
+  <table style="width:100%;border-collapse:separate;border-spacing:4px 0;margin-bottom:6px"><tr>
+    {# Growth #}
+    <td style="width:50%;vertical-align:top">
+      <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Growth & Returns</span></div>
+      <table style="width:100%;border-collapse:collapse">
+        {% for row in [
+          {"label":"Revenue Growth","value":fn.revenue_growth},
+          {"label":"Earnings Growth","value":fn.earnings_growth},
+          {"label":"Quarterly Earnings Growth","value":fn.earnings_quarterly_growth},
+          {"label":"Return on Equity","value":fn.return_on_equity},
+          {"label":"Return on Assets","value":fn.return_on_assets}
+        ] %}
+        {% if row.value != 'N/A' %}
+        <tr style="border-bottom:1px solid #F3F4F6">
+          <td style="font-size:10.5pt;color:#374151;padding:3px 0">{{ row.label }}</td>
+          <td style="font-size:9pt;font-weight:700;color:#111827;text-align:right;padding:3px 0;font-variant-numeric:tabular-nums">{{ row.value }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </table>
+    </td>
+    {# Per-share & Liquidity #}
+    <td style="width:50%;vertical-align:top">
+      <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Liquidity & Per-Share</span></div>
+      <table style="width:100%;border-collapse:collapse">
+        {% for row in [
+          {"label":"Quick Ratio","value":fn.quick_ratio},
+          {"label":"Book Value / Share","value":fn.book_value},
+          {"label":"Revenue / Share","value":fn.revenue_per_share}
+        ] %}
+        {% if row.value != 'N/A' %}
+        <tr style="border-bottom:1px solid #F3F4F6">
+          <td style="font-size:10.5pt;color:#374151;padding:3px 0">{{ row.label }}</td>
+          <td style="font-size:9pt;font-weight:700;color:#111827;text-align:right;padding:3px 0;font-variant-numeric:tabular-nums">{{ row.value }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </table>
+    </td>
+  </tr></table>
+  {% endif %}
+
+  {# 4.4.3 Debt Maturity Schedule #}
+  {% if fn.debt_maturity %}
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin:8px 0 4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Debt Maturity Schedule</span></div>
+  <div style="display:flex;gap:2px;align-items:flex-end;height:60px;margin-bottom:6px;padding:0 4px">
+    {% for yr in fn.debt_maturity %}
+    <div style="flex:1;text-align:center">
+      <div style="background:{% if yr.near_term %}#DC2626{% else %}#3B82F6{% endif %};height:{{ yr.bar_height }}px;border-radius:2px 2px 0 0;margin:0 2px;min-height:4px"></div>
+      <div style="font-size:6pt;color:#6B7280;margin-top:2px">{{ yr.year }}</div>
+      <div style="font-size:6.5pt;font-weight:600;color:#374151">{{ yr.amount }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# 4.7.2 + 4.7.3 Tax Jurisdiction + UTB #}
+  {% if fn.tax_breakdown or fn.utb_amount != 'N/A' %}
+  <table style="width:100%;border-collapse:separate;border-spacing:4px 0;margin-bottom:6px"><tr>
+    {% if fn.tax_breakdown %}
+    <td style="width:50%;vertical-align:top">
+      <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Tax Jurisdiction Breakdown</span></div>
+      <table style="width:100%;border-collapse:collapse;font-size:8pt">
+        {% for label, val in [('Federal', fn.tax_breakdown.federal), ('State', fn.tax_breakdown.state), ('Foreign', fn.tax_breakdown.foreign)] %}
+        {% if val is not none %}
+        <tr style="border-bottom:1px solid #F3F4F6">
+          <td style="padding:3px 4px;color:#374151">{{ label }}</td>
+          <td style="padding:3px 4px;text-align:right;font-weight:700;color:#111827;font-variant-numeric:tabular-nums">{{ val }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </table>
+    </td>
+    {% endif %}
+    {% if fn.utb_amount != 'N/A' %}
+    <td style="vertical-align:top">
+      <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Unrecognized Tax Benefits</span></div>
+      <div style="font-size:15pt;font-weight:800;color:#374151;padding:4px 8px">{{ fn.utb_amount }}</div>
+    </td>
+    {% endif %}
+  </tr></table>
+  {% endif %}
+
+  {# 4.8.7-4.8.11 Audit Disclosure Alerts #}
+  {% if fn.audit_alerts %}
+  <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:5px;padding:6px 10px;margin-bottom:6px">
+    <div style="font-size:9pt;font-weight:700;color:#DC2626;margin-bottom:3px">Audit Disclosure Alerts</div>
+    {% for alert in fn.audit_alerts %}
+    <div style="display:flex;gap:6px;padding:2px 0;align-items:center">
+      <span style="display:inline-block;width:8px;height:8px;border-radius:4px;background:{% if alert.severity == 'HIGH' %}#DC2626{% elif alert.severity == 'MEDIUM' %}#D97706{% else %}#6B7280{% endif %};flex-shrink:0"></span>
+      <span style="font-size:8pt;font-weight:600;color:#991B1B">{{ alert.type }}</span>
+      <span style="font-size:8pt;color:#4B5563">{{ alert.detail }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if fn.commentary_factual %}
+  <div style="margin:6px 0">
+    <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">What Was Said</div>
+    <div style="font-size:10.5pt;color:#374151;line-height:1.55;padding:6px 10px;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:4px">{{ fn.commentary_factual | strip_md }}</div>
+  </div>
+  {% endif %}
+  {% if fn.commentary_bullets %}
+  <div style="margin:6px 0">
+    <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Underwriting Commentary</div>
+    <div style="font-size:10.5pt;color:#374151;line-height:1.55;padding:6px 10px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;border-left:3px solid #2563EB">{{ fn.commentary_bullets | strip_md }}</div>
+  </div>
+  {% endif %}
+
+  {# === UNIFIED FINANCIAL SNAPSHOT — all 3 statements in one view === #}
+  {% if fn.unified_snapshot %}
+  {% set us = fn.unified_snapshot %}
+
+  {# Annual Key Metrics #}
+  {% if us.annual %}
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin:8px 0 4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Annual Key Metrics (YoY)</span></div>
+  <table style="width:100%;border-collapse:collapse;font-size:8pt;margin-bottom:6px">
+    <tr style="background:#F9FAFB;border-bottom:1px solid #E5E7EB">
+      <th style="text-align:left;padding:3px 6px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Metric</th>
+      {% if us.annual[0].prior_period %}<th style="text-align:right;padding:3px 6px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">FY {{ us.annual[0].prior_period }}</th>{% endif %}
+      <th style="text-align:right;padding:3px 6px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">FY {{ us.annual[0].latest_period }}</th>
+      <th style="text-align:right;padding:3px 6px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">YoY</th>
+    </tr>
+    {% for row in us.annual %}
+    {# Skip rows where all data values are empty/N/A — no value to display #}
+    {% if row.latest_value and row.latest_value != 'N/A' and row.latest_value != '—' and row.latest_value is not none %}
+    <tr style="border-bottom:1px solid #F3F4F6">
+      <td style="padding:3px 6px;font-weight:600;color:#111827">{{ row.label }}</td>
+      {% if row.prior_period %}<td style="padding:3px 6px;text-align:right;color:#6B7280;font-variant-numeric:tabular-nums">{{ row.prior_value }}</td>{% endif %}
+      <td style="padding:3px 6px;text-align:right;font-weight:700;color:#111827;font-variant-numeric:tabular-nums">{{ row.latest_value }}</td>
+      <td style="padding:3px 6px;text-align:right;font-weight:600;color:{{ row.yoy_color }};font-variant-numeric:tabular-nums">{{ row.yoy_pct }}</td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </table>
+  {% endif %}
+
+  {# Quarterly P&L Trends (5Q with QoQ) #}
+  {% if us.quarterly %}
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin:8px 0 4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Quarterly P&L Trends (QoQ)</span></div>
+  <table style="width:100%;border-collapse:collapse;font-size:8pt;margin-bottom:6px">
+    <tr style="background:#F9FAFB;border-bottom:1px solid #E5E7EB">
+      <th style="text-align:left;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6pt;text-transform:uppercase">Metric</th>
+      {% for qd in us.quarterly[0].quarters %}
+      <th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6pt;text-transform:uppercase">{{ qd.period }}</th>
+      {% endfor %}
+    </tr>
+    {% for row in us.quarterly %}
+    <tr style="border-bottom:1px solid #F3F4F6">
+      <td style="padding:3px 4px;font-weight:600;color:#111827;white-space:nowrap">{{ row.label }}</td>
+      {% for qd in row.quarters %}
+      <td style="padding:3px 4px;text-align:right;font-variant-numeric:tabular-nums">
+        <div style="font-weight:600;color:#111827">{{ qd.value }}</div>
+        {% if qd.qoq_pct %}<div style="font-size:8pt;color:{{ qd.qoq_color }};font-weight:600">{{ qd.qoq_pct }}</div>{% endif %}
+      </td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+
+  {# Balance Sheet Snapshot #}
+  {% if us.balance_sheet %}
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin:8px 0 4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Balance Sheet Snapshot</span></div>
+  <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px">
+    {% for bs in us.balance_sheet %}
+    {% if bs.value and bs.value != 'N/A' %}
+    <div style="flex:1;min-width:22%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 10px;text-align:center">
+      <div style="font-size:12pt;font-weight:800;color:{% if 'Debt' in bs.label %}#DC2626{% elif 'Cash' in bs.label %}#16A34A{% else %}#374151{% endif %}">{{ bs.value }}</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">{{ bs.label }}</div>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% endif %}
+
+  {# Full financial detail from existing sub-templates #}
+  {% set fin = financials or {} %}
+  <div style="margin-top:12px">
+
+  {# ── LAYER 1: Key Metrics & Margins ── #}
+  <div style="border:1px solid #1F3A5C;border-radius:6px;padding:10px;margin-bottom:12px;background:#FAFAFA">
+    <div style="font-size:8pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #1F3A5C;padding-bottom:4px">Key Metrics & Margins — Core Financial Performance</div>
+    {% include "sections/financial/annual_comparison.html.j2" %}
+    {% include "sections/financial/key_metrics.html.j2" %}
+  </div>
+
+  {# ── LAYER 2: Statements & Trends ── #}
+  <div style="border:1px solid #1F3A5C;border-radius:6px;padding:10px;margin-bottom:12px;background:#FAFAFA">
+    <div style="font-size:8pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #1F3A5C;padding-bottom:4px">Statements & Trends — Full Financial Statements</div>
+    {% include "sections/financial/statement_tables.html.j2" %}
+    {% include "sections/financial/quarterly_trend.html.j2" %}
+    {% include "sections/financial/quarterly_updates.html.j2" %}
+  </div>
+
+  {# ── LAYER 3: Distress & Forensics ── #}
+  <div style="border:1px solid #FECACA;border-radius:6px;padding:10px;margin-bottom:12px;background:#FFFBFB">
+    <div style="font-size:8pt;font-weight:700;color:#991B1B;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #DC2626;padding-bottom:4px">Distress & Forensics — Earnings Quality, Bankruptcy & Audit Risk</div>
+    {% include "sections/financial/distress_indicators.html.j2" %}
+    {% include "sections/financial/forensic_dashboard.html.j2" %}
+    {% include "sections/financial/earnings_quality.html.j2" %}
+    {% include "sections/financial/bankruptcy_composite.html.j2" %}
+    {% include "sections/financial/audit_profile.html.j2" %}
+    {% include "sections/financial/tax_risk.html.j2" %}
+    {% include "sections/financial/audit_disclosure_alerts.html.j2" ignore missing %}
+  </div>
+
+  {# ── LAYER 4: Debt & Liquidity ── #}
+  <div style="border:1px solid #FDE68A;border-radius:6px;padding:10px;margin-bottom:12px;background:#FFFEF5">
+    <div style="font-size:8pt;font-weight:700;color:#92400E;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #D97706;padding-bottom:4px">Debt & Liquidity — Structure, Coverage & Refinancing Risk</div>
+    {% include "sections/financial/debt_structure.html.j2" %}
+    {% include "sections/financial/liquidity_solvency.html.j2" %}
+    {% include "sections/financial/goodwill_equity.html.j2" %}
+    {% include "sections/financial/capital_allocation.html.j2" %}
+    {% include "sections/financial/debt_service_coverage.html.j2" %}
+    {% include "sections/financial/refinancing_risk.html.j2" %}
+  </div>
+
+  {# ── LAYER 5: Peers ── #}
+  <div style="border:1px solid #BFDBFE;border-radius:6px;padding:10px;margin-bottom:12px;background:#F8FBFF">
+    <div style="font-size:8pt;font-weight:700;color:#1E40AF;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #2563EB;padding-bottom:4px">Peer Comparison — Relative Financial Position</div>
+    {% include "sections/financial/peer_group.html.j2" %}
+    {% include "sections/financial/peer_matrix.html.j2" %}
+    {% include "sections/financial/peer_percentiles.html.j2" ignore missing %}
+  </div>
+
+  {# ── LAYER 6: Checks ── #}
+  <div style="border:1px solid #BBF7D0;border-radius:6px;padding:10px;margin-bottom:12px;background:#F7FFF9">
+    <div style="font-size:8pt;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #16A34A;padding-bottom:4px">Financial Checks — Data Quality & Completeness</div>
+    {% include "sections/financial/financial_checks.html.j2" %}
+    {% include "sections/financial/density_alerts.html.j2" ignore missing %}
+    {# Filing analysis — MD&A, risk factors, patterns #}
+    {% include "sections/filing_analysis/mda_analysis.html.j2" ignore missing %}
+    {% include "sections/filing_analysis/risk_factor_analysis.html.j2" ignore missing %}
+    {% include "sections/filing_analysis/filing_patterns.html.j2" ignore missing %}
+  </div>
+
+  </div>
+</div>
+{% endif %}

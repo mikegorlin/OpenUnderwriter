@@ -1,0 +1,73 @@
+{# Derivative Suits — extracted from litigation.html.j2 #}
+
+  {# --- Derivative Suits --- #}
+  {% set deriv_suits = lit.get('derivative_suits', []) %}
+  {# Filter out suits with no useful data (Unknown title + all N/A fields) #}
+  {% set useful_suits = [] %}
+  {% set generic_allegations = ['shareholder derivative action', 'derivative action', 'derivative suit'] %}
+  {% for suit in deriv_suits %}
+    {# A suit is useful only if it has a real case name OR specific (non-generic) allegations #}
+    {% set has_real_name = suit.case_name and suit.case_name not in ['Unknown', 'N/A', 'unknown', 'n/a'] %}
+    {% set allegation_text = (suit.allegations or '')|lower %}
+    {% set has_specific_allegations = suit.allegations and suit.allegations != 'N/A' and allegation_text not in generic_allegations %}
+    {% set has_court_info = suit.court and suit.court != 'N/A' and suit.status and suit.status not in ['UNKNOWN', 'N/A', 'Unknown'] %}
+    {% if has_real_name %}
+      {% set _ = useful_suits.append(suit) %}
+    {% elif has_specific_allegations %}
+      {% set _ = useful_suits.append(suit) %}
+    {% elif has_court_info %}
+      {% set _ = useful_suits.append(suit) %}
+    {% endif %}
+  {% endfor %}
+  <h3>Derivative Suits</h3>
+  {% if useful_suits %}
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Case</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Legal Theory</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Coverage</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Court</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Status</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Allegations</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for suit in useful_suits %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 font-semibold">{{ suit.case_name }}</td>
+        <td class="p-1">
+          {% if suit.legal_theories_display %}<span class="text-xs text-gray-600">{{ suit.legal_theories_display }}</span>{% else %}<span class="text-gray-400">&mdash;</span>{% endif %}
+        </td>
+        <td class="p-1">
+          {% set dcov = suit.coverage_display|default('—') %}
+          {% if 'Securities' in dcov or 'SCA' in dcov or 'Side C' in dcov %}
+            <span class="inline-block px-1.5 py-0.5 text-xs rounded bg-red-100 border border-red-200 font-semibold text-red-800">{{ dcov }}</span>
+          {% elif 'Derivative' in dcov %}
+            <span class="inline-block px-1.5 py-0.5 text-xs rounded bg-amber-100 border border-amber-200 font-semibold text-amber-800">{{ dcov }}</span>
+          {% elif 'Regulatory' in dcov or 'SEC' in dcov %}
+            <span class="inline-block px-1.5 py-0.5 text-xs rounded bg-blue-100 border border-blue-200 font-semibold text-blue-800">{{ dcov }}</span>
+          {% else %}
+            {{ dcov }}
+          {% endif %}
+        </td>
+        <td class="p-1">{{ suit.court | default('—') }}</td>
+        <td class="p-1">{{ suit.status | humanize }}</td>
+        <td class="p-1">{{ suit.allegations | default('—') }}</td>
+      </tr>
+      {% if suit.data_quality_flags %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td colspan="6" class="px-3 py-0.5" style="font-size: 10px; color: #d97706;">
+          &#9888; Data quality: {{ suit.data_quality_flags }}
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="text-xs text-gray-400 my-1">{{ deriv_suits|length }} total derivative matters ({{ deriv_suits|length - useful_suits|length }} with insufficient data omitted)</p>
+  {% elif deriv_suits %}
+  <p class="text-sm text-gray-500 italic my-2">{{ deriv_suits|length }} derivative matters found, but case details not fully available.</p>
+  {% else %}
+  <p class="text-sm text-gray-500 italic my-2">No derivative suits found.</p>
+  {% endif %}

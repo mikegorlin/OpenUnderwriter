@@ -1,0 +1,30 @@
+# Narrative configuration for Executive Risk section
+# 5-layer architecture: Verdict > Thesis > Evidence Grid > Implications > Deep Context
+
+id: executive_risk
+name: Executive Risk Profiles
+
+verdict:
+  thresholds:
+    CRITICAL: CRITICAL
+    ELEVATED: CONCERNING
+    CLEAN: FAVORABLE
+
+thesis_template: >
+  Executive risk profile {{ 'reveals critical concerns' if density_level == 'CRITICAL' else 'shows elevated indicators' if density_level == 'ELEVATED' else 'is within acceptable parameters' }}.
+  {% if turnover_flag %}Leadership instability detected — heightened transitional D&O exposure.{% endif %}
+  {% if prior_litigation %}Prior officer litigation history affects individual insurability assessment.{% endif %}
+
+evidence_keys:
+  - executive_risk.profiles
+  - executive_risk.tenure_stability
+  - executive_risk.insider_trading
+  - executive_risk.prior_litigation
+
+implications_template: >
+  {% if density_level != 'CLEAN' %}Executive risk factors inform Side A coverage adequacy and individual officer insurability.{% endif %}
+  {% if density_level == 'CLEAN' %}Standard executive risk profile supports baseline underwriting terms.{% endif %}
+
+deep_context_keys:
+  - executive_risk.character_conduct
+  - executive_risk.departure_context

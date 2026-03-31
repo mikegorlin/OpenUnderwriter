@@ -1,0 +1,90 @@
+# Fields excluded from render coverage checks.
+# Every field path listed here is intentionally not rendered.
+# Adding a field to the extraction model without a render path or exclusion entry
+# will fail the CI contract test (test_ci_render_paths.py).
+#
+# Format: Each entry has a `path` (dot-separated field path prefix) and a
+# `reason` string explaining why it is excluded from rendered output.
+
+exclusions:
+  # Raw acquisition data (internal pipeline state, not user-facing)
+  - path: "acquired_data"
+    reason: "Raw acquisition data -- internal pipeline state, not user-facing"
+
+  # Pipeline stage metadata
+  - path: "stages"
+    reason: "Pipeline stage metadata -- internal orchestration state"
+
+  # Schema metadata
+  - path: "version"
+    reason: "State schema version -- internal metadata"
+
+  - path: "created_at"
+    reason: "State creation timestamp -- internal metadata"
+
+  - path: "updated_at"
+    reason: "State update timestamp -- internal metadata"
+
+  # Internal routing
+  - path: "active_playbook_id"
+    reason: "Industry playbook ID -- internal routing for ANALYZE stage"
+
+  # Individual check results rendered as summaries, not raw
+  - path: "analysis.signal_results"
+    reason: "Individual signal results -- rendered as grouped summaries per section, not raw"
+
+  # Analysis aggregate counters (rendered as summaries / coverage stats)
+  - path: "analysis.checks_executed"
+    reason: "Analysis aggregate counter -- rendered via coverage stats, not individually"
+
+  - path: "analysis.checks_passed"
+    reason: "Analysis aggregate counter -- rendered via coverage stats, not individually"
+
+  - path: "analysis.checks_failed"
+    reason: "Analysis aggregate counter -- rendered via coverage stats, not individually"
+
+  - path: "analysis.checks_skipped"
+    reason: "Analysis aggregate counter -- rendered via coverage stats, not individually"
+
+  - path: "analysis.patterns_detected"
+    reason: "Composite pattern IDs -- rendered via pattern narrative, not raw IDs"
+
+  # Governance sub-scores (internal computation, not displayed individually)
+  - path: "extracted.governance.governance_score"
+    reason: "Governance sub-score -- internal computation, not displayed individually"
+
+  # Classification internal computation fields
+  - path: "classification.methodology"
+    reason: "Classification methodology -- internal computation metadata"
+
+  - path: "classification.ddl_exposure_base_m"
+    reason: "DDL exposure base -- internal computation, rendered as derived values"
+
+  - path: "classification.cap_filing_multiplier"
+    reason: "Cap filing multiplier -- internal computation"
+
+  - path: "classification.ipo_multiplier"
+    reason: "IPO multiplier -- internal computation"
+
+  # Tier definition boundaries (internal reference, not rendered)
+  - path: "scoring.tier.score_range_low"
+    reason: "Tier score range boundary -- internal reference, not displayed"
+
+  - path: "scoring.tier.score_range_high"
+    reason: "Tier score range boundary -- internal reference, not displayed"
+
+  # Financial statement internal metadata
+  - path: "extracted.financials.statements"
+    reason: "Raw financial statement data -- rendered as formatted tables, not raw"
+
+  # Text signals (internal extraction used by signal engine, rendered via signal_results)
+  - path: "extracted.text_signals"
+    reason: "Text signals -- internal extraction feeding signal engine, rendered via signal_results summaries"
+
+  # Actuarial pricing (internal computation, render path pending)
+  - path: "scoring.actuarial_pricing"
+    reason: "Actuarial pricing computation -- render path pending future phase"
+
+  # Deep-dive result (internal scoring detail, rendered via scorecard summary)
+  - path: "scoring.deepdive_result"
+    reason: "Deep-dive scoring detail -- internal computation, surfaced via scorecard"

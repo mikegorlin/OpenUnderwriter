@@ -1,0 +1,43 @@
+# Narrative configuration for Executive Summary section
+# 5-layer architecture: Verdict > Thesis > Evidence Grid > Implications > Deep Context
+
+id: executive_summary
+name: Executive Summary
+
+verdict:
+  # Maps density level + tier to verdict
+  thresholds:
+    CRITICAL: CRITICAL
+    ELEVATED: CONCERNING
+    CLEAN: FAVORABLE
+  # Override by tier if available
+  tier_overrides:
+    WIN: FAVORABLE
+    WANT: FAVORABLE
+    WRITE: NEUTRAL
+    WATCH: CONCERNING
+    WALK: CRITICAL
+    NO_TOUCH: CRITICAL
+
+thesis_template: >
+  {{ company_name }} presents a {{ verdict_label }} D&O risk profile
+  with an overall score of {{ overall_score }} ({{ tier }} tier).
+  {% if negative_count > 0 %}{{ negative_count }} key risk finding{{ 's' if negative_count != 1 }} identified.{% endif %}
+  {% if positive_count > 0 %}{{ positive_count }} favorable indicator{{ 's' if positive_count != 1 }} noted.{% endif %}
+
+evidence_keys:
+  - executive_summary.snapshot.market_cap
+  - executive_summary.snapshot.sector
+  - executive_summary.overall_score
+  - executive_summary.risk_tier
+  - executive_summary.negatives_enriched
+  - executive_summary.positives_enriched
+
+implications_template: >
+  Overall risk tier of {{ tier }} informs primary layer attachment and pricing.
+  {% if negative_count > 2 %}Multiple adverse findings suggest enhanced due diligence on Side A adequacy.{% endif %}
+
+deep_context_keys:
+  - factor_breakdown
+  - ceiling_line
+  - executive_summary.claim_probability

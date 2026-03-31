@@ -1,0 +1,45 @@
+{# Contingent Liabilities (ASC 450) — with severity coloring and amount emphasis #}
+
+  {# --- Contingent Liabilities --- #}
+  {% set contingencies = lit.get('contingent_liabilities', []) %}
+  <h3>Contingent Liabilities (ASC 450)</h3>
+  {% if contingencies %}
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1" style="width: 45%;">Description</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1" style="width: 15%;">Classification</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1" style="width: 20%;">Amount Range</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1" style="width: 20%;">Source</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cl in contingencies %}
+      {% set class_upper = cl.classification|upper if cl.classification else '' %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }} {{ 'bg-red-50' if 'PROBABLE' in class_upper else '' }}">
+        <td class="p-1 align-top">{{ cl.description }}</td>
+        <td class="p-1 align-top text-center">
+          {% if 'PROBABLE' in class_upper %}
+            <span class="inline-block px-1.5 py-0.5 text-xs rounded bg-red-100 border border-red-200 font-semibold text-red-800">Probable</span>
+          {% elif 'REASONABLY' in class_upper or 'POSSIBLE' in class_upper %}
+            <span class="inline-block px-1.5 py-0.5 text-xs rounded bg-amber-100 border border-amber-200 font-semibold text-amber-800">Reasonably Possible</span>
+          {% elif 'REMOTE' in class_upper %}
+            <span class="inline-block px-1.5 py-0.5 text-xs rounded bg-gray-100 border border-gray-200 font-semibold text-gray-600">Remote</span>
+          {% else %}
+            {{ cl.classification | humanize }}
+          {% endif %}
+        </td>
+        <td class="p-1 align-top text-right tabular-nums font-semibold {{ 'text-risk-red' if 'PROBABLE' in class_upper else '' }}">{{ cl.amount_range }}</td>
+        <td class="p-1 align-top text-xs text-gray-500">{{ cl.source | humanize_source }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>{{ contingencies|length }} contingent liabilit{{ 'ies' if contingencies|length != 1 else 'y' }} disclosed under ASC 450</li>
+    <li><strong>Probable</strong> contingencies indicate losses management considers likely&mdash;typically accrued on the balance sheet and directly relevant to D&amp;O claims</li>
+    <li><strong>Reasonably possible</strong> items are disclosed but not accrued&mdash;compare amount ranges against policy limits and retention for severity calibration</li>
+  </ul>
+  {% else %}
+  <p class="text-sm text-gray-500 italic my-2">No material contingent liabilities disclosed.</p>
+  {% endif %}

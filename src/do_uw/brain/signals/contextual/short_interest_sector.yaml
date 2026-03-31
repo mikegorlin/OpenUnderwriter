@@ -1,0 +1,55 @@
+- id: CTX.MKT.short_interest_sector
+  name: Short Interest in Sector Context
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of STOCK.SHORT.interest_ratio through sector lens
+    threshold_provenance:
+      source: calibrated
+      rationale: Short interest baselines from FINRA data by sector; deviation from norm drives signal
+  signal_class: inference
+  group: short_interest
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  epistemology:
+    rule_origin: 'Short seller report analysis: short interest significance varies by sector norms'
+    threshold_basis: Short interest baselines from FINRA data by sector; deviation from norm drives signal
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: STOCK.SHORT.interest_ratio
+      context_dimensions:
+      - sector
+      context_adjustments:
+        tech:
+          threshold_adjustment: 1.2
+          rationale: 'Tech: higher short interest baseline from momentum trading'
+        healthcare:
+          threshold_adjustment: 1.3
+          rationale: 'Healthcare: biotech shorts are structural'
+        utilities:
+          threshold_adjustment: 0.4
+          rationale: 'Utilities: shorts are very unusual and concerning'
+        consumer:
+          threshold_adjustment: 0.9
+          rationale: 'Consumer: moderate baseline shorts'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} short interest in sector context at {value} represents environment risk (external market,
+        regulatory, and industry conditions affecting D&O liability) — this level is associated with D&O risk assessment exposure
+        based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} short interest in sector context at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} short interest in sector context at {value} is within normal parameters for D&O risk assessment —
+        no D&O concern at this level.'

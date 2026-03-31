@@ -1,0 +1,237 @@
+# Lease & Off-Balance-Sheet Signals — XBRL-sourced D&O risk indicators
+# Domain: fin/lease_obs.yaml  |  Count: 3
+- id: FIN.LEASE.burden
+  name: Operating Lease Burden
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    distress_to_bankruptcy: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - balance_sheet
+    - lease_note
+  threshold:
+    type: tiered
+    red: Operating lease liabilities > 20% of total liabilities — dominant lease obligation
+    yellow: Operating lease liabilities > 10% of total liabilities — significant lease commitment
+    clear: Operating lease liabilities <= 10% of total liabilities
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - CREDITORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:OperatingLeaseLiability
+    - us-gaap:OperatingLeaseLiabilityCurrent
+    - us-gaap:OperatingLeaseLiabilityNoncurrent
+    - us-gaap:Liabilities
+    expected_type: numeric
+    no_data_sentinel: Operating lease liability data not found in XBRL
+    validation_rule: lease_pct >= 0
+  data_strategy:
+    field_key: xbrl_operating_lease_burden
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Operating lease liabilities >10% of total liabilities indicates significant fixed commitments that reduce financial flexibility per ASC 842 on-balance-sheet recognition
+    render_target: key_metrics
+    formula: operating_lease_liabilities / total_liabilities
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_operating_lease_burden
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Financial flexibility analysis: operating lease liabilities represent non-cancellable fixed payment obligations — heavy lease burdens reduce the company''s ability to restructure costs during downturns and can accelerate distress'
+    threshold_basis: 'Lease liabilities >10% of total liabilities: significant fixed commitment per credit analysis; >20%: dominant obligation that materially constrains financial flexibility'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} operating lease liabilities at {value} of total liabilities (threshold: >20%) signals a dominant lease obligation (F3). Heavy lease burdens create non-cancellable fixed costs that accelerate distress during revenue declines — companies with concentrated lease obligations have less ability to right-size their cost structure, amplifying the liquidity risk that leads to going-concern disclosures and SCA filings.'
+      TRIGGERED_YELLOW: '{company} operating lease liabilities at {value} of total liabilities (threshold: >10%) indicates significant lease commitments (F3). Monitor for lease renewal concentration and the relationship between lease payments and operating cash flow — ASC 842 brought these obligations onto the balance sheet, making the burden visible to analysts and rating agencies.'
+      CLEAR: '{company} operating lease liabilities at {value} of total liabilities are within normal parameters (F3) — lease commitments do not materially constrain financial flexibility.'
+
+- id: FIN.LEASE.rou_asset
+  name: Right-of-Use Asset Concentration
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - balance_sheet
+    - lease_note
+  threshold:
+    type: tiered
+    red: ROU asset > 10% of total assets — heavy real estate/equipment exposure
+    yellow: ROU asset > 5% of total assets — material leased asset base
+    clear: ROU asset <= 5% of total assets
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:OperatingLeaseRightOfUseAsset
+    - us-gaap:FinanceLeaseRightOfUseAsset
+    - us-gaap:Assets
+    expected_type: numeric
+    no_data_sentinel: ROU asset data not found in XBRL
+    validation_rule: rou_pct >= 0
+  data_strategy:
+    field_key: xbrl_rou_asset_pct
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: ROU asset >5% of total assets indicates material leased property/equipment exposure with potential impairment risk per ASC 842 and ASC 360
+    render_target: key_metrics
+    formula: (operating_rou_asset + finance_rou_asset) / total_assets
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_rou_asset_pct
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Asset impairment risk: large ROU assets are subject to impairment testing under ASC 360 — when leased locations close or sublease markets deteriorate, the resulting ROU impairments produce earnings charges'
+    threshold_basis: 'ROU >5% of assets: material leased asset base per balance sheet composition analysis; >10%: heavy exposure with elevated impairment risk during restructuring or location consolidation'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} right-of-use assets at {value} of total assets (threshold: >10%) signals heavy real estate/equipment lease exposure (F3). Large ROU assets face impairment risk when locations close or business conditions deteriorate — ROU impairment charges during restructuring programs compound the earnings impact and can signal that management delayed recognizing location closures.'
+      TRIGGERED_YELLOW: '{company} right-of-use assets at {value} of total assets (threshold: >5%) indicates material leased asset concentration (F3). Monitor for lease termination activity and sublease income trends — deterioration in the leased asset portfolio is a leading indicator of restructuring charges.'
+      CLEAR: '{company} right-of-use assets at {value} of total assets are within normal parameters (F3) — leased asset base does not indicate outsized real estate/equipment exposure.'
+
+- id: FIN.OBS.contract_liability
+  name: Deferred Revenue Execution Risk
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_10Q
+  data_locations:
+    SEC_10K:
+    - balance_sheet
+    - revenue_recognition_note
+    SEC_10Q:
+    - balance_sheet
+  threshold:
+    type: tiered
+    red: Contract liabilities > 25% of annual revenue — heavy pre-payment dependency with execution risk
+    yellow: Contract liabilities > 15% of annual revenue — significant deferred revenue requiring delivery
+    clear: Contract liabilities <= 15% of annual revenue
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.3'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:ContractWithCustomerLiability
+    - us-gaap:ContractWithCustomerLiabilityCurrent
+    - us-gaap:ContractWithCustomerLiabilityNoncurrent
+    - us-gaap:DeferredRevenue
+    - us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax
+    expected_type: numeric
+    no_data_sentinel: Contract liability or deferred revenue data not found in XBRL
+    validation_rule: contract_liability_pct >= 0
+  data_strategy:
+    field_key: xbrl_contract_liability_pct
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Contract liabilities >15% of revenue indicates significant customer pre-payments with delivery obligations; >25% signals heavy dependency on pre-paid commitments with execution and revenue recognition risk
+    render_target: key_metrics
+    formula: contract_liabilities / annual_revenue
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_contract_liability_pct
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Revenue recognition risk: large contract liabilities under ASC 606 represent unfulfilled performance obligations — when delivery fails or recognition timing is questioned, revenue restatements follow, which are among the highest-frequency SCA triggers'
+    threshold_basis: 'Contract liabilities >15% of revenue: significant pre-payment dependency per subscription/enterprise software industry benchmarks; >25%: heavy concentration with material revenue recognition and execution risk'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} contract liabilities at {value} of annual revenue (threshold: >25%) signals heavy pre-payment dependency with execution risk (F6). Large deferred revenue balances represent promises the company must deliver on — when delivery fails or revenue recognition policies are questioned, the resulting revenue restatements are among the most frequent SCA triggers, with strong scienter arguments based on management''s awareness of delivery problems.'
+      TRIGGERED_YELLOW: '{company} contract liabilities at {value} of annual revenue (threshold: >15%) indicates significant deferred revenue requiring delivery (F6). Monitor for changes in contract liability balance relative to new bookings — a declining ratio may signal delivery execution while a growing ratio may indicate accumulating unfulfilled obligations.'
+      CLEAR: '{company} contract liabilities at {value} of annual revenue are within normal parameters (F6) — deferred revenue levels do not indicate outsized execution or revenue recognition risk.'

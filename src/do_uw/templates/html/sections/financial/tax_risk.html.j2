@@ -1,0 +1,17 @@
+{# Tax Risk Profile — extracted from financial.html.j2 #}
+{% set tax_risk = fin.get('tax_risk', {}) %}
+{% if tax_risk %}
+<h3>Tax Risk Profile</h3>
+{% set tax_items = [] %}
+{% if fin.get('tax_etr') %}{% set _ = tax_items.append({'key': 'Effective Tax Rate', 'value': fin.tax_etr}) %}{% endif %}
+{% if tax_risk.get('etr_trend') %}{% set _ = tax_items.append({'key': 'ETR Trend', 'value': tax_risk.etr_trend}) %}{% endif %}
+{% if tax_risk.get('haven_count') %}{% set _ = tax_items.append({'key': 'Tax Haven Subsidiaries', 'value': tax_risk.haven_count}) %}{% endif %}
+{% if tax_risk.get('haven_jurisdictions') %}{% set _ = tax_items.append({'key': 'Haven Jurisdictions', 'value': tax_risk.haven_jurisdictions}) %}{% endif %}
+{% if tax_risk.get('haven_concentration') %}{% set _ = tax_items.append({'key': 'Haven Concentration', 'value': tax_risk.haven_concentration}) %}{% endif %}
+{% if tax_risk.get('transfer_pricing_risk') %}{% set _ = tax_items.append({'key': 'Transfer Pricing Risk', 'value': tax_risk.transfer_pricing_risk}) %}{% endif %}
+{% if tax_risk.get('unrecognized_benefits') %}{% set _ = tax_items.append({'key': 'Unrecognized Tax Benefits', 'value': tax_risk.unrecognized_benefits}) %}{% endif %}
+{% if tax_risk.get('deferred_tax_net') %}{% set _ = tax_items.append({'key': 'Deferred Tax (Net)', 'value': tax_risk.deferred_tax_net}) %}{% endif %}
+{% if tax_items %}
+{{ kv_table(tax_items, title="Tax Risk") }}
+{% endif %}
+{% endif %}

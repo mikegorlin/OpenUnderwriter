@@ -1,0 +1,154 @@
+{# Board Member Forensic Profiles — extracted from governance.html.j2 #}
+
+  {# --- Board Forensic Profiles (compact table + expandable detail) --- #}
+  {% set board_members = gov.get('board_members', []) %}
+  {% if board_members %}
+  {# Column visibility flags — hide columns where ALL rows are empty/dashes #}
+  {% set show_other_boards = gov.get('board_has_any_other_boards', false) %}
+  {% set show_flags = gov.get('board_has_any_flags', false) %}
+  {% set show_detail = gov.get('board_has_any_detail', false) %}
+  {# Compute colspan dynamically based on visible columns #}
+  {% set col_count = 4 + (1 if show_other_boards else 0) + (1 if show_flags else 0) %}
+  <h3>Board Member Forensic Profiles</h3>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Name</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2">Tenure</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2">Indep.</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Committees</th>
+        {% if show_other_boards %}
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Other Boards</th>
+        {% endif %}
+        {% if show_flags %}
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2">Flags</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for bm in board_members %}
+      {% set flag_count = bm.get('forensic_flag_count', 0) %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }} {{ 'bg-red-50' if flag_count > 0 else '' }}">
+        <td class="p-1 font-semibold">
+          {{ bm.name }}
+          {% if bm.get('age') %}<span class="text-xs text-gray-400">({{ bm.age }})</span>{% endif %}
+        </td>
+        <td class="px-2 py-2 text-center tabular-nums">{% if bm.tenure and bm.tenure != 'N/A' %}{{ bm.tenure }}y{% else %}—{% endif %}</td>
+        <td class="px-2 py-2 text-center">
+          {% if bm.independent == 'Yes' or bm.independent == true %}
+            <span class="text-risk-blue">Yes</span>
+          {% else %}
+            <span class="text-risk-red font-semibold">No</span>
+          {% endif %}
+        </td>
+        <td class="p-1 text-xs">{{ bm.committees if bm.committees and bm.committees != 'None' else '—' }}</td>
+        {% if show_other_boards %}
+        <td class="p-1 text-xs">{{ bm.other_boards if bm.other_boards and bm.other_boards != 'None' else '—' }}</td>
+        {% endif %}
+        {% if show_flags %}
+        <td class="px-2 py-2 text-center">
+          {% if bm.is_overboarded == 'Yes' or bm.is_overboarded == true %}
+            <span class="text-risk-amber text-xs font-semibold" title="Overboarded">OB</span>
+          {% endif %}
+          {% if bm.prior_litigation and bm.prior_litigation|int > 0 %}
+            <span class="text-risk-red text-xs font-semibold" title="{{ bm.prior_litigation }} prior litigation">L:{{ bm.prior_litigation }}</span>
+          {% endif %}
+          {% if bm.get('has_forensic_flags') and flag_count > 0 %}
+            <span class="badge-pill badge-tier-warning" style="font-size: 0.6rem;">{{ flag_count }}</span>
+          {% elif not (bm.is_overboarded == 'Yes' or bm.is_overboarded == true) and not (bm.prior_litigation and bm.prior_litigation|int > 0) %}
+            <span class="text-gray-400">—</span>
+          {% endif %}
+        </td>
+        {% endif %}
+      </tr>
+      {# Expandable forensic detail per director (SURF-06) — only if this director has detail #}
+      {% set indep_detail = bm.get('independence_concerns_detail', []) %}
+      {% set rel_detail = bm.get('relationship_flags_detail', []) %}
+      {% set inter_detail = bm.get('interlocks_detail', []) %}
+      {% set qual_tags = bm.get('qualification_tags', []) %}
+      {% set lit_details = bm.get('prior_litigation_details', []) %}
+      {% if indep_detail or rel_detail or inter_detail or qual_tags or lit_details %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td colspan="{{ col_count }}" class="px-0 py-0">
+          <div>
+            <div style="font-weight:600;margin-bottom:4px">Independence &amp; Forensic Detail</div>
+            <div class="p-1" style="display: flex; flex-direction: column; gap: 0.25rem;">
+              {% if indep_detail %}
+              <div class="text-xs">
+                <span class="font-semibold text-amber-600">Independence Concerns:</span>
+                <ul class="list-disc pl-4 mt-0.5">
+                  {% for c in indep_detail %}
+                  <li title="Source: {{ c.source | humanize_source }}">{{ c.factor }} <span class="confidence-dot confidence-{{ c.confidence|lower }}"></span></li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% endif %}
+              {% if rel_detail %}
+              <div class="text-xs">
+                <span class="font-semibold text-amber-600">Relationship Flags:</span>
+                <ul class="list-disc pl-4 mt-0.5">
+                  {% for rf in rel_detail %}
+                  <li title="Source: {{ rf.source | humanize_source }}">{{ rf.factor }} <span class="confidence-dot confidence-{{ rf.confidence|lower }}"></span></li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% endif %}
+              {% if inter_detail %}
+              <div class="text-xs">
+                <span class="font-semibold">Interlocking Directorates:</span>
+                <ul class="list-disc pl-4 mt-0.5">
+                  {% for il in inter_detail %}
+                  <li title="Source: {{ il.source | humanize_source }}">{{ il.factor }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% endif %}
+              {% if lit_details %}
+              <div class="text-xs">
+                <span class="font-semibold text-red-600">Prior Litigation:</span>
+                <ul class="list-disc pl-4 mt-0.5">
+                  {% for lit in lit_details %}
+                  <li>{{ lit }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% endif %}
+              {% if qual_tags %}
+              <div class="text-xs mt-1">
+                <span class="font-semibold">Qualifications:</span>
+                {% for tag in qual_tags %}
+                <span class="inline-block px-1.5 py-0.5 text-xs rounded bg-gray-100 border border-gray-200 mr-1">{{ tag|replace('_', ' ')|title }}</span>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+  {# Board forensic profile interpretation #}
+  {% set ns_bf = namespace(overboarded=0, lit_flagged=0, forensic_flagged=0) %}
+  {% for bm in board_members %}
+    {% if bm.is_overboarded == 'Yes' or bm.is_overboarded == true %}{% set ns_bf.overboarded = ns_bf.overboarded + 1 %}{% endif %}
+    {% if bm.prior_litigation and bm.prior_litigation|int > 0 %}{% set ns_bf.lit_flagged = ns_bf.lit_flagged + 1 %}{% endif %}
+    {% if bm.get('has_forensic_flags') %}{% set ns_bf.forensic_flagged = ns_bf.forensic_flagged + 1 %}{% endif %}
+  {% endfor %}
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>{{ board_members|length }} directors profiled from DEF 14A filings</li>
+    {% if ns_bf.overboarded > 0 %}
+    <li>{{ ns_bf.overboarded }} director{{ 's' if ns_bf.overboarded > 1 }} flagged as overboarded (serving on 4+ public boards)&mdash;ISS considers this a governance risk factor</li>
+    {% endif %}
+    {% if ns_bf.lit_flagged > 0 %}
+    <li>{{ ns_bf.lit_flagged }} director{{ 's' if ns_bf.lit_flagged > 1 }} with prior litigation history&mdash;prior lawsuits against board members are a material indicator for D&amp;O claim recurrence risk</li>
+    {% endif %}
+    {% if ns_bf.forensic_flagged > 0 %}
+    <li>{{ ns_bf.forensic_flagged }} director{{ 's' if ns_bf.forensic_flagged > 1 }} with forensic flags (independence concerns, relationship flags, or interlocks)</li>
+    {% endif %}
+    {% if ns_bf.overboarded == 0 and ns_bf.lit_flagged == 0 and ns_bf.forensic_flagged == 0 %}
+    <li>No directors flagged for overboarding, prior litigation, or independence concerns&mdash;clean board profile is a positive governance indicator</li>
+    {% endif %}
+  </ul>
+  {% endif %}

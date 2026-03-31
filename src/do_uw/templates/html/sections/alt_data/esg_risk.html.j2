@@ -1,0 +1,55 @@
+{# ESG / Greenwashing Risk — Phase 119 (ALTDATA-01) #}
+{# Renders ESG risk level, controversies, ratings, greenwashing indicators, D&O relevance. #}
+
+{% if has_esg_data %}
+<div class="page-break-inside-avoid mt-4">
+  <h4 class="font-heading text-sm font-semibold uppercase tracking-wider text-navy mb-2">ESG / Greenwashing Risk</h4>
+
+  <table class="data-table w-full border-collapse text-sm mb-3">
+    <tbody>
+      <tr class="bg-bg-alt">
+        <td class="p-1 font-semibold w-1/4">Risk Level</td>
+        <td class="p-1 {{ 'text-risk-red font-semibold' if esg_risk_level == 'HIGH' else 'text-amber-600 font-semibold' if esg_risk_level == 'MEDIUM' else '' }}">{{ esg_risk_level }}</td>
+      </tr>
+      {% if esg_controversies %}
+      <tr>
+        <td class="p-1 font-semibold align-top">Controversies</td>
+        <td class="p-1 text-xs">
+          <ul class="list-disc list-inside m-0 p-0">
+            {% for item in esg_controversies %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      {% endif %}
+      {% if esg_ratings %}
+      <tr class="bg-bg-alt">
+        <td class="p-1 font-semibold align-top">ESG Ratings</td>
+        <td class="p-1 text-xs">
+          {% for r in esg_ratings %}{{ r.agency }}: {{ r.rating }}{% if not loop.last %} | {% endif %}{% endfor %}
+        </td>
+      </tr>
+      {% endif %}
+      {% if esg_greenwashing %}
+      <tr>
+        <td class="p-1 font-semibold align-top">Greenwashing Indicators</td>
+        <td class="p-1 text-xs">
+          <ul class="list-disc list-inside m-0 p-0">
+            {% for item in esg_greenwashing %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+
+  {% if esg_do_relevance %}
+  <div class="border-l-4 border-amber-500 bg-amber-50 pl-3 py-2">
+    <p class="text-sm do-callout m-0"><strong>D&O Relevance:</strong> {{ esg_do_relevance }}</p>
+  </div>
+  {% endif %}
+</div>
+{% endif %}

@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+{% from "partials/_chart_container.html" import chart %}
+
+{% block content %}
+
+<!-- Executive Summary Card -->
+{% if executive_summary %}
+<div class="card bg-base-100 shadow-md mb-6">
+  <div class="card-body">
+    <h2 class="card-title text-lg" style="color: var(--ad-navy);">Executive Summary</h2>
+    {% if executive_summary.thesis %}
+    <p class="text-sm leading-relaxed">{{ executive_summary.thesis }}</p>
+    {% endif %}
+    <div class="flex flex-wrap gap-4 mt-2">
+      {% if quality_score %}
+      <div class="stat py-2 px-4">
+        <div class="stat-title text-xs">Quality Score</div>
+        <div class="stat-value text-2xl" style="color: var(--ad-navy);">{{ quality_score }}</div>
+      </div>
+      {% endif %}
+      {% if tier_label %}
+      <div class="stat py-2 px-4">
+        <div class="stat-title text-xs">Tier</div>
+        <div class="stat-value text-2xl">
+          <span class="badge {{ risk_level_class }} badge-lg">{{ tier_label }}</span>
+        </div>
+      </div>
+      {% endif %}
+      {% if risk_signals %}
+      <div class="stat py-2 px-4">
+        <div class="stat-title text-xs">Risk Signals</div>
+        <div class="flex gap-2 mt-1">
+          {% if risk_signals.critical > 0 %}
+          <span class="badge badge-error badge-sm">{{ risk_signals.critical }} critical</span>
+          {% endif %}
+          {% if risk_signals.elevated > 0 %}
+          <span class="badge badge-warning badge-sm">{{ risk_signals.elevated }} elevated</span>
+          {% endif %}
+          {% if risk_signals.moderate > 0 %}
+          <span class="badge badge-info badge-sm">{{ risk_signals.moderate }} moderate</span>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Key Findings -->
+{% if key_negatives or (executive_summary and executive_summary.key_findings) %}
+<div class="card bg-base-100 shadow-md mb-6">
+  <div class="card-body">
+    <h2 class="card-title text-lg" style="color: var(--ad-navy);">Key Findings</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+      <div>
+        <h3 class="font-semibold text-sm mb-2" style="color: var(--risk-high);">Risk Factors</h3>
+        <div class="space-y-2">
+          {% if key_negatives %}
+          {% for finding in key_negatives %}
+          <div class="finding-negative p-2 rounded text-sm">
+            {{ finding.text }}
+            {% if finding.source %}
+            <span class="text-xs opacity-50 ml-1">({{ finding.source }})</span>
+            {% endif %}
+          </div>
+          {% endfor %}
+          {% elif executive_summary and executive_summary.key_findings %}
+          {% for finding in executive_summary.key_findings %}
+          <div class="finding-negative p-2 rounded text-sm">{{ finding }}</div>
+          {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+      {% if key_positives or (executive_summary and executive_summary.positive_indicators) %}
+      <div>
+        <h3 class="font-semibold text-sm mb-2" style="color: var(--risk-moderate);">Positive Indicators</h3>
+        <div class="space-y-2">
+          {% if key_positives %}
+          {% for indicator in key_positives %}
+          <div class="finding-positive p-2 rounded text-sm">{{ indicator.text }}</div>
+          {% endfor %}
+          {% elif executive_summary and executive_summary.positive_indicators %}
+          {% for indicator in executive_summary.positive_indicators %}
+          <div class="finding-positive p-2 rounded text-sm">{{ indicator }}</div>
+          {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Active Red Flags (if any) -->
+{% if active_red_flags %}
+<div class="card bg-base-100 shadow-md mb-6 border-l-4" style="border-left-color: var(--risk-critical);">
+  <div class="card-body">
+    <h2 class="card-title text-lg" style="color: var(--risk-critical);">Active Red Flags</h2>
+    <div class="space-y-2 mt-2">
+      {% for flag in active_red_flags %}
+      <div class="flex items-start gap-2 p-2 rounded" style="background-color: var(--fmt-deteriorating);">
+        <span class="badge badge-error badge-xs mt-1 shrink-0">FLAG</span>
+        <div>
+          <p class="text-sm font-semibold">{{ flag.name }}</p>
+          {% if flag.description %}
+          <p class="text-xs opacity-70">{{ flag.description }}</p>
+          {% endif %}
+          {% if flag.ceiling %}
+          <p class="text-xs opacity-60">Score ceiling: {{ flag.ceiling }}</p>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Score Breakdown Mini-Bars -->
+{% if factor_bars %}
+<div class="card bg-base-100 shadow-md mb-6">
+  <div class="card-body">
+    <h2 class="card-title text-lg" style="color: var(--ad-navy);">Score Breakdown</h2>
+    <div class="space-y-2 mt-2">
+      {% for bar in factor_bars %}
+      <div class="flex items-center gap-2">
+        <span class="text-xs w-40 truncate opacity-70">{{ bar.name }}</span>
+        <div class="flex-1 bg-base-200 rounded-full h-3 relative">
+          <div class="h-3 rounded-full transition-all duration-500"
+               style="width: {{ bar.pct }}%; background-color: {% if bar.pct >= 70 %}var(--risk-critical){% elif bar.pct >= 30 %}var(--risk-elevated){% else %}var(--risk-moderate){% endif %};">
+          </div>
+        </div>
+        <span class="text-xs w-20 text-right opacity-60">{{ bar.deducted }}/{{ bar.max }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Section Summary Cards Grid -->
+<h2 class="text-lg font-bold mb-3" style="color: var(--ad-navy);">Analysis Sections</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+
+  {% for section in sections %}
+  <div class="card bg-base-100 shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200"
+       hx-get="/section/{{ section.id }}"
+       hx-target="#detail-panel"
+       hx-swap="innerHTML"
+       hx-indicator="#global-indicator">
+    <div class="card-body p-5">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="card-title text-base" style="color: var(--ad-navy);">{{ section.title }}</h3>
+        <span class="badge {{ section.status_class }} badge-sm">{{ section.status }}</span>
+      </div>
+
+      {% if section.id == "company" and section.data %}
+      <div class="text-sm space-y-1">
+        <p><span class="opacity-60">Name:</span> {{ section.data.get("legal_name", "N/A") }}</p>
+        <p><span class="opacity-60">Market Cap:</span> {{ section.data.get("market_cap_fmt", "N/A") }}</p>
+        <p><span class="opacity-60">SIC:</span> {{ section.data.get("sic_code", "N/A") }}</p>
+        <p><span class="opacity-60">Employees:</span> {{ section.data.get("employee_count_fmt", "N/A") }}</p>
+      </div>
+
+      {% elif section.id == "financials" and section.data %}
+      <div class="text-sm space-y-1">
+        <p><span class="opacity-60">Z-Score Zone:</span> {{ section.data.get("z_zone", "N/A") }}</p>
+        {% if section.data.get("has_income") %}
+        <p><span class="opacity-60">Revenue:</span> {{ section.data.get("revenue", "N/A") }}</p>
+        <p><span class="opacity-60">Net Income:</span> {{ section.data.get("net_income", "N/A") }}</p>
+        {% endif %}
+        {% if section.data.get("debt_summary") %}
+        <p><span class="opacity-60">Debt:</span> {{ section.data.get("debt_summary") }}</p>
+        {% endif %}
+      </div>
+
+      {% elif section.id == "market" and section.data %}
+      <div class="text-sm space-y-1">
+        <p><span class="opacity-60">Price:</span> {{ section.data.get("current_price", "N/A") }}</p>
+        <p>
+          <span class="opacity-60">52W Range:</span>
+          {{ section.data.get("low_52w", "N/A") }} - {{ section.data.get("high_52w", "N/A") }}
+        </p>
+        <p><span class="opacity-60">Short Interest:</span> {{ section.data.get("short_pct", "N/A") }}</p>
+        <p><span class="opacity-60">% Off High:</span> {{ section.data.get("pct_off_high", "N/A") }}</p>
+      </div>
+
+      {% elif section.id == "governance" and section.data %}
+      <div class="text-sm space-y-1">
+        <p><span class="opacity-60">Board Size:</span> {{ section.data.get("board_size", "N/A") }}</p>
+        <p><span class="opacity-60">Independence:</span> {{ section.data.get("independence_ratio", "N/A") }}</p>
+        <p><span class="opacity-60">CEO Comp:</span> {{ section.data.get("ceo_comp", "N/A") }}</p>
+        <p><span class="opacity-60">CEO/Chair Duality:</span> {{ section.data.get("ceo_duality", "N/A") }}</p>
+      </div>
+
+      {% elif section.id == "litigation" and section.data %}
+      <div class="text-sm space-y-1">
+        <p><span class="opacity-60">Active:</span> {{ section.data.get("active_summary", "N/A") }}</p>
+        <p><span class="opacity-60">Historical:</span> {{ section.data.get("historical_summary", "N/A") }}</p>
+        {% if section.data.get("open_sol_count") %}
+        <p><span class="opacity-60">Open SOL:</span> {{ section.data.get("open_sol_count") }} windows</p>
+        {% endif %}
+      </div>
+
+      {% elif section.id == "scoring" and section.data %}
+      <div class="text-sm space-y-1">
+        <p><span class="opacity-60">Quality Score:</span> {{ section.data.get("quality_score", "N/A") }}</p>
+        <p><span class="opacity-60">Tier:</span> {{ section.data.get("tier", "N/A") }}</p>
+        <p><span class="opacity-60">Factors:</span> {{ section.data.get("factors", [])|length }} scored</p>
+        <p><span class="opacity-60">Patterns:</span> {{ section.data.get("patterns", [])|length }} detected</p>
+      </div>
+
+      {% elif section.id == "ai_risk" and section.data %}
+      <div class="text-sm space-y-1">
+        <p><span class="opacity-60">AI Risk Score:</span> {{ section.data.get("overall_score", "N/A") }}/100</p>
+        <p><span class="opacity-60">Model:</span> {{ section.data.get("industry_model_id", "N/A") }}</p>
+        <p><span class="opacity-60">Disclosure Trend:</span> {{ section.data.get("disclosure_trend", "N/A") }}</p>
+        <p><span class="opacity-60">Dimensions:</span> {{ section.data.get("sub_dimensions", [])|length }} scored</p>
+      </div>
+
+      {% else %}
+      <p class="text-sm opacity-50">No data available. Run analysis first.</p>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+
+  <!-- Meeting Prep card -->
+  <div class="card bg-base-100 shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200"
+       hx-get="/meeting-prep"
+       hx-target="#detail-panel"
+       hx-swap="innerHTML"
+       hx-indicator="#global-indicator">
+    <div class="card-body p-5">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="card-title text-base" style="color: var(--ad-navy);">Meeting Prep</h3>
+        <span class="badge badge-info badge-sm">Interactive</span>
+      </div>
+      <p class="text-sm opacity-70">Priority-ranked questions for underwriter meetings with category filtering.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Risk Overview Charts -->
+<h2 class="text-lg font-bold mb-3 mt-2" style="color: var(--ad-navy);">Risk Overview</h2>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+  {{ chart("chart-risk-radar", "/api/chart/risk-radar", "Risk Radar (10 Factors)", "380px") }}
+  {{ chart("chart-quality-gauge", "/api/chart/quality-gauge", "Quality Score", "250px") }}
+</div>
+
+<!-- Factor Analysis Charts -->
+<h2 class="text-lg font-bold mb-3" style="color: var(--ad-navy);">Factor Analysis</h2>
+<div class="grid grid-cols-1 gap-4 mb-6">
+  {{ chart("chart-factor-bars", "/api/chart/factor-bars", "Factor Deductions", "350px") }}
+  {{ chart("chart-risk-heatmap", "/api/chart/risk-heatmap", "Risk Heatmap", "140px") }}
+</div>
+
+<!-- Financial Health Charts -->
+<h2 class="text-lg font-bold mb-3" style="color: var(--ad-navy);">Financial Health</h2>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+  {{ chart("chart-distress-z", "/api/chart/distress/z_score", "Altman Z-Score", "200px") }}
+  {{ chart("chart-distress-o", "/api/chart/distress/o_score", "Ohlson O-Score", "200px") }}
+  {{ chart("chart-distress-m", "/api/chart/distress/m_score", "Beneish M-Score", "200px") }}
+  {{ chart("chart-distress-f", "/api/chart/distress/f_score", "Piotroski F-Score", "200px") }}
+</div>
+
+<!-- Red Flags Chart -->
+<div class="grid grid-cols-1 gap-4 mb-6">
+  {{ chart("chart-red-flags", "/api/chart/red-flags", "Red Flag Summary", "280px") }}
+</div>
+
+<!-- Peer Comparison Section -->
+<h2 class="text-lg font-bold mb-3" style="color: var(--ad-navy);">Peer Comparison</h2>
+<div id="peer-comparison-panel" class="mb-6"
+     hx-get="/api/peer-comparison"
+     hx-trigger="load"
+     hx-swap="innerHTML"
+     hx-indicator="#global-indicator">
+  <div class="card bg-base-100 shadow-md p-6">
+    <span class="loading loading-spinner loading-sm"></span>
+    <span class="text-sm opacity-50">Loading peer comparison...</span>
+  </div>
+</div>
+
+<!-- Detail Panel (populated by htmx drill-downs) -->
+<div id="detail-panel" class="mt-6"></div>
+
+{% endblock %}

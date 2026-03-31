@@ -1,0 +1,36 @@
+{# Key Findings — extracted from executive.html.j2
+   Numbered lists with SCA theory annotations per D-11/D-12/D-13. #}
+
+  {# --- Key Negatives (numbered with SCA litigation theory) --- #}
+  {% set neg_enriched = es.get('negatives_enriched', []) %}
+  {% if neg_enriched %}
+  <h3>Key Negatives</h3>
+  <ol class="my-2 ml-4 space-y-2">
+    {% for neg in neg_enriched %}
+    <li class="text-sm leading-relaxed">
+      <strong class="text-risk-red">{{ neg.title }}:</strong>
+      {{ neg.body }}
+      {% if neg.get('sca_theory') %}
+      <br><span class="text-xs text-gray-500 italic">{{ neg.sca_theory }}</span>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+
+  {# --- Key Positives (numbered with SCA defense theory) --- #}
+  {% set pos_enriched = es.get('positives_enriched', []) %}
+  {% if pos_enriched %}
+  <h3>Key Positives</h3>
+  <ol class="my-2 ml-4 space-y-2">
+    {% for pos in pos_enriched %}
+    <li class="text-sm leading-relaxed">
+      <strong class="text-risk-blue">{{ pos.title }}:</strong>
+      {{ pos.body }}
+      {% if pos.get('sca_defense') %}
+      <br><span class="text-xs text-gray-500 italic">{{ pos.sca_defense }}</span>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ol>
+  {% endif %}

@@ -1,0 +1,289 @@
+- id: BIZ.MA.goodwill_balance
+  name: Goodwill Balance
+  work_type: extract
+  layer: data_element
+  factors:
+  - F3
+  - F4
+  peril_ids: []
+  chain_roles:
+    acquisition_to_impairment: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: goodwill_balance
+    primary_source: SEC_10K
+  threshold:
+    type: info
+  content_type: MANAGEMENT_DISPLAY
+  evaluation:
+    mechanism: threshold
+  tier: 1
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '2.10'
+  worksheet_section: company
+  display_when: has_data
+  execution_mode: AUTO
+  provenance:
+    origin: v10.0_ma_profile
+    confidence: HIGH
+    source_author: system
+    added_by: Phase_MA
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: Goodwill >50% of equity indicates acquisition-dependent growth with impairment risk
+    render_target: ma_profile
+  do_context:
+    INFO: '{company} carries ${value}M in goodwill on the balance sheet. Goodwill-to-equity ratio and impairment risk
+      are evaluated by FIN.ASSET.goodwill_equity_ratio. Write-downs are a common securities class action trigger when
+      management knew or should have known acquired assets were overvalued.'
+  schema_version: 4
+  signal_class: evaluative
+  group: ma_profile
+  field_path: goodwill_balance
+  display: &id001
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  depends_on: &id002 []
+  extraction_hints: &id003
+    field_patterns: []
+    expected_type: text
+    no_data_sentinel: ''
+    validation_rule: ''
+  rap_class: agent
+  rap_subcategory: corporate_transactions
+  epistemology: &id004
+    rule_origin: 'D&O claims analysis: M&A activity as risk indicator'
+    threshold_basis: ''
+- id: BIZ.MA.serial_acquirer
+  name: Serial Acquirer Pattern
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F4
+  peril_ids: []
+  chain_roles:
+    acquisition_to_impairment: amplifier
+  unlinked: false
+  acquisition_tier: L2
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+  data_strategy:
+    field_key: acquisition_count
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '>3 acquisitions in most recent fiscal year'
+    yellow: '>1 acquisition in most recent fiscal year'
+    clear: No acquisitions or single small acquisition
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '2.10'
+  worksheet_section: company
+  display_when: has_data
+  execution_mode: AUTO
+  provenance:
+    origin: v10.0_ma_profile
+    confidence: HIGH
+    source_author: system
+    added_by: Phase_MA
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Serial acquirers face 2.3x higher derivative suit rates (Cornerstone 2024)
+    render_target: ma_profile
+  do_context:
+    TRIGGERED_RED: '{company} completed {value} acquisitions — serial acquisition pattern increases derivative suit exposure
+      from deal valuation disputes, integration failures, and cumulative goodwill risk.'
+    TRIGGERED_YELLOW: '{company} completed {value} acquisition(s) — moderate M&A activity warrants monitoring for integration
+      execution and goodwill trajectory.'
+    CLEAR: '{company} acquisition activity is minimal, limiting M&A-driven D&O exposure.'
+  schema_version: 4
+  signal_class: evaluative
+  group: ma_profile
+  field_path: acquisition_count
+  display: *id001
+  depends_on: *id002
+  extraction_hints: *id003
+  rap_class: agent
+  rap_subcategory: corporate_transactions
+  epistemology: *id004
+  evaluation:
+    mechanism: threshold
+- id: BIZ.MA.acquisition_spend
+  name: Acquisition Spend Magnitude
+  work_type: extract
+  layer: data_element
+  factors:
+  - F3
+  - F4
+  peril_ids: []
+  chain_roles:
+    acquisition_to_impairment: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - cash_flow_statement
+  data_strategy:
+    field_key: acquisitions_total_spend
+    primary_source: SEC_10K
+  threshold:
+    type: info
+  content_type: MANAGEMENT_DISPLAY
+  tier: 1
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '2.10'
+  worksheet_section: company
+  display_when: has_data
+  execution_mode: AUTO
+  provenance:
+    origin: v10.0_ma_profile
+    confidence: HIGH
+    source_author: system
+    added_by: Phase_MA
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: Acquisition spend >20% of revenue indicates transformative M&A with high integration risk
+    render_target: ma_profile
+  do_context:
+    INFO: '{company} deployed ${value}M on acquisitions during the fiscal year. Acquisition spending relative to revenue
+      indicates capital deployment intensity. Each deal creates potential derivative suit exposure from valuation disputes,
+      integration execution, and officer duty of care obligations.'
+  schema_version: 4
+  signal_class: evaluative
+  group: ma_profile
+  field_path: acquisitions_total_spend
+  display: *id001
+  depends_on: *id002
+  extraction_hints: *id003
+  rap_class: agent
+  rap_subcategory: corporate_transactions
+  epistemology: *id004
+  evaluation:
+    mechanism: threshold
+- id: BIZ.MA.goodwill_change
+  name: Goodwill Trajectory
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    acquisition_to_impairment: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: goodwill_change_description
+    primary_source: SEC_10K
+  threshold:
+    type: info
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '2.10'
+  worksheet_section: company
+  display_when: has_data
+  execution_mode: AUTO
+  content_type: MANAGEMENT_DISPLAY
+  provenance:
+    origin: v10.0_ma_profile
+    confidence: HIGH
+    source_author: system
+    added_by: Phase_MA
+    data_source: SEC_10K
+    render_target: ma_profile
+  do_context:
+    INFO: '{company} goodwill changes: {value}. Goodwill trajectory indicates acquisition integration progress and potential
+      impairment exposure.'
+  schema_version: 4
+  signal_class: evaluative
+  group: ma_profile
+  field_path: goodwill_change_description
+  display: *id001
+  depends_on: *id002
+  extraction_hints: *id003
+  rap_class: agent
+  rap_subcategory: corporate_transactions
+  epistemology: *id004
+  evaluation:
+    mechanism: threshold
+- id: BIZ.MA.acquisition_list
+  name: Recent Acquisitions
+  work_type: extract
+  layer: data_element
+  factors:
+  - F4
+  peril_ids: []
+  unlinked: false
+  acquisition_tier: L2
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_8_financials
+  data_strategy:
+    field_key: acquisition_list
+    primary_source: SEC_10K
+  threshold:
+    type: display
+  tier: 2
+  depth: 3
+  v6_subsection_ids:
+  - '2.10'
+  worksheet_section: company
+  display_when: has_data
+  execution_mode: AUTO
+  content_type: MANAGEMENT_DISPLAY
+  provenance:
+    origin: v10.0_ma_profile
+    confidence: HIGH
+    source_author: system
+    added_by: Phase_MA
+    data_source: SEC_10K
+    render_target: ma_profile
+  do_context:
+    INFO: 'Recent acquisitions by {company}: {value}. Each acquisition creates potential derivative suit exposure from deal
+      valuation, integration execution, and officer/director duty of care obligations.'
+  schema_version: 4
+  signal_class: evaluative
+  group: ma_profile
+  field_path: acquisition_list
+  display: *id001
+  depends_on: *id002
+  extraction_hints: *id003
+  rap_class: agent
+  rap_subcategory: corporate_transactions
+  epistemology: *id004
+  evaluation:
+    mechanism: threshold

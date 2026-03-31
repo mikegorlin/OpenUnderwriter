@@ -1,0 +1,183 @@
+{# Stock Charts — ALL charts in main body #}
+{% from "components/charts.html.j2" import embed_chart with context %}
+
+{# ═══════════════════════════════════════════════════════════════
+   DROP LEGEND TABLE MACRO — must be defined before use
+   ═══════════════════════════════════════════════════════════════ #}
+{% macro _render_drop_legend(legend_data, period_label) %}
+<table style="width:100%;border-collapse:collapse;font-size:7.5pt;margin:4px 0 8px">
+  <thead>
+    <tr style="background:#F9FAFB;border-bottom:2px solid #E5E7EB">
+      <th style="text-align:center;padding:3px 5px;font-weight:700;color:#374151;width:28px">#</th>
+      <th style="text-align:left;padding:3px 5px;font-weight:700;color:#374151;width:70px">Date</th>
+      <th style="text-align:right;padding:3px 5px;font-weight:700;color:#374151;width:50px">Drop</th>
+      <th style="text-align:center;padding:3px 5px;font-weight:700;color:#374151;width:80px">Type</th>
+      <th style="text-align:left;padding:3px 5px;font-weight:700;color:#374151">Catalyst / Explanation</th>
+      <th style="text-align:right;padding:3px 5px;font-weight:700;color:#374151;width:55px">Sector</th>
+      <th style="text-align:right;padding:3px 5px;font-weight:700;color:#374151;width:55px">Recovery</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for d in legend_data %}
+    <tr style="border-bottom:1px solid #F3F4F6;{% if d.is_company_specific and d.drop_pct_raw <= -10 %}background:#FEF2F2{% elif d.is_company_specific and d.drop_pct_raw <= -5 %}background:#FFFBEB{% elif not d.is_company_specific %}background:#F8FAFC{% endif %}">
+      <td style="text-align:center;padding:3px 5px">
+        <span style="display:inline-block;width:18px;height:18px;line-height:18px;border-radius:50%;text-align:center;font-weight:700;font-size:6.5pt;color:white;background:{{ d.category_color }}">{{ d.number }}</span>
+      </td>
+      <td style="padding:3px 5px;color:#6B7280;font-variant-numeric:tabular-nums;{% if d.is_cluster %}font-size:6.5pt{% endif %}">
+        {{ d.date }}
+        {% if d.is_cluster %}<br><span style="font-size:5.5pt;color:#9CA3AF">{{ d.cluster_days }}d / {{ d.cluster_count }} sessions</span>{% endif %}
+      </td>
+      <td style="padding:3px 5px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums;color:{% if d.drop_pct_raw <= -10 %}#DC2626{% elif d.drop_pct_raw <= -5 %}#D97706{% else %}#374151{% endif %}">{{ d.drop_pct }}</td>
+      <td style="padding:3px 5px;text-align:center">
+        {% if d.is_company_specific %}
+        <span style="font-size:6.5pt;font-weight:700;padding:1px 6px;border-radius:8px;background:{{ d.category_color }};color:white">{{ d.category_label }}</span>
+        {% else %}
+        <span style="font-size:6.5pt;font-weight:600;padding:1px 6px;border-radius:8px;background:#F3F4F6;color:#6B7280">Sector-Wide</span>
+        {% endif %}
+      </td>
+      <td style="padding:3px 5px;color:#374151;line-height:1.4">
+        <span style="font-weight:600">{{ d.trigger }}</span>
+      </td>
+      <td style="padding:3px 5px;text-align:right;font-variant-numeric:tabular-nums;color:#6B7280">{{ d.sector_pct }}</td>
+      <td style="padding:3px 5px;text-align:right;font-variant-numeric:tabular-nums;{% if d.recovery == 'Not recovered' %}color:#DC2626;font-weight:600{% else %}color:#6B7280{% endif %}">{{ d.recovery }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endmacro %}
+
+{% if (chart_svgs is defined and chart_svgs) or (chart_images is defined and chart_images) %}
+
+{# ═══════════════════════════════════════════════════════════════
+   SECTION 1: Price Performance — 1Y and 5Y side by side
+   ═══════════════════════════════════════════════════════════════ #}
+<h3>Price Performance</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-3">
+  {{ embed_chart("stock_1y", ticker ~ " — 12 Month Price vs Sector & Market", figure_num=1) }}
+  {{ embed_chart("stock_5y", ticker ~ " — 5 Year Price vs Sector & Market", figure_num=2) }}
+</div>
+
+{# ═══════════════════════════════════════════════════════════════
+   SECTION 2: Stock Drop Investigation — unified chart with numbered events
+   ═══════════════════════════════════════════════════════════════ #}
+{% set has_drop_1y = (chart_svgs is defined and chart_svgs and 'unified_drop_1y' in chart_svgs) or (chart_images is defined and chart_images and 'unified_drop_1y' in chart_images) %}
+{% set has_drop_5y = (chart_svgs is defined and chart_svgs and 'unified_drop_5y' in chart_svgs) or (chart_images is defined and chart_images and 'unified_drop_5y' in chart_images) %}
+{% set mkt_ctx = market if market is defined else {} %}
+{% set dl1 = mkt_ctx.get('drop_legend_1y', []) if mkt_ctx is mapping else [] %}
+{% set dl5 = mkt_ctx.get('drop_legend_5y', []) if mkt_ctx is mapping else [] %}
+
+{% if has_drop_1y or has_drop_5y or dl1 or dl5 %}
+<h3>Stock Drop Investigation</h3>
+<p style="font-size:7.5pt;color:#6B7280;margin:0 0 6px;line-height:1.4">
+  Significant stock drops with catalyst attribution. <span style="color:#DC2626;font-weight:600">Numbered markers</span> correspond to the event table below.
+  <span style="color:#DC2626">Red</span> = company-specific, <span style="color:#6B7280">Gray</span> = sector/market-wide.
+</p>
+
+{# 1Y Drop Chart + Legend #}
+{% if has_drop_1y %}
+<div style="margin-bottom:12px">
+  {{ embed_chart("unified_drop_1y", ticker ~ " — 2 Year Drop Events", figure_num=3, full_width=true) }}
+  {% if dl1 %}
+  {{ _render_drop_legend(dl1, "12-Month") }}
+  {% endif %}
+</div>
+{% endif %}
+
+{# 5Y Drop Chart + Legend #}
+{% if has_drop_5y %}
+<div style="margin-bottom:12px">
+  {{ embed_chart("unified_drop_5y", ticker ~ " — 5 Year Drop Events", figure_num=4, full_width=true) }}
+  {% if dl5 %}
+  {{ _render_drop_legend(dl5, "5-Year") }}
+  {% endif %}
+</div>
+{% endif %}
+
+{# Fallback to old drop analysis charts if unified not available #}
+{% if not has_drop_1y and not has_drop_5y %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-3">
+  {{ embed_chart("drop_analysis_1y", ticker ~ " — 12 Month Drop Events", figure_num=3) }}
+  {{ embed_chart("drop_analysis_5y", ticker ~ " — 5 Year Drop Events", figure_num=4) }}
+</div>
+{% endif %}
+{% endif %}
+
+{# ═══════════════════════════════════════════════════════════════
+   SECTION 3: Insider Trading Timeline — overlaid on stock price
+   ═══════════════════════════════════════════════════════════════ #}
+{% set has_insider_1y = (chart_svgs is defined and chart_svgs and 'insider_timeline_1y' in chart_svgs) or (chart_images is defined and chart_images and 'insider_timeline_1y' in chart_images) %}
+{% set has_insider_5y = (chart_svgs is defined and chart_svgs and 'insider_timeline_5y' in chart_svgs) or (chart_images is defined and chart_images and 'insider_timeline_5y' in chart_images) %}
+
+{% if has_insider_1y or has_insider_5y %}
+<h3>Insider Trading Timeline</h3>
+<p style="font-size:7.5pt;color:#6B7280;margin:0 0 6px;line-height:1.4">
+  Insider transactions plotted over stock price. <span style="color:#DC2626">&#x25BC; Red</span> = discretionary sale,
+  <span style="color:#F59E0B">&#x25BC; Amber</span> = 10b5-1 plan sale,
+  <span style="color:#22C55E">&#x25B2; Green</span> = purchase.
+  Larger markers = larger transactions. Shaded bands = cluster selling windows.
+</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-3">
+  {% if has_insider_1y %}{{ embed_chart("insider_timeline_1y", ticker ~ " — 12 Month Insider Activity", figure_num=5) }}{% endif %}
+  {% if has_insider_5y %}{{ embed_chart("insider_timeline_5y", ticker ~ " — 5 Year Insider Activity", figure_num=6) }}{% endif %}
+</div>
+{% endif %}
+
+{# ═══════════════════════════════════════════════════════════════
+   SECTION 4: Technical Analysis — Drawdown, Volatility, Relative, Scatter
+   ═══════════════════════════════════════════════════════════════ #}
+<h3>Drawdown Analysis</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-3">
+  {{ embed_chart("drawdown_1y", ticker ~ " — 12 Month Drawdown", figure_num=7) }}
+  {{ embed_chart("drawdown_5y", ticker ~ " — 5 Year Drawdown", figure_num=8) }}
+</div>
+
+<h3>Volatility & Beta</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-3">
+  {{ embed_chart("volatility_1y", ticker ~ " — 12 Month Volatility", figure_num=9) }}
+  {{ embed_chart("volatility_5y", ticker ~ " — 5 Year Volatility", figure_num=10) }}
+</div>
+
+<h3>Relative Performance</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-3">
+  {{ embed_chart("relative_1y", ticker ~ " — 12 Month Indexed to 100", figure_num=11) }}
+  {{ embed_chart("relative_5y", ticker ~ " — 5 Year Indexed to 100", figure_num=12) }}
+</div>
+
+<h3>Drop vs Sector Scatter</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-3">
+  {{ embed_chart("drop_scatter_1y", ticker ~ " — 12 Month Drop vs Sector", figure_num=13) }}
+  {{ embed_chart("drop_scatter_5y", ticker ~ " — 5 Year Drop vs Sector", figure_num=14) }}
+</div>
+
+{# Return Attribution #}
+{% set rd1 = return_decomposition_1y if return_decomposition_1y is defined else None %}
+{% set rd5 = return_decomposition_5y if return_decomposition_5y is defined else None %}
+{% if rd1 or rd5 %}
+{% set ns_ra = namespace(show_1y=false, show_5y=false) %}
+{% for key in ["total_return", "market_contribution", "sector_contribution", "alpha", "beta_contribution", "idiosyncratic"] %}
+  {% if rd1 and key in rd1 and rd1[key] is not none and rd1[key] != '—' and rd1[key] != '' %}{% set ns_ra.show_1y = true %}{% endif %}
+  {% if rd5 and key in rd5 and rd5[key] is not none and rd5[key] != '—' and rd5[key] != '' %}{% set ns_ra.show_5y = true %}{% endif %}
+{% endfor %}
+{% if ns_ra.show_1y or ns_ra.show_5y %}
+<h3>Return Attribution</h3>
+<table class="w-full text-xs border-collapse my-2" style="font-variant-numeric: tabular-nums;">
+  <thead>
+    <tr class="border-b border-gray-300">
+      <th class="text-left py-1 px-2 font-semibold text-gray-700">Component</th>
+      {% if ns_ra.show_1y %}<th class="text-right py-1 px-2 font-semibold text-gray-700">1Y</th>{% endif %}
+      {% if ns_ra.show_5y %}<th class="text-right py-1 px-2 font-semibold text-gray-700">5Y</th>{% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for key in ["total_return", "market_contribution", "sector_contribution", "alpha", "beta_contribution", "idiosyncratic"] %}
+    <tr class="{{ loop.cycle('', 'bg-gray-50') }}">
+      <td class="py-1 px-2 text-gray-700">{{ key | replace("_", " ") | title }}</td>
+      {% if ns_ra.show_1y %}<td class="text-right py-1 px-2">{{ rd1[key] if rd1 and key in rd1 else "—" }}</td>{% endif %}
+      {% if ns_ra.show_5y %}<td class="text-right py-1 px-2">{{ rd5[key] if rd5 and key in rd5 else "—" }}</td>{% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endif %}
+{% endif %}

@@ -1,0 +1,78 @@
+# Domain 2: Financial Health & Accounting Integrity
+# "Can this company pay its bills and can I trust the numbers?"
+# The #1 predictor of D&O claims is financial distress. This domain
+# establishes whether the company is solvent, profitable, and clean.
+
+domain: financial_health
+domain_label: "Financial Health & Accounting"
+order: 2
+description: >
+  Assess financial stability, earnings quality, and accounting integrity.
+  Financial distress is the strongest single predictor of securities class actions.
+  A company that restates, misses guidance, or has material weakness in controls
+  is a lawsuit waiting to happen.
+
+questions:
+  - question_id: FIN-01
+    text: "Is the company profitable and what's the trend?"
+    weight: 10
+    data_sources: [extracted.financials.net_income, extracted.financials.revenue_growth]
+    answer_template: "Net income: {net_income} ({period}). Revenue growth: {rev_growth}% YoY. EBITDA margin: {ebitda_margin}%."
+    upgrade_criteria: "Consistent profitability, growing revenue, expanding margins"
+    downgrade_criteria: "Net loss, declining revenue, margin compression, or earnings miss"
+
+  - question_id: FIN-02
+    text: "What's the balance sheet strength — cash, debt, and liquidity?"
+    weight: 10
+    data_sources: [extracted.financials.cash, extracted.financials.total_debt, extracted.financials.current_ratio]
+    answer_template: "Cash: {cash}. Total debt: {debt}. Current ratio: {current_ratio}. Debt/equity: {dte}."
+    upgrade_criteria: "Net cash position, current ratio >2.0, D/E <1.0"
+    downgrade_criteria: "High leverage (D/E >3.0), current ratio <1.0, negative working capital"
+
+  - question_id: FIN-03
+    text: "Are there any earnings quality red flags (Beneish, Altman, forensics)?"
+    weight: 9
+    data_sources: [analysis.beneish, analysis.altman, analysis.forensic_signals]
+    answer_template: "Beneish M-Score: {beneish} ({beneish_level}). Altman Z-Score: {altman} ({altman_zone}). {forensic_flags} forensic flags."
+    upgrade_criteria: "Beneish 'unlikely manipulator', Altman safe zone, no forensic flags"
+    downgrade_criteria: "Beneish 'likely manipulator', Altman distress zone, multiple forensic signals"
+
+  - question_id: FIN-04
+    text: "Has the company restated financials or changed accounting policies?"
+    weight: 10
+    data_sources: [analysis.signals.restatement_*, extracted.sec_filings]
+    answer_template: "{restatement_status}"
+    upgrade_criteria: "No restatements in 5 years, stable accounting policies"
+    downgrade_criteria: "Any restatement — especially revenue-related or material"
+
+  - question_id: FIN-05
+    text: "Who audits them and are there any material weaknesses?"
+    weight: 8
+    data_sources: [extracted.financials.auditor, analysis.signals.material_weakness]
+    answer_template: "Auditor: {auditor} (Big 4: {is_big4}). Material weakness: {mw_status}."
+    upgrade_criteria: "Big 4 auditor, clean opinion, no MW or significant deficiency"
+    downgrade_criteria: "Non-Big 4, auditor change, material weakness, going concern opinion"
+
+  - question_id: FIN-06
+    text: "What's the cash flow situation — operating vs. financing?"
+    weight: 8
+    data_sources: [extracted.financials.ocf, extracted.financials.fcf]
+    answer_template: "Operating cash flow: {ocf}. Free cash flow: {fcf}. CapEx: {capex}."
+    upgrade_criteria: "Positive OCF covering CapEx and dividends, growing FCF"
+    downgrade_criteria: "Negative OCF, FCF burn, reliance on financing for operations"
+
+  - question_id: FIN-07
+    text: "How does revenue recognition work and is it complex?"
+    weight: 7
+    data_sources: [company.industry, analysis.signals.rev_rec_*]
+    answer_template: "{rev_rec_assessment}"
+    upgrade_criteria: "Straightforward rev rec (product sale at delivery)"
+    downgrade_criteria: "Complex rev rec (long-term contracts, ASC 606 judgments, percentage-of-completion)"
+
+  - question_id: FIN-08
+    text: "What's the GAAP vs non-GAAP delta on key metrics?"
+    weight: 7
+    data_sources: [analysis.signals.earnings_quality_*]
+    answer_template: "{gaap_nongaap_delta}"
+    upgrade_criteria: "Minimal adjustments, transparent reconciliation"
+    downgrade_criteria: "Large stock-comp add-backs, recurring 'one-time' charges, >30% delta"

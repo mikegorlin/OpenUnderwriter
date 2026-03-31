@@ -1,0 +1,16 @@
+{# Data Quality Notice — extracted from executive.html.j2 #}
+
+  {# --- Data Quality Notice (when blind spot detection was skipped) --- #}
+  {% set bs = blind_spot_status or {} %}
+  {% if not bs.get('search_configured', false) %}
+  <div class="border-l-4 border-red-700 bg-red-50 pl-4 py-3 my-3 page-break-inside-avoid">
+    <p class="text-sm text-red-800 font-semibold m-0">Data Quality Notice</p>
+    <p class="text-sm text-red-700 m-0 mt-1">
+      Web-based blind spot detection was not performed for this analysis (no search API configured).
+      This worksheet relies solely on SEC filing data and structured APIs.
+      Publicly known events such as short seller reports, state AG actions, active securities class actions
+      not disclosed in filings, news coverage, and social media sentiment may not be reflected.
+      Manual verification of the litigation and regulatory landscape is strongly recommended.
+    </p>
+  </div>
+  {% endif %}

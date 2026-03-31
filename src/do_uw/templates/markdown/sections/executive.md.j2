@@ -1,0 +1,71 @@
+## Section 1: Executive Summary -- Underwriting Thesis & Key Findings
+
+{% if executive_summary %}
+**Risk Tier:** {{ executive_summary.tier_label or "N/A" }} | **Quality Score:** {{ executive_summary.quality_score or "N/A" }}/100{% if executive_summary.composite_score %} (Composite: {{ executive_summary.composite_score }}){% endif %}
+
+{% if executive_summary.snapshot %}
+### Company Snapshot
+
+| Attribute | Value |
+|-----------|-------|
+| Company | {{ executive_summary.snapshot.company_name }} |
+| Ticker / Exchange | {{ executive_summary.snapshot.ticker }} / {{ executive_summary.snapshot.exchange }} |
+| Industry | {{ executive_summary.snapshot.industry }} |
+| Market Cap | {{ executive_summary.snapshot.market_cap }} |
+| Revenue | {{ executive_summary.snapshot.revenue }} |
+| Employees | {{ executive_summary.snapshot.employees }} |
+{% endif %}
+{% if executive_summary.inherent_risk %}
+### Inherent Risk Baseline
+
+| Metric | Value |
+|--------|-------|
+| Sector | {{ executive_summary.inherent_risk.sector }} |
+| Market Cap Tier | {{ executive_summary.inherent_risk.market_cap_tier }} |
+| Sector Base Rate | {{ executive_summary.inherent_risk.sector_base_rate }} |
+| Adjusted Rate | {{ executive_summary.inherent_risk.adjusted_rate }} |
+{% endif %}
+{% if executive_summary.thesis %}
+### Underwriting Thesis
+
+{{ executive_summary.thesis }}
+{% endif %}
+{% if executive_summary.key_findings_detail %}
+### Underwriting Headwinds
+
+| Evidence | Section | Impact | Theory |
+|----------|---------|--------|--------|
+{% for f in executive_summary.key_findings_detail %}| {{ f.narrative }} | {{ f.section }} | {{ f.impact }} | {{ f.theory }} |
+{% endfor %}{% elif executive_summary.key_findings %}
+### Underwriting Headwinds
+
+{% for finding in executive_summary.key_findings %}- {{ finding }}
+{% endfor %}{% endif %}
+{% if executive_summary.positive_detail %}
+### Risk Mitigants
+
+| Evidence | Section | Impact | Theory |
+|----------|---------|--------|--------|
+{% for p in executive_summary.positive_detail %}| {{ p.narrative }} | {{ p.section }} | {{ p.impact }} | {{ p.theory }} |
+{% endfor %}{% elif executive_summary.positive_indicators %}
+### Risk Mitigants
+
+{% for indicator in executive_summary.positive_indicators %}- {{ indicator }}
+{% endfor %}{% endif %}
+{% if executive_summary.claim_probability %}
+### Claim Probability
+
+| Probability Band | Company Rate | Industry Base Rate |
+|-----------------|-------------|-------------------|
+| **{{ executive_summary.claim_probability.band }}** | {{ executive_summary.claim_probability.range }} | {{ executive_summary.claim_probability.industry_base }} |
+{% endif %}
+{% if executive_summary.tower_recommendation %}
+### Tower Recommendation
+
+| Position | Min Attachment | Side A/DIC |
+|----------|---------------|-----------|
+| {{ executive_summary.tower_recommendation.position }} | {{ executive_summary.tower_recommendation.min_attachment }} | {{ executive_summary.tower_recommendation.side_a }} |
+{% endif %}
+{% else %}
+*Executive summary data not available.*
+{% endif %}

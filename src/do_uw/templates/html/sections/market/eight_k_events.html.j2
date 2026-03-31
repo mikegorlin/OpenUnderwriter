@@ -1,0 +1,90 @@
+{# 8-K Event Classification — filings, item frequency, D&O flags.
+   Data from state.extracted.market.eight_k_items via mkt.eight_k_events. #}
+
+{% set ek = mkt.get('eight_k_events', {}) %}
+{% if ek and ek.get('filings') %}
+  <h3>8-K Event Classification</h3>
+
+  {# --- D&O Critical Flags --- #}
+  {% set flags = ek.get('do_flags', []) %}
+  {% if flags %}
+  <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:4px;padding:6px 10px;margin-bottom:8px">
+    <div style="font-size:9pt;font-weight:700;color:#DC2626;margin-bottom:3px">D&O-Critical Events Detected</div>
+    {% for flag in flags %}
+    <div style="font-size:8pt;color:#374151"><span style="display:inline-block;width:6px;height:6px;border-radius:3px;background:#DC2626;vertical-align:middle;margin-right:4px"></span>{{ flag }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# --- Summary Stats --- #}
+  {{ kv_table([
+    {'key': 'Total 8-K Filings', 'value': ek.get('total_filings', 0)},
+    {'key': 'D&O-Critical Filings', 'value': ek.get('do_critical_count', 0)},
+  ]) }}
+
+  {# --- Item Frequency Summary --- #}
+  {% set freq = ek.get('item_frequency', []) %}
+  {% if freq %}
+  {# Check if any item has D&O critical flag #}
+  {% set ns_freq = namespace(show_do=false) %}
+  {% for item in freq %}{% if item.is_do_critical %}{% set ns_freq.show_do = true %}{% endif %}{% endfor %}
+  <h4>Item Frequency</h4>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Item</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Description</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Count</th>
+        {% if ns_freq.show_do %}<th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1">D&O</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for item in freq %}
+      <tr class="{{ 'bg-red-50' if item.is_do_critical else ('bg-bg-alt' if loop.index is odd else 'bg-white') }}">
+        <td class="p-1 font-semibold {{ 'text-red-700' if item.is_do_critical else 'text-navy' }}">{{ item.item }}</td>
+        <td class="p-1">{{ item.description }}</td>
+        <td class="p-1 text-right font-semibold">{{ item.count }}</td>
+        {% if ns_freq.show_do %}<td class="p-1 text-center">{% if item.is_do_critical %}<span style="display:inline-block;width:8px;height:8px;border-radius:4px;background:#DC2626"></span>{% endif %}</td>{% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {# --- Recent Filings Table --- #}
+  {% set filings = ek.get('filings', []) %}
+  {% if filings %}
+  <h4>Recent 8-K Filings</h4>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Date</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Items</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Description</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1">Severity</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for f in filings %}
+      <tr class="{{ 'bg-red-50' if f.is_critical else ('bg-bg-alt' if loop.index is odd else 'bg-white') }}">
+        <td class="p-1 tabular-nums whitespace-nowrap">{{ f.date }}</td>
+        <td class="p-1 tabular-nums font-semibold {{ 'text-red-700' if f.is_critical else 'text-navy' }}">{{ f['items'] }}</td>
+        <td class="p-1 text-xs">{{ f.titles }}</td>
+        <td class="p-1 text-center">
+          {% if f.do_severity == 'CRITICAL' %}<span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 font-semibold">{{ f.do_severity }}</span>
+          {% elif f.do_severity == 'HIGH' %}<span class="inline-block px-2 py-0.5 text-xs rounded bg-amber-100 text-amber-800 font-semibold">{{ f.do_severity }}</span>
+          {% elif f.do_severity == 'MEDIUM' %}<span class="inline-block px-2 py-0.5 text-xs rounded bg-yellow-100 text-yellow-800 font-semibold">{{ f.do_severity }}</span>
+          {% else %}<span class="text-xs text-gray-400">{{ f.do_severity }}</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>Item 4.02 (non-reliance/restatement) and Item 4.01 (auditor change) are the highest-severity D&O triggers&mdash;historically 60%+ of restatement 8-Ks lead to securities class actions</li>
+    <li>Item 5.02 (officer departures) during financial stress periods may signal deeper internal issues not yet public</li>
+  </ul>
+{% endif %}

@@ -1,0 +1,11 @@
+{# Inline SVG trend arrow macro for key metrics (INFO-04).
+   Renders pre-generated SVG arrows inline.
+   Usage: {{ metric_trend(current_val, prior_val, "Revenue trend", inverted=false) }}
+   Or direct: {{ trend_arrow("up") | safe }} #}
+
+{% macro metric_trend(current, prior, label="", inverted=false, threshold=2.0) %}
+{%- if current is not none and prior is not none -%}
+{%- set dir = trend_dir(current, prior, threshold) -%}
+{{ trend_arrow(dir, inverted=inverted, label=label) | safe }}
+{%- endif -%}
+{% endmacro %}

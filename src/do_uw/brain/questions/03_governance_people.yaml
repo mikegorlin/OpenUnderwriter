@@ -1,0 +1,78 @@
+# Domain 3: Governance & People Risk
+# "Who runs this company and can I trust them?"
+# D&O is about DIRECTORS AND OFFICERS — the people are the risk.
+# This is where the underwriter assesses management integrity, board quality,
+# and whether the governance structure protects shareholders.
+
+domain: governance_people
+domain_label: "Governance & People"
+order: 3
+description: >
+  Evaluate management quality, board independence, compensation alignment,
+  and personal risk factors for individual directors and officers. D&O claims
+  name specific people — understanding who they are is non-negotiable.
+
+questions:
+  - question_id: GOV-01
+    text: "Is the board truly independent or does management control it?"
+    weight: 10
+    data_sources: [extracted.governance.board_members, extracted.governance.independence_pct]
+    answer_template: "Board size: {board_size}. Independence: {independence_pct}%. CEO/Chair split: {ceo_chair_split}."
+    upgrade_criteria: ">75% independent, separate CEO/Chair, no family members"
+    downgrade_criteria: "<50% independent, CEO is also Chair, founder/family control, staggered board"
+
+  - question_id: GOV-02
+    text: "Has the CEO or any director been personally sued or investigated?"
+    weight: 10
+    data_sources: [analysis.signals.exec_litigation_*, extracted.litigation]
+    answer_template: "{exec_litigation_status}"
+    upgrade_criteria: "No personal litigation history for any officer/director"
+    downgrade_criteria: "CEO or director named in prior SCA, SEC investigation, or personal fraud"
+
+  - question_id: GOV-03
+    text: "Is executive compensation aligned with shareholders?"
+    weight: 8
+    data_sources: [extracted.governance.ceo_compensation, extracted.governance.say_on_pay]
+    answer_template: "CEO total comp: {ceo_comp}. Say-on-pay approval: {sop_pct}%. Pay ratio: {pay_ratio}."
+    upgrade_criteria: "Say-on-pay >85%, performance-linked comp, reasonable pay ratio"
+    downgrade_criteria: "Say-on-pay <70%, excessive perks, comp increases despite declining performance"
+
+  - question_id: GOV-04
+    text: "Are there related-party transactions or conflicts of interest?"
+    weight: 9
+    data_sources: [analysis.signals.related_party_*, extracted.governance]
+    answer_template: "{related_party_status}"
+    upgrade_criteria: "No material related-party transactions"
+    downgrade_criteria: "Transactions with CEO/director-affiliated entities, self-dealing flags"
+
+  - question_id: GOV-05
+    text: "What's the director tenure and are there recent board changes?"
+    weight: 7
+    data_sources: [extracted.governance.board_members]
+    answer_template: "Average tenure: {avg_tenure} years. Recent changes: {board_changes}."
+    upgrade_criteria: "Balanced tenure (mix of fresh and experienced), orderly succession"
+    downgrade_criteria: "Mass resignation, all-new board, or entrenched board (all >15 years)"
+
+  - question_id: GOV-06
+    text: "Do officers and directors have adequate D&O-relevant experience?"
+    weight: 7
+    data_sources: [extracted.governance.board_members]
+    answer_template: "{experience_assessment}"
+    upgrade_criteria: "Industry veterans, prior public company board experience, diverse skill set"
+    downgrade_criteria: "First-time directors, no industry experience, thin qualification disclosures"
+
+  - question_id: GOV-07
+    text: "Are there any character or integrity concerns for key officers?"
+    weight: 9
+    data_sources: [analysis.signals.exec_risk_*, web_search]
+    answer_template: "{character_assessment}"
+    upgrade_criteria: "Clean background, no public controversies"
+    downgrade_criteria: "Criminal history, SEC bars, personal bankruptcy, public scandals"
+
+  - question_id: GOV-08
+    text: "Is there a dual-class share structure or controlling shareholder?"
+    weight: 8
+    data_sources: [extracted.governance.share_structure, analysis.signals.controlled_company]
+    answer_template: "{share_structure}"
+    upgrade_criteria: "One share, one vote. No controlling shareholder"
+    downgrade_criteria: "Dual-class structure, founder/PE >50% voting, limited minority protections"

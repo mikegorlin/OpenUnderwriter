@@ -1,0 +1,384 @@
+# Tax Jurisdiction Signals — XBRL-sourced D&O risk indicators
+# Domain: fin/tax_jurisdiction.yaml  |  Count: 5
+- id: FIN.TAX.jurisdiction_mix
+  name: Tax Jurisdiction Mix
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - income_tax_note
+  threshold:
+    type: tiered
+    red: Foreign tax > 60% of total tax provision — high transfer pricing and repatriation risk
+    yellow: Foreign tax > 40% of total tax provision — elevated transfer pricing scrutiny
+    clear: Foreign tax <= 40% of total tax provision
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.3'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:CurrentFederalTaxExpenseBenefit
+    - us-gaap:CurrentStateAndLocalTaxExpenseBenefit
+    - us-gaap:CurrentForeignTaxExpenseBenefit
+    - us-gaap:IncomeTaxExpenseBenefit
+    expected_type: numeric
+    no_data_sentinel: Tax jurisdiction breakdown not found in XBRL tax note
+    validation_rule: foreign_tax_pct between 0 and 100
+  data_strategy:
+    field_key: xbrl_foreign_tax_pct
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Foreign tax concentration >40% indicates material transfer pricing exposure per IRS enforcement data and OECD BEPS guidelines
+    render_target: key_metrics
+    formula: foreign_tax_current / (federal_tax_current + state_tax_current + foreign_tax_current)
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_foreign_tax_pct
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'D&O claims analysis: transfer pricing disputes and tax repatriation events trigger shareholder suits when previously undisclosed tax liabilities materialize, per OECD BEPS enforcement and IRS audit data'
+    threshold_basis: 'Foreign tax >40%: elevated transfer pricing scrutiny threshold based on IRS Large Business & International audit selection criteria; >60%: high risk per OECD BEPS Action 13 country-by-country reporting triggers'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} foreign tax concentration at {value} (threshold: >60% of total provision) signals high transfer pricing and repatriation risk (F6). Concentrated foreign tax jurisdictions create exposure to coordinated multi-jurisdiction enforcement actions and treaty renegotiations that can produce sudden, material tax liabilities — the kind of ''surprise'' that triggers SCA filings when previously undisclosed risks materialize.'
+      TRIGGERED_YELLOW: '{company} foreign tax concentration at {value} (threshold: >40% of total provision) indicates elevated transfer pricing scrutiny risk (F6). Monitor for OECD BEPS developments and IRS enforcement actions — material transfer pricing adjustments often precede earnings restatements and corrective disclosures that create SCA class periods.'
+      CLEAR: '{company} foreign tax concentration at {value} is within normal parameters for transfer pricing risk (F6) — domestic-weighted tax profile reduces exposure to multi-jurisdiction enforcement surprises.'
+
+- id: FIN.TAX.deferred_tax_gap
+  name: Deferred Tax Asset Gap
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - balance_sheet
+    - income_tax_note
+  threshold:
+    type: tiered
+    red: Deferred tax asset > 10% of total assets — valuation allowance risk and potential writedown
+    yellow: Deferred tax asset > 5% of total assets — elevated realizability concern
+    clear: Deferred tax asset <= 5% of total assets
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:DeferredTaxAssetsNet
+    - us-gaap:DeferredTaxAssetsGross
+    - us-gaap:DeferredTaxAssetsValuationAllowance
+    - us-gaap:Assets
+    expected_type: numeric
+    no_data_sentinel: Deferred tax asset data not found in XBRL
+    validation_rule: dta_pct >= 0
+  data_strategy:
+    field_key: xbrl_deferred_tax_asset_pct
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: DTA >5% of assets signals realizability risk per ASC 740 valuation allowance assessment standards
+    render_target: key_metrics
+    formula: deferred_tax_assets_net / total_assets
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_deferred_tax_asset_pct
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'ASC 740 valuation allowance assessment: large DTAs require ''more likely than not'' realizability judgment, creating disclosure risk when conditions deteriorate'
+    threshold_basis: 'DTA >5% of assets: threshold where valuation allowance changes become material to earnings per SEC Staff Accounting Bulletin guidance; >10%: high risk of sudden writedown'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} deferred tax asset at {value} of total assets (threshold: >10%) signals material valuation allowance risk (F3). Large DTAs depend on management''s judgment about future taxable income — when that judgment proves wrong, the resulting writedown produces the kind of sudden, non-cash earnings hit that drives SCA filings, especially when management previously represented the DTA as ''fully realizable.'''
+      TRIGGERED_YELLOW: '{company} deferred tax asset at {value} of total assets (threshold: >5%) indicates elevated realizability concern (F3). Monitor for changes in valuation allowance and management''s ''more likely than not'' assessment — shifts in this judgment are leading indicators of earnings surprises.'
+      CLEAR: '{company} deferred tax asset at {value} of total assets is within normal parameters for valuation allowance risk (F3) — modest DTA relative to asset base limits writedown exposure.'
+
+- id: FIN.TAX.utb_exposure
+  name: Unrecognized Tax Benefit Exposure
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - income_tax_note
+  threshold:
+    type: tiered
+    red: UTB > $500M or > 3% of total assets — material tax dispute exposure
+    yellow: UTB > $100M or > 2% of total assets — elevated tax dispute risk
+    clear: UTB <= $100M and <= 2% of total assets
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.3'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:UnrecognizedTaxBenefits
+    - us-gaap:UnrecognizedTaxBenefitsThatWouldImpactEffectiveTaxRate
+    - us-gaap:Assets
+    expected_type: numeric
+    no_data_sentinel: UTB data not found in XBRL tax note
+    validation_rule: utb >= 0
+  data_strategy:
+    field_key: xbrl_utb_exposure
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: UTB >$500M or >2% of assets per ASC 740-10 uncertain tax position disclosure and SEC enforcement focus areas
+    render_target: key_metrics
+    formula: unrecognized_tax_benefits / total_assets
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_utb_exposure
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'ASC 740-10 uncertain tax positions: UTBs represent positions where management has taken aggressive tax stances that may not survive IRS examination, creating contingent liability exposure'
+    threshold_basis: 'UTB >$500M: threshold for material tax dispute based on SEC enforcement actions targeting inadequate UTB disclosure; >2% of assets: materiality threshold per SAB 99'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} unrecognized tax benefits at {value} (threshold: >$500M or >3% of assets) signals material tax dispute exposure (F3/F6). Large UTBs represent aggressive tax positions that may not survive examination — when the IRS prevails, the resulting tax liability and back-interest produce earnings surprises that trigger SCA filings, particularly when management understated the risk in prior disclosures.'
+      TRIGGERED_YELLOW: '{company} unrecognized tax benefits at {value} (threshold: >$100M or >2% of assets) indicates elevated tax dispute risk (F3/F6). Monitor for IRS examination outcomes and UTB roll-forward changes — material settlements or increases signal evolving tax controversy exposure.'
+      CLEAR: '{company} unrecognized tax benefits at {value} are within normal parameters for tax dispute risk (F3/F6) — UTB level does not indicate aggressive tax positioning.'
+
+- id: FIN.TAX.utb_penalties
+  name: UTB Penalties & Interest
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - income_tax_note
+  threshold:
+    type: tiered
+    red: UTB penalties & interest accrued > $50M — active tax dispute with penalties
+    yellow: UTB penalties & interest accrued > 0 — tax authority has asserted penalties
+    clear: No penalties or interest accrued
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.3'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:UnrecognizedTaxBenefitsIncomeTaxPenaltiesAndInterestAccrued
+    - us-gaap:UnrecognizedTaxBenefitsIncomeTaxPenaltiesAccrued
+    - us-gaap:UnrecognizedTaxBenefitsInterestOnIncomeTaxesAccrued
+    expected_type: numeric
+    no_data_sentinel: UTB penalties and interest data not found in XBRL
+    validation_rule: utb_penalties >= 0
+  data_strategy:
+    field_key: xbrl_utb_penalties
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Any UTB penalties/interest accrual indicates tax authority has challenged positions; >$50M signals material active dispute
+    render_target: key_metrics
+    formula: utb_penalties_interest_accrued
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_utb_penalties
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Tax dispute indicator: accrued penalties and interest on uncertain tax positions signal active IRS/state challenges where the company acknowledges potential liability'
+    threshold_basis: 'Any accrual > 0: tax authority has formally challenged positions; >$50M: material dispute likely requiring disclosure in risk factors and MD&A'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} UTB penalties and interest at {value} (threshold: >$50M) confirms an active, material tax dispute with penalties assessed (F3). Penalty accruals mean the tax authority has formally challenged the company''s positions — resolution may produce a material charge that management has been downplaying, creating the disclosure gap that supports scienter in SCA claims.'
+      TRIGGERED_YELLOW: '{company} UTB penalties and interest at {value} (threshold: >$0) indicates tax authority has asserted penalties on uncertain positions (F3). Any penalty accrual signals the company''s tax positions are under active challenge — monitor for escalation and disclosure adequacy.'
+      CLEAR: '{company} has no UTB penalties or interest accrued — no evidence of active tax authority challenges on uncertain positions (F3).'
+
+- id: FIN.TAX.etr_deviation
+  name: Effective Tax Rate Deviation
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - income_tax_note
+  threshold:
+    type: tiered
+    red: ETR deviates from statutory rate by > 15 percentage points — aggressive tax strategy or one-time items
+    yellow: ETR deviates from statutory rate by > 10 percentage points — material rate benefit requiring explanation
+    clear: ETR within 10 percentage points of statutory rate
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.3'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:EffectiveIncomeTaxRateContinuingOperations
+    - us-gaap:IncomeTaxExpenseBenefit
+    - us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest
+    expected_type: numeric
+    no_data_sentinel: Effective tax rate data not found in XBRL
+    validation_rule: etr between -100 and 100
+  data_strategy:
+    field_key: xbrl_etr_deviation
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: ETR deviation >10pp from 21% statutory rate indicates material tax benefits or aggressive positioning per SEC rate reconciliation review focus
+    render_target: key_metrics
+    formula: abs(effective_tax_rate - 0.21)
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_etr_deviation
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'SEC review focus: effective tax rate reconciliation is a frequent SEC comment letter topic; material deviations from statutory rate require clear disclosure of drivers per ASC 740-10-50'
+    threshold_basis: 'ETR deviation >10pp: material rate benefit threshold based on SEC comment letter patterns; >15pp: aggressive positioning likely requiring detailed rate reconciliation disclosure'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} effective tax rate deviation at {value} from statutory rate (threshold: >15pp) signals aggressive tax strategy or material one-time items (F6). Large ETR deviations attract SEC comment letter scrutiny and may indicate unsustainable tax benefits — when these benefits expire or are challenged, the resulting ETR normalization compresses earnings in ways that surprise investors and trigger SCA filings.'
+      TRIGGERED_YELLOW: '{company} effective tax rate deviation at {value} from statutory rate (threshold: >10pp) indicates material rate benefit requiring explanation (F6). Monitor for sustainability of tax benefits and SEC comment letter inquiries — rate reconciliation is a frequent SEC review focus area.'
+      CLEAR: '{company} effective tax rate at {value} is within normal range of statutory rate (F6) — no indication of aggressive tax positioning or unsustainable rate benefits.'

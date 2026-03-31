@@ -1,0 +1,35 @@
+{# Goodwill/Intangible as % of Equity — metric card with color-coded severity #}
+{% set gw = fin.get('goodwill_equity_pct', {}) %}
+{% if gw %}
+{% set border_color = '#DC2626' if gw.color == 'red' else ('#D97706' if gw.color == 'amber' else '#16A34A') %}
+{% set bg_color = '#FEF2F2' if gw.color == 'red' else ('#FFFBEB' if gw.color == 'amber' else '#F0FDF4') %}
+{% set text_color = '#991B1B' if gw.color == 'red' else ('#92400E' if gw.color == 'amber' else '#166534') %}
+<h3>Goodwill &amp; Intangible Concentration</h3>
+<div style="display:grid; grid-template-columns: 1fr 2fr; gap:0.75rem; margin-bottom:0.75rem; align-items:start;">
+  <div style="padding:8px 12px; border-radius:5px; background:{{ bg_color }}; border:1.5px solid {{ border_color }}; text-align:center;">
+    <div style="font-size:14pt; font-weight:800; color:{{ text_color }}; font-variant-numeric:tabular-nums; line-height:1.1;">{{ gw.value }}</div>
+    <div style="font-size:7pt; color:#6B7280; font-weight:600; margin-top:3px; text-transform:uppercase; letter-spacing:0.3px;">of Equity</div>
+  </div>
+  <div style="font-size:11px; color:#374151; line-height:1.5;">
+    <div><span style="font-weight:600; color:#1e3a5f;">Goodwill:</span> {{ gw.goodwill }}</div>
+    {% if gw.intangibles %}
+    <div><span style="font-weight:600; color:#1e3a5f;">Other Intangibles:</span> {{ gw.intangibles }}</div>
+    {% endif %}
+    <div><span style="font-weight:600; color:#1e3a5f;">Stockholders' Equity:</span> {{ gw.equity }}</div>
+    {% if gw.raw > 100 %}
+    <div style="margin-top:4px; font-size:10px; color:#991B1B; font-weight:600;">Goodwill exceeds equity &mdash; impairment would eliminate book value</div>
+    {% elif gw.raw > 50 %}
+    <div style="margin-top:4px; font-size:10px; color:#92400E; font-weight:600;">Material impairment exposure relative to equity base</div>
+    {% endif %}
+  </div>
+</div>
+<ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+  {% if gw.raw > 80 %}
+  <li>Goodwill at {{ gw.value }} of equity is a significant D&amp;O risk factor &mdash; goodwill impairment charges are among the top triggers for securities class actions, especially when management had affirmed acquisition synergies or integration progress prior to the write-down</li>
+  {% elif gw.raw > 50 %}
+  <li>Goodwill concentration of {{ gw.value }} of equity creates material D&amp;O exposure &mdash; monitor acquisition-related integration statements for potential misrepresentation claims if impairment becomes necessary</li>
+  {% elif gw.raw < 10 %}
+  <li>Low goodwill concentration reduces impairment-driven SCA exposure &mdash; not a material D&amp;O concern</li>
+  {% endif %}
+</ul>
+{% endif %}

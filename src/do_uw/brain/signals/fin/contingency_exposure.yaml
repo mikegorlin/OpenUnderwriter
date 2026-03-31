@@ -1,0 +1,314 @@
+# Contingency & Legal Exposure Signals — XBRL-sourced D&O risk indicators
+# Domain: fin/contingency_exposure.yaml  |  Count: 4
+- id: FIN.CONT.loss_accrual
+  name: Loss Contingency Accrual
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  - F3
+  peril_ids: []
+  chain_roles:
+    litigation_to_sca: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_10Q
+  data_locations:
+    SEC_10K:
+    - commitments_contingencies_note
+    SEC_10Q:
+    - commitments_contingencies_note
+  threshold:
+    type: tiered
+    red: Loss contingency accrual > 1% of total assets — material active legal exposure
+    yellow: Loss contingency accrual > 0 — company has probable and estimable legal liabilities
+    clear: No loss contingency accrual
+  tier: 1
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.5'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:LossContingencyAccrualAtCarryingValue
+    - us-gaap:LossContingencyAccrualProvision
+    - us-gaap:LitigationReserve
+    expected_type: numeric
+    no_data_sentinel: Loss contingency accrual data not found in XBRL
+    validation_rule: loss_accrual >= 0
+  data_strategy:
+    field_key: xbrl_loss_contingency_accrual
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Any loss contingency accrual means management has determined a loss is both probable and estimable per ASC 450; >1% of assets is material
+    render_target: key_metrics
+    formula: loss_contingency_accrual
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_loss_contingency_accrual
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'ASC 450 loss contingencies: accrual means management has concluded a loss is probable and estimable — the existence of an accrual confirms active legal exposure that may expand'
+    threshold_basis: 'Any accrual > 0: probable and estimable legal liability exists per ASC 450-20; >1% of assets: material exposure per SAB 99 materiality guidance'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} loss contingency accrual at {value} (threshold: >1% of total assets) confirms material active legal exposure (F1/F3). The accrual itself is management''s admission that loss is probable — but the accrued amount often understates ultimate exposure. When settlements exceed accruals, the resulting charge triggers SCA claims alleging management concealed the true magnitude of litigation risk.'
+      TRIGGERED_YELLOW: '{company} loss contingency accrual at {value} (threshold: >$0) indicates the company has probable and estimable legal liabilities (F1/F3). Any accrual under ASC 450 means management has concluded loss is likely — monitor for accrual increases and reasonably possible additional losses disclosed in footnotes.'
+      CLEAR: '{company} has no loss contingency accrual — no legal matters currently assessed as probable and estimable losses under ASC 450 (F1/F3).'
+
+- id: FIN.CONT.loss_estimate
+  name: Loss Contingency Estimate
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  peril_ids: []
+  chain_roles:
+    litigation_to_sca: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - commitments_contingencies_note
+  threshold:
+    type: tiered
+    red: Loss contingency estimate > $500M — major litigation risk
+    yellow: Loss contingency estimate > $100M — material litigation risk
+    clear: Loss contingency estimate <= $100M or not disclosed
+  tier: 1
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.5'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:LossContingencyEstimateOfPossibleLoss
+    - us-gaap:LossContingencyRangeOfPossibleLossPortionNotAccrued
+    - us-gaap:LossContingencyDamagesSoughtValue
+    expected_type: numeric
+    no_data_sentinel: Loss contingency estimate not found in XBRL
+    validation_rule: loss_estimate >= 0
+  data_strategy:
+    field_key: xbrl_loss_contingency_estimate
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Loss contingency estimate >$100M is material for most public companies; >$500M represents major litigation risk per settlement database analysis
+    render_target: key_metrics
+    formula: loss_contingency_estimate
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_loss_contingency_estimate
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'D&O claims analysis: disclosed loss contingency estimates directly quantify litigation exposure — when actual settlements exceed estimates, the gap becomes the basis for inadequate disclosure claims'
+    threshold_basis: 'Loss estimate >$100M: material litigation exposure for most public companies per Cornerstone Research settlement data; >$500M: mega-litigation category with elevated D&O claim frequency'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} loss contingency estimate at {value} (threshold: >$500M) signals major litigation risk (F1). Mega-litigation exposure at this level often exceeds D&O policy limits and creates the kind of existential threat that drives derivative suits alongside the underlying claims — directors face both direct liability and allegations of inadequate litigation risk oversight.'
+      TRIGGERED_YELLOW: '{company} loss contingency estimate at {value} (threshold: >$100M) indicates material litigation risk (F1). Disclosed estimates represent the lower bound of management''s assessment — actual exposure may exceed the stated range. Monitor for estimate revisions that signal deteriorating settlement dynamics.'
+      CLEAR: '{company} loss contingency estimate at {value} is below material litigation thresholds (F1) — disclosed estimates do not indicate outsized litigation exposure.'
+
+- id: FIN.CONT.settlement_activity
+  name: Litigation Settlement Activity
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  peril_ids: []
+  chain_roles:
+    litigation_to_sca: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_10Q
+  data_locations:
+    SEC_10K:
+    - commitments_contingencies_note
+    - income_statement
+    SEC_10Q:
+    - commitments_contingencies_note
+  threshold:
+    type: tiered
+    red: Litigation settlements paid > $100M in period — major claim resolution
+    yellow: Litigation settlements paid > 0 in period — active claim resolution
+    clear: No litigation settlements in period
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.5'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:LitigationSettlementAmountAwardedToOtherParty
+    - us-gaap:LossContingencyLossInPeriod
+    - us-gaap:GainLossRelatedToLitigationSettlement
+    expected_type: numeric
+    no_data_sentinel: Litigation settlement data not found in XBRL
+    validation_rule: settlement_amount >= 0
+  data_strategy:
+    field_key: xbrl_litigation_settlement
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Any settlement activity indicates resolved or settling claims; >$100M signals material claims that may indicate systemic litigation patterns
+    render_target: key_metrics
+    formula: litigation_settlement_paid
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_litigation_settlement
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'D&O claims experience: settlement activity establishes a company''s litigation profile — past settlements predict future claim likelihood and inform plaintiff attorney targeting decisions'
+    threshold_basis: 'Any settlement > 0: confirms active litigation history; >$100M: major claims resolution per Cornerstone Research settlement database'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} litigation settlements at {value} in period (threshold: >$100M) signals major claim resolution activity (F1). Large settlements confirm the company is a litigation target — plaintiff firms track settlement history when deciding whether to file new claims, and past material settlements increase the probability of future filings.'
+      TRIGGERED_YELLOW: '{company} litigation settlements at {value} in period (threshold: >$0) indicates active claim resolution (F1). Settlement activity confirms the company is resolving legal disputes — review the nature of settled claims for patterns that may indicate ongoing or recurring exposure.'
+      CLEAR: '{company} has no litigation settlements in the current period (F1) — no evidence of active claim resolution activity.'
+
+- id: FIN.CONT.warranty_reserve
+  name: Product Warranty Reserve
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - commitments_contingencies_note
+  threshold:
+    type: tiered
+    red: Product warranty accrual > 5% of revenue — significant product quality concern
+    yellow: Product warranty accrual > 2% of revenue — elevated product quality risk
+    clear: Product warranty accrual <= 2% of revenue or not applicable
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.5'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:ProductWarrantyAccrual
+    - us-gaap:StandardProductWarrantyAccrual
+    - us-gaap:ExtendedProductWarrantyAccrual
+    expected_type: numeric
+    no_data_sentinel: Product warranty accrual data not found in XBRL
+    validation_rule: warranty_pct >= 0
+  data_strategy:
+    field_key: xbrl_warranty_reserve_pct
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Warranty accrual >2% of revenue signals product quality concerns that may escalate to recalls, regulatory action, or class action litigation
+    render_target: key_metrics
+    formula: product_warranty_accrual / revenue
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_warranty_reserve_pct
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Product liability and D&O nexus: elevated warranty reserves indicate known product quality issues that can escalate to recalls, regulatory investigations, and securities claims when investors allege management concealed defect severity'
+    threshold_basis: 'Warranty accrual >2% of revenue: elevated product quality concern based on consumer products sector median; >5%: significant quality issue indicating potential recall or regulatory exposure'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} product warranty reserve at {value} of revenue (threshold: >5%) signals significant product quality concern (F6). Elevated warranty reserves often precede product recalls and CPSC/FDA enforcement actions — when the underlying defect is revealed to be more widespread than disclosed, the resulting stock decline and consumer class actions create both direct and D&O liability exposure.'
+      TRIGGERED_YELLOW: '{company} product warranty reserve at {value} of revenue (threshold: >2%) indicates elevated product quality risk (F6). Monitor for warranty accrual increases and product complaint trends — rising reserves are a leading indicator of potential recall or regulatory action.'
+      CLEAR: '{company} product warranty reserve at {value} of revenue is within normal parameters (F6) — warranty levels do not indicate outsized product quality concerns.'

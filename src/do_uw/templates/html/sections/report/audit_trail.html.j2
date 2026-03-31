@@ -1,0 +1,47 @@
+{# ═══════════════════════════════════════════════════════════════════════════
+   MANIFEST SECTION 10: AUDIT TRAIL — Sources, provenance, signal disposition
+   ═══════════════════════════════════════════════════════════════════════════ #}
+<div id="audit-trail" style="margin-top:14px">
+  <div style="background:#1F3A5C;color:white;padding:6px 10px;border-radius:4px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+    <div><span style="font-size:10pt;font-weight:800;letter-spacing:0.3px">Audit Trail</span><br><span style="font-size:7.5pt;color:rgba(255,255,255,0.6)">Sources, provenance, signal disposition, coverage gaps</span></div>
+    <span style="font-size:8pt;color:rgba(255,255,255,0.5)">Reference Material</span>
+  </div>
+
+  <details style="margin-bottom:6px">
+    <summary style="cursor:pointer;font-size:11pt;font-weight:700;color:#1F3A5C;padding:6px 10px;background:#F3F4F6;border:1px solid #E5E7EB;border-radius:5px">
+      Click to expand audit trail
+    </summary>
+    <div style="padding:8px;border:1px solid #E5E7EB;border-top:none;border-radius:0 0 5px 5px">
+      {# Pipeline Execution Status #}
+      {% include "appendices/pipeline_status.html.j2" ignore missing %}
+
+      {# Sources & Provenance #}
+      {% include "appendices/sources.html.j2" ignore missing %}
+
+      {# QA Audit Trail #}
+      {% include "appendices/qa_audit.html.j2" ignore missing %}
+
+      {# Market Data Full Detail #}
+      {% include "appendices/market_overflow.html.j2" ignore missing %}
+
+      {# Data Coverage & Gaps #}
+      {% include "appendices/coverage.html.j2" ignore missing %}
+
+      {# Decision Record #}
+      {% if decision is defined and decision.get('decision_available', false) %}
+        {% include "sections/decision_record.html.j2" ignore missing %}
+      {% endif %}
+
+      {# Epistemological Trace #}
+      {% if epistemological_trace is defined and epistemological_trace.get('trace_available', false) %}
+        {% include "appendices/epistemological_trace.html.j2" ignore missing %}
+      {% endif %}
+
+      {# Signal Disposition Audit #}
+      {% include "appendices/signal_audit.html.j2" ignore missing %}
+
+      {# Render Audit #}
+      {% include "appendices/render_audit.html.j2" ignore missing %}
+    </div>
+  </details>
+</div>

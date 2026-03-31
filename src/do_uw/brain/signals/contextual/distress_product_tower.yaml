@@ -1,0 +1,53 @@
+- id: CTX.FIN.distress_product
+  name: Financial Distress by Product/Tower
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of FIN.FORENSIC.altman_z through product_type, tower_position lens
+    threshold_provenance:
+      source: calibrated
+      rationale: 'Liberty calibration: Side A increases DIC exposure weight at distress'
+  signal_class: inference
+  group: distress_indicators
+  rap_class: host
+  rap_subcategory: host.financials
+  epistemology:
+    rule_origin: 'D&O underwriting practice: distress severity varies by product type and tower position'
+    threshold_basis: 'Liberty calibration: Side A increases DIC exposure weight at distress'
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: FIN.FORENSIC.altman_z
+      context_dimensions:
+      - product_type
+      - tower_position
+      context_adjustments:
+        side_a:
+          threshold_adjustment: 0.7
+          rationale: 'Side A: distress increases personal liability exposure for DIC claims'
+        primary:
+          threshold_adjustment: 0.8
+          rationale: 'Primary: distress is highest-frequency DIC trigger'
+        high_excess:
+          threshold_adjustment: 1.5
+          rationale: 'High excess: distress matters less for severity layer'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} financial distress by product/tower at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} financial distress by product/tower at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} financial distress by product/tower at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

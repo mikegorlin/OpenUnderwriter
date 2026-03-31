@@ -1,0 +1,982 @@
+# Case Library: 20 Canonical D&O Cases for Precedent Match Engine
+# Phase 109-02: Pattern Engines + Named Patterns
+#
+# Each entry represents a historical D&O case with a reconstructed
+# signal profile (the "fingerprint" at time of filing) and outcome.
+# Used by the Precedent Match engine for weighted Jaccard similarity.
+#
+# Signal IDs reference brain/signals/*.yaml (514-signal corpus).
+# Status values: RED (clearly triggered), YELLOW (elevated but not critical),
+# CLEAR (signal was evaluated and not triggered), UNKNOWN (no data available).
+#
+# signal_profile_confidence:
+#   HIGH = landmark case with deep reconstruction (50+ signals)
+#   MEDIUM = key-facts level reconstruction (10-20 signals)
+#   LOW = estimated from case type (not used in seed library)
+
+cases:
+  # ---------------------------------------------------------------
+  # 6 HIGH-Confidence Landmark Cases (deep reconstruction)
+  # ---------------------------------------------------------------
+
+  - case_id: "ENRON-2001"
+    company_name: "Enron Corporation"
+    ticker: "ENE"
+    filing_date: "2001-10-22"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 28000000000
+    sector: "Energy"
+    signal_profile_confidence: HIGH
+    outcome:
+      type: settlement
+      settlement_amount: 7200000000
+      outcome_date: "2008-09-08"
+    notes: >
+      Massive accounting fraud using SPEs to hide debt and inflate revenue.
+      Arthur Andersen conviction. $7.2B total settlements across multiple
+      defendants. Landmark case that led to Sarbanes-Oxley Act.
+    signal_profile:
+      # Forensic accounting (agent.financial_conduct)
+      FIN.FORENSIC.m_score_composite: RED
+      FIN.FORENSIC.dsri_elevated: RED
+      FIN.FORENSIC.aqi_elevated: RED
+      FIN.FORENSIC.tata_elevated: RED
+      FIN.FORENSIC.fis_composite: RED
+      FIN.FORENSIC.dechow_f_score: RED
+      FIN.FORENSIC.beneish_dechow_convergence: RED
+      FIN.FORENSIC.sloan_accruals: RED
+      FIN.FORENSIC.enhanced_sloan: RED
+      FIN.FORENSIC.accrual_intensity: RED
+      FIN.FORENSIC.cash_flow_manipulation: RED
+      FIN.FORENSIC.non_gaap_gap: RED
+      FIN.FORENSIC.related_party_revenue: RED
+      FIN.FORENSIC.off_balance_sheet: RED
+      FIN.FORENSIC.level3_fair_value: RED
+      FIN.FORENSIC.serial_acquirer: YELLOW
+      # Revenue and earnings quality
+      FIN.QUALITY.revenue_recognition_risk: RED
+      FIN.QUALITY.revenue_quality_score: RED
+      FIN.QUALITY.quality_of_earnings: RED
+      FIN.QUALITY.cash_flow_quality: RED
+      FIN.QUALITY.non_gaap_divergence: RED
+      # Accounting events
+      FIN.ACCT.restatement: RED
+      FIN.ACCT.restatement_magnitude: RED
+      FIN.ACCT.material_weakness: RED
+      FIN.ACCT.internal_controls: RED
+      FIN.ACCT.earnings_manipulation: RED
+      # Temporal trends
+      FIN.TEMPORAL.earnings_quality_divergence: RED
+      FIN.TEMPORAL.cfo_ni_divergence: RED
+      FIN.TEMPORAL.margin_compression: YELLOW
+      # Governance board (host.governance_structure)
+      GOV.BOARD.independence: YELLOW
+      GOV.BOARD.ceo_chair: RED
+      GOV.BOARD.expertise: YELLOW
+      GOV.BOARD.attendance: YELLOW
+      # Governance effectiveness (agent.governance_events)
+      GOV.EFFECT.material_weakness: RED
+      GOV.EFFECT.auditor_change: RED
+      GOV.EFFECT.audit_committee: YELLOW
+      GOV.EFFECT.sox_404: UNKNOWN
+      # Executive conduct
+      GOV.EXEC.departure_context: RED
+      GOV.EXEC.founder: CLEAR
+      GOV.EXEC.key_person: RED
+      GOV.EXEC.turnover_analysis: YELLOW
+      # Insider trading
+      GOV.INSIDER.cluster_sales: RED
+      GOV.INSIDER.unusual_timing: RED
+      GOV.INSIDER.net_selling: RED
+      GOV.INSIDER.executive_sales: RED
+      EXEC.INSIDER.cluster_selling: RED
+      EXEC.INSIDER.ceo_net_selling: RED
+      # Stock and market
+      STOCK.PRICE.recent_drop_alert: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+      STOCK.PRICE.single_day_events: RED
+      STOCK.SHORT.report: YELLOW
+      # Business structure
+      BIZ.STRUC.related_parties: RED
+      BIZ.STRUC.obs_exposure: RED
+      BIZ.STRUCT.vie_spe: RED
+      # Regulatory
+      LIT.REG.sec_investigation: RED
+      LIT.REG.sec_active: RED
+      LIT.REG.doj_investigation: RED
+      # Forward-looking warnings
+      FWRD.WARN.zone_of_insolvency: RED
+      FIN.LIQ.cash_burn: RED
+      # Distress
+      FIN.DEBT.coverage: RED
+
+  - case_id: "WORLDCOM-2002"
+    company_name: "WorldCom Inc."
+    ticker: "WCOM"
+    filing_date: "2002-06-25"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 12000000000
+    sector: "Communication Services"
+    signal_profile_confidence: HIGH
+    outcome:
+      type: settlement
+      settlement_amount: 6100000000
+      outcome_date: "2005-03-21"
+    notes: >
+      $11B restatement from capitalizing line costs (operating expenses).
+      CEO Bernard Ebbers convicted of securities fraud. Second largest
+      corporate fraud in US history at the time.
+    signal_profile:
+      # Forensic accounting
+      FIN.FORENSIC.m_score_composite: RED
+      FIN.FORENSIC.dsri_elevated: RED
+      FIN.FORENSIC.aqi_elevated: RED
+      FIN.FORENSIC.tata_elevated: RED
+      FIN.FORENSIC.fis_composite: RED
+      FIN.FORENSIC.dechow_f_score: RED
+      FIN.FORENSIC.beneish_dechow_convergence: RED
+      FIN.FORENSIC.sloan_accruals: RED
+      FIN.FORENSIC.enhanced_sloan: RED
+      FIN.FORENSIC.accrual_intensity: RED
+      FIN.FORENSIC.cash_flow_manipulation: RED
+      FIN.FORENSIC.serial_acquirer: RED
+      FIN.FORENSIC.acquisition_to_revenue: RED
+      FIN.FORENSIC.goodwill_growth_rate: RED
+      # Revenue/earnings quality
+      FIN.QUALITY.quality_of_earnings: RED
+      FIN.QUALITY.cash_flow_quality: RED
+      FIN.QUALITY.revenue_quality_score: YELLOW
+      # Accounting events
+      FIN.ACCT.restatement: RED
+      FIN.ACCT.restatement_magnitude: RED
+      FIN.ACCT.material_weakness: RED
+      FIN.ACCT.internal_controls: RED
+      FIN.ACCT.earnings_manipulation: RED
+      # Temporal
+      FIN.TEMPORAL.margin_compression: RED
+      FIN.TEMPORAL.earnings_quality_divergence: RED
+      FIN.TEMPORAL.revenue_deceleration: YELLOW
+      # Governance
+      GOV.BOARD.ceo_chair: RED
+      GOV.BOARD.independence: YELLOW
+      GOV.EFFECT.material_weakness: RED
+      GOV.EFFECT.audit_committee: YELLOW
+      GOV.EFFECT.auditor_change: RED
+      GOV.EXEC.key_person: RED
+      GOV.EXEC.departure_context: RED
+      # Insider trading
+      GOV.INSIDER.cluster_sales: RED
+      GOV.INSIDER.net_selling: RED
+      GOV.INSIDER.executive_sales: RED
+      EXEC.INSIDER.cluster_selling: RED
+      # Stock
+      STOCK.PRICE.recent_drop_alert: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+      # M&A
+      FIN.FORENSIC.acquisition_effectiveness: RED
+      FWRD.WARN.goodwill_risk: RED
+      FWRD.WARN.impairment_risk: RED
+      # Regulatory
+      LIT.REG.sec_investigation: RED
+      LIT.REG.sec_active: RED
+      LIT.REG.doj_investigation: RED
+      # Business structure
+      BIZ.OPS.complexity_score: YELLOW
+      BIZ.STRUC.related_parties: YELLOW
+      # Distress
+      FWRD.WARN.zone_of_insolvency: RED
+      FIN.LIQ.cash_burn: RED
+      FIN.DEBT.coverage: RED
+      FIN.DEBT.maturity: YELLOW
+
+  - case_id: "THERANOS-2018"
+    company_name: "Theranos Inc."
+    ticker: "THNS"
+    filing_date: "2018-03-14"
+    claim_type: regulatory_enforcement
+    market_cap_at_filing: 0
+    sector: "Health Care"
+    signal_profile_confidence: HIGH
+    outcome:
+      type: settlement
+      settlement_amount: 500000000
+      outcome_date: "2018-04-18"
+    notes: >
+      Fake blood testing technology. SEC enforcement against Holmes and
+      Balwani. Criminal conviction. Private company so limited financial
+      signals; governance and regulatory signals dominate.
+    signal_profile:
+      # Governance vacuum (central to case)
+      GOV.BOARD.independence: RED
+      GOV.BOARD.expertise: RED
+      GOV.BOARD.ceo_chair: RED
+      GOV.BOARD.overboarding: YELLOW
+      GOV.BOARD.tenure: YELLOW
+      GOV.BOARD.diversity: YELLOW
+      GOV.BOARD.attendance: UNKNOWN
+      # Governance effectiveness
+      GOV.EFFECT.material_weakness: RED
+      GOV.EFFECT.auditor_change: RED
+      GOV.EFFECT.audit_committee: RED
+      GOV.EFFECT.sox_404: RED
+      # Executive concentration
+      GOV.EXEC.founder: RED
+      GOV.EXEC.key_person: RED
+      GOV.EXEC.departure_context: RED
+      GOV.EXEC.turnover_analysis: RED
+      GOV.EXEC.stability: RED
+      # Pay governance
+      GOV.PAY.related_party: RED
+      GOV.PAY.say_on_pay: UNKNOWN
+      GOV.PAY.clawback: RED
+      # Regulatory enforcement
+      LIT.REG.sec_investigation: RED
+      LIT.REG.sec_active: RED
+      LIT.REG.sec_severity: RED
+      LIT.REG.wells_notice: RED
+      LIT.REG.doj_investigation: RED
+      LIT.REG.fda_warning: RED
+      # Insider
+      GOV.INSIDER.net_selling: RED
+      GOV.INSIDER.executive_sales: RED
+      GOV.INSIDER.cluster_sales: RED
+      # Revenue quality (what was available)
+      FIN.QUALITY.revenue_recognition_risk: RED
+      FIN.QUALITY.revenue_quality_score: RED
+      # Forensic
+      FIN.FORENSIC.m_score_composite: RED
+      FIN.FORENSIC.cash_flow_manipulation: RED
+      # Accounting
+      FIN.ACCT.internal_controls: RED
+      FIN.ACCT.material_weakness: RED
+      # Narrative
+      FWRD.NARRATIVE.10k_vs_earnings: RED
+      FWRD.NARRATIVE.analyst_skepticism: RED
+      # Stock/market
+      STOCK.SHORT.report: RED
+      STOCK.PATTERN.short_attack: RED
+      # Business
+      BIZ.DEPEND.tech_dep: RED
+      BIZ.SIZE.public_tenure: RED
+      # Whistleblower
+      NLP.WHISTLE.language_detected: RED
+      NLP.WHISTLE.internal_investigation: RED
+      LIT.OTHER.whistleblower: RED
+      # Forward warnings
+      FWRD.WARN.zone_of_insolvency: RED
+      # Accounting
+      FIN.ACCT.auditor_attestation_fail: RED
+      FIN.ACCT.restatement: YELLOW
+      # Disclosure
+      FWRD.DISC.disclosure_quality_composite: RED
+      BIZ.UNI.ai_claims: YELLOW
+      # Stock patterns
+      STOCK.PRICE.drawdown_duration: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+
+  - case_id: "WIRECARD-2020"
+    company_name: "Wirecard AG"
+    ticker: "WDI"
+    filing_date: "2020-06-25"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 13000000000
+    sector: "Financials"
+    signal_profile_confidence: HIGH
+    outcome:
+      type: ongoing
+      settlement_amount: null
+      outcome_date: null
+    notes: >
+      1.9B EUR in fabricated bank balances. Short seller reports from 2015.
+      EY auditor failure. CEO Markus Braun arrested. One of Europe's
+      largest corporate fraud cases.
+    signal_profile:
+      # Forensic accounting
+      FIN.FORENSIC.m_score_composite: RED
+      FIN.FORENSIC.dsri_elevated: RED
+      FIN.FORENSIC.aqi_elevated: RED
+      FIN.FORENSIC.tata_elevated: RED
+      FIN.FORENSIC.dechow_f_score: RED
+      FIN.FORENSIC.beneish_dechow_convergence: RED
+      FIN.FORENSIC.sloan_accruals: RED
+      FIN.FORENSIC.enhanced_sloan: RED
+      FIN.FORENSIC.accrual_intensity: RED
+      FIN.FORENSIC.cash_flow_manipulation: RED
+      FIN.FORENSIC.related_party_revenue: RED
+      FIN.FORENSIC.serial_acquirer: RED
+      FIN.FORENSIC.acquisition_to_revenue: RED
+      # Revenue quality
+      FIN.QUALITY.revenue_recognition_risk: RED
+      FIN.QUALITY.revenue_quality_score: RED
+      FIN.QUALITY.quality_of_earnings: RED
+      FIN.QUALITY.cash_flow_quality: RED
+      # Accounting events
+      FIN.ACCT.restatement: RED
+      FIN.ACCT.restatement_magnitude: RED
+      FIN.ACCT.internal_controls: RED
+      FIN.ACCT.material_weakness: RED
+      FIN.ACCT.auditor_attestation_fail: RED
+      # Temporal
+      FIN.TEMPORAL.earnings_quality_divergence: RED
+      FIN.TEMPORAL.cfo_ni_divergence: RED
+      # Governance
+      GOV.BOARD.independence: YELLOW
+      GOV.BOARD.expertise: YELLOW
+      GOV.EFFECT.auditor_change: YELLOW
+      GOV.EFFECT.material_weakness: RED
+      GOV.EFFECT.audit_committee: YELLOW
+      GOV.EXEC.departure_context: RED
+      GOV.EXEC.key_person: RED
+      # Insider
+      GOV.INSIDER.cluster_sales: RED
+      GOV.INSIDER.net_selling: RED
+      GOV.INSIDER.executive_sales: RED
+      EXEC.INSIDER.cluster_selling: RED
+      # Short seller
+      STOCK.SHORT.report: RED
+      STOCK.SHORT.trend: RED
+      STOCK.PATTERN.short_attack: RED
+      # Stock
+      STOCK.PRICE.recent_drop_alert: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+      STOCK.PRICE.single_day_events: RED
+      # Regulatory
+      LIT.REG.sec_investigation: YELLOW
+      LIT.REG.industry_reg: RED
+      # Narrative
+      FWRD.NARRATIVE.analyst_skepticism: RED
+      FWRD.NARRATIVE.short_thesis: RED
+      # Forward warnings
+      FWRD.WARN.zone_of_insolvency: RED
+      # Business structure
+      BIZ.STRUC.related_parties: RED
+      BIZ.OPS.complexity_score: RED
+      # Disclosure quality
+      FWRD.DISC.disclosure_quality_composite: RED
+      FWRD.DISC.related_party_completeness: RED
+
+  - case_id: "FTX-2022"
+    company_name: "FTX Trading Ltd"
+    ticker: "FTT"
+    filing_date: "2022-11-11"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 32000000000
+    sector: "Financials"
+    signal_profile_confidence: HIGH
+    outcome:
+      type: ongoing
+      settlement_amount: null
+      outcome_date: null
+    notes: >
+      Commingled customer funds with Alameda Research. No independent board,
+      no audit committee, no CFO for extended period. Criminal conviction
+      of Sam Bankman-Fried. Zone of insolvency.
+    signal_profile:
+      # Governance vacuum (central)
+      GOV.BOARD.independence: RED
+      GOV.BOARD.ceo_chair: RED
+      GOV.BOARD.expertise: RED
+      GOV.BOARD.attendance: RED
+      GOV.BOARD.overboarding: RED
+      GOV.BOARD.tenure: RED
+      GOV.BOARD.diversity: RED
+      GOV.BOARD.size: RED
+      # Governance effectiveness
+      GOV.EFFECT.material_weakness: RED
+      GOV.EFFECT.auditor_change: RED
+      GOV.EFFECT.audit_committee: RED
+      GOV.EFFECT.sox_404: RED
+      # Executive
+      GOV.EXEC.founder: RED
+      GOV.EXEC.key_person: RED
+      GOV.EXEC.departure_context: RED
+      GOV.EXEC.turnover_analysis: RED
+      # Pay
+      GOV.PAY.related_party: RED
+      GOV.PAY.clawback: RED
+      # Insider
+      GOV.INSIDER.cluster_sales: RED
+      GOV.INSIDER.net_selling: RED
+      GOV.INSIDER.executive_sales: RED
+      EXEC.INSIDER.cluster_selling: RED
+      # Forensic
+      FIN.FORENSIC.m_score_composite: RED
+      FIN.FORENSIC.cash_flow_manipulation: RED
+      FIN.FORENSIC.related_party_revenue: RED
+      FIN.FORENSIC.off_balance_sheet: RED
+      # Revenue quality
+      FIN.QUALITY.revenue_recognition_risk: RED
+      FIN.QUALITY.cash_flow_quality: RED
+      # Accounting
+      FIN.ACCT.internal_controls: RED
+      FIN.ACCT.material_weakness: RED
+      FIN.ACCT.restatement: RED
+      # Regulatory
+      LIT.REG.sec_investigation: RED
+      LIT.REG.sec_active: RED
+      LIT.REG.doj_investigation: RED
+      LIT.REG.sec_severity: RED
+      # Stock
+      STOCK.PRICE.recent_drop_alert: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+      STOCK.PRICE.single_day_events: RED
+      # Short
+      STOCK.SHORT.report: RED
+      # Business structure
+      BIZ.STRUC.related_parties: RED
+      BIZ.STRUCT.vie_spe: RED
+      BIZ.SIZE.public_tenure: RED
+      BIZ.OPS.complexity_score: RED
+      # Forward warnings
+      FWRD.WARN.zone_of_insolvency: RED
+      FIN.LIQ.cash_burn: RED
+      # Disclosure
+      FWRD.DISC.disclosure_quality_composite: RED
+      FWRD.DISC.related_party_completeness: RED
+      # Narrative
+      FWRD.NARRATIVE.analyst_skepticism: RED
+      FWRD.NARRATIVE.short_thesis: RED
+      # Whistleblower
+      NLP.WHISTLE.internal_investigation: YELLOW
+
+  - case_id: "VALEANT-2015"
+    company_name: "Valeant Pharmaceuticals International"
+    ticker: "VRX"
+    filing_date: "2015-10-19"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 90000000000
+    sector: "Health Care"
+    signal_profile_confidence: HIGH
+    outcome:
+      type: settlement
+      settlement_amount: 1210000000
+      outcome_date: "2020-02-14"
+    notes: >
+      Channel stuffing via Philidor specialty pharmacy. Aggressive serial
+      M&A to mask organic decline. Massive goodwill impairment. Citron and
+      other short sellers. Restatement and SEC investigation.
+    signal_profile:
+      # Revenue/growth fraud (desperate growth trap)
+      FIN.QUALITY.revenue_recognition_risk: RED
+      FIN.QUALITY.revenue_quality_score: RED
+      FIN.QUALITY.q4_revenue_concentration: RED
+      FIN.QUALITY.deferred_revenue_trend: YELLOW
+      # Forensic accounting
+      FIN.FORENSIC.m_score_composite: RED
+      FIN.FORENSIC.dsri_elevated: RED
+      FIN.FORENSIC.channel_stuffing: RED
+      FIN.FORENSIC.dechow_f_score: RED
+      FIN.FORENSIC.sloan_accruals: RED
+      FIN.FORENSIC.accrual_intensity: RED
+      FIN.FORENSIC.cash_flow_manipulation: YELLOW
+      FIN.FORENSIC.non_gaap_gap: RED
+      FIN.FORENSIC.serial_acquirer: RED
+      FIN.FORENSIC.acquisition_to_revenue: RED
+      FIN.FORENSIC.acquisition_effectiveness: RED
+      FIN.FORENSIC.goodwill_growth_rate: RED
+      FIN.FORENSIC.related_party_revenue: RED
+      # Revenue/margin trends
+      FIN.TEMPORAL.revenue_deceleration: RED
+      FIN.TEMPORAL.margin_compression: RED
+      FIN.TEMPORAL.earnings_quality_divergence: RED
+      # Goodwill impairment risk
+      FWRD.WARN.goodwill_risk: RED
+      FWRD.WARN.impairment_risk: RED
+      # Guidance
+      FIN.GUIDE.track_record: RED
+      FIN.GUIDE.earnings_reaction: RED
+      # Accounting events
+      FIN.ACCT.restatement: RED
+      FIN.ACCT.restatement_magnitude: RED
+      FIN.ACCT.internal_controls: YELLOW
+      FIN.ACCT.sec_correspondence: RED
+      # Quality
+      FIN.QUALITY.quality_of_earnings: RED
+      FIN.QUALITY.cash_flow_quality: YELLOW
+      FIN.QUALITY.non_gaap_divergence: RED
+      # Governance
+      GOV.BOARD.ceo_chair: CLEAR
+      GOV.BOARD.independence: YELLOW
+      GOV.EFFECT.material_weakness: YELLOW
+      GOV.EXEC.key_person: RED
+      # Insider trading
+      GOV.INSIDER.cluster_sales: RED
+      GOV.INSIDER.net_selling: RED
+      GOV.INSIDER.executive_sales: RED
+      EXEC.INSIDER.cluster_selling: RED
+      EXEC.INSIDER.ceo_net_selling: RED
+      # Short sellers
+      STOCK.SHORT.report: RED
+      STOCK.SHORT.trend: RED
+      STOCK.PATTERN.short_attack: RED
+      # Stock
+      STOCK.PRICE.recent_drop_alert: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+      STOCK.PRICE.drawdown_duration: RED
+      # Regulatory
+      LIT.REG.sec_investigation: RED
+      LIT.REG.sec_active: RED
+      LIT.REG.subpoena: RED
+      # Narrative
+      FWRD.NARRATIVE.analyst_skepticism: RED
+      FWRD.NARRATIVE.short_thesis: RED
+      # Business structure
+      BIZ.STRUC.related_parties: RED
+      BIZ.OPS.complexity_score: YELLOW
+      # Debt
+      FIN.DEBT.coverage: RED
+      FIN.DEBT.maturity: YELLOW
+
+  # ---------------------------------------------------------------
+  # 14 MEDIUM-Confidence Cases (key-facts level, 10-20 signals)
+  # ---------------------------------------------------------------
+
+  - case_id: "LUCKIN-2020"
+    company_name: "Luckin Coffee Inc."
+    ticker: "LK"
+    filing_date: "2020-04-02"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 12000000000
+    sector: "Consumer Discretionary"
+    signal_profile_confidence: MEDIUM
+    outcome:
+      type: settlement
+      settlement_amount: 175000000
+      outcome_date: "2021-12-15"
+    notes: >
+      Fabricated ~$310M in revenue transactions. Muddy Waters short report.
+      Restatement and SEC settlement. Rapid growth narrative collapse.
+    signal_profile:
+      FIN.QUALITY.revenue_recognition_risk: RED
+      FIN.QUALITY.revenue_quality_score: RED
+      FIN.FORENSIC.m_score_composite: RED
+      FIN.FORENSIC.channel_stuffing: RED
+      FIN.FORENSIC.dsri_elevated: RED
+      FIN.ACCT.restatement: RED
+      FIN.ACCT.restatement_magnitude: RED
+      FIN.TEMPORAL.revenue_deceleration: YELLOW
+      STOCK.SHORT.report: RED
+      STOCK.PATTERN.short_attack: RED
+      STOCK.PRICE.recent_drop_alert: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+      LIT.REG.sec_investigation: RED
+      LIT.REG.sec_active: RED
+      GOV.INSIDER.cluster_sales: RED
+      GOV.EXEC.departure_context: RED
+      BIZ.SIZE.public_tenure: RED
+
+  - case_id: "NIKOLA-2020"
+    company_name: "Nikola Corporation"
+    ticker: "NKLA"
+    filing_date: "2020-09-15"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 20000000000
+    sector: "Industrials"
+    signal_profile_confidence: MEDIUM
+    outcome:
+      type: settlement
+      settlement_amount: 125000000
+      outcome_date: "2023-12-18"
+    notes: >
+      SPAC fraud. Staged truck demo (truck rolled downhill). Hindenburg
+      short report. Founder Trevor Milton criminally convicted.
+    signal_profile:
+      BIZ.SIZE.public_tenure: RED
+      BIZ.EVENT.ipo_exposure: RED
+      FWRD.EVENT.lockup_expiry: YELLOW
+      FIN.GUIDE.track_record: RED
+      FIN.GUIDE.earnings_reaction: RED
+      STOCK.SHORT.report: RED
+      STOCK.PATTERN.short_attack: RED
+      STOCK.PRICE.recent_drop_alert: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+      GOV.EXEC.founder: RED
+      GOV.EXEC.key_person: RED
+      GOV.EXEC.departure_context: RED
+      LIT.REG.sec_investigation: RED
+      LIT.REG.doj_investigation: RED
+      GOV.BOARD.independence: YELLOW
+      GOV.BOARD.expertise: YELLOW
+      BIZ.DEPEND.tech_dep: RED
+
+  - case_id: "LORDSTOWN-2021"
+    company_name: "Lordstown Motors Corp."
+    ticker: "RIDE"
+    filing_date: "2021-03-18"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 5000000000
+    sector: "Consumer Discretionary"
+    signal_profile_confidence: MEDIUM
+    outcome:
+      type: settlement
+      settlement_amount: 25000000
+      outcome_date: "2023-08-24"
+    notes: >
+      SPAC with fake pre-orders inflating projections. SEC investigation.
+      Zone of insolvency. CEO and CFO departed.
+    signal_profile:
+      BIZ.SIZE.public_tenure: RED
+      BIZ.EVENT.ipo_exposure: RED
+      FWRD.EVENT.lockup_expiry: YELLOW
+      FIN.GUIDE.track_record: RED
+      FIN.GUIDE.earnings_reaction: YELLOW
+      STOCK.PRICE.recent_drop_alert: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+      GOV.EXEC.departure_context: RED
+      GOV.EXEC.turnover_analysis: RED
+      LIT.REG.sec_investigation: RED
+      FWRD.WARN.zone_of_insolvency: RED
+      FIN.LIQ.cash_burn: RED
+      GOV.INSIDER.net_selling: YELLOW
+      EXEC.INSIDER.cluster_selling: YELLOW
+
+  - case_id: "ACTIVISION-2021"
+    company_name: "Activision Blizzard Inc."
+    ticker: "ATVI"
+    filing_date: "2021-08-03"
+    claim_type: derivative_caremark
+    market_cap_at_filing: 72000000000
+    sector: "Communication Services"
+    signal_profile_confidence: MEDIUM
+    outcome:
+      type: settlement
+      settlement_amount: 18000000
+      outcome_date: "2023-01-17"
+    notes: >
+      Workplace harassment. DFEH investigation. Board oversight failure
+      (Caremark claim). CEO Bobby Kotick under pressure.
+    signal_profile:
+      GOV.BOARD.independence: YELLOW
+      GOV.BOARD.ceo_chair: YELLOW
+      GOV.BOARD.diversity: RED
+      GOV.EFFECT.material_weakness: CLEAR
+      GOV.EXEC.key_person: RED
+      GOV.EXEC.character_conduct: RED
+      GOV.EXEC.departure_context: YELLOW
+      LIT.REG.state_ag: RED
+      LIT.REG.state_action: RED
+      LIT.OTHER.employment: RED
+      NLP.WHISTLE.language_detected: RED
+      NLP.WHISTLE.internal_investigation: RED
+      LIT.OTHER.whistleblower: RED
+      FWRD.WARN.glassdoor_sentiment: RED
+      STOCK.PRICE.recent_drop_alert: YELLOW
+      GOV.PAY.say_on_pay: YELLOW
+
+  - case_id: "UNDER_ARMOUR-2019"
+    company_name: "Under Armour Inc."
+    ticker: "UAA"
+    filing_date: "2019-11-03"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 9000000000
+    sector: "Consumer Discretionary"
+    signal_profile_confidence: MEDIUM
+    outcome:
+      type: settlement
+      settlement_amount: 434000000
+      outcome_date: "2024-05-10"
+    notes: >
+      Revenue acceleration and pull-forward sales. SEC investigation
+      into accounting practices. Channel stuffing allegations.
+    signal_profile:
+      FIN.QUALITY.revenue_recognition_risk: RED
+      FIN.QUALITY.q4_revenue_concentration: RED
+      FIN.FORENSIC.channel_stuffing: RED
+      FIN.FORENSIC.dsri_elevated: YELLOW
+      FIN.TEMPORAL.revenue_deceleration: RED
+      FIN.TEMPORAL.margin_compression: RED
+      FIN.GUIDE.track_record: RED
+      FIN.GUIDE.earnings_reaction: RED
+      LIT.REG.sec_investigation: RED
+      LIT.REG.sec_active: RED
+      GOV.INSIDER.net_selling: YELLOW
+      GOV.EXEC.departure_context: RED
+      STOCK.PRICE.recent_drop_alert: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+      FIN.ACCT.sec_correspondence: YELLOW
+
+  - case_id: "KRAFT_HEINZ-2019"
+    company_name: "The Kraft Heinz Company"
+    ticker: "KHC"
+    filing_date: "2019-02-21"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 43000000000
+    sector: "Consumer Staples"
+    signal_profile_confidence: MEDIUM
+    outcome:
+      type: settlement
+      settlement_amount: 450000000
+      outcome_date: "2024-03-22"
+    notes: >
+      $15.4B goodwill impairment. SEC investigation into procurement
+      practices. Massive write-down exposed overpayment for brands.
+    signal_profile:
+      FWRD.WARN.goodwill_risk: RED
+      FWRD.WARN.impairment_risk: RED
+      FIN.FORENSIC.goodwill_growth_rate: RED
+      FIN.FORENSIC.goodwill_impairment_risk: RED
+      FIN.FORENSIC.serial_acquirer: RED
+      FIN.FORENSIC.acquisition_effectiveness: RED
+      FIN.TEMPORAL.margin_compression: RED
+      FIN.TEMPORAL.revenue_deceleration: YELLOW
+      LIT.REG.sec_investigation: RED
+      LIT.REG.sec_active: RED
+      LIT.REG.subpoena: RED
+      FIN.ACCT.sec_correspondence: RED
+      STOCK.PRICE.recent_drop_alert: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+      GOV.EXEC.departure_context: RED
+      FIN.GUIDE.track_record: YELLOW
+
+  - case_id: "WELLS_FARGO-2016"
+    company_name: "Wells Fargo & Company"
+    ticker: "WFC"
+    filing_date: "2016-09-08"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 250000000000
+    sector: "Financials"
+    signal_profile_confidence: MEDIUM
+    outcome:
+      type: settlement
+      settlement_amount: 480000000
+      outcome_date: "2018-04-20"
+    notes: >
+      Fake accounts scandal (3.5M unauthorized accounts). CFPB/OCC
+      enforcement. CEO departure. $3B+ total penalties across regulators.
+    signal_profile:
+      LIT.REG.sec_investigation: RED
+      LIT.REG.sec_active: RED
+      LIT.REG.cfpb_action: RED
+      LIT.REG.industry_reg: RED
+      LIT.REG.consent_order: RED
+      LIT.REG.state_ag: RED
+      GOV.EXEC.departure_context: RED
+      GOV.EXEC.turnover_analysis: RED
+      GOV.EFFECT.material_weakness: RED
+      NLP.WHISTLE.language_detected: RED
+      NLP.WHISTLE.internal_investigation: RED
+      LIT.OTHER.whistleblower: RED
+      STOCK.PRICE.recent_drop_alert: YELLOW
+      GOV.PAY.clawback: RED
+      GOV.PAY.incentive_metrics: RED
+      LIT.OTHER.employment: YELLOW
+
+  - case_id: "EQUIFAX-2017"
+    company_name: "Equifax Inc."
+    ticker: "EFX"
+    filing_date: "2017-09-07"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 17000000000
+    sector: "Industrials"
+    signal_profile_confidence: MEDIUM
+    outcome:
+      type: settlement
+      settlement_amount: 149000000
+      outcome_date: "2020-02-13"
+    notes: >
+      147M consumer records breached. Insider trading by executives before
+      disclosure. FTC settlement. Cyber security failure.
+    signal_profile:
+      BIZ.UNI.cyber_posture: RED
+      BIZ.UNI.cyber_business: RED
+      LIT.OTHER.cyber_breach: RED
+      GOV.INSIDER.cluster_sales: RED
+      GOV.INSIDER.unusual_timing: RED
+      GOV.INSIDER.executive_sales: RED
+      EXEC.INSIDER.cluster_selling: RED
+      GOV.EXEC.departure_context: RED
+      LIT.REG.ftc_investigation: RED
+      LIT.REG.state_ag: RED
+      LIT.REG.state_action: RED
+      STOCK.PRICE.recent_drop_alert: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+      GOV.EFFECT.material_weakness: YELLOW
+
+  - case_id: "FACEBOOK-2018"
+    company_name: "Facebook Inc. (Meta Platforms)"
+    ticker: "FB"
+    filing_date: "2018-03-19"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 500000000000
+    sector: "Communication Services"
+    signal_profile_confidence: MEDIUM
+    outcome:
+      type: settlement
+      settlement_amount: 100000000
+      outcome_date: "2021-02-25"
+    notes: >
+      Cambridge Analytica data privacy scandal. FTC $5B fine. SEC
+      settlement. Failure to disclose data misuse risk.
+    signal_profile:
+      LIT.REG.ftc_investigation: RED
+      LIT.REG.sec_investigation: RED
+      LIT.REG.sec_active: RED
+      LIT.REG.state_ag: RED
+      LIT.REG.civil_penalty: RED
+      GOV.EXEC.key_person: RED
+      GOV.EXEC.founder: YELLOW
+      GOV.BOARD.ceo_chair: RED
+      GOV.RIGHTS.dual_class: RED
+      STOCK.PRICE.recent_drop_alert: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+      BIZ.UNI.cyber_posture: RED
+      NLP.WHISTLE.language_detected: YELLOW
+      FWRD.DISC.risk_factor_evolution: YELLOW
+
+  - case_id: "BOEING-2019"
+    company_name: "The Boeing Company"
+    ticker: "BA"
+    filing_date: "2019-03-11"
+    claim_type: derivative_caremark
+    market_cap_at_filing: 210000000000
+    sector: "Industrials"
+    signal_profile_confidence: MEDIUM
+    outcome:
+      type: settlement
+      settlement_amount: 237500000
+      outcome_date: "2021-11-05"
+    notes: >
+      737 MAX oversight failure. Two fatal crashes. FAA grounding.
+      Caremark duty of oversight. Board accused of failing to
+      exercise adequate safety oversight.
+    signal_profile:
+      GOV.BOARD.expertise: YELLOW
+      GOV.BOARD.independence: YELLOW
+      GOV.EXEC.key_person: RED
+      GOV.EXEC.departure_context: RED
+      LIT.REG.fda_warning: CLEAR
+      LIT.REG.industry_reg: RED
+      LIT.REG.doj_investigation: RED
+      LIT.OTHER.product: RED
+      STOCK.PRICE.recent_drop_alert: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+      FWRD.WARN.zone_of_insolvency: CLEAR
+      FIN.GUIDE.track_record: YELLOW
+      FIN.GUIDE.earnings_reaction: RED
+      NLP.WHISTLE.language_detected: YELLOW
+      NLP.WHISTLE.internal_investigation: RED
+      FWRD.DISC.disclosure_quality_composite: YELLOW
+
+  - case_id: "TWITTER-MUSK-2022"
+    company_name: "Twitter Inc."
+    ticker: "TWTR"
+    filing_date: "2022-07-12"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 32000000000
+    sector: "Communication Services"
+    signal_profile_confidence: MEDIUM
+    outcome:
+      type: settlement
+      settlement_amount: 100000000
+      outcome_date: null
+    notes: >
+      Elon Musk acquisition saga. Misleading disclosures on bot counts.
+      Shareholder litigation over merger process and disclosures.
+    signal_profile:
+      GOV.BOARD.independence: YELLOW
+      GOV.EXEC.departure_context: RED
+      GOV.EXEC.turnover_analysis: RED
+      BIZ.EVENT.ma_history: RED
+      STOCK.PRICE.recent_drop_alert: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+      STOCK.VALUATION.premium_discount: RED
+      FIN.GUIDE.track_record: YELLOW
+      FIN.QUALITY.revenue_quality_score: YELLOW
+      GOV.INSIDER.net_selling: YELLOW
+      FWRD.DISC.disclosure_quality_composite: YELLOW
+      FWRD.NARRATIVE.10k_vs_earnings: YELLOW
+
+  - case_id: "SVB-2023"
+    company_name: "Silicon Valley Bank (SVB Financial Group)"
+    ticker: "SIVB"
+    filing_date: "2023-03-10"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 16000000000
+    sector: "Financials"
+    signal_profile_confidence: MEDIUM
+    outcome:
+      type: ongoing
+      settlement_amount: null
+      outcome_date: null
+    notes: >
+      Bank run triggered by unrealized losses in HTM bond portfolio.
+      FDIC receivership. Largest bank failure since 2008. Interest rate
+      risk concentration.
+    signal_profile:
+      FIN.DEBT.maturity: RED
+      FIN.DEBT.coverage: RED
+      FIN.TEMPORAL.debt_ratio_increase: RED
+      FWRD.WARN.zone_of_insolvency: RED
+      FIN.LIQ.cash_burn: RED
+      STOCK.PRICE.recent_drop_alert: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+      STOCK.PRICE.single_day_events: RED
+      STOCK.PATTERN.event_collapse: RED
+      GOV.INSIDER.cluster_sales: RED
+      GOV.INSIDER.executive_sales: RED
+      EXEC.INSIDER.cluster_selling: RED
+      GOV.EXEC.departure_context: RED
+      LIT.REG.industry_reg: RED
+      BIZ.DEPEND.macro_sensitivity: RED
+
+  - case_id: "CELSIUS-2022"
+    company_name: "Celsius Network LLC"
+    ticker: "CEL"
+    filing_date: "2022-07-13"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 500000000
+    sector: "Financials"
+    signal_profile_confidence: MEDIUM
+    outcome:
+      type: ongoing
+      settlement_amount: null
+      outcome_date: null
+    notes: >
+      Crypto lending platform. Commingled customer assets. CEO misled
+      depositors about risk. Bankruptcy filing. Similar to FTX in
+      governance vacuum pattern.
+    signal_profile:
+      GOV.BOARD.independence: RED
+      GOV.BOARD.expertise: RED
+      GOV.EXEC.founder: RED
+      GOV.EXEC.key_person: RED
+      GOV.EFFECT.audit_committee: RED
+      GOV.EFFECT.material_weakness: RED
+      FIN.FORENSIC.cash_flow_manipulation: RED
+      FIN.QUALITY.revenue_recognition_risk: RED
+      FWRD.WARN.zone_of_insolvency: RED
+      FIN.LIQ.cash_burn: RED
+      STOCK.PRICE.recent_drop_alert: RED
+      LIT.REG.sec_investigation: RED
+      LIT.REG.state_ag: RED
+      FWRD.DISC.disclosure_quality_composite: RED
+
+  - case_id: "CLOVER_HEALTH-2021"
+    company_name: "Clover Health Investments"
+    ticker: "CLOV"
+    filing_date: "2021-02-04"
+    claim_type: securities_fraud_10b5
+    market_cap_at_filing: 3700000000
+    sector: "Health Care"
+    signal_profile_confidence: MEDIUM
+    outcome:
+      type: settlement
+      settlement_amount: 22000000
+      outcome_date: "2023-09-12"
+    notes: >
+      SPAC disclosure failures. Hindenburg short report exposed undisclosed
+      DOJ investigation into kickback scheme. Post-SPAC hangover pattern.
+    signal_profile:
+      BIZ.SIZE.public_tenure: RED
+      BIZ.EVENT.ipo_exposure: RED
+      FWRD.EVENT.lockup_expiry: YELLOW
+      STOCK.SHORT.report: RED
+      STOCK.PATTERN.short_attack: RED
+      STOCK.PRICE.recent_drop_alert: RED
+      STOCK.PRICE.returns_multi_horizon: RED
+      LIT.REG.doj_investigation: RED
+      LIT.REG.sec_investigation: YELLOW
+      FIN.GUIDE.track_record: RED
+      GOV.INSIDER.net_selling: YELLOW
+      STOCK.VALUATION.premium_discount: RED
+      FWRD.DISC.disclosure_quality_composite: RED

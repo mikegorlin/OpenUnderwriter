@@ -1,0 +1,83 @@
+{# Debt Structure — instruments, maturity schedule, rates, covenants, credit facility.
+   Data from state.extracted.financials.debt_structure via fin context. #}
+
+{% set debt = fin.get('debt_structure', {}) %}
+{% if debt and (debt.get('instruments') or debt.get('interest_summary') or debt.get('covenant_status') or debt.get('credit_facility')) %}
+  <h3>Debt Structure</h3>
+
+  {# --- Debt Instruments Table --- #}
+  {% set instruments = debt.get('instruments', []) %}
+  {% if instruments %}
+  {# Check if any instruments have real rate/maturity data (not all N/A) #}
+  {% set ns_debt = namespace(has_rate=false, has_maturity=false) %}
+  {% for inst in instruments %}
+    {% if inst.rate and inst.rate != 'N/A' %}{% set ns_debt.has_rate = true %}{% endif %}
+    {% if inst.maturity and inst.maturity != 'N/A' %}{% set ns_debt.has_maturity = true %}{% endif %}
+  {% endfor %}
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Instrument</th>
+        {% if ns_debt.has_rate %}<th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Rate</th>{% endif %}
+        {% if ns_debt.has_maturity %}<th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Maturity</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for inst in instruments %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 font-heading text-xs font-semibold text-navy">{{ inst.name }}</td>
+        {% if ns_debt.has_rate %}<td class="p-1 text-right">{{ inst.rate if inst.rate != 'N/A' else '—' }}</td>{% endif %}
+        {% if ns_debt.has_maturity %}<td class="p-1 text-right {% if inst.is_near_term is defined and inst.is_near_term %}text-risk-red font-semibold{% endif %}">{{ inst.maturity if inst.maturity != 'N/A' else '—' }}</td>{% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {# --- Maturity Schedule (grouped by year) --- #}
+  {% set schedule = debt.get('maturity_schedule', []) %}
+  {% if schedule %}
+  <h4>Maturity Schedule</h4>
+  <div style="display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 12px;">
+    {% for entry in schedule %}
+    <div style="padding: 6px 10px; border-radius: 6px; border: 1px solid {{ '#fecaca' if entry.is_near_term else '#e2e8f0' }}; background: {{ '#fef2f2' if entry.is_near_term else '#f8fafc' }}; min-width: 70px; text-align: center;">
+      <div style="font-size: 13px; font-weight: 700; color: {{ '#dc2626' if entry.is_near_term else '#1e3a5f' }}; font-variant-numeric: tabular-nums;">{{ entry.year }}</div>
+      <div style="font-size: 10px; color: #64748b;">{{ entry.instrument_count }} instrument{{ 's' if entry.instrument_count != 1 }}</div>
+      {% for name in entry.instruments %}
+      <div style="font-size: 9px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px;" title="{{ name }}">{{ name }}</div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+  {% if debt.get('near_term_maturity_flag') %}
+  <div style="padding: 6px 10px; border-radius: 4px; background: #fef2f2; border: 1px solid #fecaca; margin-bottom: 8px;">
+    <span style="font-size: 11px; font-weight: 600; color: #dc2626;">Near-Term Maturity Risk:</span>
+    <span style="font-size: 11px; color: #7f1d1d;">{{ "%.0f"|format(debt.near_term_maturity_pct) }}% of debt instruments mature within 2 years — elevated refinancing risk</span>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  {# --- Interest Rate Summary --- #}
+  {% if debt.get('interest_summary') %}
+  {{ kv_table([
+    {'key': 'Interest Rate Profile', 'value': debt.interest_summary},
+  ]) }}
+  {% endif %}
+
+  {# --- Covenant Status --- #}
+  {% if debt.get('covenant_status') %}
+  <h4>Covenant Status</h4>
+  <p class="text-sm text-gray-700 leading-relaxed mb-2">{{ debt.covenant_status }}</p>
+  {% endif %}
+
+  {# --- Credit Facility --- #}
+  {% if debt.get('credit_facility') %}
+  <h4>Credit Facility</h4>
+  <p class="text-sm text-gray-700 leading-relaxed mb-2">{{ debt.credit_facility }}</p>
+  {% endif %}
+
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>Near-term maturities create refinancing risk that can trigger going-concern issues and D&O litigation if not proactively managed</li>
+    <li>Floating rate exposure amplifies interest cost volatility and earnings surprise risk</li>
+  </ul>
+{% endif %}

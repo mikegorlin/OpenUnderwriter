@@ -1,0 +1,326 @@
+# Field Registry: maps logical field names to data model paths.
+# Used by V2 signals for declarative field resolution (Phase 55+).
+# DIRECT_LOOKUP: simple dotted-path traversal into ExtractedData/CompanyProfile.
+# COMPUTED: dispatch to named Python function with args.
+#
+# Coexists with FIELD_FOR_CHECK dict -- zero legacy deletion in Phase 54.
+#
+# Path conventions:
+#   - "extracted.*" paths resolve against ExtractedData model
+#   - "company.*" paths resolve against CompanyProfile model
+#   - SourcedValue wrappers are unwrapped automatically by the resolver (Phase 55)
+#   - Dict-valued SourcedValues use "key" to extract specific dict entries
+
+version: 1
+
+fields:
+  # --- Financial fields ---
+  current_ratio:
+    type: DIRECT_LOOKUP
+    path: extracted.financials.liquidity
+    key: current_ratio
+    description: Current assets / current liabilities ratio (from SourcedValue dict)
+
+  cash_ratio:
+    type: DIRECT_LOOKUP
+    path: extracted.financials.liquidity
+    key: cash_ratio
+    description: Cash / current liabilities ratio (from SourcedValue dict)
+
+  interest_coverage:
+    type: DIRECT_LOOKUP
+    path: extracted.financials.leverage
+    key: interest_coverage
+    description: EBIT / interest expense ratio (from SourcedValue dict)
+
+  cash_burn_months:
+    type: COMPUTED
+    function: compute_cash_burn_months
+    args:
+      - extracted.financials.earnings_quality
+    description: Cash runway in months (None if OCF positive, numeric if burning)
+
+  restatements:
+    type: COMPUTED
+    function: count_restatements
+    args:
+      - extracted.financials.audit.restatements
+    description: Count of financial restatements (len of restatement list)
+
+  # --- Governance fields ---
+  board_independence:
+    type: COMPUTED
+    function: compute_board_independence_pct
+    args:
+      - extracted.governance.board.independence_ratio
+    description: Board independence as percentage (independence_ratio * 100 if <= 1.0)
+
+  say_on_pay_pct:
+    type: COMPUTED
+    function: resolve_say_on_pay_pct
+    args:
+      - extracted.governance.comp_analysis.say_on_pay_pct
+      - extracted.governance.compensation.say_on_pay_support_pct
+    description: Say-on-pay approval percentage (comp_analysis preferred, compensation fallback)
+
+  filing_13d_count:
+    type: COMPUTED
+    function: count_items
+    args:
+      - extracted.governance.ownership.filings_13d_24mo
+    description: Count of Schedule 13D activist filings in last 24 months
+
+  # --- Litigation fields ---
+  active_sca_count:
+    type: COMPUTED
+    function: count_active_scas
+    args:
+      - extracted.litigation.securities_class_actions
+    description: Count of active securities class actions (filtered non-boilerplate, status ACTIVE)
+
+  contingent_liabilities_total:
+    type: COMPUTED
+    function: sum_contingent_liabilities
+    args:
+      - extracted.litigation.contingent_liabilities
+    description: Total contingent liabilities in millions (sum of accrued_amount)
+
+  product_liability_count:
+    type: COMPUTED
+    function: count_items
+    args:
+      - extracted.litigation.workforce_product_environmental.product_recalls
+    description: Count of product recall events
+
+  # --- Stock/Market fields ---
+  decline_from_high:
+    type: DIRECT_LOOKUP
+    path: extracted.market.stock.decline_from_high_pct
+    description: Stock price decline percentage from 52-week high
+
+  short_interest_pct:
+    type: DIRECT_LOOKUP
+    path: extracted.market.short_interest.short_pct_float
+    description: Short interest as percentage of float
+
+  pe_ratio:
+    type: DIRECT_LOOKUP
+    path: extracted.market.stock.pe_ratio
+    description: Trailing price-to-earnings ratio
+
+  # --- Business Model fields (v6.0 BMOD) ---
+  revenue_model_type:
+    type: DIRECT_LOOKUP
+    path: company.revenue_model_type
+    description: Revenue model classification (RECURRING, PROJECT, TRANSACTION, HYBRID)
+
+  concentration_risk_composite:
+    type: COMPUTED
+    function: compute_concentration_risk_composite
+    args:
+      - company.revenue_segments
+      - company.customer_concentration
+      - company.geographic_footprint
+    description: Composite concentration risk score 0-3 from segment/customer/geo data
+
+  key_person_risk_score:
+    type: COMPUTED
+    function: compute_key_person_risk_score
+    args:
+      - company.key_person_risk
+    description: Key person risk score from pre-computed dict (0-3)
+
+  segment_lifecycle_risk:
+    type: COMPUTED
+    function: compute_segment_lifecycle_risk
+    args:
+      - company.segment_lifecycle
+    description: Percentage of revenue from declining segments
+
+  disruption_risk_level:
+    type: COMPUTED
+    function: compute_disruption_risk_level
+    args:
+      - company.disruption_risk
+    description: Disruption risk level (HIGH/MODERATE/LOW)
+
+  segment_margin_risk:
+    type: COMPUTED
+    function: compute_segment_margin_risk
+    args:
+      - company.segment_margins
+    description: Max absolute margin decline in basis points across segments
+
+  # --- Operational complexity fields (Phase 99: OPS) ---
+  ops_complexity_score:
+    type: COMPUTED
+    function: compute_ops_complexity_score
+    args:
+      - company.subsidiary_structure
+      - company.workforce_distribution
+      - company.operational_resilience
+    description: Composite operational complexity score (0-20 scale)
+
+  # --- Business/Company fields ---
+  customer_concentration:
+    type: COMPUTED
+    function: compute_customer_concentration
+    args:
+      - company.customer_concentration
+    description: Customer concentration data (list of customer dicts with revenue pct)
+
+  subsidiary_count:
+    type: DIRECT_LOOKUP
+    path: company.subsidiary_count
+    description: Number of subsidiaries from Exhibit 21
+
+  market_cap:
+    type: DIRECT_LOOKUP
+    path: company.market_cap
+    description: Market capitalization in USD
+
+  # --- Phase 70: XBRL Forensic fields (from analysis.xbrl_forensics) ---
+  forensic_goodwill_to_assets:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.balance_sheet.goodwill_to_assets.value
+    description: Goodwill as percentage of total assets (ForensicMetric)
+
+  forensic_intangible_concentration:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.balance_sheet.intangible_concentration.value
+    description: Intangible assets as percentage of total assets
+
+  forensic_off_balance_sheet:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.balance_sheet.off_balance_sheet.value
+    description: Off-balance sheet items as percentage of total assets
+
+  forensic_cash_conversion_cycle:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.balance_sheet.cash_conversion_cycle.value
+    description: Cash conversion cycle in days
+
+  forensic_working_capital_volatility:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.balance_sheet.working_capital_volatility.value
+    description: Working capital volatility coefficient
+
+  forensic_deferred_revenue_divergence:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.revenue.deferred_revenue_divergence.value
+    description: Divergence between deferred revenue and revenue growth rates
+
+  forensic_channel_stuffing:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.revenue.channel_stuffing.value
+    description: Channel stuffing indicator (AR/revenue spike)
+
+  forensic_margin_compression:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.revenue.margin_compression.value
+    description: Margin compression magnitude
+
+  forensic_ocf_revenue_ratio:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.revenue.ocf_revenue_ratio.value
+    description: Operating cash flow to revenue ratio
+
+  forensic_roic_trend:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.capital_allocation.roic_trend.value
+    description: Return on invested capital trend value
+
+  forensic_acquisition_effectiveness:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.capital_allocation.acquisition_effectiveness.value
+    description: Acquisition effectiveness score
+
+  forensic_buyback_timing:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.capital_allocation.buyback_timing.value
+    description: Share buyback timing quality score
+
+  forensic_dividend_sustainability:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.capital_allocation.dividend_sustainability.value
+    description: Dividend sustainability score
+
+  forensic_interest_coverage_trend:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.debt_tax.interest_coverage_trend.value
+    description: Interest coverage ratio trend
+
+  forensic_debt_maturity_concentration:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.debt_tax.debt_maturity_concentration.value
+    description: Debt maturity concentration (pct maturing within 2 years)
+
+  forensic_etr_anomaly:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.debt_tax.etr_anomaly.value
+    description: Effective tax rate deviation from statutory rate
+
+  forensic_deferred_tax_growth:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.debt_tax.deferred_tax_growth.value
+    description: Deferred tax liability growth rate
+
+  forensic_pension_underfunding:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.debt_tax.pension_underfunding.value
+    description: Pension plan underfunding as percentage of plan assets
+
+  forensic_beneish_dsri:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.beneish.dsri.value
+    description: Beneish Days Sales Receivable Index
+
+  forensic_beneish_aqi:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.beneish.aqi.value
+    description: Beneish Asset Quality Index
+
+  forensic_beneish_tata:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.beneish.tata.value
+    description: Beneish Total Accruals to Total Assets
+
+  forensic_beneish_composite:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.beneish.composite_score.value
+    description: Beneish M-Score composite (XBRL-derived)
+
+  forensic_sloan_accruals:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.earnings_quality.sloan_accruals.value
+    description: Sloan accruals ratio
+
+  forensic_cash_flow_manipulation:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.earnings_quality.cash_flow_manipulation.value
+    description: Cash flow manipulation indicator
+
+  forensic_sbc_dilution:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.earnings_quality.sbc_dilution.value
+    description: Stock-based compensation dilution rate
+
+  forensic_non_gaap_gap:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.earnings_quality.non_gaap_gap.value
+    description: Non-GAAP to GAAP earnings gap
+
+  forensic_serial_acquirer:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.ma_forensics.serial_acquirer.value
+    description: Serial acquirer flag (boolean)
+
+  forensic_goodwill_growth_rate:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.ma_forensics.goodwill_growth_rate.value
+    description: Goodwill growth rate (annual)
+
+  forensic_acquisition_to_revenue:
+    type: DIRECT_LOOKUP
+    path: analysis.xbrl_forensics.ma_forensics.acquisition_to_revenue.value
+    description: Acquisition spend as percentage of revenue

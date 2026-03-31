@@ -1,0 +1,17 @@
+{# Full D&O Underwriting Worksheet -- extends base layout and includes all sections.
+   Phase 122-02: Layer-aware rendering with 3-tier document structure.
+   Zone 0: Key Stats Overview (first thing underwriter sees)
+   Zone 1: Decision Layer — Scorecard + Executive Brief + CRF Alert Bar (hardcoded)
+   Zone 1.5: Quick Screen / Trigger Matrix
+   Zone 2: Decision Layer manifest sections (e.g., Red Flags — not hardcoded above)
+   Zone 3: Analysis Layer — the risk story in narrative order
+   Zone 4: Audit Layer — collapsed appendix with full audit trail #}
+
+{% extends "base.html.j2" %}
+
+{% block content %}
+  {# === UW Analysis: Complete worksheet in card + detail layout === #}
+  {# Contains Page-0 dashboard + all 10 manifest sections with sub-template includes.
+     Zones 0-4 are all INSIDE the UW analysis — Section 10 is the Audit Trail. #}
+  {% include "sections/uw_analysis.html.j2" ignore missing %}
+{% endblock %}

@@ -1,0 +1,1006 @@
+- id: FWRD.DISC.risk_factor_evolution
+  name: Risk Factor Evolution
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.3'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forward_looking_disclosure_quality
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_disclosure_quality
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC Regulation S-K disclosure requirements: forward-looking disclosure analysis for risk factor changes
+      and guidance patterns'
+    threshold_basis: Disclosure change thresholds calibrated from SCAC complaint analysis of scienter evidence patterns
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} risk factor evolution at {value} represents agent risk (executive/director actions and decisions
+        that create D&O exposure) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} risk factor evolution at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} risk factor evolution at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'
+- id: FWRD.DISC.mda_depth
+  name: Mda Depth
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.3'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: disclosure_quality
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_disclosure_quality
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC Regulation S-K disclosure requirements: forward-looking disclosure analysis for risk factor changes
+      and guidance patterns'
+    threshold_basis: Disclosure change thresholds calibrated from SCAC complaint analysis of scienter evidence patterns
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} mda depth at {value} represents agent risk (executive/director actions and decisions that
+        create D&O exposure) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} mda depth at {value} is a moderate indicator for D&O risk assessment, warranting review
+        of supporting evidence: {evidence}.'
+      CLEAR: '{company} mda depth at {value} is within normal parameters for D&O risk assessment — no D&O concern at this
+        level.'
+- id: FWRD.DISC.non_gaap_reconciliation
+  name: Non Gaap Reconciliation
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.3'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: disclosure_quality
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_disclosure_quality
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC Regulation S-K disclosure requirements: forward-looking disclosure analysis for risk factor changes
+      and guidance patterns'
+    threshold_basis: Disclosure change thresholds calibrated from SCAC complaint analysis of scienter evidence patterns
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} non gaap reconciliation at {value} represents agent risk (executive/director actions and decisions
+        that create D&O exposure) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} non gaap reconciliation at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} non gaap reconciliation at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'
+- id: FWRD.DISC.segment_consistency
+  name: Segment Consistency
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.3'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forward_looking_disclosure_quality
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_disclosure_quality
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC Regulation S-K disclosure requirements: forward-looking disclosure analysis for risk factor changes
+      and guidance patterns'
+    threshold_basis: Disclosure change thresholds calibrated from SCAC complaint analysis of scienter evidence patterns
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} segment consistency at {value} represents agent risk (executive/director actions and decisions
+        that create D&O exposure) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} segment consistency at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} segment consistency at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'
+- id: FWRD.DISC.related_party_completeness
+  name: Related Party Completeness
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.3'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forward_looking_disclosure_quality
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_disclosure_quality
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC Regulation S-K disclosure requirements: forward-looking disclosure analysis for risk factor changes
+      and guidance patterns'
+    threshold_basis: Disclosure change thresholds calibrated from SCAC complaint analysis of scienter evidence patterns
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} related party completeness at {value} represents agent risk (executive/director actions and
+        decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} related party completeness at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} related party completeness at {value} is within normal parameters for D&O risk assessment — no D&O
+        concern at this level.'
+- id: FWRD.DISC.metric_consistency
+  name: Metric Consistency
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.3'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forward_looking_disclosure_quality
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_disclosure_quality
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC Regulation S-K disclosure requirements: forward-looking disclosure analysis for risk factor changes
+      and guidance patterns'
+    threshold_basis: Disclosure change thresholds calibrated from SCAC complaint analysis of scienter evidence patterns
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} metric consistency at {value} represents agent risk (executive/director actions and decisions
+        that create D&O exposure) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} metric consistency at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} metric consistency at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'
+- id: FWRD.DISC.guidance_methodology
+  name: Guidance Methodology
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.3'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forward_looking_disclosure_quality
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_disclosure_quality
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC Regulation S-K disclosure requirements: forward-looking disclosure analysis for risk factor changes
+      and guidance patterns'
+    threshold_basis: Disclosure change thresholds calibrated from SCAC complaint analysis of scienter evidence patterns
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} guidance methodology at {value} represents agent risk (executive/director actions and decisions
+        that create D&O exposure) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} guidance methodology at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} guidance methodology at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'
+- id: FWRD.DISC.sec_comment_letters
+  execution_mode: DEFERRED
+  name: Sec Comment Letters
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.3'
+  data_strategy:
+    field_key: comment_letter_count
+    primary_source: SEC_10K
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forward_looking_disclosure_quality
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_disclosure_quality
+  signal_class: evaluative
+  field_path: comment_letter_count
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC Regulation S-K disclosure requirements: forward-looking disclosure analysis for risk factor changes
+      and guidance patterns'
+    threshold_basis: Disclosure change thresholds calibrated from SCAC complaint analysis of scienter evidence patterns
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} sec comment letters at {value} represents agent risk (executive/director actions and decisions
+        that create D&O exposure) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} sec comment letters at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} sec comment letters at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'
+- id: FWRD.DISC.disclosure_quality_composite
+  name: Disclosure Quality Composite
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.3'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: disclosure_quality
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_disclosure_quality
+  signal_class: inference
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC Regulation S-K disclosure requirements: forward-looking disclosure analysis for risk factor changes
+      and guidance patterns'
+    threshold_basis: Disclosure change thresholds calibrated from SCAC complaint analysis of scienter evidence patterns
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} disclosure quality composite at {value} represents agent risk (executive/director actions
+        and decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based on D&O
+        claims experience.'
+      TRIGGERED_YELLOW: '{company} disclosure quality composite at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} disclosure quality composite at {value} is within normal parameters for D&O risk assessment — no D&O
+        concern at this level.'
+- id: FWRD.NARRATIVE.10k_vs_earnings
+  execution_mode: DEFERRED
+  name: 10K Vs Earnings
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_8K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+    SEC_8K:
+    - all_items
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.3'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: narrative_coherence
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_narrative_coherence
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} 10k vs earnings at {value} represents environment risk (external market, regulatory, and industry
+        conditions affecting D&O liability) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} 10k vs earnings at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} 10k vs earnings at {value} is within normal parameters for D&O risk assessment — no D&O concern at
+        this level.'
+- id: FWRD.NARRATIVE.investor_vs_sec
+  execution_mode: DEFERRED
+  name: Investor Vs Sec
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_8K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+    SEC_8K:
+    - all_items
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.3'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forward_looking_narrative_coherence
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_narrative_coherence
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} investor vs sec at {value} represents environment risk (external market, regulatory, and industry
+        conditions affecting D&O liability) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} investor vs sec at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} investor vs sec at {value} is within normal parameters for D&O risk assessment — no D&O concern at
+        this level.'
+- id: FWRD.NARRATIVE.analyst_skepticism
+  name: Analyst Skepticism
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_8K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+    SEC_8K:
+    - all_items
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.3'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: narrative_coherence
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_narrative_coherence
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} analyst skepticism at {value} represents environment risk (external market, regulatory, and
+        industry conditions affecting D&O liability) — this level is associated with D&O risk assessment exposure based on
+        D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} analyst skepticism at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} analyst skepticism at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'
+- id: FWRD.NARRATIVE.short_thesis
+  name: Short Thesis
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_8K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+    SEC_8K:
+    - all_items
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.3'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forward_looking_narrative_coherence
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_narrative_coherence
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} short thesis at {value} represents environment risk (external market, regulatory, and industry
+        conditions affecting D&O liability) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} short thesis at {value} is a moderate indicator for D&O risk assessment, warranting review
+        of supporting evidence: {evidence}.'
+      CLEAR: '{company} short thesis at {value} is within normal parameters for D&O risk assessment — no D&O concern at this
+        level.'
+- id: FWRD.NARRATIVE.auditor_cams
+  name: Auditor Cams
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_8K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+    SEC_8K:
+    - all_items
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.3'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forward_looking_narrative_coherence
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_narrative_coherence
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} auditor cams at {value} represents environment risk (external market, regulatory, and industry
+        conditions affecting D&O liability) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} auditor cams at {value} is a moderate indicator for D&O risk assessment, warranting review
+        of supporting evidence: {evidence}.'
+      CLEAR: '{company} auditor cams at {value} is within normal parameters for D&O risk assessment — no D&O concern at this
+        level.'
+- id: FWRD.NARRATIVE.narrative_coherence_composite
+  execution_mode: AUTO
+  name: Narrative Coherence Composite
+  work_type: extract
+  layer: signal
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_8K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+    SEC_8K:
+    - all_items
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.3'
+  worksheet_section: stock_activity
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: narrative_coherence
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_narrative_coherence
+  signal_class: inference
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Forward-looking statement analysis: PSLRA safe harbor case law and guidance accuracy research'
+    threshold_basis: Forward-looking risk threshold from D&O claims experience and NERA/Cornerstone analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} narrative coherence composite at {value} represents environment risk (external market, regulatory,
+        and industry conditions affecting D&O liability) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} narrative coherence composite at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} narrative coherence composite at {value} is within normal parameters for D&O risk assessment — no
+        D&O concern at this level.'

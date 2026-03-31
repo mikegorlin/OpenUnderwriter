@@ -1,0 +1,157 @@
+{# Ownership Structure — visual bars for ownership percentages #}
+
+  {# --- Ownership Structure --- #}
+  {% if gov.get('institutional_pct') or gov.get('insider_pct') %}
+  <h3>Ownership Structure</h3>
+
+  {# Visual ownership bars #}
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0;">
+    {# Institutional Ownership #}
+    {% set inst_str = gov.get('institutional_pct', '')|string|replace('%', '') %}
+    {% set inst_num = inst_str|float(default=0) %}
+    <div style="padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background: white;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 600; color: #1e3a5f; text-transform: uppercase; letter-spacing: 0.05em;">Institutional</span>
+        <span style="font-size: 14px; font-weight: 700; color: {% if inst_num > 100 %}#D97706{% else %}#1e3a5f{% endif %}; font-variant-numeric: tabular-nums;">{{ gov.get('institutional_pct', 'N/A') }}</span>
+      </div>
+      <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+        <div style="height: 100%; width: {{ [inst_num|int, 100]|min }}%; background: {% if inst_num > 100 %}#D97706{% else %}#1e3a5f{% endif %}; border-radius: 4px;"></div>
+      </div>
+      {% if inst_num > 100 %}
+      <div style="font-size: 7pt; color: #92400E; margin-top: 4px; line-height: 1.3;">
+        &gt;100% is common when shares are lent for short selling &mdash; both lender and borrower report ownership in 13F filings. May also reflect reporting lag or share class aggregation.
+      </div>
+      {% endif %}
+    </div>
+    {# Insider Ownership #}
+    <div style="padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background: white;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 600; color: #1e3a5f; text-transform: uppercase; letter-spacing: 0.05em;">Insider</span>
+        <span style="font-size: 14px; font-weight: 700; color: #1e3a5f; font-variant-numeric: tabular-nums;">{{ gov.get('insider_pct', 'N/A') }}</span>
+      </div>
+      {% set ins_str = gov.get('insider_pct', '')|string|replace('%', '') %}
+      {% set ins_num = ins_str|float(default=0) %}
+      <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+        <div style="height: 100%; width: {{ [ins_num|int, 100]|min }}%; background: #d97706; border-radius: 4px;"></div>
+      </div>
+    </div>
+  </div>
+
+  {% set top_holders = gov.get('top_holders', []) %}
+  {% if top_holders %}
+  {# Check if any holder has a real percentage value for the concentration bar #}
+  {% set ns_th = namespace(show_bar=false) %}
+  {% for holder in top_holders %}
+    {% set pct_str = holder.pct|string|replace('%', '') %}
+    {% set pct_num = pct_str|float(default=0) %}
+    {% if pct_num > 0 %}{% set ns_th.show_bar = true %}{% endif %}
+  {% endfor %}
+  <h4>Top Holders</h4>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Holder</th>
+        <th class="text-right p-1 border-b font-heading text-xs font-semibold uppercase" style="width: 120px;">% Outstanding</th>
+        {% if ns_th.show_bar %}<th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase" style="width: 40%;">Concentration</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for holder in top_holders %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1">{{ holder.name }}</td>
+        <td class="p-1 text-right tabular-nums font-semibold">{{ holder.pct }}</td>
+        {% if ns_th.show_bar %}
+        <td class="px-3 py-1">
+          {% set pct_str = holder.pct|string|replace('%', '') %}
+          {% set pct_num = pct_str|float(default=0) %}
+          <div style="height: 10px; background: #f1f5f9; border-radius: 3px; overflow: hidden;">
+            <div style="height: 100%; width: {{ [pct_num * 5, 100]|min|int }}%; background: #4a6fa5; border-radius: 3px;"></div>
+          </div>
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {% set known_activists = gov.get('known_activists', []) %}
+  {% if known_activists %}
+  <h4>Known Activist Investors</h4>
+  <ul class="list-disc ml-5 text-sm text-risk-red space-y-0.5">
+    {% for activist in known_activists %}
+    <li>{{ activist }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {# --- Activist Signals: 13D filings, 13G-to-13D conversions, proxy contests --- #}
+  {% set filings_13d = gov.get('filings_13d_24mo', []) %}
+  {% set conversions = gov.get('conversions_13g_to_13d', []) %}
+  {% set proxy_contests = gov.get('proxy_contests_3yr', []) %}
+  {% if filings_13d or conversions or proxy_contests %}
+  <h4>Activist Activity Signals</h4>
+  {% if conversions %}
+  <div class="bg-red-50 border border-red-200 rounded p-2 mb-2 text-sm">
+    <strong class="text-risk-red">13G &rarr; 13D Conversion{{ 's' if conversions|length > 1 else '' }}</strong>
+    <span class="text-xs text-gray-600">&mdash; strongest activist escalation signal (passive investor turning activist)</span>
+    <table class="w-full border-collapse mt-2 text-sm">
+      <thead><tr class="bg-red-100">
+        <th class="text-left p-1 text-xs font-semibold">Filer</th>
+        <th class="text-left p-1 text-xs font-semibold">Date</th>
+        <th class="text-right p-1 text-xs font-semibold">Ownership</th>
+      </tr></thead>
+      <tbody>
+        {% for c in conversions %}
+        <tr><td class="p-1 font-semibold">{{ c.filer }}</td><td class="p-1">{{ c.date }}</td><td class="p-1 text-right tabular-nums">{{ c.pct }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+  {% if filings_13d %}
+  <div class="mb-2">
+    <strong class="text-sm">Schedule 13D Filings (24mo)</strong>
+    <table class="w-full border-collapse mt-1 text-sm">
+      <thead><tr class="bg-gray-100">
+        <th class="text-left p-1 text-xs font-semibold">Filer</th>
+        <th class="text-left p-1 text-xs font-semibold">Date</th>
+        <th class="text-right p-1 text-xs font-semibold">Ownership</th>
+      </tr></thead>
+      <tbody>
+        {% for f in filings_13d %}
+        <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+          <td class="p-1 font-semibold">{{ f.filer }}</td><td class="p-1">{{ f.date }}</td><td class="p-1 text-right tabular-nums">{{ f.pct }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+  {% if proxy_contests %}
+  <div class="mb-2">
+    <strong class="text-sm text-risk-red">Proxy Contests (3yr)</strong>
+    <ul class="list-disc ml-5 text-sm text-gray-700 space-y-0.5 mt-1">
+      {% for contest in proxy_contests %}
+      <li>{{ contest }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  <ul class="text-xs text-gray-500 mt-1 mb-2 leading-relaxed list-disc ml-4 space-y-0.5">
+    {% if conversions %}
+    <li>13G-to-13D conversions signal that a previously passive &gt;5% holder is now seeking activist involvement&mdash;this is the strongest predictive indicator of proxy fights or board challenges</li>
+    {% endif %}
+    {% if filings_13d %}
+    <li>Schedule 13D filings disclose &gt;5% holdings with activist intent&mdash;{{ filings_13d|length }} filing{{ 's' if filings_13d|length > 1 else '' }} in the past 24 months</li>
+    {% endif %}
+  </ul>
+  {% endif %}
+
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>High institutional ownership increases securities class action probability&mdash;institutional investors are more likely to participate in class actions</li>
+    <li>High insider ownership can indicate management alignment but also raises insider trading scrutiny risk</li>
+    {% if inst_num > 80 %}
+    <li>Institutional ownership above 80% is notable&mdash;concentrated institutional base increases proxy fight and activist campaign risk</li>
+    {% endif %}
+  </ul>
+  {% endif %}

@@ -1,0 +1,46 @@
+- id: ABS.DISC.segment_reporting
+  name: Missing Segment Reporting Disclosure
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: 'Expected disclosure absent: revenue > $1B or multiple_business_lines'
+  provenance:
+    origin: phase_110_absence
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Absence detection for BIZ.SEGMENTS.revenue_segments
+    threshold_provenance:
+      source: standard
+      rationale: Revenue >$1B or multiple lines expected to have segment disclosure
+  signal_class: inference
+  group: transparency_disclosure
+  rap_class: host
+  rap_subcategory: host.identity
+  epistemology:
+    rule_origin: ASC 280 segment reporting requirements; large multi-segment companies must disclose
+    threshold_basis: Revenue >$1B or multiple lines expected to have segment disclosure
+  evaluation:
+    mechanism: absence
+    absence_rules:
+      expectation_type: company_profile
+      expected_signals:
+      - BIZ.SEGMENTS.revenue_segments
+      condition: revenue > $1B or multiple_business_lines
+      expected_status: TRIGGERED
+      absence_trigger: SKIPPED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} missing segment reporting disclosure at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} missing segment reporting disclosure at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} missing segment reporting disclosure at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

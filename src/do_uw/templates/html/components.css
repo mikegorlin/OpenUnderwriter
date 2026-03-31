@@ -1,0 +1,611 @@
+/* components.css — Component-level styles for CIQ layout density */
+
+/* Global tabular numerals (also in styles.css for broader coverage) */
+td, .tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sticky table headers — offset for beta header+nav (~92px) */
+.sticky-header thead th {
+  position: sticky;
+  top: 92px;
+  z-index: 5;
+  background-color: #F9FAFB;
+  box-shadow: 0 1px 0 0 #E5E7EB;
+}
+/* bg-navy sticky headers */
+.sticky-header thead .bg-navy th,
+.sticky-header thead tr.bg-navy th {
+  background-color: #F9FAFB;
+  color: #6B7280;
+}
+/* 3-column data grid (CapIQ density) */
+.data-grid-table { margin: 0.5rem 0; }
+.data-grid-title {
+  background: #F3F4F6;
+  color: #1F3A5C;
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+.dr-row:nth-child(odd) { background: var(--do-bg-alt, #f8fafc); }
+.dr-label {
+  width: 35%;
+  padding: 2px 6px;
+  font-weight: 600;
+  font-size: 10pt;
+  color: var(--do-navy, #1a2744);
+}
+.dr-value {
+  width: 30%;
+  padding: 2px 6px;
+  font-variant-numeric: tabular-nums;
+  font-size: 10pt;
+}
+.dr-context {
+  width: 35%;
+  padding: 2px 6px;
+  font-size: 9pt;
+  color: #64748b;
+}
+.dr-missing { color: #94a3b8; }
+.fn-ref { font-size: 8pt; vertical-align: super; line-height: 0; }
+.fn-ref a { color: var(--do-navy, #1a2744); text-decoration: none; }
+.conf-marker { font-size: 8pt; font-style: italic; color: #9ca3af; }
+
+/* Sources Appendix */
+.sources-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sources-item {
+  display: flex;
+  gap: 0.5rem;
+  padding: 3px 0;
+  font-size: 9pt;
+  color: #374151;
+  border-bottom: 1px solid #f1f5f9;
+  line-height: 1.4;
+}
+.sources-num {
+  font-weight: 700;
+  color: var(--do-navy, #1a2744);
+  min-width: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* Collapsible sections — expanded by default, summary hidden (CIQ density: everything visible) */
+details.collapsible{border:none;border-radius:0;margin:0;overflow:visible;box-shadow:none}
+details.collapsible:hover{box-shadow:none}
+details.collapsible>summary{display:none}
+details.collapsible>summary::-webkit-details-marker{display:none}
+details.collapsible>summary::marker{display:none;content:""}
+details.collapsible>summary::before{content:none}
+details.collapsible[open]>summary::before{transform:none}
+details.collapsible>summary:hover{background:none}
+details.collapsible>.collapsible-content{padding:0}
+/* Two-Column Profile Layout */
+.two-col-profile {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 0.75rem 0;
+}
+.two-col-profile > .profile-col {
+  min-width: 0;  /* prevent grid blowout */
+}
+/* Responsive stack */
+@media (max-width: 768px) {
+  .two-col-profile {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Multi-Column KV Grid Layouts (VIS-04 — Phase 125)
+   .kv-grid-2: two side-by-side KV tables in equal columns.
+   .kv-grid-3: three side-by-side KV tables in equal columns.
+   Children are standard .kv-table elements. */
+.kv-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 0.5rem 0;
+}
+.kv-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.75rem;
+  margin: 0.5rem 0;
+}
+.kv-grid-2 > *, .kv-grid-3 > * {
+  min-width: 0;  /* prevent grid blowout on long values */
+}
+@media (max-width: 768px) {
+  .kv-grid-2, .kv-grid-3 { grid-template-columns: 1fr; }
+}
+@media print {
+  .kv-grid-2, .kv-grid-3 {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .kv-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+/* Risk Badge Refinements */
+/* Pills — compact beta style */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-size: 7pt;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+.badge-pill:hover {
+  opacity: 0.92;
+}
+
+/* Tiers — beta style */
+.badge-tier {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.badge-tier:hover {
+  opacity: 0.95;
+}
+
+/* Compensation Mix Bar */
+.comp-mix-bar {
+  display: flex;
+  height: 28px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+.comp-mix-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: white;
+  padding: 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.comp-mix-segment:nth-child(1) { background: var(--do-navy, #1a365d); }
+.comp-mix-segment:nth-child(2) { background: var(--do-gold, #b8860b); }
+.comp-mix-segment:nth-child(3) { background: #4a6fa5; }
+.comp-mix-segment:nth-child(4) { background: #7c9cbf; }
+.comp-mix-segment:nth-child(5) { background: #a0b4c8; }
+
+/* Percentile Bar */
+.percentile-bar {
+  position: relative;
+  height: 20px;
+  background: #f0f0f0;
+  border-radius: 3px;
+  min-width: 80px;
+}
+.percentile-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+.percentile-bar span {
+  position: relative;
+  z-index: 1;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 20px;
+  padding-left: 4px;
+}
+
+/* Confidence Indicators (SURF-08) */
+.confidence-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.confidence-high { background: #22c55e; }
+.confidence-medium { background: #eab308; }
+.confidence-low { background: #9ca3af; }
+
+/* Source tooltips */
+[data-source] {
+  cursor: help;
+  border-bottom: 1px dotted #9ca3af;
+}
+
+/* Inline sparklines (CHART-03) */
+.sparkline-inline { display: inline-block; vertical-align: middle; margin-left: 6px; }
+.sparkline-inline svg { display: inline-block; }
+
+/* NLP Trend Arrows */
+.trend-up { color: #16a34a; }
+.trend-down { color: #dc2626; }
+.trend-flat { color: #6b7280; }
+
+/* L-M Dictionary Trend Bars */
+.lm-trend-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  margin: 0.25rem 0;
+}
+.lm-label {
+  font-size: 0.7rem;
+  width: 100px;
+  flex-shrink: 0;
+  color: #6b7280;
+}
+.lm-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 24px;
+}
+.lm-bar {
+  width: 8px;
+  min-height: 2px;
+  background: var(--do-navy, #1a365d);
+  border-radius: 1px 1px 0 0;
+}
+
+/* Hazard Category Cards */
+.hazard-card > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.hazard-card[open] > summary {
+  border-radius: 4px 4px 0 0;
+  border-bottom-color: transparent;
+}
+.hazard-cat-code {
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--do-navy, #1a365d);
+  min-width: 24px;
+}
+.hazard-cat-name { font-weight: 600; flex: 1; }
+.hazard-cat-score { font-variant-numeric: tabular-nums; font-weight: 600; }
+.hazard-cat-dims { font-size: 0.7rem; color: #6b7280; }
+
+/* Warning badge */
+.badge-tier-warning {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+}
+
+/* Executive Profile Cards (SURF-06) */
+.exec-card {
+  border: none;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  transition: box-shadow 150ms ease;
+}
+.exec-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.exec-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Allegation Bar + Cards (SURF-07) */
+.allegation-bar {
+  display: flex;
+  height: 24px;
+  border-radius: 4px;
+  overflow: hidden;
+  gap: 2px;
+}
+.allegation-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+.allegation-card > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+/* Interaction Cards (SURF-04) */
+.interaction-card {
+  transition: background-color 0.2s;
+}
+
+/* Sentiment Alignment Indicators */
+.alignment-check { color: #16a34a; }
+.alignment-warning { color: #d97706; }
+.alignment-alert { color: #dc2626; }
+
+/* =====================================================================
+   PDF Table of Contents — leader-dot entries for PDF output
+   ===================================================================== */
+.pdf-toc {
+  page-break-after: always;
+  break-after: page;
+  padding: 2rem 0;
+}
+.pdf-toc-title {
+  font-size: 16pt;
+  font-weight: 700;
+  color: #1A1446;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.pdf-toc-entries {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.pdf-toc-entry {
+  margin: 0.4rem 0;
+  line-height: 1.6;
+}
+.pdf-toc-entry a {
+  display: flex;
+  align-items: baseline;
+  text-decoration: none;
+  color: #1A1446;
+}
+.pdf-toc-text {
+  white-space: nowrap;
+  font-size: 11pt;
+}
+.pdf-toc-dots {
+  flex: 1;
+  border-bottom: 1px dotted #999;
+  margin: 0 0.5rem;
+  min-width: 2rem;
+}
+.pdf-toc-page {
+  white-space: nowrap;
+  font-size: 11pt;
+  color: #666;
+  min-width: 1.5rem;
+  text-align: right;
+}
+
+/* Print styles */
+@media print {
+  details.collapsible { display: block !important; border: none; margin: 0; }
+  details.collapsible > summary { display: none !important; }
+  details.collapsible > .collapsible-content { display: block !important; padding: 0; }
+
+  section.page-break,
+  section[id="financial-health"],
+  section[id="market"],
+  section[id="governance"],
+  section[id="litigation"],
+  section[id="ai-risk"],
+  section[id="scoring"] {
+    break-before: page;
+    page-break-before: always;
+  }
+
+  section[id="executive-summary"] { break-before: auto; page-break-before: auto; }
+  .sticky-header thead th { position: static; box-shadow: none; }
+  .two-col-profile { grid-template-columns: 1fr; gap: 0.5rem; }
+  table { break-inside: avoid; page-break-inside: avoid; }
+  table.allow-break { break-inside: auto; page-break-inside: auto; }
+  table.allow-break thead { display: table-header-group; }
+  .kv-table, .kv-paired, .data-grid-table { break-inside: avoid; page-break-inside: avoid; }
+  .chart-interactive { display: none !important; }
+  .chart-static { display: block !important; }
+  .badge-pill, .badge-tier { box-shadow: none !important; transform: none !important; }
+  .comp-mix-bar { border: 1px solid #ccc; }
+  .comp-mix-segment { border-right: 1px solid rgba(255,255,255,0.3); }
+  .percentile-fill { transition: none; }
+  .hazard-card { border: 1px solid #e2e8f0; }
+  .hazard-card > summary { display: none !important; }
+  .lm-bar { border: 1px solid #ccc; }
+  .chart-figure img { max-width: 100%; height: auto; }
+  .exec-card { border: 1px solid #ccc; }
+  .allegation-bar { border: 1px solid #ccc; }
+  .allegation-segment { border-right: 1px solid rgba(255,255,255,0.3); }
+  .scr-block, .do-implications, .narrative-layers, .bull-bear-grid { break-inside: avoid; page-break-inside: avoid; }
+  .verdict-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .narrative-deep details.collapsible { display: block !important; border: none; }
+  .narrative-deep details.collapsible > summary { display: none !important; }
+  .narrative-deep .collapsible-content { display: block !important; padding: 0; }
+}
+
+/* SCR (Situation-Complication-Resolution) Narrative Block (NARR-04) — beta style */
+.scr-block {
+  border-top: 2px solid #1F3A5C;
+  background: #F8FAFC;
+  border-radius: 4px;
+  padding: 8px;
+  margin: 6px 0;
+  font-size: 9pt;
+}
+.scr-segment {
+  border-left: 3px solid transparent;
+  padding-left: 8px;
+  margin: 4px 0;
+}
+.scr-segment:nth-child(1) { border-left-color: #6B7280; }
+.scr-segment:nth-child(2) { border-left-color: #D97706; }
+.scr-segment:nth-child(3) { border-left-color: #16A34A; }
+
+/* D&O Implications Callout Box (NARR-06) — beta style */
+.do-implications {
+  border-left: 3px solid #1F3A5C;
+  background: #EFF6FF;
+  border-radius: 0 4px 4px 0;
+  padding: 6px 10px;
+  margin: 6px 0;
+  font-size: 9pt;
+}
+
+/* 5-Layer Narrative Architecture (NARR-01, NARR-05) */
+.verdict-badge {
+  display: inline-flex; align-items: center; padding: 2px 8px;
+  border-radius: 8px; font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.3px; text-transform: uppercase; white-space: nowrap;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.verdict-favorable { background: #059669; color: white; }
+.verdict-neutral { background: #2563eb; color: white; }
+.verdict-concerning { background: #d97706; color: white; }
+.verdict-critical { background: #dc2626; color: white; }
+.narrative-layers { border: 1px solid #E5E7EB; border-radius: 5px; padding: 8px 10px; margin: 8px 0; background: white; }
+.narrative-glance { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+.narrative-thesis-inline { flex: 1; min-width: 200px; font-size: 9pt; color: #374151; line-height: 1.5; }
+.narrative-evidence-grid { border: none; border-radius: 3px; overflow: hidden; }
+.narrative-evidence-grid thead th { background: #F9FAFB; border-color: #E5E7EB; font-size: 6.5pt; }
+.narrative-evidence-grid tbody td { border-color: #F3F4F6; font-size: 8pt; }
+.narrative-deep { margin-top: 6px; }
+.narrative-implications { border-left: 3px solid #1F3A5C; background: #EFF6FF; padding: 6px 10px; border-radius: 0 4px 4px 0; }
+.narrative-deep-item + .narrative-deep-item { border-top: 1px solid #F3F4F6; padding-top: 4px; }
+
+/* Bull/Bear Case Framing (NARR-02) — beta style */
+.bull-bear-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.bull-case,.bear-case{border-radius:5px;padding:6px 10px;font-size:9pt}
+.bull-case{background:#F0FDF4;border:1px solid #BBF7D0;border-left:3px solid #16A34A}
+.bear-case{background:#FEF2F2;border:1px solid #FECACA;border-left:3px solid #DC2626}
+.case-header{font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;margin:0 0 4px}
+.bull-header{color:#16A34A} .bear-header{color:#DC2626}
+.case-items{list-style:disc;margin:0;padding-left:1.25rem;line-height:1.5;font-size:8pt} .case-items .source-tag{font-size:6pt;color:#9CA3AF;font-style:italic}
+.case-items .severity-high{color:#991B1B} .case-items .severity-medium{color:#92400E}
+
+/* Forensic Dashboard Bands (Phase 73) */
+.forensic-band{border-left:3px solid #E5E7EB;margin:6px 0;padding:6px 10px;border-radius:0 4px 4px 0}
+.forensic-band-critical{border-left-color:#DC2626;background:#FEF2F2}
+.forensic-band-warning{border-left-color:#D97706;background:#FFFBEB}
+.forensic-band-normal{border-left-color:#16A34A;background:#F0FDF4}
+.forensic-band-header{font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#374151;padding:2px 0;margin-bottom:4px;font-family:'Inter',system-ui,sans-serif}
+.forensic-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem}
+@media(max-width:768px){.forensic-grid{grid-template-columns:1fr}}
+
+/* Beneish M-Score Table */
+.beneish-table tbody tr:nth-child(odd){background:var(--do-bg-alt,#f8fafc)}
+.beneish-pass{color:#16a34a;font-weight:700;font-size:1rem}
+.beneish-fail{color:#dc2626;font-weight:700;font-size:1rem}
+
+@media print{
+  .forensic-band{break-inside:avoid;page-break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .forensic-grid{grid-template-columns:1fr}
+  .beneish-table{break-inside:avoid;page-break-inside:avoid}
+}
+
+/* =====================================================================
+   Dual-Voice Blocks (Phase 130-02)
+   "What Was Said" (factual) + "Underwriting Commentary" (risk)
+   ===================================================================== */
+.dual-voice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 6px 0;
+}
+.dual-voice__factual {
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 4px;
+  padding: 6px 10px;
+}
+.dual-voice__commentary {
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  border-left: 3px solid #2563EB;
+  border-radius: 0 4px 4px 0;
+  padding: 6px 10px;
+  color: #374151;
+}
+.dual-voice__header {
+  font-size: 7pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 3px;
+}
+.dual-voice__factual .dual-voice__header { color: #1F3A5C; }
+.dual-voice__commentary .dual-voice__header { color: #1F3A5C; }
+.dual-voice__body {
+  line-height: 1.55;
+  font-size: 9pt;
+}
+
+/* Confidence Badge */
+.confidence-badge {
+  font-size: 0.625rem;
+  font-weight: 600;
+  padding: 0.125rem 0.375rem;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.confidence-badge--high {
+  background: #10b981;
+  color: white;
+}
+.confidence-badge--medium {
+  background: #f59e0b;
+  color: black;
+}
+.confidence-badge--low {
+  background: #ef4444;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .dual-voice { grid-template-columns: 1fr; }
+}
+@media print {
+  .dual-voice {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .dual-voice__factual,
+  .dual-voice__commentary {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

@@ -1,0 +1,36 @@
+{# External Environment Assessment - ENVR signals (Phase 97) #}
+{% set env = company.environment_assessment if company.environment_assessment else {} %}
+{% if company.has_environment_data %}
+<div class="subsection" id="external-environment">
+  <h4>External Environment Assessment</h4>
+  <table class="kv-table">
+    <tbody>
+      {% for signal in [
+        {"name": "Regulatory Intensity", "data": env.regulatory_intensity},
+        {"name": "Geopolitical Exposure", "data": env.geopolitical_risk},
+        {"name": "ESG Commitment Gap", "data": env.esg_gap},
+        {"name": "Cyber Risk Profile", "data": env.cyber_risk},
+        {"name": "Macro Sensitivity", "data": env.macro_sensitivity}
+      ] %}
+      {% if signal.data %}
+      <tr>
+        <td class="kv-label">{{ signal.name }}</td>
+        <td class="kv-value">
+          {% if signal.data.level == 'HIGH' %}
+          <span class="badge-pill bg-red-700 text-white">{{ signal.data.level }}</span>
+          {% elif signal.data.level == 'MODERATE' %}
+          <span class="badge-pill bg-amber-500 text-white">{{ signal.data.level }}</span>
+          {% else %}
+          <span class="badge-pill bg-emerald-600 text-white">{{ signal.data.level }}</span>
+          {% endif %}
+          {% if signal.data.details %}
+          <span class="text-xs text-gray-500 ml-1">{{ signal.data.details }}</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}

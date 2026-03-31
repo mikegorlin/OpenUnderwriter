@@ -1,0 +1,19 @@
+{
+  "severity_weights": {
+    "single_day_drop_5pct": 1.0,
+    "single_day_drop_10pct": 2.0,
+    "single_day_drop_20pct": 4.0,
+    "multi_day_decline_10pct": 1.5,
+    "multi_day_decline_25pct": 3.0,
+    "insider_cluster_selling": 2.0,
+    "10b5_1_modification": 1.5,
+    "short_interest_spike": 1.5,
+    "activist_short_report": 3.0,
+    "earnings_miss": 1.0,
+    "consecutive_earnings_misses_3plus": 3.0,
+    "guidance_withdrawal": 2.0,
+    "analyst_downgrade": 0.5,
+    "recent_offering_section_11": 2.0
+  },
+  "description": "Severity weights for SECT4-09 adverse event scoring. Weights reflect D&O claim correlation."
+}

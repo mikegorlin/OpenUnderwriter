@@ -1,0 +1,69 @@
+# Domain 6: Operational & Emerging Risk
+# "What could go wrong that hasn't happened yet?"
+# Forward-looking risk assessment — the things that don't show up in
+# historical data but could generate claims in the next policy period.
+
+domain: operational_emerging
+domain_label: "Operational & Emerging Risk"
+order: 6
+description: >
+  Assess cybersecurity, regulatory change, ESG exposure, supply chain,
+  and industry-specific risks that are forward-looking. These are the
+  risks that make the difference between a good underwriter and a great one.
+
+questions:
+  - question_id: OPS-01
+    text: "What's the cybersecurity and data privacy exposure?"
+    weight: 8
+    data_sources: [analysis.signals.cyber_*, extracted.risk_factors]
+    answer_template: "{cyber_assessment}"
+    upgrade_criteria: "Minimal PII, not consumer-facing, no prior breaches"
+    downgrade_criteria: "Large PII holdings, healthcare/financial data, prior breach, or inadequate disclosure"
+
+  - question_id: OPS-02
+    text: "Is the company exposed to regulatory changes that could trigger claims?"
+    weight: 8
+    data_sources: [analysis.signals.regulatory_*, extracted.risk_factors]
+    answer_template: "{regulatory_exposure}"
+    upgrade_criteria: "Stable regulatory environment, well-established compliance program"
+    downgrade_criteria: "Pending regulation (FDA, EPA, FTC), new compliance requirements, cross-border complexity"
+
+  - question_id: OPS-03
+    text: "Are there ESG or climate-related disclosure risks?"
+    weight: 6
+    data_sources: [analysis.signals.esg_*, extracted.risk_factors]
+    answer_template: "{esg_assessment}"
+    upgrade_criteria: "Robust ESG reporting, no greenwashing risk"
+    downgrade_criteria: "ESG claims possible (greenwashing, diversity misrepresentation), climate exposure"
+
+  - question_id: OPS-04
+    text: "Is the company dependent on key customers, suppliers, or personnel?"
+    weight: 7
+    data_sources: [extracted.financials.segments, analysis.signals.concentration_*]
+    answer_template: "{concentration_risk}"
+    upgrade_criteria: "Diversified customers/suppliers, deep management bench"
+    downgrade_criteria: ">20% revenue from single customer, sole-source supplier, key-person dependency"
+
+  - question_id: OPS-05
+    text: "Are there tariff, trade, or geopolitical risks?"
+    weight: 6
+    data_sources: [analysis.signals.tariff_*, extracted.risk_factors]
+    answer_template: "{geopolitical_assessment}"
+    upgrade_criteria: "Primarily domestic operations, minimal trade exposure"
+    downgrade_criteria: "China/Russia revenue, tariff-exposed supply chain, export controls"
+
+  - question_id: OPS-06
+    text: "Is the company in a high-frequency D&O claim sector?"
+    weight: 8
+    data_sources: [company.sic_code, supabase_sca.sector_rates]
+    answer_template: "Sector: {sector}. Annual SCA filing rate: {filing_rate}%. Industry median settlement: {med_settlement}."
+    upgrade_criteria: "Low-frequency sector (<3% annual filing rate)"
+    downgrade_criteria: "High-frequency sector (biotech, fintech, cannabis, SPAC) — >8% annual filing rate"
+
+  - question_id: OPS-07
+    text: "What forward-looking events could trigger claims in the next 12 months?"
+    weight: 9
+    data_sources: [analysis.forward_indicators, extracted.risk_factors]
+    answer_template: "{forward_events}"
+    upgrade_criteria: "No significant catalysts expected"
+    downgrade_criteria: "Upcoming: earnings restatement, FDA decision, merger vote, debt maturity, leadership transition"

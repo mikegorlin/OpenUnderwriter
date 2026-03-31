@@ -1,0 +1,40 @@
+{# Sector-Specific D&O Concerns -- from config/sector_do_concerns.json #}
+{# Phase 134: COMP-06, D-07 #}
+{% if has_sector_concerns %}
+<h3>Sector-Specific D&O Concerns — {{ matched_sector }}</h3>
+
+<table class="data-table w-full text-sm my-2">
+  <thead>
+    <tr>
+      <th class="text-left" style="min-width:180px">Concern</th>
+      <th class="text-center" style="width:100px">Sector Relevance</th>
+      <th class="text-center" style="width:110px">Company Exposure</th>
+      <th class="text-left" style="min-width:200px">D&O Implication</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in sector_concerns %}
+    <tr>
+      <td class="font-medium">{{ c.concern }}</td>
+      <td class="text-center">
+        <span class="text-xs font-semibold
+          {% if c.sector_relevance == 'HIGH' %}text-red-600
+          {% elif c.sector_relevance == 'MEDIUM' %}text-amber-600
+          {% else %}text-green-600{% endif %}">
+          {{ c.sector_relevance }}
+        </span>
+      </td>
+      <td class="text-center">
+        <span class="inline-block px-2 py-0.5 rounded text-xs font-semibold
+          {% if c.company_exposure == 'HIGH' %}bg-red-100 text-red-800
+          {% elif c.company_exposure == 'MEDIUM' %}bg-amber-100 text-amber-800
+          {% else %}bg-green-100 text-green-800{% endif %}">
+          {{ c.company_exposure }}
+        </span>
+      </td>
+      <td class="text-xs text-gray-700">{{ c.do_implication }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}

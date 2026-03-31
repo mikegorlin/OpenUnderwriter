@@ -1,0 +1,25 @@
+{# Governance Density Alerts — extracted from governance.html.j2 #}
+
+  {# --- ELEVATED concerns --- #}
+  {% if level == "ELEVATED" %}
+    {% set concerns = density.concerns|default([]) if density else [] %}
+    {% for concern in concerns %}
+      {{ warning_box(concern, "Governance weaknesses correlate with increased D&O claim frequency.") }}
+    {% endfor %}
+  {% endif %}
+
+  {# --- CRITICAL deep dive --- #}
+  {% if level == "CRITICAL" %}
+  <h3>Governance Risk -- Deep Dive</h3>
+  <div class="border-l-4 border-red-700 bg-red-50 pl-4 py-3 my-3">
+    <p class="text-sm text-red-800 font-semibold m-0 mb-2">
+      Governance indicators show critical deficiencies. Cross-reference with
+      Financial (Section 3) for audit committee effectiveness and
+      Litigation (Section 6) for derivative suit exposure.
+    </p>
+    {% set evidence = density.critical_evidence|default([]) if density else [] %}
+    {% if evidence %}
+    {{ evidence_chain(evidence) }}
+    {% endif %}
+  </div>
+  {% endif %}

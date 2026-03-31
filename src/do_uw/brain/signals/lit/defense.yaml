@@ -1,0 +1,750 @@
+- id: LIT.DEFENSE.forum_selection
+  execution_mode: AUTO
+  name: Federal Forum Selection Clause
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles:
+    stock_drop_to_sca: mitigator
+    short_attack_to_sca: mitigator
+    activist_to_derivative: mitigator
+    ma_to_claims: mitigator
+    antitrust_claims: mitigator
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - charter_provisions
+    - bylaw_provisions
+  threshold:
+    type: boolean
+    clear: Federal forum selection clause present
+    yellow: No forum selection clause
+  claims_correlation: 0.8
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '5.7'
+  data_strategy:
+    field_key: forum_selection_clause
+    primary_source: SEC_DEF14A
+  worksheet_section: financial
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: defense_strength
+    formula: ''
+  display:
+    value_format: boolean
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: defense_strength
+  signal_class: evaluative
+  field_path: forum_selection_clause
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: D&O defense cost analysis and program structure assessment from Advisen loss data and market experience
+    threshold_basis: Defense cost and coverage thresholds from Advisen D&O loss data and D&O program benchmarking
+  rap_class: environment
+  rap_subcategory: environment.defense_posture
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} triggered Federal Forum Selection Clause (F10) — this environment risk (external market, regulatory,
+        and industry conditions affecting D&O liability) indicates Emerging Risk / Forward-Looking Exposure. Evidence: {evidence}.'
+      TRIGGERED_YELLOW: '{company} shows moderate signal on Federal Forum Selection Clause (F10) at {value} — review recommended
+        for Emerging Risk / Forward-Looking Exposure implications.'
+      CLEAR: '{company} clear on Federal Forum Selection Clause (F10) — no Emerging Risk / Forward-Looking Exposure concern
+        identified at this level.'
+- id: LIT.DEFENSE.contingent_liabilities
+  name: Contingent Liabilities Disclosure (ASC 450)
+  work_type: evaluate
+  layer: peril_confirming
+  factors:
+  - F1
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  threshold:
+    type: value
+    red: '>$100M contingent liabilities'
+    yellow: $10M-$100M contingent liabilities
+    clear: <$10M or no material contingent liabilities
+  claims_correlation: 0.9
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - CREDITORS
+  v6_subsection_ids:
+  - '5.7'
+  data_strategy:
+    field_key: contingent_liabilities_total
+    primary_source: SEC_10K
+  worksheet_section: financial
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: contingent_liabilities
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - extracted.litigation.contingent_liabilities
+  evaluation:
+    formula: contingent_liabilities_total
+    thresholds:
+    - op: '>'
+      value: 100.0
+      label: RED
+    - op: '>'
+      value: 10.0
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Contingent liabilities: ${value}M'
+    - level: standard
+      template: Contingent liabilities ${value}M — {status_label}
+    - level: deep
+      fields:
+      - contingent_liabilities_total
+    context_templates:
+      TRIGGERED: 'Litigation exposure: ${value}M in contingent liabilities'
+      CLEAR: Contingent liabilities below material threshold
+    do_context:
+      TRIGGERED_RED: '{company} Contingent Liabilities Disclosure (ASC 450) at {value} (threshold: >$100M contingent liabilities)
+        signals elevated Litigation History / Settlement Patterns risk (F1). ASC 450 contingent liability disclosure is among
+        the most judgment-dependent accounting areas. Inadequate loss contingency reserves are a common restatement trigger
+        and a frequent SCA allegation basis. Defense cost and coverage thresholds from Advisen D&O loss data and D&O program
+        benchmarking.'
+      TRIGGERED_YELLOW: '{company} Contingent Liabilities Disclosure (ASC 450) at {value} (threshold: $10M-$100M contingent
+        liabilities) is in the caution zone for Litigation History / Settlement Patterns (F1). Monitor for deterioration —
+        trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Contingent Liabilities Disclosure (ASC 450) at {value} is within acceptable range for Litigation History
+        / Settlement Patterns (F1) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  group: contingent_liabilities
+  signal_class: evaluative
+  field_path: contingent_liabilities_total
+  depends_on:
+  - signal: BASE.LIT.10k_item3
+    field: contingent_liabilities_total
+  epistemology:
+    rule_origin: D&O defense cost analysis and program structure assessment from Advisen loss data and market experience
+    threshold_basis: Defense cost and coverage thresholds from Advisen D&O loss data and D&O program benchmarking
+  rap_class: environment
+  rap_subcategory: environment.defense_posture
+- id: LIT.DEFENSE.pslra_safe_harbor
+  name: PSLRA Safe Harbor Usage
+  work_type: extract
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles:
+    stock_drop_to_sca: mitigator
+    ipo_to_section11: mitigator
+    guidance_to_sca: mitigator
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_7_mda
+  threshold:
+    type: display
+  claims_correlation: 0.7
+  tier: 3
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '5.7'
+  extraction_hints:
+    field_patterns:
+    - safe harbor
+    - Private Securities Litigation Reform
+    - forward-looking statements
+    - PSLRA
+    expected_type: text
+    no_data_sentinel: PSLRA safe harbor language not assessed
+    validation_rule: text description of safe harbor usage
+  data_strategy:
+    field_key: pslra_safe_harbor
+    primary_source: SEC_10K
+  worksheet_section: financial
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: defense_strength
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: defense_strength
+  signal_class: evaluative
+  field_path: pslra_safe_harbor
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: D&O defense cost analysis and program structure assessment from Advisen loss data and market experience
+    threshold_basis: Defense cost and coverage thresholds from Advisen D&O loss data and D&O program benchmarking
+  rap_class: environment
+  rap_subcategory: environment.defense_posture
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} pslra safe harbor usage at {value} represents environment risk (external market, regulatory,
+        and industry conditions affecting D&O liability) (scoring factor F10) — this level is associated with Emerging Risk
+        / Forward-Looking Exposure exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} pslra safe harbor usage at {value} is a moderate indicator for Emerging Risk / Forward-Looking
+        Exposure (scoring factor F10), warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} pslra safe harbor usage at {value} is within normal parameters for Emerging Risk / Forward-Looking
+        Exposure (scoring factor F10) — no D&O concern at this level.'
+- id: LIT.PATTERN.sol_windows
+  name: Open Statute of Limitations Windows
+  work_type: evaluate
+  layer: peril_confirming
+  factors:
+  - F1
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SCAC_SEARCH
+  data_locations:
+    SEC_10K:
+    - item_3_legal_proceedings
+    SCAC_SEARCH:
+    - case_details
+  threshold:
+    type: value
+    red: '>3 open SOL windows'
+    yellow: 1-3 open SOL windows
+    clear: 0 open SOL windows
+  claims_correlation: 1.0
+  tier: 2
+  depth: 4
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '5.7'
+  data_strategy:
+    field_key: sol_open_count
+    primary_source: SEC_10K
+  worksheet_section: financial
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: sol_analysis
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: sol_analysis
+  signal_class: evaluative
+  field_path: sol_open_count
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: litigation metrics as risk indicators from SCAC database and Advisen loss data'
+    threshold_basis: 'Thresholds (RED: >3 open SOL windows; YELLOW: 1-3 open SOL windows) from D&O underwriting practice and
+      claims experience'
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Open Statute of Limitations Windows at {value} (threshold: >3 open SOL windows) signals elevated
+        Litigation History / Settlement Patterns risk (F1). Open statute of limitations windows represent unexpired claim
+        filing opportunities. Pending limitations windows mean potential claims can still be filed -- each open window is
+        a quantifiable probability of future litigation.'
+      TRIGGERED_YELLOW: '{company} Open Statute of Limitations Windows at {value} (threshold: 1-3 open SOL windows) is in
+        the caution zone for Litigation History / Settlement Patterns (F1). Monitor for deterioration — trend direction and
+        peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Open Statute of Limitations Windows at {value} is within acceptable range for Litigation History /
+        Settlement Patterns (F1) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: LIT.PATTERN.industry_theories
+  name: Applicable Industry Allegation Theories
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  - F2
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+  threshold:
+    type: value
+    red: '>5 applicable theories'
+    yellow: 2-5 applicable theories
+    clear: 0-1 applicable theories
+  claims_correlation: 0.9
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '5.7'
+  data_strategy:
+    field_key: industry_pattern_count
+    primary_source: SEC_10K
+  worksheet_section: financial
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: industry_patterns
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: industry_patterns
+  signal_class: evaluative
+  field_path: industry_pattern_count
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: litigation metrics as risk indicators from SCAC database and Advisen loss data'
+    threshold_basis: 'Thresholds (RED: >5 applicable theories; YELLOW: 2-5 applicable theories) from D&O underwriting practice
+      and claims experience'
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Applicable Industry Allegation Theories at {value} (threshold: >5 applicable theories) signals
+        elevated Litigation History / Settlement Patterns risk (F1, F2). Industry-specific allegation theories define the
+        most likely SCA claim types for this company. Understanding applicable theories informs D&O underwriting, policy structure,
+        and retention analysis.'
+      TRIGGERED_YELLOW: '{company} Applicable Industry Allegation Theories at {value} (threshold: 2-5 applicable theories)
+        is in the caution zone for Litigation History / Settlement Patterns (F1, F2). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Applicable Industry Allegation Theories at {value} is within acceptable range for Litigation History
+        / Settlement Patterns (F1, F2) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: LIT.PATTERN.peer_contagion
+  name: Peer Lawsuit Contagion Risk
+  work_type: infer
+  layer: signal
+  factors:
+  - F1
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L3
+  required_data:
+  - SCAC_SEARCH
+  - MARKET_PRICE
+  data_locations:
+    SCAC_SEARCH:
+    - peer_cases
+    MARKET_PRICE:
+    - peer_tickers
+  threshold:
+    type: tiered
+    red: Multiple peers with active SCAs in same industry
+    yellow: 1 peer with active SCA in same industry
+    clear: No peer SCAs in recent period
+  claims_correlation: 1.0
+  tier: 3
+  depth: 4
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '5.7'
+  - '1.2'
+  data_strategy:
+    field_key: peer_contagion_risk
+    primary_source: SCAC_SEARCH
+  worksheet_section: financial
+  display_when: fired
+  display:
+    value_format: boolean
+    source_type: SEC_10K
+    threshold_context: ''
+    deprecation_note: ''
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: industry_patterns
+    formula: ''
+  gap_bucket: data-unavailable
+  gap_keywords:
+  - peer lawsuit
+  - contagion
+  - class action
+  - securities fraud
+  group: industry_patterns
+  signal_class: inference
+  field_path: peer_contagion_risk
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: litigation metrics as risk indicators from SCAC database and Advisen loss data'
+    threshold_basis: 'Thresholds (RED: Multiple peers with active SCAs in same industry; YELLOW: 1 peer with active SCA in
+      same industry) from D&O underwriting practice and claims experience'
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Peer Lawsuit Contagion Risk at {value} (threshold: Multiple peers with active SCAs in same
+        industry) signals elevated Litigation History / Settlement Patterns risk (F1, F3). Peer lawsuit contagion risk means
+        SCA filings against industry peers create filing momentum. When one company in a sector is sued, plaintiff firms investigate
+        similar companies for analogous claims.'
+      TRIGGERED_YELLOW: '{company} Peer Lawsuit Contagion Risk at {value} (threshold: 1 peer with active SCA in same industry)
+        is in the caution zone for Litigation History / Settlement Patterns (F1, F3). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Peer Lawsuit Contagion Risk at {value} is within acceptable range for Litigation History / Settlement
+        Patterns (F1, F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: LIT.PATTERN.temporal_correlation
+  name: Financial Event / Stock Drop Class Period Windows
+  work_type: infer
+  layer: peril_confirming
+  factors:
+  - F1
+  - F5
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L3
+  required_data:
+  - MARKET_PRICE
+  - SEC_10K
+  data_locations:
+    MARKET_PRICE:
+    - historical_prices
+    SEC_10K:
+    - item_7_mda
+  threshold:
+    type: value
+    red: '>2 correlated financial event / stock drop windows'
+    yellow: 1-2 correlated windows
+    clear: No correlated financial event / stock drop windows
+  claims_correlation: 1.0
+  tier: 2
+  depth: 4
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '5.7'
+  - '2.2'
+  data_strategy:
+    field_key: single_day_drops_count
+    primary_source: MARKET_PRICE
+  worksheet_section: financial
+  display_when: fired
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: industry_patterns
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: industry_patterns
+  signal_class: inference
+  field_path: single_day_drops_count
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: litigation metrics as risk indicators from SCAC database and Advisen loss data'
+    threshold_basis: 'Thresholds (RED: >2 correlated financial event / stock drop windows; YELLOW: 1-2 correlated windows)
+      from D&O underwriting practice and claims experience'
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Financial Event / Stock Drop Class Period Windows at {value} (threshold: >2 correlated financial
+        event / stock drop windows) signals elevated Litigation History / Settlement Patterns risk (F1, F5). Financial event
+        / stock drop windows represent specific time periods where class period exposure has been created. Each identified
+        window quantifies potential SCA damages and filing probability.'
+      TRIGGERED_YELLOW: '{company} Financial Event / Stock Drop Class Period Windows at {value} (threshold: 1-2 correlated
+        windows) is in the caution zone for Litigation History / Settlement Patterns (F1, F5). Monitor for deterioration —
+        trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Financial Event / Stock Drop Class Period Windows at {value} is within acceptable range for Litigation
+        History / Settlement Patterns (F1, F5) — this level is a protective factor in D&O risk assessment, reducing claim
+        probability.'
+- id: LIT.SECTOR.industry_patterns
+  name: Sector-Specific Litigation Patterns
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  - F2
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_3_legal_proceedings
+  threshold:
+    type: tiered
+    red: Sector with high litigation frequency + company exposed
+    yellow: Sector with moderate litigation frequency
+    clear: Low-litigation sector
+  claims_correlation: 0.9
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '5.7'
+  data_strategy:
+    field_key: industry_pattern_count
+    primary_source: SEC_10K
+  worksheet_section: financial
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: industry_patterns
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: industry_patterns
+  signal_class: evaluative
+  field_path: industry_pattern_count
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC Division of Enforcement: SEC enforcement action and investigation data as D&O risk indicators'
+    threshold_basis: SEC enforcement threshold from SEC Division of Enforcement annual report data and enforcement pattern
+      analysis
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Sector-Specific Litigation Patterns at {value} (threshold: Sector with high litigation frequency
+        + company exposed) signals elevated Litigation History / Settlement Patterns risk (F1, F2). Sector-specific litigation
+        patterns identify recurring claim types in this industry. Historical sector litigation patterns strongly predict future
+        filing probability and settlement ranges for similarly-situated companies. SEC enforcement threshold from SEC Division
+        of Enforcement annual report data and enforcement pattern analysis.'
+      TRIGGERED_YELLOW: '{company} Sector-Specific Litigation Patterns at {value} (threshold: Sector with moderate litigation
+        frequency) is in the caution zone for Litigation History / Settlement Patterns (F1, F2). Monitor for deterioration
+        — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Sector-Specific Litigation Patterns at {value} is within acceptable range for Litigation History /
+        Settlement Patterns (F1, F2) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: LIT.SECTOR.regulatory_databases
+  execution_mode: DEFERRED
+  name: Sector-Specific Regulatory Database Checks
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+  threshold:
+    type: tiered
+    red: Multiple sector-specific regulatory findings
+    yellow: 1 sector-specific regulatory finding
+    clear: No sector-specific regulatory findings
+  claims_correlation: 0.8
+  tier: 3
+  depth: 3
+  plaintiff_lenses:
+  - REGULATORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '5.7'
+  extraction_hints:
+    field_patterns:
+    - CFPB
+    - NHTSA
+    - FDA
+    - EPA
+    - OSHA
+    - sector-specific
+    expected_type: numeric
+    no_data_sentinel: Sector-specific regulatory databases not checked
+    validation_rule: count >= 0
+  data_strategy:
+    field_key: sector_regulatory_count
+    primary_source: SEC_10K
+  worksheet_section: financial
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: industry_patterns
+    formula: ''
+  gap_bucket: data-unavailable
+  gap_keywords: []
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: industry_patterns
+  signal_class: evaluative
+  field_path: sector_regulatory_count
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC Division of Enforcement: SEC enforcement action and investigation data as D&O risk indicators'
+    threshold_basis: SEC enforcement threshold from SEC Division of Enforcement annual report data and enforcement pattern
+      analysis
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Sector-Specific Regulatory Database Checks at {value} (threshold: Multiple sector-specific
+        regulatory findings) signals elevated Litigation History / Settlement Patterns risk (F1, F6). Sector-specific regulatory
+        database checks reveal industry-targeted enforcement patterns. Regulatory focus on specific sectors amplifies filing
+        probability for all companies in the targeted industry. SEC enforcement threshold from SEC Division of Enforcement
+        annual report data and enforcement pattern analysis.'
+      TRIGGERED_YELLOW: '{company} Sector-Specific Regulatory Database Checks at {value} (threshold: 1 sector-specific regulatory
+        finding) is in the caution zone for Litigation History / Settlement Patterns (F1, F6). Monitor for deterioration —
+        trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Sector-Specific Regulatory Database Checks at {value} is within acceptable range for Litigation History
+        / Settlement Patterns (F1, F6) — this level is a protective factor in D&O risk assessment, reducing claim probability.'

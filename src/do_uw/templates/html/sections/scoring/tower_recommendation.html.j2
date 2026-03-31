@@ -1,0 +1,41 @@
+{# Tower Position Recommendation + Radar Chart — extracted from scoring.html.j2 #}
+{% set tower = sc.get('tower_recommendation') %}
+{% if tower %}
+<h3>Tower Position Recommendation</h3>
+{{ kv_table([
+  {'key': 'Recommended Position', 'value': tower.position | humanize},
+  {'key': 'Minimum Attachment', 'value': tower.min_attachment},
+  {'key': 'Side A / DIC', 'value': tower.side_a},
+]) }}
+{% if tower.get('layers') %}
+<h4>Layer Detail</h4>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Position</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Risk Assessment</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Premium Guidance</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Attachment</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for la in tower.layers %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ la.position | humanize }}</td>
+      <td class="p-1">{{ la.risk if la.risk and la.risk != 'N/A' else '—' }}</td>
+      <td class="p-1">{{ la.premium if la.premium and la.premium != 'N/A' else '—' }}</td>
+      <td class="p-1">{{ la.attachment if la.attachment and la.attachment != 'N/A' else '—' }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+<ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc pl-4 space-y-0.5">
+  <li>Recommended placement on D&amp;O insurance program tower structure</li>
+  <li>Primary positions carry highest claim frequency; excess layers trade frequency for severity risk</li>
+  <li>Side A / DIC assessment covers non-indemnifiable losses (SEC fines, derivative settlements, bankruptcy)</li>
+</ul>
+{% endif %}
+
+{# --- Radar Chart --- #}
+{{ embed_chart("radar", "10-Factor Risk Profile", figure_num=4, full_width=false) }}

@@ -1,0 +1,23 @@
+{# Revenue Model Card -- key attributes table with D&O Risk column (Phase 118) #}
+{% set rc = dossier_card | default({}) %}
+{% if rc.get('revenue_card_available', false) %}
+<h3 id="dossier-revenue-model-card">Revenue Model Card</h3>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Attribute</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Value</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">D&amp;O Risk</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in rc.rows %}
+    <tr class="{{ row.row_class | default('', true) }} {{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ row.attribute }}</td>
+      <td class="p-1">{{ row.value }}</td>
+      <td class="p-1 text-xs">{{ row.do_risk }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}

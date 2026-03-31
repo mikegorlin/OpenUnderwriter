@@ -1,0 +1,190 @@
+# Sector Peer Benchmarks
+# Median D&O risk dimension values by GICS sector (2-digit code)
+# Used for peer comparison: flag company as outlier when >1 std_dev from sector median
+
+metadata:
+  sources:
+    - "Cornerstone Research: Securities Class Action Settlements — 2023 Review"
+    - "NERA Economic Consulting: Recent Trends in Securities Class Action Litigation — 2023"
+    - "Internal pipeline calibration from analyzed companies"
+  data_year: 2023
+  methodology: >
+    Sector median values calibrated from aggregate D&O study data and internal
+    pipeline run history. NOT derived from company-level regression analysis.
+    Standard deviations estimated from published sector-level dispersion data.
+    Outlier threshold: >1 standard deviation from sector median on any dimension.
+  dimensions_explained:
+    overall_score: "Median D&O risk score (0-100 scale, higher = more risk)"
+    litigation_frequency: "SCA filings per 1,000 companies per year in this sector"
+    governance_quality: "Median governance quality score (0-100 scale, higher = better)"
+    financial_health: "Median Altman Z-Score equivalent (>3 = safe, <1.8 = distress)"
+  provenance_note: >
+    These are calibrated approximations from aggregate study data, not precise
+    company-level statistics. Use for directional comparison only. Sector medians
+    should be refined as more companies are analyzed through the pipeline.
+
+benchmarks:
+  "10":  # Energy
+    sector_name: "Energy"
+    overall_score:
+      median: 55
+      std_dev: 18
+    litigation_frequency:
+      median: 6.1
+      std_dev: 3.2
+    governance_quality:
+      median: 62
+      std_dev: 14
+    financial_health:
+      median: 2.8
+      std_dev: 1.8
+
+  "15":  # Materials
+    sector_name: "Materials"
+    overall_score:
+      median: 52
+      std_dev: 16
+    litigation_frequency:
+      median: 5.8
+      std_dev: 3.0
+    governance_quality:
+      median: 65
+      std_dev: 13
+    financial_health:
+      median: 3.4
+      std_dev: 1.6
+
+  "20":  # Industrials
+    sector_name: "Industrials"
+    overall_score:
+      median: 48
+      std_dev: 15
+    litigation_frequency:
+      median: 4.9
+      std_dev: 2.8
+    governance_quality:
+      median: 68
+      std_dev: 12
+    financial_health:
+      median: 3.8
+      std_dev: 1.5
+
+  "25":  # Consumer Discretionary
+    sector_name: "Consumer Discretionary"
+    overall_score:
+      median: 58
+      std_dev: 17
+    litigation_frequency:
+      median: 8.3
+      std_dev: 4.2
+    governance_quality:
+      median: 60
+      std_dev: 15
+    financial_health:
+      median: 3.2
+      std_dev: 1.7
+
+  "30":  # Consumer Staples
+    sector_name: "Consumer Staples"
+    overall_score:
+      median: 42
+      std_dev: 14
+    litigation_frequency:
+      median: 4.1
+      std_dev: 2.5
+    governance_quality:
+      median: 72
+      std_dev: 11
+    financial_health:
+      median: 4.5
+      std_dev: 1.4
+
+  "35":  # Health Care
+    sector_name: "Health Care"
+    overall_score:
+      median: 65
+      std_dev: 18
+    litigation_frequency:
+      median: 16.8
+      std_dev: 8.5
+    governance_quality:
+      median: 58
+      std_dev: 16
+    financial_health:
+      median: 3.0
+      std_dev: 2.2
+
+  "40":  # Financials
+    sector_name: "Financials"
+    overall_score:
+      median: 56
+      std_dev: 16
+    litigation_frequency:
+      median: 10.4
+      std_dev: 5.0
+    governance_quality:
+      median: 66
+      std_dev: 13
+    financial_health:
+      median: 3.5
+      std_dev: 1.6
+
+  "45":  # Information Technology
+    sector_name: "Information Technology"
+    overall_score:
+      median: 62
+      std_dev: 15
+    litigation_frequency:
+      median: 12.6
+      std_dev: 5.5
+    governance_quality:
+      median: 64
+      std_dev: 14
+    financial_health:
+      median: 4.2
+      std_dev: 2.1
+
+  "50":  # Communication Services
+    sector_name: "Communication Services"
+    overall_score:
+      median: 60
+      std_dev: 16
+    litigation_frequency:
+      median: 11.5
+      std_dev: 5.2
+    governance_quality:
+      median: 62
+      std_dev: 14
+    financial_health:
+      median: 3.6
+      std_dev: 1.9
+
+  "55":  # Utilities
+    sector_name: "Utilities"
+    overall_score:
+      median: 38
+      std_dev: 12
+    litigation_frequency:
+      median: 2.1
+      std_dev: 1.5
+    governance_quality:
+      median: 74
+      std_dev: 10
+    financial_health:
+      median: 2.4
+      std_dev: 0.9
+
+  "60":  # Real Estate
+    sector_name: "Real Estate"
+    overall_score:
+      median: 40
+      std_dev: 13
+    litigation_frequency:
+      median: 2.3
+      std_dev: 1.6
+    governance_quality:
+      median: 70
+      std_dev: 11
+    financial_health:
+      median: 2.6
+      std_dev: 1.0

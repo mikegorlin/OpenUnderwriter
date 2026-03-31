@@ -1,0 +1,27 @@
+{# ZER-001 -- Zero-Scored Factor Verifications (Phase 117 -- SCORE-02)
+   Shows positive evidence for factors that scored 0 points. #}
+{% set post = posture_data | default({}) %}
+{% if post.get('has_zero_verifications', false) %}
+<h3 id="zer-001">ZER-001 Verifications ({{ post.zero_verification_count }} factor{{ 's' if post.zero_verification_count != 1 else '' }} at zero)</h3>
+<p class="text-xs text-gray-500 mb-2">Explicit verification that zero-scored factors have been checked with positive evidence.</p>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Factor</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Score</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Positive Evidence</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase text-gray-400">Source</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for zv in post.zero_verifications %}
+    <tr class="{{ 'bg-green-100' if loop.index is odd else 'bg-green-50' }}">
+      <td class="p-1 font-semibold">{{ zv.factor_id }} &mdash; {{ zv.factor_name }}</td>
+      <td class="p-1 text-green-600 font-mono font-semibold">{{ zv.points }}</td>
+      <td class="p-1 text-xs">{{ zv.evidence }}</td>
+      <td class="p-1 text-xs text-gray-400">{{ zv.source | default('', true) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}

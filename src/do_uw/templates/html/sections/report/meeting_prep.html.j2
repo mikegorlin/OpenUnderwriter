@@ -1,0 +1,27 @@
+{# ═══════════════════════════════════════════════════════════════════════════
+   MANIFEST SECTION 9: MEETING PREPARATION — Priority questions for discussion
+   ═══════════════════════════════════════════════════════════════════════════ #}
+{% if b.questions %}
+<div id="meeting-prep" style="margin-top:14px">
+  <div style="background:#1F3A5C;color:white;padding:6px 10px;border-radius:4px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+    <div><span style="font-size:10pt;font-weight:800;letter-spacing:0.3px">Meeting Preparation</span><br><span style="font-size:7.5pt;color:rgba(255,255,255,0.6)">Priority questions for management discussion</span></div>
+    <span style="font-size:8pt;color:rgba(255,255,255,0.6)">{{ b.questions | length }} questions</span>
+  </div>
+
+  <div style="background:white;border:1px solid #E5E7EB;border-radius:5px;overflow:hidden">
+    {% for q in b.questions %}
+    <div style="display:flex;gap:8px;padding:7px 10px;{% if not loop.last %}border-bottom:1px solid #F3F4F6;{% endif %}align-items:flex-start">
+      {# Number circle #}
+      <div style="width:22px;height:22px;border-radius:11px;background:{% if q.priority == 'HIGH' %}#1F3A5C{% elif q.priority == 'MEDIUM' %}#6366F1{% else %}#9CA3AF{% endif %};color:white;font-size:8pt;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">{{ q.number }}</div>
+      <div style="flex:1">
+        <div style="display:flex;gap:4px;align-items:center;margin-bottom:2px">
+          <span style="padding:1px 5px;border-radius:6px;font-size:6pt;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;background:{% if q.priority == 'HIGH' %}#FEF2F2;color:#DC2626{% elif q.priority == 'MEDIUM' %}#FFF7ED;color:#D97706{% else %}#F3F4F6;color:#6B7280{% endif %}">{{ q.priority }}</span>
+          <span style="padding:1px 5px;border-radius:6px;font-size:6pt;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;background:#EFF6FF;color:#1D4ED8">{{ q.topic }}</span>
+        </div>
+        <div style="font-size:10.5pt;color:#374151;line-height:1.55">{{ q.text }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

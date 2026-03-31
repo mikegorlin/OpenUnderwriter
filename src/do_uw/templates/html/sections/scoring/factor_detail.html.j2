@@ -1,0 +1,116 @@
+{# Per-Factor Scoring Detail — dual-voice pattern (Phase 131-03, D-08).
+   Factual summary (What Was Found) + Underwriting Commentary per factor.
+   Zero-scored factors show clean documentation with ZER-001 reference.
+   Includes fallback from factors list when factor_details is unpopulated,
+   signal attribution detail, and sub-component display. #}
+{% set details = sc.get('factor_details', []) %}
+{% set active_details = details | selectattr('points_deducted', 'gt', 0) | list %}
+{# Fallback: if factor_details is empty but factors has active entries, build from factors #}
+{% if not active_details %}
+  {% set factors_list = sc.get('factors', []) %}
+  {% set active_details = [] %}
+  {% for f in factors_list %}
+    {% if f.get('pct', 0) > 0 %}
+      {% set _ = active_details.append({
+        'factor_id': f.id,
+        'factor_name': f.name,
+        'score': f.score ~ '/' ~ f.max,
+        'points_deducted': f.get('pct', 0),
+        'evidence': '; '.join(f.get('all_evidence', [])),
+        'sources': '',
+        'rules': f.get('rules_triggered', []),
+        'do_context': '',
+        'signal_attribution': f.get('signal_attribution', {}),
+        'sub_components': f.get('sub_components', []),
+      }) %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{# Zero-scored factors list (for ZER-001 clean documentation) #}
+{% set zero_details = details | selectattr('points_deducted', 'equalto', 0) | list %}
+{% if not zero_details and not details %}
+  {% set factors_list = sc.get('factors', []) %}
+  {% set zero_details = [] %}
+  {% for f in factors_list %}
+    {% if f.get('pct', 0) == 0 %}
+      {% set _ = zero_details.append({
+        'factor_id': f.id,
+        'factor_name': f.name,
+        'score': f.score ~ '/' ~ f.max,
+        'points_deducted': 0,
+      }) %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{% if active_details or zero_details %}
+<h3>Per-Factor Detail</h3>
+<p class="text-xs text-gray-500 mb-2">Click each factor to expand evidence, signal contributions, and D&amp;O Risk Assessment.</p>
+{# --- Active factors (points_deducted > 0) --- #}
+{% for factor in active_details %}
+<div>
+  <div style="font-weight:600;margin-bottom:4px">
+    {{ factor.factor_id }} &mdash; {{ factor.factor_name }} ({{ factor.score }})
+  </div>
+  <div class="collapsible-content p-3 border border-t-0 border-gray-200 rounded-b bg-white">
+    {# Dual-voice block 1: Factual Summary (D-08) #}
+    {% if factor.evidence %}
+    <div class="factual-summary" style="background:#F9FAFB;border-left:3px solid #D1D5DB;padding:8px 12px;margin:4px 0;font-size:12px;">
+      <h5 class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1" style="margin-top:0;">What Was Found</h5>
+      {# Break long evidence into bullet points for readability #}
+      {% set ev_text = factor.evidence | string %}
+      {% if ev_text | length > 500 %}
+        {# Split on signal boundaries — sentences that start with a signal name pattern #}
+        {% set ev_parts = ev_text.split('. ') %}
+        <ul style="margin:0;padding-left:16px;font-size:12px;color:#374151;line-height:1.5">
+          {% for part in ev_parts %}
+            {% set clean = part | trim %}
+            {% if clean and clean != 'Signal-driven scoring' and 'coverage=100%' not in clean %}
+              <li style="margin-bottom:3px">{{ clean | strip_jargon }}{% if not clean.endswith('.') %}.{% endif %}</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% else %}
+        {% if 'Signal-driven scoring' not in ev_text and 'coverage=' not in ev_text %}
+        <p class="text-sm text-gray-700 mb-1" style="margin-bottom:4px;">{{ ev_text | strip_jargon }}</p>
+        {% endif %}
+      {% endif %}
+      {# Data sources moved to appendix — not shown in main factor detail #}
+    </div>
+    {% endif %}
+    {# Contributing risk indicators — humanized for underwriter consumption #}
+    {% set sig_attr = factor.get('signal_attribution', {}) if factor.get is defined else {} %}
+    {% if sig_attr and sig_attr.get('top_3_signals') %}
+    <h5 class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1 mt-2">Key Risk Indicators</h5>
+    <div class="flex flex-wrap gap-1.5 mb-2">
+      {% for sig in sig_attr.top_3_signals %}
+      <span class="inline-block px-2 py-0.5 rounded text-xs
+        {% if sig.get('status') == 'TRIGGERED' %}bg-red-50 text-red-700 border border-red-200
+        {% elif sig.get('status') == 'ELEVATED' %}bg-amber-50 text-amber-700 border border-amber-200
+        {% else %}bg-gray-50 text-gray-600 border border-gray-200{% endif %}">
+        {{ sig.get('signal_id', '') | humanize_field }}
+      </span>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {# D&O Risk Assessment — show compact signal-source format instead of full do_context
+       (do_context text is already displayed in Key Risk Findings above to avoid duplication) #}
+    {% if factor.do_context %}
+    <div class="underwriting-commentary" style="background:#EFF6FF;border-left:3px solid #1E3A5F;padding:6px 12px;margin:4px 0;font-size:11px;">
+      <span class="text-xs font-semibold uppercase tracking-wide text-gray-500">D&amp;O Risk Assessment</span>
+      <span style="font-size:10px;color:#6B7280;margin-left:6px">See Key Risk Findings above for full analysis</span>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
+{# --- Zero-scored factors (ZER-001 clean documentation, D-08 zero path) --- #}
+{% if zero_details %}
+<div class="zero-factors" style="margin-top:12px;">
+  {% for factor in zero_details %}
+  <div class="zero-factor-card" style="padding:4px 8px;margin:2px 0;font-size:12px;color:#6B7280;background:#F9FAFB;border-radius:4px;">
+    {{ factor.factor_id }} &mdash; {{ factor.factor_name }}: <span style="color:#059669;">No risk signals detected for this factor.</span> See <a href="#zer-001" style="color:#2563EB;text-decoration:underline;">ZER-001</a> verification below.
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endif %}

@@ -1,0 +1,34 @@
+{# Audit & Disclosure Alert Cards — restatements, auditor changes, material weakness, Q4 loading #}
+{% set alerts = fin.get('audit_disclosure_alerts', []) %}
+{% if alerts %}
+<h3>Audit &amp; Disclosure Alerts</h3>
+<div style="display:flex; flex-direction:column; gap:6px; margin-bottom:0.75rem;">
+  {% for alert in alerts %}
+  {% if alert.severity == 'red' %}
+  {% set border = '#DC2626' %}
+  {% set bg = '#FEF2F2' %}
+  {% set icon_color = '#DC2626' %}
+  {% set title_color = '#991B1B' %}
+  {% else %}
+  {% set border = '#D97706' %}
+  {% set bg = '#FFFBEB' %}
+  {% set icon_color = '#D97706' %}
+  {% set title_color = '#92400E' %}
+  {% endif %}
+  <div style="padding:8px 12px; border-radius:5px; background:{{ bg }}; border-left:4px solid {{ border }};">
+    <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">
+      {% if alert.severity == 'red' %}
+      <span style="font-size:12px; color:{{ icon_color }};">&#9888;</span>
+      {% else %}
+      <span style="font-size:12px; color:{{ icon_color }};">&#9670;</span>
+      {% endif %}
+      <span style="font-size:11px; font-weight:700; color:{{ title_color }}; text-transform:uppercase; letter-spacing:0.3px;">{{ alert.title }}</span>
+    </div>
+    <div style="font-size:11px; color:#374151; line-height:1.4; padding-left:18px;">{{ alert.detail }}</div>
+    {% if alert.do_context %}
+    <div style="font-size:10px; color:#1e3a5f; font-style:italic; margin-top:4px; padding-left:18px; line-height:1.3;">{{ alert.do_context }}</div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

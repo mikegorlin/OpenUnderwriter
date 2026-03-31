@@ -1,0 +1,46 @@
+- id: ABS.DISC.esg
+  name: Missing ESG Disclosure
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: 'Expected disclosure absent: large_cap_or_above (peer expectation)'
+  provenance:
+    origin: phase_110_absence
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Absence detection for ENV.ESG.sustainability_report
+    threshold_provenance:
+      source: standard
+      rationale: Large-cap peers typically disclose ESG; absence noted by institutional investors
+  signal_class: inference
+  group: transparency_disclosure
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  epistemology:
+    rule_origin: Institutional investor expectations and emerging SEC climate disclosure rules
+    threshold_basis: Large-cap peers typically disclose ESG; absence noted by institutional investors
+  evaluation:
+    mechanism: absence
+    absence_rules:
+      expectation_type: peer_comparison
+      expected_signals:
+      - ENV.ESG.sustainability_report
+      condition: large_cap_or_above (peer expectation)
+      expected_status: TRIGGERED
+      absence_trigger: SKIPPED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} missing esg disclosure at {value} represents environment risk (external market, regulatory,
+        and industry conditions affecting D&O liability) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} missing esg disclosure at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} missing esg disclosure at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'

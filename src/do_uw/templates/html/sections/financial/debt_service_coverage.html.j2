@@ -1,0 +1,28 @@
+{# Cash Flow Adequacy — Debt Service Coverage Ratio metric card #}
+{% set dsc = fin.get('debt_service_coverage', {}) %}
+{% if dsc %}
+{% set border_color = '#DC2626' if dsc.color == 'red' else ('#D97706' if dsc.color == 'amber' else '#16A34A') %}
+{% set bg_color = '#FEF2F2' if dsc.color == 'red' else ('#FFFBEB' if dsc.color == 'amber' else '#F0FDF4') %}
+{% set text_color = '#991B1B' if dsc.color == 'red' else ('#92400E' if dsc.color == 'amber' else '#166534') %}
+<h3>Cash Flow Adequacy</h3>
+<div style="display:grid; grid-template-columns: 1fr 2fr; gap:0.75rem; margin-bottom:0.75rem; align-items:start;">
+  <div style="padding:8px 12px; border-radius:5px; background:{{ bg_color }}; border:1.5px solid {{ border_color }}; text-align:center;">
+    <div style="font-size:14pt; font-weight:800; color:{{ text_color }}; font-variant-numeric:tabular-nums; line-height:1.1;">{{ dsc.value }}</div>
+    <div style="font-size:7pt; color:#6B7280; font-weight:600; margin-top:3px; text-transform:uppercase; letter-spacing:0.3px;">Debt Service Coverage</div>
+  </div>
+  <div style="font-size:11px; color:#374151; line-height:1.5;">
+    <div><span style="font-weight:600; color:#1e3a5f;">Free Cash Flow:</span> {{ dsc.fcf }}</div>
+    <div><span style="font-weight:600; color:#1e3a5f;">Interest Expense:</span> {{ dsc.interest }}</div>
+    {% if dsc.debt_repayment and dsc.debt_repayment != '$0' %}
+    <div><span style="font-weight:600; color:#1e3a5f;">Debt Repayment:</span> {{ dsc.debt_repayment }}</div>
+    {% endif %}
+    {% if dsc.color == 'red' %}
+    <div style="margin-top:4px; font-size:10px; color:#991B1B; font-weight:600;">Cash flow insufficient to cover debt obligations (&lt;1.0x)</div>
+    {% elif dsc.color == 'amber' %}
+    <div style="margin-top:4px; font-size:10px; color:#92400E; font-weight:600;">Thin debt service margin (1.0x&ndash;2.0x) &mdash; limited headroom</div>
+    {% else %}
+    <div style="margin-top:4px; font-size:10px; color:#166534; font-weight:600;">Adequate coverage (&ge;2.0x) &mdash; comfortable debt service capacity</div>
+    {% endif %}
+  </div>
+</div>
+{% endif %}

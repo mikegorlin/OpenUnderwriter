@@ -1,0 +1,59 @@
+{# Key Financial Metrics (3-column data grid) — extracted from financial.html.j2 #}
+{% set fin_src_key = fin.get('filing_source', fin.get('source', fin.get('filing_ref', ''))) %}
+{% set fin_fn = footnote_registry.get(fin_src_key) if footnote_registry and fin_src_key else 0 %}
+{% set has_metrics = fin.get('gross_margin') or fin.get('operating_margin') or fin.get('diluted_eps') or fin.get('total_assets') or fin.get('operating_cf') %}
+{% if has_metrics %}
+<h3>Key Financial Metrics</h3>
+{# Two-column grid: Profitability | Balance Sheet #}
+<div class="kv-grid-2">
+  <div>
+    {% call data_grid("Profitability") %}
+      {% if fin.get('gross_profit') %}{{ data_row("Gross Profit", fin.gross_profit, context_text="", footnote_num=fin_fn) }}{% endif %}
+      {% if fin.get('gross_margin') %}{{ data_row("Gross Margin", fin.gross_margin, context_text=fin.get('gross_margin_peer', ''), footnote_num=fin_fn) }}{% endif %}
+      {% if fin.get('operating_income') %}{{ data_row("Operating Income", fin.operating_income, context_text="", footnote_num=fin_fn) }}{% endif %}
+      {% if fin.get('operating_margin') %}{{ data_row("Operating Margin", fin.operating_margin, context_text=fin.get('operating_margin_peer', ''), footnote_num=fin_fn) }}{% endif %}
+      {% if fin.get('diluted_eps') %}{{ data_row("Diluted EPS", fin.diluted_eps, context_text="", footnote_num=fin_fn) }}{% endif %}
+    {% endcall %}
+  </div>
+  <div>
+    {% call data_grid("Balance Sheet") %}
+      {% if fin.get('total_assets') %}{{ data_row("Total Assets", fin.total_assets, context_text="", footnote_num=fin_fn) }}{% endif %}
+      {% if fin.get('total_equity') %}{{ data_row("Stockholders' Equity", fin.total_equity, context_text="", footnote_num=fin_fn) }}{% endif %}
+      {% if fin.get('total_liabilities') %}{{ data_row("Total Liabilities", fin.total_liabilities, context_text="", footnote_num=fin_fn) }}{% endif %}
+      {% if fin.get('cash') %}{{ data_row("Cash & Equivalents", fin.cash, context_text="", footnote_num=fin_fn) }}{% endif %}
+    {% endcall %}
+  </div>
+</div>
+{# Profitability D&O interpretation #}
+{% set gm_str = fin.get('gross_margin', '')|string|replace('%', '') %}
+{% set gm_val = gm_str|float(default=-1) %}
+{% set om_str = fin.get('operating_margin', '')|string|replace('%', '') %}
+{% set om_val = om_str|float(default=-1) %}
+<ul class="text-xs text-gray-500 mt-1 mb-2 leading-relaxed list-disc ml-4 space-y-0.5">
+  {% if gm_val >= 0 and om_val >= 0 %}
+  {% set margin_gap = gm_val - om_val %}
+  {% if margin_gap > 30 %}
+  <li>Wide gap between gross margin ({{ fin.gross_margin }}) and operating margin ({{ fin.operating_margin }}) indicates heavy operating expense load &mdash; SGA/R&amp;D cuts become SCA triggers when framed as cost-cutting to mask declining fundamentals</li>
+  {% endif %}
+  {% endif %}
+  {% if om_val >= 0 and om_val < 5 and om_val >= 0 %}
+  <li>Thin operating margins increase sensitivity to revenue misses &mdash; small shortfalls produce disproportionate earnings impact, the classic SCA fact pattern</li>
+  {% elif om_val > 30 %}
+  <li>Strong operating margins provide a buffer against earnings miss allegations, though the bar for maintaining exceptional margins creates its own guidance risk</li>
+  {% endif %}
+</ul>
+{% if fin.get('operating_cf') or fin.get('capex') or fin.get('buybacks') or fin.get('dividends') %}
+{% call data_grid("Cash Flow") %}
+  {% if fin.get('operating_cf') %}{{ data_row("Operating Cash Flow", fin.operating_cf, context_text="", footnote_num=fin_fn) }}{% endif %}
+  {% if fin.get('capex') %}{{ data_row("Capital Expenditures", fin.capex, context_text="", footnote_num=fin_fn) }}{% endif %}
+  {% if fin.get('buybacks') %}{{ data_row("Share Repurchases", fin.buybacks, context_text="Buybacks during class period support loss causation defense", footnote_num=fin_fn) }}{% endif %}
+  {% if fin.get('dividends') %}{{ data_row("Dividends Paid", fin.dividends, context_text="", footnote_num=fin_fn) }}{% endif %}
+{% endcall %}
+{% endif %}
+{% if fin.get('rd_expense') or fin.get('sga_expense') %}
+<p class="text-xs text-gray-500 mt-1 mb-3">
+  {% if fin.get('rd_expense') %}R&D: {{ fin.rd_expense }}{% if fin.get('sga_expense') %} | {% endif %}{% endif %}
+  {% if fin.get('sga_expense') %}SG&A: {{ fin.sga_expense }}{% endif %}
+</p>
+{% endif %}
+{% endif %}

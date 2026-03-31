@@ -1,0 +1,223 @@
+{# Bloomberg-quality base HTML template for D&O Underwriting Worksheet.
+   Pre-compiled Tailwind CSS v4 + self-hosted fonts (zero CDN dependencies).
+   All component macros imported here for section template use. #}
+
+{# --- Component Macro Imports --- #}
+{% from "components/badges.html.j2" import traffic_light, density_indicator, confidence_marker, tier_badge, check_summary, verdict_badge %}
+{% from "components/tables.html.j2" import data_table, kv_table, paired_kv_table, multi_column_grid, conditional_cell, financial_row, spectrum_bar, data_row, data_grid %}
+{% from "components/callouts.html.j2" import discovery_box, warning_box, do_context, gap_notice, scr_narrative, do_implications %}
+{% from "components/charts.html.j2" import embed_chart with context %}
+{% from "components/narratives.html.j2" import section_narrative, evidence_chain, narrative_5layer, bull_bear_framing with context %}
+{% from "components/hae_badge.html.j2" import hae_badge %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ company_name | default("Company") }} ({{ ticker | default("") }}) - D&O Liability Underwriting Worksheet</title>
+
+  {# Pre-compiled Tailwind CSS with self-hosted fonts (no CDN dependencies).
+     Built via: bash scripts/build-css.sh --embed
+     Fonts are base64-embedded for Playwright file:// rendering. #}
+  <style>
+    {% include "compiled.css" %}
+  </style>
+
+  {# Custom Bloomberg CSS -- supplements compiled Tailwind with
+     non-utility styles: risk colors, narratives, print, KV tables. #}
+  <style>
+    {% include "styles.css" %}
+  </style>
+
+  {# Sidebar hidden — using horizontal nav bar instead. Override body padding. #}
+  <style>
+    {% include "sidebar.css" %}
+    /* Override sidebar layout — full width, no sidebar, fix sticky */
+    .sidebar-toc { display: none !important; }
+    body { padding-left: 12px !important; padding-right: 12px !important; padding-top: 8px !important; }
+    .worksheet-main {
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow-x: visible !important;  /* CRITICAL: overflow hidden breaks position:sticky */
+      margin: 0 !important;
+    }
+  </style>
+
+  {# Component-level CSS — split from styles.css to keep each file under 500 lines. #}
+  <style>
+    {% include "components.css" %}
+  </style>
+
+  {# Chart + financial tab CSS (CHART-04, CHART-06). #}
+  <style>
+    {% include "charts.css" %}
+  </style>
+
+  {# Scorecard + Executive Brief + CRF Banner + component CSS (Phase 114-02). #}
+  <style>
+    {% include "scorecard.css" %}
+  </style>
+
+  {# Infographic visualizations CSS (Phase 126). #}
+  <style>
+    {% include "infographic.css" %}
+  </style>
+</head>
+<body class="bg-white text-gray-900 font-body leading-relaxed">
+
+  {# --- PDF Running Header (visible only in @media print) --- #}
+  <div class="pdf-running-header">
+    <span class="header-left">CONFIDENTIAL &mdash; {{ company_name | default("Company") }} D&amp;O Worksheet</span>
+    <span class="header-right">{{ generation_date | default("") }}</span>
+  </div>
+
+  {# --- PDF Running Footer (visible only in @media print) --- #}
+  <div class="pdf-running-footer">
+    Angry Dolphin Underwriting System &bull; Confidential &mdash; For Internal Underwriting Use Only
+  </div>
+
+  {# --- Sticky Top Bar (browser only — hidden in PDF/print) — identity-only per CapIQ design #}
+  {% set es = executive_summary or {} %}
+  {% set snap = es.get('snapshot', {}) if es else {} %}
+  <nav class="sticky-topbar no-print" id="sticky-topbar" {% if uw_analysis %}style="display:none"{% endif %}>
+    <div class="sticky-topbar-inner">
+      <div class="sticky-topbar-left">
+        {% if logo_b64 %}
+        <img src="data:image/png;base64,{{ logo_b64 }}" alt="AD" style="height:1.25rem;width:auto;display:inline-block;vertical-align:middle;margin-right:0.5rem;">
+        {% endif %}
+        {% if company_logo_b64 %}
+        <img src="data:image/x-icon;base64,{{ company_logo_b64 }}" alt="{{ company_name | default(ticker) }} logo" style="height:20px;width:auto;display:inline-block;vertical-align:middle;margin-right:0.4rem;filter:brightness(0) invert(1);opacity:0.85;" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';">
+        {% else %}
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:20px;min-width:20px;padding:0 3px;background:rgba(255,255,255,0.15);border-radius:3px;font-size:0.6rem;font-weight:700;letter-spacing:0.05em;color:rgba(255,255,255,0.85);vertical-align:middle;margin-right:0.4rem;">{{ ticker[:3] }}</span>
+        {% endif %}
+        <span class="sticky-topbar-company">{{ company_name | default("Company") }}</span>
+        {% if ticker %}
+          <span class="sticky-topbar-ticker">({{ ticker }})</span>
+        {% endif %}
+        {% if sector %}
+          <span class="sticky-topbar-sep">|</span>
+          <span class="sticky-topbar-meta">{{ sector }}</span>
+        {% endif %}
+        {% if snap.get('market_cap') %}
+          <span class="sticky-topbar-sep">|</span>
+          <span class="sticky-topbar-meta">{{ snap.market_cap }}</span>
+        {% endif %}
+      </div>
+      <div class="sticky-topbar-right">
+        {% set ks = key_stats if key_stats is defined else {} %}
+        {% if ks.get('tier') and ks.tier != '—' %}
+        <span class="sticky-topbar-tier sticky-topbar-tier--{{ ks.tier | lower | replace(' ', '_') }}">{{ ks.tier }}</span>
+        <span class="sticky-topbar-meta">{{ "%.0f" | format(ks.quality_score) }}/100</span>
+        <span class="sticky-topbar-sep">|</span>
+        {% endif %}
+        <span class="sticky-topbar-date">{{ generation_date | default("") }}</span>
+      </div>
+    </div>
+  </nav>
+
+  {# Old horizontal nav removed — UW Analysis has its own sticky nav #}
+
+  {# Main content: full width, no sidebar offset #}
+  <div class="worksheet-layout" style="padding-left:0 !important;">
+    <main class="worksheet-main" style="margin-left:0 !important;max-width:100% !important;">
+      {# --- PDF Table of Contents (only rendered when pdf_mode is True) --- #}
+      {% if pdf_mode %}
+      <div id="pdf-toc" class="pdf-toc">
+        <h2 class="pdf-toc-title">Table of Contents</h2>
+        <div class="pdf-toc-entries">
+          {# TOC entries are populated by JavaScript before PDF generation #}
+        </div>
+      </div>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  {# --- Footer (visible in both browser and print) --- #}
+  <footer class="mt-12 pt-4 border-t border-gray-300 px-8 text-center font-heading text-xs text-gray-400">
+    <p class="m-0">Confidential &mdash; For Internal Underwriting Use Only</p>
+    {% if footer_meta and footer_meta.data_freshness_date is defined %}
+    <p class="m-0 mt-1">
+      Data as of: {{ footer_meta.data_freshness_date }}
+      &bull; Estimated API cost: {{ footer_meta.cost_line }}
+    </p>
+    {% endif %}
+    <p class="m-0 mt-1">
+      {{ company_name | default("") }} D&amp;O Worksheet
+      &bull; {{ generation_date | default("") }}
+      &bull; Generated by Angry Dolphin Underwriting System
+    </p>
+  </footer>
+
+  {# --- Print font size override --- #}
+  <style>
+    @media print {
+      body { font-size: 10pt; }
+    }
+  </style>
+
+  {# --- Expand all details: this is an underwriting workup, nothing hidden --- #}
+  <script>
+  (function() {
+    document.querySelectorAll('details:not(.signal-drilldown)').forEach(function(d) {
+      d.setAttribute('open', '');
+    });
+  })();
+  </script>
+
+  {# --- PDF preparation: build TOC (only when pdf_mode) --- #}
+  {% if pdf_mode %}
+  <script>
+  (function() {
+    // Build TOC from section headings (PDF-03)
+    var tocContainer = document.querySelector('.pdf-toc-entries');
+    if (tocContainer) {
+      var sections = document.querySelectorAll('section[id] > h2, section[id] > .section-header > h2');
+      var html = '';
+      sections.forEach(function(h2) {
+        var section = h2.closest('section[id]');
+        if (!section) return;
+        var id = section.getAttribute('id');
+        var title = h2.textContent.trim();
+        // TOC entry: title with leader dots and page number placeholder
+        html += '<div class="pdf-toc-entry">' +
+          '<a href="#' + id + '">' +
+          '<span class="pdf-toc-text">' + title + '</span>' +
+          '<span class="pdf-toc-dots"></span>' +
+          '<span class="pdf-toc-page" data-toc-for="' + id + '"></span>' +
+          '</a></div>';
+      });
+      tocContainer.innerHTML = html;
+    }
+  })();
+  </script>
+  {% endif %}
+
+  {# Sidebar active-section tracking via IntersectionObserver (browser-only, no-print) #}
+  <script>
+  (function() {
+    var tocLinks = document.querySelectorAll('.sidebar-toc a[href^="#"]');
+    var sections = document.querySelectorAll('section[id]');
+    if (!sections.length || !tocLinks.length) return;
+
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var id = entry.target.getAttribute('id');
+          tocLinks.forEach(function(a) { a.classList.remove('active'); });
+          var active = document.querySelector('.sidebar-toc a[href="#' + id + '"]');
+          if (active) active.classList.add('active');
+        }
+      });
+    }, {
+      rootMargin: '-10% 0px -80% 0px',
+      threshold: [0, 0.1]
+    });
+
+    sections.forEach(function(s) { observer.observe(s); });
+  })();
+  </script>
+
+</body>
+</html>

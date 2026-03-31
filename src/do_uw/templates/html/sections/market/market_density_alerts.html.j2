@@ -1,0 +1,23 @@
+{# Market Density Alerts — extracted from market.html.j2 #}
+  {# --- ELEVATED concerns --- #}
+  {% if level == "ELEVATED" %}
+    {% set concerns = density.concerns|default([]) if density else [] %}
+    {% for concern in concerns %}
+      {{ warning_box(concern, "Market signals may indicate emerging D&O exposure.") }}
+    {% endfor %}
+  {% endif %}
+
+  {# --- CRITICAL deep dive --- #}
+  {% if level == "CRITICAL" %}
+  <h3>Market Risk -- Deep Dive</h3>
+  <div class="border-l-4 border-red-700 bg-red-50 pl-4 py-3 my-3">
+    <p class="text-sm text-red-800 font-semibold m-0 mb-2">
+      Market indicators show critical signals. Short interest, stock drops, and
+      insider activity patterns require enhanced scrutiny.
+    </p>
+    {% set evidence = density.critical_evidence|default([]) if density else [] %}
+    {% if evidence %}
+    {{ evidence_chain(evidence) }}
+    {% endif %}
+  </div>
+  {% endif %}

@@ -1,0 +1,67 @@
+# Brain Taxonomy: Pillars, Layers, Factor Tags
+# Source of truth. DuckDB rebuilt from this file via `brain build`.
+#
+# Renames preserve legacy IDs for backward compatibility.
+# Both old and new labels are queryable.
+
+version: 1
+
+# ---------------------------------------------------------------
+# Pillars — renamed from P1-P4 internal shorthand to
+# insurance-meaningful concepts
+# ---------------------------------------------------------------
+pillars:
+  - id: EXPOSURE
+    legacy_id: P1_WHAT_WRONG
+    name: "Exposure Assessment"
+    description: "What creates exposure to D&O claims?"
+    order: 1
+
+  - id: CATALYST
+    legacy_id: P1_WHAT_HAPPEN
+    name: "Catalyst Identification"
+    description: "What could trigger a claim during the policy period?"
+    order: 2
+
+  - id: LIABILITY
+    legacy_id: P2_WHO_BLAMED
+    name: "Liability Assessment"
+    description: "Who bears D&O liability and under what legal theories?"
+    order: 3
+
+  - id: PLAINTIFF
+    legacy_id: P2_WHO_SUE
+    name: "Plaintiff Analysis"
+    description: "Who brings claims and for what damages?"
+    order: 4
+
+  - id: SEVERITY
+    legacy_id: P3_HOW_BAD
+    name: "Severity Estimation"
+    description: "How large could the loss be?"
+    order: 5
+
+  - id: DEFENSE
+    legacy_id: P4_WHAT_NEXT
+    name: "Defense & Mitigation"
+    description: "What reduces or mitigates risk?"
+    order: 6
+
+# ---------------------------------------------------------------
+# Risk Framework Layers — renamed for insurance clarity
+# ---------------------------------------------------------------
+layers:
+  - id: inherent_risk
+    legacy_id: inherent_risk
+    name: "Inherent Risk"
+    description: "Structural company attributes that determine base risk level"
+
+  - id: peril_indicator
+    legacy_id: hazard
+    name: "Peril Indicator"
+    description: "Checks that directly indicate specific D&O claim perils"
+
+  - id: risk_modifier
+    legacy_id: risk_characteristic
+    name: "Risk Modifier"
+    description: "Checks that amplify, mitigate, or contextualize base risk"

@@ -1,0 +1,13 @@
+{# Alternative Data Assessments -- Phase 119
+   Section wrapper including all 4 alt data subsection templates.
+   Each subsection guards itself with an available flag. #}
+
+<section class="section-block page-break-inside-avoid" id="section-alternative-data">
+<h2 class="section-heading">Alternative Data Assessments</h2>
+
+{% include "sections/alt_data/esg_risk.html.j2" %}
+{% include "sections/alt_data/ai_washing.html.j2" %}
+{% include "sections/alt_data/tariff_exposure.html.j2" %}
+{% include "sections/alt_data/peer_sca.html.j2" %}
+
+</section>

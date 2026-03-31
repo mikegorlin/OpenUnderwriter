@@ -1,0 +1,32 @@
+{# Severity Scenarios — extracted from scoring.html.j2 #}
+{% set scenarios = sc.get('severity_scenarios', []) %}
+{% if scenarios %}
+<h3>Severity Scenarios</h3>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Scenario</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Percentile</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Settlement</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Defense Costs</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Total Exposure</th>
+    </tr>
+  </thead>
+  <tbody class="tabular-nums">
+    {% for s in scenarios %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ s.scenario }}</td>
+      <td class="p-1">{{ s.probability }}</td>
+      <td class="p-1 text-right">{{ s.expected_loss }}</td>
+      <td class="p-1 text-right">{{ s.defense_costs }}</td>
+      <td class="p-1 text-right font-semibold">{{ s.total }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc pl-4 space-y-0.5">
+  <li>Models potential D&amp;O claim exposure at different probability percentiles</li>
+  <li>Calibrated to company market capitalization and risk profile using NERA/Cornerstone settlement data</li>
+  <li>Defense costs estimated at 15-25% of settlement amounts based on case complexity</li>
+</ul>
+{% endif %}

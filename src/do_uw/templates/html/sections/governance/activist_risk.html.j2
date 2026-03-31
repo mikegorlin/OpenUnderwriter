@@ -1,0 +1,17 @@
+{# Activist Investor Risk — extracted from governance.html.j2 #}
+
+  {# --- 4.4 Activist Investors --- #}
+  <h3>Activist Investor Risk</h3>
+
+  {% set activists = gov.get('activists', []) %}
+  {% if activists %}
+  {{ data_table(
+    ['Investor', 'Campaign', 'Outcome'],
+    activists|map(attribute='name')|list|zip(
+      activists|map(attribute='campaign')|list,
+      activists|map(attribute='outcome')|list
+    )|list
+  ) }}
+  {% else %}
+  <p class="text-sm text-gray-500 italic my-2">No known activist investor campaigns identified.</p>
+  {% endif %}

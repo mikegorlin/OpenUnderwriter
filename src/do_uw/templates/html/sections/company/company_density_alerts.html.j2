@@ -1,0 +1,22 @@
+{# Density Alerts (ELEVATED + CRITICAL) — extracted from company.html.j2 #}
+{# --- ELEVATED concerns --- #}
+{% if level == "ELEVATED" %}
+  {% set concerns = density.concerns|default([]) if density else [] %}
+  {% for concern in concerns %}
+    {{ warning_box(concern, "Review D&O implications of identified exposure factors.") }}
+  {% endfor %}
+{% endif %}
+
+{# --- CRITICAL deep dive --- #}
+{% if level == "CRITICAL" %}
+<h3>Critical Risk Factors</h3>
+<div class="border-l-4 border-red-700 bg-red-50 pl-4 py-3 my-3">
+  <p class="text-sm text-red-800 font-semibold">
+    Company profile indicates critical D&O risk factors requiring enhanced scrutiny.
+  </p>
+  {% set evidence = density.critical_evidence|default([]) if density else [] %}
+  {% if evidence %}
+  {{ evidence_chain(evidence) }}
+  {% endif %}
+</div>
+{% endif %}

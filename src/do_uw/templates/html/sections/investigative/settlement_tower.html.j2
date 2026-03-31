@@ -1,0 +1,59 @@
+{# Settlement Tower Visualization — layered loss distribution with case characteristics.
+   Data: b.investigative.settlement_tower (dict) #}
+{% set st = b.investigative.settlement_tower if b.investigative else none %}
+{% if st and st.layers %}
+<div style="margin:8px 0">
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:9pt;font-weight:700;color:#1F3A5C">Settlement Prediction Tower</span>
+    <span style="font-size:7pt;color:#6B7280">DDL: {{ st.ddl_amount }}</span>
+  </div>
+
+  <div style="display:flex;gap:4px">
+    {# Tower visualization — stacked bars #}
+    <div style="flex:1;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px">
+      {# Total header #}
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:4px;border-bottom:2px solid #1F3A5C;margin-bottom:4px">
+        <span style="font-size:8pt;font-weight:700;color:#1F3A5C">Total Expected Loss</span>
+        <span style="font-size:11pt;font-weight:800;color:#1F3A5C">{{ st.total_expected_loss }}</span>
+      </div>
+      {# Layer rows — ordered top-down (primary at top = highest frequency) #}
+      {% for layer in st.layers %}
+      <div style="display:flex;align-items:center;gap:6px;padding:3px 0;{% if not loop.last %}border-bottom:1px solid #F3F4F6;{% endif %}">
+        {# Color bar proportional to share #}
+        <div style="width:60px;height:12px;background:#F3F4F6;border-radius:2px;overflow:hidden;flex-shrink:0">
+          <div style="width:{{ layer.share_raw }}%;height:100%;background:{{ layer.color }};border-radius:2px"></div>
+        </div>
+        <div style="flex:1;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:8pt;font-weight:600;color:#374151">{{ layer.name }}</span>
+          <div style="text-align:right">
+            <span style="font-size:8.5pt;font-weight:700;color:#111827;font-variant-numeric:tabular-nums">{{ layer.expected_loss }}</span>
+            <span style="font-size:7pt;color:#6B7280;margin-left:4px">{{ layer.share_pct }}</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {# Case Characteristics badges #}
+    <div style="flex:0.7;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px">
+      <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:4px">
+        Case Characteristics
+        <span style="font-weight:400;color:#6B7280;margin-left:4px">{{ st.characteristics_present }}/{{ st.characteristics_total }} present</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:2px">
+        {% for badge in st.characteristics %}
+        <div style="display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:4px;font-size:6.5pt;font-weight:600;background:{{ badge.bg }};border:1px solid {{ badge.color }}20">
+          <span style="color:{{ badge.color }};font-size:8pt">{% if badge.present %}&#x2717;{% else %}&#x2713;{% endif %}</span>
+          <span style="color:{{ badge.color }}">{{ badge.label }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% if st.characteristics_present == 0 %}
+      <div style="margin-top:4px;font-size:7pt;color:#16A34A;font-weight:600">No aggravating characteristics present — favorable settlement profile</div>
+      {% elif st.characteristics_present >= 3 %}
+      <div style="margin-top:4px;font-size:7pt;color:#DC2626;font-weight:600">Multiple aggravating factors — elevated settlement risk</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endif %}

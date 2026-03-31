@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="ad">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Angry Dolphin - {{ ticker }}</title>
+
+  <!-- htmx 2.0 for interactive fragments -->
+  <script src="https://unpkg.com/htmx.org@2.0.8"></script>
+
+  <!-- DaisyUI 5 + Tailwind CSS v4 -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/full.css" rel="stylesheet" type="text/css">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Plotly.js for interactive charts -->
+  <script src="https://cdn.plot.ly/plotly-basic-latest.min.js"></script>
+
+  <!-- Dashboard styles -->
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+
+  <style>
+    :root {
+      --ad-navy: #1A1446;
+      --ad-gold: #FFD000;
+      --ad-text: #333333;
+      --ad-text-light: #666666;
+      --ad-white: #FFFFFF;
+
+      --risk-critical: #CC0000;
+      --risk-high: #E67300;
+      --risk-elevated: #FFB800;
+      --risk-moderate: #4A90D9;
+      --risk-neutral: #999999;
+
+      --fmt-deteriorating: #FCE8E6;
+      --fmt-caution: #FFF3CD;
+      --fmt-improving: #DCEEF8;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-base-200">
+
+  <!-- Navigation Bar -->
+  <nav class="navbar shadow-md" style="background-color: var(--ad-navy);">
+    <div class="flex-1">
+      <span class="text-xl font-bold px-4" style="color: var(--ad-gold);">
+        Angry Dolphin Underwriting
+      </span>
+    </div>
+    <div class="flex-none gap-2 px-4 items-center flex-wrap">
+      <a href="/" class="btn btn-ghost btn-sm" style="color: var(--ad-gold);">Overview</a>
+      <a class="btn btn-ghost btn-sm" style="color: var(--ad-gold);"
+         hx-get="/meeting-prep" hx-target="#detail-panel" hx-swap="innerHTML">Meeting Prep</a>
+      <span class="text-sm" style="color: var(--ad-white);">
+        {{ company_name }} ({{ ticker }})
+      </span>
+      {% if tier_label %}
+      <span class="badge {{ risk_level_class }} badge-lg">{{ tier_label }}</span>
+      {% endif %}
+      {% if quality_score %}
+      <span class="badge badge-outline badge-lg" style="color: var(--ad-gold); border-color: var(--ad-gold);">
+        Score: {{ quality_score }}
+      </span>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-6 max-w-7xl">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- htmx loading indicator -->
+  <div id="global-indicator" class="htmx-indicator fixed top-0 left-0 right-0 z-50">
+    <div class="h-1 w-full overflow-hidden" style="background-color: var(--ad-navy);">
+      <div class="h-full animate-pulse" style="background-color: var(--ad-gold); width: 40%;"></div>
+    </div>
+  </div>
+
+  <!-- Dashboard JavaScript -->
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

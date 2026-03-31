@@ -1,0 +1,161 @@
+{# Active Matters — case table + detail rows + data quality indicator #}
+
+  {# --- Active Matters --- #}
+  {% set matters = lit.get('active_matters', []) %}
+  {% if matters %}
+  <h3>Active Matters</h3>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Case</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Legal Theory</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Coverage</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Status</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Class Period</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Lead Counsel</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Settlement</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for matter in matters %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 align-top font-semibold">
+          {{ matter.name|default(matter.case_name|default('—')) }}
+          {% if matter.detail_completeness %}<span class="text-xs text-gray-400 ml-1" title="Data fields populated: {{ matter.detail_completeness }}">({{ matter.detail_completeness }})</span>{% endif %}
+        </td>
+        <td class="p-1 align-top">
+          {% if matter.legal_theories_display %}<span class="text-xs text-gray-600">{{ matter.legal_theories_display }}</span>{% else %}<span class="text-gray-400">&mdash;</span>{% endif %}
+        </td>
+        <td class="p-1 align-top">
+          {% set cov = matter.coverage_display|default(matter.coverage|default(matter.coverage_type|default('—'))) %}
+          {% if 'Securities' in cov or 'SCA' in cov or 'Side C' in cov %}
+            <span class="inline-block px-1.5 py-0.5 text-xs rounded bg-red-100 border border-red-200 font-semibold text-red-800">{{ cov }}</span>
+          {% elif 'Derivative' in cov %}
+            <span class="inline-block px-1.5 py-0.5 text-xs rounded bg-amber-100 border border-amber-200 font-semibold text-amber-800">{{ cov }}</span>
+          {% elif 'Regulatory' in cov or 'SEC' in cov %}
+            <span class="inline-block px-1.5 py-0.5 text-xs rounded bg-blue-100 border border-blue-200 font-semibold text-blue-800">{{ cov }}</span>
+          {% else %}
+            {{ cov }}
+          {% endif %}
+        </td>
+        <td class="p-1 align-top">
+          {{ traffic_light(matter.status|default('UNKNOWN'), matter.status|default('Unknown')) }}
+        </td>
+        <td class="p-1 align-top text-xs tabular-nums">
+          {% if matter.class_period_start and matter.class_period_start != 'N/A' %}
+            {{ matter.class_period_start }} &ndash; {{ matter.class_period_end|default('Present') }}
+            {% if matter.class_period_days %}<br><span class="text-gray-400">({{ matter.class_period_days }})</span>{% endif %}
+          {% else %}<span class="text-gray-400 italic">Not available</span>{% endif %}
+        </td>
+        <td class="p-1 align-top text-xs">{{ matter.lead_counsel|default('<span class="text-gray-400 italic">Not available</span>') }}</td>
+        <td class="p-1 align-top text-right tabular-nums font-semibold">{{ matter.settlement|default('—') }}</td>
+      </tr>
+      {# Detail row — show all available fields + mark gaps #}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td colspan="7" class="px-3 py-1 text-xs">
+          <div style="display: flex; flex-wrap: wrap; gap: 4px 16px; color: #475569;">
+            {# Fields that have data #}
+            {% if matter.court and matter.court != 'N/A' %}
+              <span><strong>Court:</strong> {{ matter.court }}</span>
+            {% endif %}
+            {% if matter.case_number %}
+              <span><strong>Case No:</strong> {{ matter.case_number }}</span>
+            {% endif %}
+            {% if matter.filing_date and matter.filing_date != 'N/A' %}
+              <span><strong>Filed:</strong> {{ matter.filing_date }}</span>
+            {% endif %}
+            {% if matter.judge %}
+              <span><strong>Judge:</strong> {{ matter.judge }}</span>
+            {% endif %}
+            {% if matter.allegations and matter.allegations != 'N/A' %}
+              <span><strong>Claims:</strong> {{ matter.allegations }}</span>
+            {% endif %}
+            {% if matter.legal_theories %}
+              <span><strong>Theories:</strong> {{ matter.legal_theories }}</span>
+            {% endif %}
+            {% if matter.named_defendants %}
+              <span><strong>Defendants:</strong> {{ matter.named_defendants }}</span>
+            {% endif %}
+            {% if matter.lead_plaintiff_type %}
+              <span><strong>Lead Plaintiff:</strong> {{ matter.lead_plaintiff_type }}</span>
+            {% endif %}
+          </div>
+          {# Gap indicators — show what's missing to the underwriter #}
+          {% set missing_fields = [] %}
+          {% if not matter.case_number %}{% set _ = missing_fields.append("Case Number") %}{% endif %}
+          {% if not matter.court or matter.court == 'N/A' %}{% set _ = missing_fields.append("Court") %}{% endif %}
+          {% if not matter.filing_date or matter.filing_date == 'N/A' %}{% set _ = missing_fields.append("Filing Date") %}{% endif %}
+          {% if not matter.class_period_start or matter.class_period_start == 'N/A' %}{% set _ = missing_fields.append("Class Period") %}{% endif %}
+          {% if not matter.lead_counsel %}{% set _ = missing_fields.append("Lead Counsel") %}{% endif %}
+          {% if not matter.named_defendants %}{% set _ = missing_fields.append("Named Defendants") %}{% endif %}
+          {% if not matter.judge %}{% set _ = missing_fields.append("Judge") %}{% endif %}
+          {% if missing_fields %}
+          <div style="margin-top: 3px; color: #94a3b8; font-style: italic; font-size: 10px;">
+            Missing: {{ missing_fields | join(', ') }}
+          </div>
+          {% endif %}
+          {# Data quality flags from classifier (D-06, LIT-05) #}
+          {% if matter.data_quality_flags %}
+          <div style="margin-top: 3px; font-size: 10px; color: #d97706;">
+            &#9888; Data quality: {{ matter.data_quality_flags }}
+          </div>
+          {% endif %}
+          {# Key rulings if any #}
+          {% if matter.key_rulings %}
+          <div style="margin-top: 3px;">
+            <strong>Key Rulings:</strong>
+            <ul class="list-disc ml-4 mt-0.5" style="margin: 0;">
+              {% for ruling in matter.key_rulings %}
+              <li>{{ ruling }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {# Active matters interpretation #}
+  {% if matters|length > 0 %}
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>{{ matters|length }} active litigation matter{{ 's' if matters|length != 1 }} identified&mdash;directly impacts both frequency and severity projections for D&amp;O underwriting</li>
+    {% set sca_count = matters|selectattr('is_genuine_sca', 'equalto', 'true')|list|length %}
+    {% if sca_count > 0 %}
+    <li>{{ sca_count }} securities class action{{ 's' if sca_count != 1 }}&mdash;SCAs are the highest-severity D&amp;O claim type, with median settlements of $10-30M and defense costs of $5-15M</li>
+    {% endif %}
+  </ul>
+  {% endif %}
+  {% elif not narr %}
+  <p class="text-sm text-gray-500 italic my-2">No active litigation matters identified.</p>
+  {% endif %}
+
+  {# --- Litigation Timeline (VIS-03) --- #}
+  {# Full matplotlib chart is only generated when >2 events; otherwise show compact inline list #}
+  {%- set has_timeline_chart = (chart_svgs is defined and chart_svgs and chart_svgs.get("timeline", "")) or (chart_images is defined and chart_images and chart_images.get("timeline", "")) -%}
+  {% if has_timeline_chart %}
+  {{ embed_chart("timeline", "Litigation & Regulatory Timeline", figure_num=5) }}
+  {% else %}
+  {# Compact inline fallback for sparse timelines (<=2 events) #}
+  {% set tl_events = lit.get('timeline_events', []) if lit is defined and lit else [] %}
+  {% if tl_events %}
+  <div style="margin:0.5rem 0 1rem;">
+    <h4 style="font-size:9pt; font-weight:600; color:#374151; margin:0 0 4px;">Litigation Timeline</h4>
+    {% for evt in tl_events %}
+    <div style="display:inline-block; font-size:8pt; color:#374151; margin-right:12px; margin-bottom:4px;">
+      {% set etype = evt.type | default('other') | lower %}
+      {% if etype in ('case_filing', 'sca', 'securities_class_action', 'enforcement_action') %}
+        {% set badge_bg = '#FEF2F2' %}{% set badge_border = '#FECACA' %}{% set badge_color = '#991B1B' %}
+      {% elif etype == 'settlement' %}
+        {% set badge_bg = '#F0FDF4' %}{% set badge_border = '#BBF7D0' %}{% set badge_color = '#166534' %}
+      {% else %}
+        {% set badge_bg = '#FFFBEB' %}{% set badge_border = '#FDE68A' %}{% set badge_color = '#92400E' %}
+      {% endif %}
+      <span style="font-weight:700; color:#6B7280; font-variant-numeric:tabular-nums;">{{ evt.date }}</span>
+      <span style="display:inline-block; font-size:6pt; font-weight:600; padding:1px 4px; border-radius:3px; background:{{ badge_bg }}; border:1px solid {{ badge_border }}; color:{{ badge_color }}; vertical-align:middle; margin:0 3px;">{{ etype | replace('_', ' ') | title }}</span>
+      <span>{{ evt.description | default('') }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endif %}

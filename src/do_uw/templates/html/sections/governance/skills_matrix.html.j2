@@ -1,0 +1,43 @@
+{# Board Skills Matrix — aggregated qualification_tags across all directors #}
+
+  {% set matrix = gov.get('skills_matrix') %}
+  {% if matrix %}
+  <h3>Board Skills Matrix</h3>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Skill Area</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2">Directors</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2">Coverage</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Board Members</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for skill in matrix.skills %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 font-semibold text-navy">{{ skill.skill }}</td>
+        <td class="px-2 py-2 text-center tabular-nums font-semibold">{{ skill.count }}</td>
+        <td class="px-2 py-2 text-center">
+          <div style="display: flex; align-items: center; gap: 6px; justify-content: center;">
+            <div style="height: 6px; width: 60px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
+              <div style="height: 100%; width: {{ skill.coverage_pct }}%; background: {{ '#16a34a' if skill.coverage_pct >= 50 else '#d97706' if skill.coverage_pct >= 25 else '#dc2626' }}; border-radius: 3px;"></div>
+            </div>
+            <span class="text-xs tabular-nums text-gray-500">{{ skill.coverage_pct }}%</span>
+          </div>
+        </td>
+        <td class="p-1 text-xs text-gray-600">{{ skill.directors | join(', ') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if matrix.gaps %}
+  <div style="padding: 6px 10px; border-radius: 4px; background: #fffbeb; border: 1px solid #fde68a; margin-bottom: 8px;">
+    <span style="font-size: 11px; font-weight: 600; color: #92400e;">Skills Gap:</span>
+    <span style="font-size: 11px; color: #78350f;">No board member identified with expertise in: {{ matrix.gaps | join(', ') }}</span>
+  </div>
+  {% endif %}
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>Board skills coverage derived from {{ matrix.directors | length }} director qualification profiles extracted from DEF 14A</li>
+    <li>Skills gaps may expose the company to Caremark oversight failure claims in uncovered domains</li>
+  </ul>
+  {% endif %}

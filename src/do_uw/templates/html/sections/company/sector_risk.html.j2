@@ -1,0 +1,84 @@
+{# Sector Risk Classification - SECT signals (Phase 98) #}
+{% set sect = company.sector_risk if company.sector_risk else {} %}
+{% if company.has_sector_risk %}
+<div class="subsection" id="sector-risk">
+  <h4>Sector Risk Classification</h4>
+  <table class="kv-table">
+    <tbody>
+      {# Hazard Tier #}
+      {% set hazard = sect.hazard %}
+      {% if hazard and hazard.tier %}
+      <tr>
+        <td class="kv-label">Sector Hazard Tier</td>
+        <td class="kv-value">
+          <span class="badge-pill {{ hazard.tier_color }} text-white">{{ hazard.tier }}</span>
+          {% if hazard.filing_rate %}
+          <span class="text-xs text-gray-500 ml-1">{{ hazard.filing_rate }}</span>
+          {% endif %}
+          {% if hazard.context %}
+          <br><span class="text-xs text-gray-500">{{ hazard.context }}</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endif %}
+
+      {# Claim Patterns #}
+      {% set claims = sect.claims %}
+      {% if claims and claims.theories %}
+      <tr>
+        <td class="kv-label">Common Claim Theories{% if claims.industry_group %} ({{ claims.industry_group }}){% endif %}</td>
+        <td class="kv-value">
+          <table class="mini-table" style="margin:0; width:100%;">
+            {% for theory in claims.theories %}
+            <tr>
+              <td style="padding:2px 6px;">{{ theory.theory }}</td>
+              <td style="padding:2px 6px;" class="text-xs text-gray-500">{{ theory.legal_basis }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+        </td>
+      </tr>
+      {% endif %}
+
+      {# Regulatory Overlay #}
+      {% set reg = sect.regulatory %}
+      {% if reg and reg.regulators %}
+      <tr>
+        <td class="kv-label">Sector Regulatory Baseline</td>
+        <td class="kv-value">
+          <span class="badge-pill {{ reg.intensity_color }} text-white">{{ reg.intensity }}</span>
+          <span class="text-xs text-gray-500 ml-1">{{ reg.regulators | join(", ") }}</span>
+          {% if reg.trend %}
+          <br><span class="text-xs text-gray-500">{{ reg.trend }}</span>
+          {% endif %}
+          <br><span class="text-xs text-gray-400">See also: company-specific regulatory intensity in External Environment section</span>
+        </td>
+      </tr>
+      {% endif %}
+
+      {# Peer Comparison #}
+      {% set peer = sect.peer %}
+      {% if peer and peer.dimensions %}
+      <tr>
+        <td class="kv-label">Peer Risk Comparison{% if peer.sector_name %} ({{ peer.sector_name }}){% endif %}</td>
+        <td class="kv-value">
+          {% for dim in peer.dimensions %}
+          <div style="margin-bottom:2px;">
+            {{ dim.name }}: {{ dim.company_value }} vs median {{ dim.median }}
+            {% if dim.is_outlier %}
+            <span class="badge-pill bg-amber-500 text-white text-xs">Outlier</span>
+            {% endif %}
+          </div>
+          {% endfor %}
+          {% if peer.outlier_count == 0 %}
+          <span class="text-xs text-gray-500">Within sector norms</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="text-muted text-xs">Sector risk classification not available</p>
+{% endif %}

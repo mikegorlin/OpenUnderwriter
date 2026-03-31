@@ -1,0 +1,1086 @@
+/* Bloomberg-Quality CSS for D&O Underwriting Worksheet HTML/PDF Output
+ * Supplements Tailwind CSS with custom financial document styling.
+ * Palette: Navy #0B1D3A, Gold #D4A843, Risk Critical #DC2626.
+ * Typography: Inter (headings+body), JetBrains Mono (citations/numbers).
+ * Phase 124: Infographic density — borderless tables, compact spacing, tabular-nums.
+ */
+
+/* =====================================================================
+   Color Variables
+   ===================================================================== */
+:root {
+  /* Primary palette */
+  --do-navy: #0B1D3A;
+  --do-navy-light: #1A2D4A;
+  --do-gold: #D4A843;
+  --do-gold-light: #F5ECD8;
+
+  /* Risk spectrum — Phase 124 updated palette */
+  --do-risk-critical: #DC2626;
+  --do-risk-elevated: #EA580C;
+  --do-risk-watch: #EAB308;
+  --do-risk-positive: #2563EB;
+  --do-risk-green: #16A34A;  /* Locked: YoY positive arrows only */
+  --do-neutral-gray: #6B7280;
+
+  /* Backward-compat aliases (old names → new values) */
+  --do-risk-red: var(--do-risk-critical);
+  --do-risk-amber: var(--do-risk-elevated);
+  --do-risk-blue: var(--do-risk-positive);
+
+  /* Backgrounds */
+  --do-bg-body: #FFFFFF;
+  --do-bg-alt: #F8FAFC;
+
+  /* Text */
+  --do-text-primary: #111827;
+  --do-text-secondary: #6B7280;
+
+  /* Spacing rhythm (compact — Phase 124) */
+  --space-xs: 2px;
+  --space-sm: 4px;
+  --space-md: 8px;
+  --space-lg: 16px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+
+  /* Minimum font size floor — nothing below 8pt on screen */
+  --do-font-min: 8pt;
+}
+
+/* =====================================================================
+   Global Minimum Font Size Floor
+   Nothing in the document should render below 8pt. This catches all the
+   inline styles set to 6pt, 6.5pt, 7pt, 7.5pt across 800+ declarations.
+   ===================================================================== */
+body {
+  font-size: 10pt;
+  min-font-size: 8pt; /* non-standard but some engines honor it */
+}
+/* Override tiny inline font-sizes via specificity boost */
+[style*="font-size:6"] { font-size: 8pt !important; }
+[style*="font-size:7"] { font-size: 8pt !important; }
+[style*="font-size: 6"] { font-size: 8pt !important; }
+[style*="font-size: 7"] { font-size: 8pt !important; }
+[style*="font-size:0."] { font-size: 8pt !important; }
+
+/* =====================================================================
+   Borderless Table Design — Phase 124 infographic density
+   ===================================================================== */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+table th, table td {
+  border: none;
+  padding: 3px 4px;
+  font-size: 8pt;
+}
+/* Subtle row dividers only */
+table tbody td {
+  border-bottom: 1px solid #F3F4F6;
+}
+/* Table header rows — beta style: lighter, compact */
+table thead th {
+  background-color: #F9FAFB;
+  color: #6B7280;
+  font-weight: 600;
+  font-size: 8pt;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  padding: 3px 4px;
+  border-bottom: 1px solid #E5E7EB;
+}
+/* Alternating row backgrounds */
+table tbody tr:nth-child(odd) {
+  background-color: white;
+}
+table tbody tr:nth-child(even) {
+  background-color: var(--do-bg-alt);
+}
+/* KV tables: light background matching h3 sub-header style */
+.kv-table thead th,
+.kv-table th {
+  background-color: #F3F4F6;
+  color: #1F3A5C;
+  border-bottom: 1px solid #E5E7EB;
+  font-size: 9pt;
+  font-weight: 600;
+}
+
+/* Tabular numerals for all data — VIS-07 */
+td, .tabular-nums, .font-mono,
+[class*="value"], [class*="amount"], [class*="price"],
+[class*="score"], [class*="pct"], [class*="num"] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* =====================================================================
+   Base Typography — Inter (self-hosted, web-native, excellent for data)
+   ===================================================================== */
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 9pt;
+  line-height: 1.45;
+  color: var(--do-text-primary);
+  background-color: var(--do-bg-body);
+  margin: 0 0.5rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  color: #1F3A5C;
+  page-break-after: avoid;
+}
+
+h1 { font-size: 12pt; letter-spacing: 0.3px; font-weight: 800; background: #1F3A5C; color: white; padding: 8px 12px; border-radius: 4px; }
+h4 { font-size: 8pt; font-weight: 700; color: #1F3A5C; margin-top: 6px; margin-bottom: 3px; }
+h2 {
+  font-size: 10pt;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  text-transform: none;
+  padding: 6px 10px;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  border-left: none;
+  border-bottom: none;
+  background: #1F3A5C;
+  color: white;
+  border-radius: 4px;
+}
+h3 {
+  font-size: 9pt;
+  font-weight: 700;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  color: #1F3A5C;
+  background: #F3F4F6;
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+/* Citation text */
+.citation, .font-mono {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 9pt;
+  color: var(--do-text-secondary);
+  letter-spacing: -0.02em;
+}
+
+/* =====================================================================
+   Financial Table Styling
+   ===================================================================== */
+
+/* KV table specific overrides */
+.kv-table th {
+  background-color: #F3F4F6;
+  color: #1F3A5C;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 9pt;
+  width: 35%;
+}
+
+/* =====================================================================
+   Risk Coloring Classes (NO green)
+   ===================================================================== */
+
+/* Critical risk: red text and indicators */
+.risk-critical {
+  color: var(--do-risk-red);
+  font-weight: 600;
+}
+
+.risk-critical-cell {
+  background-color: #FEF2F2 !important;
+}
+
+/* Elevated risk: amber indicators */
+.risk-elevated {
+  color: var(--do-risk-amber);
+}
+
+.risk-elevated-cell {
+  background-color: #FFFBEB !important;
+}
+
+/* Positive signal: blue (NOT green) */
+.risk-positive {
+  color: var(--do-risk-blue);
+}
+
+.risk-positive-cell {
+  background-color: #EFF6FF !important;
+}
+
+/* Neutral: gray */
+.risk-neutral {
+  color: var(--do-neutral-gray);
+}
+
+/* YoY positive arrows: green (locked decision -- triangle-up +12.3% in green) */
+.text-risk-green {
+  color: var(--do-risk-green, #16A34A);
+}
+
+/* =====================================================================
+   CSS Heatmap Coloring (INFO-05)
+   Intensity-driven cell backgrounds using --intensity custom property.
+   Usage: <td class="heat-risk" style="--intensity: 0.75">
+   Intensity 0.0 = no heat (white), 1.0 = maximum heat.
+   ===================================================================== */
+
+/* Risk heat: white -> light red -> red */
+.heat-risk {
+  background-color: color-mix(in srgb, #DC2626 calc(var(--intensity, 0) * 100%), #FFF) !important;
+  color: color-mix(in srgb, #FFF calc(var(--intensity, 0) * 60%), #1F2937);
+}
+
+/* Caution heat: white -> light amber -> amber */
+.heat-caution {
+  background-color: color-mix(in srgb, #F59E0B calc(var(--intensity, 0) * 80%), #FFF) !important;
+  color: #1F2937;
+}
+
+/* Positive heat: white -> light blue -> blue */
+.heat-positive {
+  background-color: color-mix(in srgb, #2563EB calc(var(--intensity, 0) * 80%), #FFF) !important;
+  color: color-mix(in srgb, #FFF calc(var(--intensity, 0) * 60%), #1F2937);
+}
+
+/* Severity gradient heat: green(0) -> yellow(0.5) -> red(1.0) */
+.heat-severity {
+  background-color: color-mix(
+    in srgb,
+    color-mix(in srgb, #DC2626 calc(var(--intensity, 0) * 100%), #D97706) calc(var(--intensity, 0) * 100%),
+    #EFF6FF
+  ) !important;
+  color: color-mix(in srgb, #FFF calc(var(--intensity, 0) * 50%), #1F2937);
+}
+
+/* Factor heat: applied to scoring factor rows. Uses same risk palette. */
+.heat-factor {
+  background-color: color-mix(in srgb, #DC2626 calc(var(--intensity, 0) * 60%), #F9FAFB) !important;
+}
+
+/* Discrete heat levels (fallback for browsers without color-mix) */
+.heat-0 { background-color: #FFFFFF !important; }
+.heat-1 { background-color: #FEF2F2 !important; }
+.heat-2 { background-color: #FEE2E2 !important; }
+.heat-3 { background-color: #FECACA !important; }
+.heat-4 { background-color: #FCA5A5 !important; }
+.heat-5 { background-color: #F87171 !important; color: #FFF; }
+
+/* Right-aligned numeric columns with tabular figures for print */
+.text-right-nums {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* =====================================================================
+   Chart Figure Styling
+   ===================================================================== */
+.chart-figure {
+  text-align: center;
+  margin: 1rem 0;
+}
+.chart-figure svg,
+.chart-figure.chart-svg svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+.chart-caption {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 9pt;
+  color: var(--do-text-secondary);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* =====================================================================
+   Callout Box Styling
+   ===================================================================== */
+
+.discovery-box,
+.warning-box,
+.gap-notice {
+  page-break-inside: avoid;
+}
+
+/* =====================================================================
+   Narrative Styling
+   ===================================================================== */
+.narrative p, .narrative li {
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.65;
+}
+
+/* =====================================================================
+   Sticky Top Bar (browser-only persistent navigation)
+   ===================================================================== */
+.sticky-topbar {
+  position: fixed;
+  top: 0;
+  left: 180px;
+  right: 0;
+  z-index: 150;
+  background: linear-gradient(135deg, var(--do-navy) 0%, var(--do-navy-light) 100%);
+  color: white;
+  font-family: 'Inter', system-ui, sans-serif;
+  box-shadow: 0 2px 12px rgba(11, 29, 58, 0.25);
+  backdrop-filter: blur(8px);
+}
+
+.sticky-topbar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1.5rem;
+  max-width: 100%;
+}
+
+.sticky-topbar-left {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+  flex-shrink: 0;
+}
+
+.sticky-topbar-company {
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.sticky-topbar-ticker {
+  font-size: 0.75rem;
+  color: var(--do-gold);
+  font-weight: 500;
+}
+
+.sticky-topbar-center {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sticky-topbar-tier {
+  display: inline-block;
+  padding: 0.1875rem 0.625rem;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Tier color variants */
+.sticky-topbar-tier--win {
+  background-color: var(--do-risk-blue);
+  color: white;
+}
+.sticky-topbar-tier--want {
+  background-color: #2563EB;
+  color: white;
+}
+.sticky-topbar-tier--write {
+  background-color: var(--do-gold);
+  color: var(--do-navy);
+}
+.sticky-topbar-tier--watch {
+  background-color: var(--do-risk-amber);
+  color: white;
+}
+.sticky-topbar-tier--walk {
+  background-color: var(--do-risk-red);
+  color: white;
+}
+.sticky-topbar-tier--no_touch {
+  background-color: #7F1D1D;
+  color: white;
+}
+
+.sticky-topbar-metric {
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.sticky-topbar-metric strong {
+  color: white;
+  font-weight: 700;
+}
+
+.sticky-topbar-right {
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.sticky-topbar-action {
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-style: italic;
+}
+
+.sticky-topbar-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.125rem 1.5rem 0.375rem;
+  font-size: 0.625rem;
+  color: rgba(255, 255, 255, 0.55);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sticky-topbar-details span {
+  white-space: nowrap;
+}
+
+.sticky-topbar-date {
+  margin-left: auto;
+}
+
+/* =====================================================================
+   Cover Header Bar (compact -- replaces full-page cover)
+   ===================================================================== */
+.cover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, var(--do-navy) 0%, var(--do-navy-light) 100%);
+  color: white;
+  padding: 0.875rem 1.25rem;
+  margin: -0.5rem 0 1.25rem 0; /* no negative horizontal margins -- PDF clips */
+  border-radius: 6px;
+  font-family: 'Inter', system-ui, sans-serif;
+  box-shadow: 0 2px 8px rgba(11, 29, 58, 0.2);
+}
+.cover-header-left {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.cover-header-company {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.cover-header-ticker {
+  font-size: 0.875rem;
+  color: var(--do-gold);
+  font-weight: 500;
+}
+.cover-header-center {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.cover-header-score {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.85);
+}
+.cover-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0;
+}
+.cover-header-brand {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.cover-header-subtitle {
+  font-size: 0.625rem;
+  color: rgba(255,255,255,0.7);
+}
+.cover-header-date {
+  font-size: 0.625rem;
+  color: rgba(255,255,255,0.6);
+}
+
+/* =====================================================================
+   Identity Block (replaces cover.html.j2 -- section#identity)
+   ===================================================================== */
+.identity-block { margin-bottom: 1rem; }
+.identity-company-name { font-size: 1.5rem; font-weight: 700; margin: 0 0 0.25rem; }
+.identity-ticker { font-size: 1rem; font-weight: 400; color: #64748b; margin-left: 0.4rem; }
+.identity-meta { font-size: 11px; color: #64748b; margin: 0 0 0.5rem; }
+.identity-desc { font-size: 11px; color: #374151; line-height: 1.5; }
+.identity-metrics-table td { padding: 2px 6px; }
+.kv-key { width: 35%; font-weight: 600; font-size: 10pt; color: var(--do-navy, #1a2744); }
+.kv-value { width: 30%; font-size: 10pt; }
+.kv-context { width: 35%; font-size: 9pt; color: #64748b; }
+
+/* =====================================================================
+   Page Break and Print Utilities
+   ===================================================================== */
+#executive-summary {
+  break-after: avoid;
+}
+
+.page-break {
+  page-break-before: always;
+}
+
+.page-break-inside-avoid {
+  page-break-inside: avoid;
+}
+
+/* =====================================================================
+   PDF Running Header/Footer (hidden in browser, visible in @media print)
+   ===================================================================== */
+.pdf-running-header {
+  display: none; /* Hidden in browser */
+}
+.pdf-running-footer {
+  display: none; /* Hidden in browser */
+}
+
+/* Print styles -- Dense & compact for S&P/Moody's report density */
+@media print {
+  @page {
+    size: letter;
+    /* Tight margins — header/footer are inline, not fixed-position overlays.
+       Chrome doesn't support position:fixed in print context (only Playwright does).
+       Use Chrome's built-in header/footer or keep our elements in document flow. */
+    margin: 0.5in 0.6in 0.6in 0.6in;
+  }
+
+  /* --- PDF Running Header (first page only, in document flow) --- */
+  .pdf-running-header {
+    display: block;
+    padding: 0 0 4pt;
+    margin-bottom: 6pt;
+    font-size: 8pt;
+    color: #888;
+    border-bottom: 0.5pt solid #ddd;
+    overflow: hidden; /* clearfix for floats */
+  }
+  .pdf-running-header .header-left {
+    float: left;
+    font-weight: 600;
+  }
+  .pdf-running-header .header-right {
+    float: right;
+  }
+
+  /* --- PDF Running Footer (end of document, in document flow) ---
+       Chrome print: position:fixed overlaps content. Instead, this element
+       sits at the bottom of the HTML body and prints at the end.
+       For per-page footers, use Chrome's Print > More settings > Headers and footers. */
+  .pdf-running-footer {
+    display: block;
+    padding: 6pt 0 0;
+    margin-top: 12pt;
+    font-size: 8pt;
+    color: #888;
+    border-top: 0.5pt solid #ddd;
+    text-align: center;
+    /* NOT position:fixed — flows with content to avoid overlapping text */
+  }
+
+  body {
+    font-size: 10pt;
+    line-height: 1.4;
+  }
+
+  /* Ensure colored backgrounds print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Prevent orphans/widows */
+  p, li {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Hide interactive elements */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Page breaks for section separation */
+  .page-break {
+    page-break-before: always;
+  }
+
+  /* --- Heading density: smaller sizes, tighter margins --- */
+  h2 {
+    font-size: 12pt;
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  h3 {
+    font-size: 10pt;
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+  h4 {
+    font-size: 9pt;
+    margin-top: 0.4rem;
+    margin-bottom: 0.2rem;
+  }
+
+  /* --- Table cell density: tighter padding --- */
+  td, th {
+    padding: 3px 6px;
+  }
+
+  /* --- Section spacing density --- */
+  .my-3 { margin-top: 0.5rem; margin-bottom: 0.5rem; }
+  .my-4 { margin-top: 0.75rem; margin-bottom: 0.75rem; }
+  .gap-4 { gap: 0.5rem; }
+  .gap-2 { gap: 0.25rem; }
+  .space-y-2 > * + * { margin-top: 0.25rem; }
+
+  /* --- Padding density for callout boxes --- */
+  .discovery-box,
+  .warning-box,
+  .gap-notice {
+    padding: 0.4rem 0.6rem;
+  }
+
+  /* --- Narrative text tighter in print --- */
+  .narrative p {
+    line-height: 1.45;
+  }
+
+  /* --- KV table tighter --- */
+  .kv-table th,
+  .kv-table td {
+    padding: 2px 6px;
+    font-size: 10pt;
+  }
+
+  /* --- Chart figure margins tighter --- */
+  .chart-figure {
+    margin: 0.5rem 0;
+  }
+
+  /* Keep tables together when possible */
+  table {
+    page-break-inside: auto;
+  }
+  tr {
+    page-break-inside: avoid;
+  }
+  thead {
+    display: table-header-group;
+  }
+
+  /* Prevent heading orphaning -- keep heading with following content */
+  h2, h3 {
+    break-after: avoid;
+  }
+
+  /* Avoid breaking inside callouts */
+  .discovery-box, .warning-box, .callout {
+    page-break-inside: avoid;
+  }
+
+  /* Keep small tables intact; large tables can split across pages */
+  .page-break-inside-avoid {
+    break-inside: avoid;
+  }
+
+  /* PDF header overlap fix + cover margin + Phase 73 component breaks */
+  .worksheet-main > *:first-child { padding-top: 0.4in; }
+  .cover-header { margin-top: 0; }
+  .forensic-band, .beneish-table { break-inside: avoid; page-break-inside: avoid; }
+
+  /* Epistemological Trace: compact print sizing */
+  .trace-table { font-size: 8pt; }
+  .trace-table th { font-size: 8pt; }
+  .trace-summary-bar { gap: 0.25rem; }
+  .trace-stat { padding: 0.2rem 0.4rem; }
+  .trace-group-header { padding: 0.25rem 0.5rem; margin-top: 0.5rem; }
+
+  /* Decision Record: page break before + ensure borders print */
+  .decision-record { break-before: page; page-break-before: always; }
+  .rationale-box, .conditions-box, .overrides-box { border: 1pt solid #d1d5db !important; }
+  .posture-option { border: 1pt solid #d1d5db !important; }
+}
+
+/* =====================================================================
+   Epistemological Trace — Signal Provenance Table (Phase 114-03)
+   ===================================================================== */
+
+/* Summary stats bar */
+.trace-summary-bar {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.trace-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  background: var(--do-bg-alt);
+  min-width: 80px;
+}
+
+.trace-stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--do-navy);
+}
+
+.trace-stat-label {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--do-text-secondary);
+  font-weight: 600;
+}
+
+.trace-stat--triggered .trace-stat-value { color: var(--do-risk-red); }
+.trace-stat--clear .trace-stat-value { color: var(--do-risk-blue); }
+.trace-stat--skipped .trace-stat-value { color: var(--do-neutral-gray); }
+.trace-stat--deferred .trace-stat-value { color: var(--do-risk-amber); }
+
+/* Dimension group header */
+.trace-group {
+  margin-bottom: var(--space-md);
+}
+
+.trace-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  margin-top: var(--space-md);
+  margin-bottom: var(--space-xs);
+  border-left: 4px solid var(--do-navy);
+  background: var(--do-bg-alt);
+  border-radius: 0 4px 4px 0;
+}
+
+.trace-group-title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--do-navy);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.trace-group-count {
+  font-size: 0.6875rem;
+  color: var(--do-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Table wrapper for horizontal scroll on narrow screens */
+.trace-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Compact trace table */
+.trace-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.trace-table thead {
+  display: table-header-group;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.trace-table th {
+  background: var(--do-navy);
+  color: white;
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.4rem;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 2px solid var(--do-gold);
+}
+
+.trace-table td {
+  padding: 0.2rem 0.4rem;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: top;
+  font-size: 0.75rem;
+}
+
+.trace-row-alt {
+  background-color: var(--do-bg-alt);
+}
+
+/* Column sizing hints */
+.trace-col-id { width: 14%; }
+.trace-col-status { width: 8%; }
+.trace-col-data { width: 10%; }
+.trace-col-source { width: 12%; }
+.trace-col-threshold { width: 12%; }
+.trace-col-confidence { width: 8%; }
+.trace-col-srctype { width: 8%; }
+.trace-col-eval { width: 10%; }
+.trace-col-contrib { width: 10%; }
+
+/* Signal ID: monospace */
+.trace-cell-id {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.6875rem;
+  color: var(--do-text-secondary);
+  white-space: nowrap;
+}
+
+.trace-cell-data {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trace-cell-source {
+  font-size: 0.6875rem;
+  color: var(--do-text-secondary);
+}
+
+.trace-cell-threshold {
+  font-size: 0.6875rem;
+}
+
+.trace-cell-srctype {
+  font-size: 0.6875rem;
+  font-style: italic;
+  color: var(--do-text-secondary);
+}
+
+.trace-cell-eval {
+  font-size: 0.6875rem;
+}
+
+/* Status badges */
+.trace-status-badge {
+  display: inline-block;
+  padding: 0.1rem 0.375rem;
+  border-radius: 3px;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.trace-status--triggered {
+  background-color: #FEE2E2;
+  color: var(--do-risk-red);
+  border: 1px solid #FECACA;
+}
+
+.trace-status--clear {
+  background-color: #EFF6FF;
+  color: var(--do-risk-blue);
+  border: 1px solid #BFDBFE;
+}
+
+.trace-status--skipped {
+  background-color: #F3F4F6;
+  color: var(--do-neutral-gray);
+  border: 1px solid #D1D5DB;
+}
+
+.trace-status--deferred {
+  background-color: #FEF3C7;
+  color: var(--do-risk-amber);
+  border: 1px solid #FDE68A;
+}
+
+.trace-status--elevated {
+  background-color: #FEF3C7;
+  color: var(--do-risk-amber);
+  border: 1px solid #FDE68A;
+}
+
+.trace-status--info {
+  background-color: #F3F4F6;
+  color: var(--do-neutral-gray);
+  border: 1px solid #D1D5DB;
+}
+
+/* Confidence badges */
+.confidence-badge {
+  display: inline-block;
+  padding: 0.075rem 0.3rem;
+  border-radius: 2px;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.confidence--high {
+  background-color: #DBEAFE;
+  color: var(--do-risk-blue);
+}
+
+.confidence--medium {
+  background-color: #FEF3C7;
+  color: var(--do-risk-amber);
+}
+
+.confidence--low {
+  background-color: #FEE2E2;
+  color: var(--do-risk-red);
+}
+
+/* =====================================================================
+   Decision Record — Underwriting Posture Documentation (Phase 114-03)
+   ===================================================================== */
+
+.decision-record {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Tier distribution horizontal bar */
+.tier-distribution-bar {
+  display: flex;
+  height: 2rem;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: var(--space-md) 0;
+  border: 1px solid #e2e8f0;
+}
+
+.tier-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: white;
+  transition: opacity var(--transition-fast);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.tier-segment--preferred { background-color: var(--do-risk-blue); }
+.tier-segment--standard { background-color: #2563EB; }
+.tier-segment--elevated { background-color: var(--do-risk-amber); }
+.tier-segment--high_risk { background-color: var(--do-risk-red); }
+.tier-segment--prohibited { background-color: #7F1D1D; }
+
+.tier-highlight {
+  outline: 3px solid var(--do-navy);
+  outline-offset: -2px;
+  position: relative;
+  z-index: 1;
+  font-weight: 800;
+}
+
+.tier-label-row {
+  display: flex;
+  margin-top: 0.25rem;
+  font-size: 0.625rem;
+  color: var(--do-text-secondary);
+}
+
+.tier-label-cell {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Posture grid */
+.posture-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin: var(--space-md) 0;
+}
+
+.posture-option {
+  border: 2px solid #d1d5db;
+  border-radius: 6px;
+  padding: var(--space-md);
+  text-align: center;
+  background: white;
+}
+
+.posture-option-label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--do-navy);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.posture-option-check {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #9CA3AF;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+
+.posture-option-desc {
+  font-size: 0.6875rem;
+  color: var(--do-text-secondary);
+  margin-top: 0.25rem;
+}
+
+/* Rationale and conditions boxes */
+.rationale-box,
+.conditions-box,
+.overrides-box {
+  border: 2px solid #d1d5db;
+  border-radius: 6px;
+  padding: var(--space-md);
+  margin: var(--space-md) 0;
+  min-height: 100px;
+  background: white;
+  position: relative;
+}
+
+.rationale-box { min-height: 120px; }
+.conditions-box { min-height: 80px; }
+.overrides-box { min-height: 80px; }
+
+.field-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--do-navy);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.375rem;
+}
+
+.ghost-text {
+  color: #9CA3AF;
+  font-size: 0.75rem;
+  font-style: italic;
+}

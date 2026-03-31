@@ -1,0 +1,529 @@
+# Domain: biz/structural.yaml  |  Count: 5
+# Phase 96: Structural complexity signals for D&O underwriting
+# Assesses disclosure opacity, non-GAAP usage, related party density,
+# off-balance-sheet exposure, and holding structure complexity
+- id: BIZ.STRUC.disclosure_complexity
+  name: Disclosure Complexity Score
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: '>40 risk factors OR >8 critical accounting estimates'
+    yellow: '>25 risk factors OR >5 critical accounting estimates'
+    clear: <=25 risk factors AND <=5 critical accounting estimates
+  claims_correlation: 0.6
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '1.4'
+  data_strategy:
+    field_key: disclosure_complexity_score
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_struc
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Complex disclosures with many risk factors and accounting estimates correlate with higher SCA exposure 
+        due to disclosure opacity
+    render_target: structural_complexity
+    formula: risk_factor_count + critical_estimate_count + fls_density
+  display:
+    value_format: score
+    source_type: SEC_10K
+    threshold_context: Composite of risk factor count, critical accounting estimates, and forward-looking statement 
+      density
+  group: structural_complexity
+  signal_class: evaluative
+  field_path: disclosure_complexity_score
+  depends_on: []
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - extracted.risk_factors
+      - llm.critical_accounting_estimates
+      - text_signals.fls_density
+  evaluation:
+    formula: disclosure_complexity_score
+    thresholds:
+    - op: '>'
+      value: 48
+      label: RED
+    - op: '>'
+      value: 30
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Disclosure complexity: {value}'
+    - level: standard
+      template: Disclosure complexity score {value} (risk factors + estimates + FLS density)
+    - level: deep
+      fields:
+      - disclosure_complexity_score
+      - risk_factor_count
+      - critical_estimate_count
+      - fls_density_count
+    context_templates:
+      TRIGGERED: 'Complex disclosure profile: score {value} indicates elevated opacity risk'
+      CLEAR: Disclosure complexity within normal range
+    do_context:
+      TRIGGERED_RED: '{company} Disclosure Complexity Score at {value} (threshold: >40 risk factors OR >8 critical accounting
+        estimates) signals elevated Litigation History / Settlement Patterns risk (F1, F10). Disclosure complexity creates information asymmetry between management and investors. Complex disclosures increase the probability that material information is obscured, supporting ''material omission'' claims in SCAs.'
+      TRIGGERED_YELLOW: '{company} Disclosure Complexity Score at {value} (threshold: >25 risk factors OR >5 critical accounting
+        estimates) is in the caution zone for Litigation History / Settlement Patterns (F1, F10). Monitor for deterioration
+        — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Disclosure Complexity Score at {value} is within acceptable range for Litigation History / Settlement
+        Patterns (F1, F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'D&O claims analysis: structural complexity features as predictors of disclosure and governance risk'
+    threshold_basis: Complex disclosures with many risk factors and accounting estimates correlate with higher SCA 
+      exposure due to disclosure opacity
+  rap_class: host
+  rap_subcategory: host.structure
+- id: BIZ.STRUC.nongaap
+  name: Non-GAAP Measure Usage
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: '>6 non-GAAP measures OR SEC comment on non-GAAP'
+    yellow: '>3 non-GAAP measures'
+    clear: <=3 non-GAAP measures
+  claims_correlation: 0.65
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '1.4'
+  data_strategy:
+    field_key: nongaap_measure_count
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_struc
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: SEC enforcement trends show increased scrutiny of non-GAAP measures; companies with >6 non-GAAP metrics
+        or SEC comment letters on non-GAAP face elevated restatement and SCA risk
+    render_target: structural_complexity
+    formula: nongaap_count + (10 if sec_commented)
+  display:
+    value_format: count
+    source_type: SEC_10K
+    threshold_context: Count of non-GAAP measures (inflated by 10 if SEC has commented)
+  group: structural_complexity
+  signal_class: evaluative
+  field_path: nongaap_measure_count
+  depends_on: []
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - llm.non_gaap_measures
+      - text_signals.non_gaap_reconciliation
+      - text_signals.sec_nongaap_comment
+  evaluation:
+    formula: nongaap_measure_count
+    thresholds:
+    - op: '>'
+      value: 6
+      label: RED
+    - op: '>'
+      value: 3
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: '{value} non-GAAP measures'
+    - level: standard
+      template: '{value} non-GAAP measures used in financial reporting'
+    - level: deep
+      fields:
+      - nongaap_measure_count
+    context_templates:
+      TRIGGERED: 'Elevated non-GAAP usage: {value} measures (SEC scrutiny risk)'
+      CLEAR: Non-GAAP measure usage within normal range
+    do_context:
+      TRIGGERED_RED: '{company} Non-GAAP Measure Usage at {value} (threshold: >6 non-GAAP measures OR SEC comment on non-GAAP)
+        signals elevated Litigation History / Settlement Patterns risk (F1, F10). Divergence between non-GAAP and GAAP metrics creates disclosure risk when the gap is not adequately explained. The SEC has increased enforcement of Regulation G, and misleading non-GAAP presentations are a growing basis for SCA complaints.'
+      TRIGGERED_YELLOW: '{company} Non-GAAP Measure Usage at {value} (threshold: >3 non-GAAP measures) is in the caution zone
+        for Litigation History / Settlement Patterns (F1, F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Non-GAAP Measure Usage at {value} is within acceptable range for Litigation History / Settlement Patterns
+        (F1, F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'D&O claims analysis: structural complexity features as predictors of disclosure and governance risk'
+    threshold_basis: SEC enforcement trends show increased scrutiny of non-GAAP measures; companies with >6 non-GAAP 
+      metrics or SEC comment letters on non-GAAP face elevated restatement and SCA risk
+  rap_class: host
+  rap_subcategory: host.structure
+- id: BIZ.STRUC.related_parties
+  name: Related Party Transaction Density
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F8
+  - F10
+  peril_ids: []
+  chain_roles:
+    related_party_to_sca: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  - SEC_10K
+  data_locations:
+    SEC_DEF14A:
+    - related_party_transactions
+    SEC_10K:
+    - item_8_financials
+  threshold:
+    type: tiered
+    red: '>5 related party transactions or material recurring'
+    yellow: '>2 related party transactions'
+    clear: <=2 related party transactions
+  claims_correlation: 0.75
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.4'
+  - '4.2'
+  data_strategy:
+    field_key: related_party_density
+    primary_source: SEC_DEF14A
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_struc
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Related party transaction density is a leading indicator of self-dealing claims and governance concerns
+        in D&O litigation
+    render_target: structural_complexity
+    formula: rpt_count + min(text_signal_count, 3)
+  display:
+    value_format: count
+    source_type: SEC_DEF14A
+    threshold_context: Count of related party transactions plus text signal mentions
+  group: structural_complexity
+  signal_class: evaluative
+  field_path: related_party_density
+  depends_on: []
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_DEF14A
+      fields:
+      - governance.comp_analysis.related_party_transactions
+    - type: SEC_10K
+      fields:
+      - text_signals.related_party_completeness
+  evaluation:
+    formula: related_party_density
+    thresholds:
+    - op: '>'
+      value: 5
+      label: RED
+    - op: '>'
+      value: 2
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: '{value} related party transactions'
+    - level: standard
+      template: '{value} related party transactions identified'
+    - level: deep
+      fields:
+      - related_party_density
+    context_templates:
+      TRIGGERED: 'Elevated related party activity: {value} transactions (self-dealing risk)'
+      CLEAR: Related party transaction volume within normal range
+    do_context:
+      TRIGGERED_RED: '{company} Related Party Transaction Density at {value} (threshold: >5 related party transactions or
+        material recurring) signals elevated Market Position / Business Risk risk (F8, F10). Related party transaction complexity creates duty-of-loyalty exposure under Entire Fairness review. Complex or numerous related party transactions increase the probability of self-dealing claims in derivative actions.'
+      TRIGGERED_YELLOW: '{company} Related Party Transaction Density at {value} (threshold: >2 related party transactions)
+        is in the caution zone for Market Position / Business Risk (F8, F10). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Related Party Transaction Density at {value} is within acceptable range for Market Position / Business
+        Risk (F8, F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'D&O claims analysis: structural complexity features as predictors of disclosure and governance risk'
+    threshold_basis: Related party transaction density is a leading indicator of self-dealing claims and governance 
+      concerns in D&O litigation
+  rap_class: host
+  rap_subcategory: host.structure
+- id: BIZ.STRUC.obs_exposure
+  name: Off-Balance-Sheet Exposure
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: VIE present + guarantee/commitment mentions > 3
+    yellow: Any off-balance-sheet indicator present
+    clear: No off-balance-sheet indicators detected
+  claims_correlation: 0.7
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '1.4'
+  data_strategy:
+    field_key: obs_exposure_score
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_struc
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Off-balance-sheet structures (VIEs, guarantees, commitments) are historically linked to major D&O 
+        losses; Enron, Lehman patterns
+    render_target: structural_complexity
+    formula: max(vie, vie_llm) * 5 + min(guarantees, 5) + min(commitments, 5)
+  display:
+    value_format: score
+    source_type: SEC_10K
+    threshold_context: Composite score from VIE presence, guarantee mentions, and commitment mentions
+  group: structural_complexity
+  signal_class: evaluative
+  field_path: obs_exposure_score
+  depends_on: []
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - llm.has_vie
+      - text_signals.vie_spe
+      - text_signals.obs_guarantees
+      - text_signals.obs_commitments
+  evaluation:
+    formula: obs_exposure_score
+    thresholds:
+    - op: '>'
+      value: 8
+      label: RED
+    - op: '>'
+      value: 0
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'OBS exposure: {value}'
+    - level: standard
+      template: Off-balance-sheet exposure score {value}
+    - level: deep
+      fields:
+      - obs_exposure_score
+      - vie_present
+      - guarantee_mentions
+      - commitment_mentions
+    context_templates:
+      TRIGGERED: 'Off-balance-sheet exposure detected: score {value}'
+      CLEAR: No significant off-balance-sheet exposure detected
+    do_context:
+      TRIGGERED_RED: '{company} Off-Balance-Sheet Exposure at {value} (threshold: VIE present + guarantee/commitment mentions
+        > 3) signals elevated Litigation History / Settlement Patterns risk (F1, F10). Off-balance sheet exposures create hidden liability risk. When these obligations materialize and force disclosure, plaintiffs allege management concealed material liabilities in violation of Item 303 MD&A disclosure requirements.'
+      TRIGGERED_YELLOW: '{company} Off-Balance-Sheet Exposure at {value} (threshold: Any off-balance-sheet indicator present)
+        is in the caution zone for Litigation History / Settlement Patterns (F1, F10). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Off-Balance-Sheet Exposure at {value} is within acceptable range for Litigation History / Settlement
+        Patterns (F1, F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'D&O claims analysis: structural complexity features as predictors of disclosure and governance risk'
+    threshold_basis: Off-balance-sheet structures (VIEs, guarantees, commitments) are historically linked to major D&O 
+      losses; Enron, Lehman patterns
+  rap_class: host
+  rap_subcategory: host.structure
+- id: BIZ.STRUC.holding_structure
+  name: Holding Structure Complexity
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - exhibit_21
+    - item_1_business
+  threshold:
+    type: tiered
+    red: '>200 subsidiaries + intercompany complexity mentions'
+    yellow: '>100 subsidiaries'
+    clear: <=100 subsidiaries
+  claims_correlation: 0.6
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '1.4'
+  data_strategy:
+    field_key: holding_structure_depth
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_struc
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Deep holding structures with many subsidiaries and intercompany complexity increase jurisdictional risk
+        and D&O exposure
+    render_target: structural_complexity
+    formula: subsidiary_count + intercompany * 10 + holding_layers * 5
+  display:
+    value_format: score
+    source_type: SEC_10K
+    threshold_context: Composite of subsidiary count plus intercompany and holding layer complexity indicators
+  group: structural_complexity
+  signal_class: evaluative
+  field_path: holding_structure_depth
+  depends_on:
+  - signal: BIZ.STRUCT.subsidiary_count
+    field: subsidiary_count
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - company.subsidiary_count
+      - text_signals.intercompany_complexity
+      - text_signals.holding_layers
+  evaluation:
+    formula: holding_structure_depth
+    thresholds:
+    - op: '>'
+      value: 210
+      label: RED
+    - op: '>'
+      value: 100
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Holding depth: {value}'
+    - level: standard
+      template: Holding structure depth score {value}
+    - level: deep
+      fields:
+      - holding_structure_depth
+      - subsidiary_count
+      - intercompany_mentions
+      - holding_layer_mentions
+    context_templates:
+      TRIGGERED: 'Complex holding structure: depth score {value}'
+      CLEAR: Holding structure complexity within normal range
+    do_context:
+      TRIGGERED_RED: '{company} Holding Structure Complexity at {value} (threshold: >200 subsidiaries + intercompany complexity
+        mentions) signals elevated Litigation History / Settlement Patterns risk (F1). Complex corporate structure with numerous subsidiaries creates opacity risk. Multi-entity structures make financial reporting more difficult to verify and provide more opportunities for inter-company transaction manipulation.'
+      TRIGGERED_YELLOW: '{company} Holding Structure Complexity at {value} (threshold: >100 subsidiaries) is in the caution
+        zone for Litigation History / Settlement Patterns (F1). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Holding Structure Complexity at {value} is within acceptable range for Litigation History / Settlement
+        Patterns (F1) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'D&O claims analysis: structural complexity features as predictors of disclosure and governance risk'
+    threshold_basis: Deep holding structures with many subsidiaries and intercompany complexity increase jurisdictional 
+      risk and D&O exposure
+  rap_class: host
+  rap_subcategory: host.structure

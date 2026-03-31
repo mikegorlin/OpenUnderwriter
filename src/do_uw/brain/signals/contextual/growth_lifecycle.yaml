@@ -1,0 +1,58 @@
+- id: CTX.FIN.growth_lifecycle
+  name: Revenue Growth in Lifecycle Context
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of FIN.PROFIT.revenue through lifecycle_stage lens
+    threshold_provenance:
+      source: calibrated
+      rationale: Growth thresholds calibrated from SCAC filing data by company maturity category
+  signal_class: inference
+  group: key_metrics
+  rap_class: host
+  rap_subcategory: host.financials
+  epistemology:
+    rule_origin: 'D&O underwriting practice: growth expectations and SCA exposure vary by company lifecycle'
+    threshold_basis: Growth thresholds calibrated from SCAC filing data by company maturity category
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: FIN.PROFIT.revenue
+      context_dimensions:
+      - lifecycle_stage
+      context_adjustments:
+        pre_revenue:
+          threshold_adjustment: 0.3
+          rationale: 'Pre-revenue: growth expected to be explosive or zero'
+        post_ipo:
+          threshold_adjustment: 0.5
+          rationale: 'Post-IPO: high growth expected to justify valuation'
+        growth:
+          threshold_adjustment: 0.7
+          rationale: 'Growth: sustained growth expected'
+        mature:
+          threshold_adjustment: 1.5
+          rationale: 'Mature: modest growth normal; high growth is unusual'
+        distressed:
+          threshold_adjustment: 2.0
+          rationale: 'Distressed: any growth is positive signal'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} revenue growth in lifecycle context at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} revenue growth in lifecycle context at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} revenue growth in lifecycle context at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

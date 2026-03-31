@@ -1,0 +1,23 @@
+{# Sources Appendix — numbered list of all data sources cited in this document.
+   Section id="sources" for sidebar TOC anchor linking.
+   all_sources: list of (number, source_text) tuples from FootnoteRegistry.
+   Each source referenced inline as <sup class="fn-ref"><a href="#fn-N">N</a></sup>.
+   Anchors here: <span id="fn-N"> for reverse navigation. #}
+
+{% if all_sources %}
+<section id="sources" class="page-break">
+  <h2>Sources</h2>
+  <p class="text-xs text-gray-500 mb-3">
+    All data citations for this worksheet. Superscript numbers in the document
+    reference entries in this list.
+  </p>
+  <ol class="sources-list">
+    {% for num, source_text in all_sources %}
+    <li id="fn-{{ num }}" class="sources-item">
+      <span class="sources-num">{{ num }}.</span>
+      {{ source_text }}
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endif %}

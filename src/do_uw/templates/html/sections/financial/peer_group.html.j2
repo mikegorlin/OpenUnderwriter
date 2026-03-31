@@ -1,0 +1,13 @@
+{# Peer Group — extracted from financial.html.j2 #}
+{% set peers = fin.get('peers', []) %}
+{% if peers %}
+<h3>Peer Group</h3>
+{{ data_table(
+  ['Ticker', 'Name', 'Market Cap', 'Similarity Score'],
+  peers|map(attribute='ticker')|list|zip(
+    peers|map(attribute='name')|list,
+    peers|map(attribute='market_cap')|list,
+    peers|map(attribute='score')|list
+  )|list
+) }}
+{% endif %}

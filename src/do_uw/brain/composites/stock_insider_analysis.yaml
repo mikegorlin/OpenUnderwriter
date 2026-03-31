@@ -1,0 +1,16 @@
+id: COMP.STOCK.insider_analysis
+name: Insider Trading Analysis
+description: Evaluates insider trading patterns for timing anomalies relative to events
+evaluator: stock_insider_analysis
+member_signals:
+  - STOCK.INSIDER.cluster_timing
+  - STOCK.INSIDER.notable_activity
+  - STOCK.INSIDER.summary
+conclusion_schema:
+  cluster_detection: "Whether insider transactions cluster before price events"
+  notable_transactions: "Large or unusual insider transactions"
+  timing_assessment: "Assessment of insider timing relative to material events"
+severity_rules:
+  red: "Insider selling cluster precedes company-specific price drop"
+  yellow: "Unusual insider activity detected"
+  clear: "Normal insider trading patterns"

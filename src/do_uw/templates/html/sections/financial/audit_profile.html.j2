@@ -1,0 +1,25 @@
+{# Audit Profile — extracted from financial.html.j2 #}
+<h3>Audit Profile</h3>
+{{ kv_table([
+  {'key': 'Auditor', 'value': fin.auditor_name | format_na},
+  {'key': 'Big 4', 'value': fin.is_big4 | format_na},
+  {'key': 'Tenure', 'value': fin.auditor_tenure | format_na},
+  {'key': 'Material Weaknesses', 'value': fin.material_weaknesses|default(0)},
+  {'key': 'Going Concern', 'value': fin.going_concern|default('No')},
+], title="Audit") }}
+{# Audit profile interpretation #}
+<ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+  {% if fin.is_big4 == 'Yes' and fin.material_weaknesses|default(0)|int == 0 and fin.going_concern|default('No') == 'No' %}
+  <li>Clean audit opinion from a Big 4 firm with no material weaknesses and no going concern&mdash;strong D&amp;O protective factor that significantly reduces restatement and financial misrepresentation risk</li>
+  {% elif fin.material_weaknesses|default(0)|int > 0 %}
+  <li>Material weakness in internal controls is a significant D&amp;O risk factor&mdash;increases exposure to securities fraud allegations and shareholder derivative claims</li>
+  {% endif %}
+  {% if fin.auditor_tenure and fin.auditor_tenure != 'N/A' %}
+  {% set tenure_num = fin.auditor_tenure|replace(' years', '')|replace(' year', '')|int(default=0) %}
+  {% if tenure_num > 20 %}
+  <li>Long auditor tenure ({{ fin.auditor_tenure }}) may raise auditor independence concerns per ISS and proxy advisory guidelines</li>
+  {% elif tenure_num >= 5 %}
+  <li>Auditor tenure of {{ fin.auditor_tenure }} is within normal range, indicating stable audit relationship</li>
+  {% endif %}
+  {% endif %}
+</ul>

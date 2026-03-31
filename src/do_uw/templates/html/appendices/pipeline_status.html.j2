@@ -1,0 +1,41 @@
+{# Pipeline Execution Status — audit appendix (Phase 144-03 / RES-06 gap closure).
+   Shows per-stage execution status, duration, and errors. #}
+
+{% set ps = pipeline_status|default([]) %}
+{% if ps %}
+<div style="margin-bottom:10px">
+  <div style="font-weight:600;margin-bottom:4px">Pipeline Execution Status</div>
+  <table class="w-full border-collapse my-2 text-sm">
+    <thead>
+      <tr class="bg-bg-alt">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300" style="width:120px">Stage</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300" style="width:100px">Status</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1 border-b border-gray-300" style="width:80px">Duration</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Error</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in ps %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }} page-break-inside-avoid">
+        <td class="px-3 py-1.5 text-xs font-mono text-gray-600">{{ row.stage }}</td>
+        <td class="px-3 py-1.5 text-xs">
+          {% if row.status == 'completed' %}
+          <span style="background:#16A34A;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px">COMPLETED</span>
+          {% elif row.status == 'failed' %}
+          <span style="background:#DC2626;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px">FAILED</span>
+          {% elif row.status == 'running' %}
+          <span style="background:#2563EB;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px">RUNNING</span>
+          {% elif row.status == 'skipped' %}
+          <span style="background:#6B7280;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px">SKIPPED</span>
+          {% else %}
+          <span style="background:#D1D5DB;color:#374151;padding:1px 6px;border-radius:3px;font-size:10px">PENDING</span>
+          {% endif %}
+        </td>
+        <td class="px-3 py-1.5 text-xs font-mono text-gray-600 text-right">{% if row.duration is not none %}{{ "%.1f"|format(row.duration) }}s{% else %}&mdash;{% endif %}</td>
+        <td class="px-3 py-1.5 text-xs text-red-600">{{ row.error if row.error else '' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}

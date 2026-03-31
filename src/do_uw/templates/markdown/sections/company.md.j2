@@ -1,0 +1,128 @@
+## Section 2: Company Profile -- Business Lines & Market Position
+{{ density_indicator("company") }}
+{% if company %}
+{% if company_narrative %}{{ company_narrative }}
+
+{% endif %}
+| Field | Value |
+|-------|-------|
+| Legal Name | {{ company.legal_name or "N/A" }} |
+| Ticker / CIK | {{ ticker }} / {{ company.cik or "N/A" }} |
+| SIC Code | {{ company.sic_code or "N/A" }}{% if company.sic_description and company.sic_description != "N/A" %} -- {{ company.sic_description }}{% endif %} |
+| Exchange | {{ company.exchange or "N/A" }} |
+| State of Inc. / FPI | {{ company.state_of_inc or "N/A" }} / {{ company.fpi or "N/A" }} |
+| Market Cap | {{ company.market_cap_fmt or "N/A" }} |
+| Employees | {{ company.employee_count_fmt or "N/A" }} |
+{% if company.subsidiary_count %}| Subsidiaries | {{ company.subsidiary_count }} |
+{% endif %}
+
+{% if company.business_description %}
+### Business Overview
+
+{{ company.business_description }}
+{% endif %}
+{% if classification %}
+### Classification
+
+| Attribute | Value |
+|-----------|-------|
+| Market Cap Tier | {{ classification.market_cap_tier }} |
+| Sector | {{ classification.sector_name }} ({{ classification.sector_code }}) |
+| Years Public | {{ classification.years_public }} |
+| Base Filing Rate | {{ classification.base_filing_rate_pct }} |
+| Severity Band | {{ classification.severity_band_low_m }} -- {{ classification.severity_band_high_m }} |
+| DDL Exposure Base | {{ classification.ddl_exposure_base_m }} |
+| IPO Multiplier | {{ classification.ipo_multiplier }} |
+| Cap Filing Multiplier | {{ classification.cap_filing_multiplier }} |
+{% else %}
+### Classification
+
+*Classification data not available.*
+{% endif %}
+
+{% if hazard_profile %}
+### Hazard Profile (Inherent Exposure Score)
+
+**IES: {{ hazard_profile.ies_score }}/100 ({{ hazard_profile.ies_label }})** | Multiplier: {{ hazard_profile.ies_multiplier }} | Data Coverage: {{ hazard_profile.data_coverage_pct }}
+
+{% if hazard_profile.confidence_note %}*{{ hazard_profile.confidence_note }}*
+
+{% endif %}
+{% if hazard_profile.top_risk_dimensions %}
+#### Top Risk Dimensions (Elevated+)
+
+| Dimension | Score | Exposure | Evidence |
+|-----------|-------|----------|----------|
+{% for d in hazard_profile.top_risk_dimensions %}| {{ d.name }} | {{ d.score }} | **{{ d.exposure_level }}** | {{ d.evidence }} |
+{% endfor %}
+{% endif %}
+{% if hazard_profile.interactions %}
+#### Interaction Effects
+
+{% for ie in hazard_profile.interactions %}- **{{ ie.name }}** ({{ ie.multiplier }}): {{ ie.description }}
+{% endfor %}
+{% endif %}
+#### All Hazard Dimensions ({{ hazard_profile.all_dimensions|length }} dimensions)
+
+| # | Dimension | Score | Exposure | Category | Evidence |
+|---|-----------|-------|----------|----------|----------|
+{% for d in hazard_profile.all_dimensions %}| {{ loop.index }} | {{ d.name }} | {{ d.score }} | {{ d.exposure_level }} | {{ d.category_name }} | {{ d.evidence }} |
+{% endfor %}
+
+#### Category Summary
+
+| Category | Weight | Score | Weighted | Coverage |
+|----------|--------|-------|----------|----------|
+{% for c in hazard_profile.categories %}| {{ c.category_name }} | {{ c.weight_pct }} | {{ c.raw_score }} | {{ c.weighted_score }} | {{ c.data_coverage }} |
+{% endfor %}
+{% else %}
+### Hazard Profile
+
+*Hazard profile data not available.*
+{% endif %}
+
+{% if risk_factors %}
+### Risk Factors (D&O-Relevant)
+
+{% set ns = namespace(current_cat='') %}
+{% for rf in risk_factors %}{% if rf.category != ns.current_cat %}{% set ns.current_cat = rf.category %}
+**{{ rf.category }}**
+
+{% endif %}- {% if rf.is_new %}[NEW] {% endif %}**{{ rf.title }}** ({{ rf.severity }}, D&O: {{ rf.do_relevance }}){% if rf.source_passage %}: {{ rf.source_passage }}{% endif %}
+{% endfor %}{% else %}
+### Risk Factors (D&O-Relevant)
+
+*No D&O-relevant risk factors identified.*
+{% endif %}
+{% if company.revenue_segments %}
+### Revenue Segments
+
+| Segment | % of Total |
+|---------|-----------|
+{% for seg in company.revenue_segments %}| {{ seg.name }} | {{ seg.pct }} |
+{% endfor %}{% endif %}
+{% if company.geographic_footprint %}
+### Geographic Footprint
+
+| Jurisdiction | Presence |
+|-------------|----------|
+{% for geo in company.geographic_footprint %}| {{ geo.region }} | {{ geo.detail }} |
+{% endfor %}{% endif %}
+{% if company.customer_concentration %}
+### Concentration Risk
+
+**Customer Concentration:**
+{% for c in company.customer_concentration %}- {{ c.description }}{% if c.pct %} ({{ c.pct }}){% endif %}
+{% endfor %}{% endif %}
+{% if company.supplier_concentration %}**Supplier Concentration:**
+{% for s in company.supplier_concentration %}- {{ s.description }}{% if s.pct %} ({{ s.pct }}){% endif %}
+{% endfor %}{% endif %}
+{% if company.exposure_factors %}
+### D&O Exposure Factors
+
+{% for f in company.exposure_factors %}- **{{ f.name }}** ({{ f.level }}): {{ f.rationale }}
+{% endfor %}{% endif %}
+{{ triggered_block(2) }}
+{% else %}
+*Company profile data not available.*
+{% endif %}

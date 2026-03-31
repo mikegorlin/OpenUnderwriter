@@ -1,0 +1,11 @@
+# Ground truth tickers - prioritized for validation
+# NVDA already done - will use cached LLM results
+NVDA
+AAPL
+TSLA
+MRNA
+XOM
+PG
+DIS
+SMCI
+COIN

@@ -1,0 +1,46 @@
+- id: ABS.DISC.debt_covenants
+  name: Missing Debt Covenant Disclosure
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: 'Expected disclosure absent: has_significant_debt (debt/equity > 0.5)'
+  provenance:
+    origin: phase_110_absence
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Absence detection for FIN.DEBT.covenant_compliance
+    threshold_provenance:
+      source: standard
+      rationale: Companies with significant leverage expected to disclose covenant status
+  signal_class: inference
+  group: transparency_disclosure
+  rap_class: host
+  rap_subcategory: host.financials
+  epistemology:
+    rule_origin: SEC guidance on debt covenant disclosure; material for creditor and going concern analysis
+    threshold_basis: Companies with significant leverage expected to disclose covenant status
+  evaluation:
+    mechanism: absence
+    absence_rules:
+      expectation_type: company_profile
+      expected_signals:
+      - FIN.DEBT.covenant_compliance
+      condition: has_significant_debt (debt/equity > 0.5)
+      expected_status: TRIGGERED
+      absence_trigger: SKIPPED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} missing debt covenant disclosure at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} missing debt covenant disclosure at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} missing debt covenant disclosure at {value} is within normal parameters for D&O risk assessment —
+        no D&O concern at this level.'

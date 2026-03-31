@@ -1,0 +1,157 @@
+- id: BASE.MARKET.stock_price
+  name: Stock Price and Trading Data
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: MARKET_DATA
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: stock_performance
+    formula: ''
+  acquisition:
+    sources:
+    - type: MARKET_PRICE
+      fields:
+      - extracted.market.stock
+      - extracted.market.stock.current_price
+      - extracted.market.stock.high_52w
+      - extracted.market.stock.low_52w
+      - extracted.market.stock.decline_from_high_pct
+      - extracted.market.stock.pe_ratio
+      - extracted.market.stock.beta
+      fallback_to: null
+  description: 'Stock price, returns, volume, volatility from yfinance. Includes 52-week range, PE ratio, beta, daily volume.
+
+    '
+  group: stock_performance
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: stock price history availability for market risk assessment'
+    threshold_basis: Binary data availability -- market data either retrievable from financial data providers or not; no risk
+      threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} stock price and trading data at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} stock price and trading data at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} stock price and trading data at {value} is within normal parameters for D&O risk assessment — no D&O
+        concern at this level.'
+- id: BASE.MARKET.institutional
+  name: Institutional Ownership Data
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: MARKET_DATA
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: stock_performance
+    formula: ''
+  acquisition:
+    sources:
+    - type: MARKET_OWNERSHIP
+      fields:
+      - extracted.market.ownership.institutional_pct
+      - extracted.market.ownership.top_holders
+      - extracted.market.short_interest
+      fallback_to: null
+  description: 'Institutional ownership percentages, top holders, short interest. Source: yfinance institutional_holders +
+    short interest data.
+
+    '
+  group: ownership_structure
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: institutional ownership (13F filings) availability for market risk assessment'
+    threshold_basis: Binary data availability -- market data either retrievable from financial data providers or not; no risk
+      threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} institutional ownership data at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} institutional ownership data at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} institutional ownership data at {value} is within normal parameters for D&O risk assessment — no D&O
+        concern at this level.'
+- id: BASE.MARKET.insider_trading
+  name: Insider Trading Activity
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: MARKET_DATA
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: stock_performance
+    formula: ''
+  acquisition:
+    sources:
+    - type: INSIDER_TRADES
+      fields:
+      - extracted.market.insider_analysis.transactions
+      - extracted.market.insider_analysis.cluster_events
+      - extracted.market.insider_analysis.pct_10b5_1
+      fallback_to: null
+  description: 'Insider buy/sell transactions, cluster detection, 10b5-1 plan coverage. Source: SEC Form 4 filings via yfinance.
+
+    '
+  group: insider_trading
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: insider trading (Form 4 filings) availability for market risk assessment'
+    threshold_basis: Binary data availability -- market data either retrievable from financial data providers or not; no risk
+      threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} insider trading activity at {value} represents host risk (company-level characteristics that
+        attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} insider trading activity at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} insider trading activity at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'

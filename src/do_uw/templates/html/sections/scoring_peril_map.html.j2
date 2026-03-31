@@ -1,0 +1,48 @@
+{# Peril Map — split from scoring.html.j2 per CLAUDE.md 500-line rule.
+   Renders the plaintiff-type peril map and bear cases.
+   Included by scoring.html.j2 after the NLP Filing Analysis block. #}
+
+{# --- Peril Map --- #}
+{% if peril_map %}
+<h3>Peril Map</h3>
+<div class="bg-bg-alt border border-gray-200 rounded p-4 my-3 page-break-inside-avoid">
+  <p class="font-heading text-sm m-0"><strong>Overall Assessment:</strong> {{ peril_map.overall_assessment }}</p>
+</div>
+{% if peril_map.assessments %}
+<h4>Plaintiff Assessments</h4>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Plaintiff Type</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Probability</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Severity</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Key Evidence</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for a in peril_map.assessments %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ a.type|humanize }}</td>
+      <td class="p-1">{{ a.probability|humanize }}</td>
+      <td class="p-1">{{ a.severity|humanize }}</td>
+      <td class="p-1 text-xs text-gray-500">{{ a.evidence | humanize_evidence }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% if peril_map.bear_cases %}
+<h4>Bear Cases</h4>
+<div class="space-y-2 my-2">
+  {% for bc in peril_map.bear_cases %}
+  <div class="border-l-3 border-red-600 pl-3 py-2 page-break-inside-avoid">
+    <p class="text-sm font-semibold text-red-800 m-0">{{ bc.theory | humanize_theory }} (Prob: {{ bc.probability|humanize }}, Severity: {{ bc.severity|humanize }})</p>
+    <p class="text-sm text-gray-700 m-0 mt-1">{{ bc.summary }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% else %}
+<h3>Peril Map</h3>
+{{ gap_notice("Peril Map", "Peril assessment not available") }}
+{% endif %}

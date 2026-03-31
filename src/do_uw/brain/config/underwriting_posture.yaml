@@ -1,0 +1,90 @@
+# Underwriting posture decision matrix.
+# Maps scoring tier to recommended underwriting position.
+# Per Phase 117 CONTEXT.md: lives in brain YAML, not Python.
+#
+# The posture engine reads this config at runtime, derives base posture
+# from scoring tier, then applies factor overrides for company-specific
+# adjustments. Nuclear trigger escalation overrides all.
+
+posture_matrix:
+  WIN:
+    decision: "Full terms"
+    retention: "Standard"
+    limit: "Full tower"
+    pricing: "At-model"
+    exclusions: "Standard"
+    monitoring: "Annual review"
+    re_evaluation: "At renewal"
+  WANT:
+    decision: "Full terms with monitoring"
+    retention: "Standard"
+    limit: "Full tower"
+    pricing: "Slight adjustment"
+    exclusions: "Standard"
+    monitoring: "Semi-annual review"
+    re_evaluation: "6 months"
+  WRITE:
+    decision: "Conditional terms"
+    retention: "Elevated retention"
+    limit: "Sublimit consideration"
+    pricing: "+10-20% over model"
+    exclusions: "Targeted exclusions"
+    monitoring: "Quarterly review"
+    re_evaluation: "3 months"
+  WATCH:
+    decision: "Restricted terms"
+    retention: "High retention"
+    limit: "Sublimit required"
+    pricing: "+25-50% over model"
+    exclusions: "Broad exclusions"
+    monitoring: "Continuous monitoring"
+    re_evaluation: "Monthly"
+  WALK:
+    decision: "Decline consideration"
+    retention: "Maximum retention"
+    limit: "Minimum limit"
+    pricing: "+50%+ over model"
+    exclusions: "Extensive exclusions"
+    monitoring: "Monthly review"
+    re_evaluation: "Monthly"
+  NO_TOUCH:
+    decision: "Decline"
+    retention: "N/A"
+    limit: "N/A"
+    pricing: "N/A"
+    exclusions: "N/A"
+    monitoring: "N/A"
+    re_evaluation: "N/A"
+
+# Factor-specific overrides applied on top of base posture.
+# Conditions reference scoring factor scores from ScoringResult.
+factor_overrides:
+  - condition: "F1 > 0"
+    factor_id: "F.1"
+    description: "Active SCA or recent litigation"
+    add_exclusion: "Litigation exclusion (pending/prior matters)"
+    add_monitoring: "Quarterly litigation status check"
+    rationale: "Active SCA creates direct loss exposure; prior litigation indicates elevated recurrence risk"
+  - condition: "F7 > 5"
+    factor_id: "F.7"
+    description: "Heavy insider selling"
+    add_monitoring: "Monthly insider trading report"
+    rationale: "Heavy selling indicates potential scienter evidence in future SCA"
+  - condition: "F3 > 0"
+    factor_id: "F.3"
+    description: "Restatement history"
+    add_exclusion: "Financial reporting exclusion"
+    add_monitoring: "Quarterly financial reporting review"
+    rationale: "Restatement history increases recurrence risk and 10b-5 exposure"
+  - condition: "F9 > 0"
+    factor_id: "F.9"
+    description: "SEC enforcement"
+    add_exclusion: "Regulatory investigation exclusion"
+    add_monitoring: "Monthly SEC filing monitor"
+    rationale: "SEC enforcement creates direct regulatory exposure and derivative suit risk"
+
+# Nuclear trigger escalation: any fired nuclear trigger overrides posture.
+nuclear_escalation:
+  message: "NUCLEAR TRIGGER FIRED -- escalate to senior underwriting review"
+  override_monitoring: "Immediate daily monitoring"
+  override_re_evaluation: "Immediate"

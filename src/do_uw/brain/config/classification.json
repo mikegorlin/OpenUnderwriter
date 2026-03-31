@@ -1,0 +1,126 @@
+{
+  "version": "1.0",
+  "market_cap_tiers": [
+    {
+      "tier": "MEGA",
+      "min_cap": 200000000000,
+      "filing_rate_range": [
+        6,
+        8
+      ],
+      "filing_multiplier": 1.8,
+      "severity_band_m": [
+        150,
+        500
+      ]
+    },
+    {
+      "tier": "LARGE",
+      "min_cap": 10000000000,
+      "filing_rate_range": [
+        4,
+        6
+      ],
+      "filing_multiplier": 1.3,
+      "severity_band_m": [
+        40,
+        150
+      ]
+    },
+    {
+      "tier": "MID",
+      "min_cap": 2000000000,
+      "filing_rate_range": [
+        3,
+        4
+      ],
+      "filing_multiplier": 1.0,
+      "severity_band_m": [
+        15,
+        40
+      ]
+    },
+    {
+      "tier": "SMALL",
+      "min_cap": 300000000,
+      "filing_rate_range": [
+        2,
+        3
+      ],
+      "filing_multiplier": 0.7,
+      "severity_band_m": [
+        5,
+        15
+      ]
+    },
+    {
+      "tier": "MICRO",
+      "min_cap": 0,
+      "filing_rate_range": [
+        1,
+        2
+      ],
+      "filing_multiplier": 0.5,
+      "severity_band_m": [
+        2,
+        5
+      ]
+    }
+  ],
+  "sector_rates": {
+    "BIOT": 7.0,
+    "TECH": 5.0,
+    "HLTH": 4.0,
+    "FINS": 4.0,
+    "COMM": 3.5,
+    "CONS": 3.5,
+    "ENGY": 3.0,
+    "INDU": 2.5,
+    "STPL": 2.0,
+    "UTIL": 1.5,
+    "REIT": 3.0,
+    "DEFAULT": 3.5
+  },
+  "ipo_age_decay": {
+    "cliff_years": 3,
+    "cliff_multiplier": 2.8,
+    "transition_years": 5,
+    "transition_multiplier": 1.5,
+    "seasoned_multiplier": 1.0
+  },
+  "ies_multiplier_breakpoints": [
+    [
+      0,
+      0.5
+    ],
+    [
+      20,
+      0.7
+    ],
+    [
+      35,
+      0.85
+    ],
+    [
+      50,
+      1.0
+    ],
+    [
+      65,
+      1.3
+    ],
+    [
+      80,
+      2.0
+    ],
+    [
+      90,
+      2.5
+    ],
+    [
+      100,
+      3.5
+    ]
+  ],
+  "ddl_base_drop_pct": 15
+}

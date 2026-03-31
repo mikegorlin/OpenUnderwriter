@@ -1,0 +1,87 @@
+{
+  "version": "1.0",
+  "description": "Per-section quality assertions for worksheet output validation. Consumed by tests/test_worksheet_quality.py and extensible for CI/CD quality gates.",
+  "deal_breakers": [
+    {
+      "id": "DB-01",
+      "check": "company_name_not_unknown",
+      "description": "Company name must not be 'Unknown Company'"
+    },
+    {
+      "id": "DB-02",
+      "check": "no_wrong_company_data",
+      "description": "No cross-contamination (e.g., Tim Cook in TSLA worksheet)"
+    },
+    {
+      "id": "DB-03",
+      "check": "no_unsourced_claims",
+      "description": "Every SourcedValue in state has a non-empty source field"
+    },
+    {
+      "id": "DB-04",
+      "check": "no_stale_data_as_current",
+      "description": "Data freshness date present; data older than 1 year flagged with caveat"
+    },
+    {
+      "id": "DB-05",
+      "check": "known_risks_present",
+      "description": "Active lawsuits and SEC investigations appear in output when present in state"
+    }
+  ],
+  "sections": [
+    {
+      "name": "Executive Summary",
+      "heading_patterns": ["Executive Summary", "Section 1"],
+      "required_state_paths": ["executive_summary", "scoring.composite_score", "scoring.tier"],
+      "quality_checks": ["has_score_breakdown", "tier_matches_score_range"]
+    },
+    {
+      "name": "Company Profile",
+      "heading_patterns": ["Company Profile", "Section 2"],
+      "required_state_paths": ["company.identity.legal_name", "company.identity.sic_code", "company.market_cap", "company.employee_count"],
+      "quality_checks": ["market_cap_is_numeric", "employee_count_is_numeric"]
+    },
+    {
+      "name": "Financial Health",
+      "heading_patterns": ["Financial", "Section 3"],
+      "required_state_paths": ["extracted.financials"],
+      "quality_checks": ["distress_scores_present"]
+    },
+    {
+      "name": "Market & Trading",
+      "heading_patterns": ["Market", "Section 4"],
+      "required_state_paths": ["extracted.market.stock"],
+      "quality_checks": ["stock_data_present"]
+    },
+    {
+      "name": "Governance & Leadership",
+      "heading_patterns": ["Governance", "Section 5"],
+      "required_state_paths": ["extracted.governance"],
+      "quality_checks": ["no_hallucinated_executives"]
+    },
+    {
+      "name": "Litigation & Regulatory",
+      "heading_patterns": ["Litigation", "Section 6"],
+      "required_state_paths": ["extracted.litigation"],
+      "quality_checks": ["active_cases_listed"]
+    },
+    {
+      "name": "Risk Scoring",
+      "heading_patterns": ["Scoring", "Risk Scoring", "Section 7"],
+      "required_state_paths": ["scoring.composite_score", "scoring.factor_scores", "scoring.tier"],
+      "quality_checks": ["score_not_perfect_100", "tier_consistent_with_score"]
+    }
+  ],
+  "cross_contamination_rules": {
+    "AAPL": {
+      "must_not_contain": ["Elon Musk", "Tesla, Inc."],
+      "expected_company": "Apple Inc.",
+      "expected_ceo_pattern": "Tim Cook"
+    },
+    "TSLA": {
+      "must_not_contain": ["Tim Cook", "Apple Inc."],
+      "expected_company": "Tesla, Inc.",
+      "expected_ceo_pattern": "Elon Musk"
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "temporal_thresholds_schema",
+  "version": "1.0",
+  "description": "Thresholds for temporal change detection engine. Defines consecutive-period thresholds and magnitude cutoffs for classifying trends as DETERIORATING or CRITICAL.",
+  "consecutive_adverse_threshold": 3,
+  "critical_consecutive_threshold": 4,
+  "magnitude_thresholds": {
+    "revenue_growth": {
+      "deteriorating_pct": -10,
+      "critical_pct": -25,
+      "direction": "lower_is_worse",
+      "description": "Revenue growth rate decline"
+    },
+    "gross_margin": {
+      "deteriorating_pct": -5,
+      "critical_pct": -15,
+      "direction": "lower_is_worse",
+      "description": "Gross margin compression"
+    },
+    "operating_margin": {
+      "deteriorating_pct": -5,
+      "critical_pct": -15,
+      "direction": "lower_is_worse",
+      "description": "Operating margin compression"
+    },
+    "dso_days": {
+      "deteriorating_pct": 15,
+      "critical_pct": 30,
+      "direction": "higher_is_worse",
+      "description": "Days Sales Outstanding expansion"
+    },
+    "operating_cash_flow": {
+      "deteriorating_pct": -20,
+      "critical_pct": -40,
+      "direction": "lower_is_worse",
+      "description": "Operating cash flow decline"
+    },
+    "current_ratio": {
+      "deteriorating_pct": -15,
+      "critical_pct": -30,
+      "direction": "lower_is_worse",
+      "description": "Current ratio decline"
+    },
+    "debt_to_ebitda": {
+      "deteriorating_pct": 20,
+      "critical_pct": 50,
+      "direction": "higher_is_worse",
+      "description": "Leverage ratio increase"
+    },
+    "interest_coverage": {
+      "deteriorating_pct": -20,
+      "critical_pct": -40,
+      "direction": "lower_is_worse",
+      "description": "Interest coverage ratio decline"
+    }
+  }
+}

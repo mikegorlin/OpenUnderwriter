@@ -1,0 +1,25 @@
+{# Concentration Assessment -- 4-dimension risk cards #}
+{# Phase 134: COMP-04, D-09, D-11 #}
+{% if has_concentration %}
+<h3>Concentration Assessment
+  <span style="font-size:8pt;font-weight:400;margin-left:8px" class="
+    {% if concentration_risk_level == 'HIGH' %}text-red-600
+    {% elif concentration_risk_level == 'MEDIUM' %}text-amber-600
+    {% else %}text-green-600{% endif %}">
+    Overall: {{ concentration_risk_level }}
+  </span>
+</h3>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0">
+  {% for dim in concentration_dims %}
+  <div style="border:1px solid {% if dim.level == 'HIGH' %}#FECACA{% elif dim.level == 'MEDIUM' %}#FDE68A{% else %}#D1FAE5{% endif %};border-radius:6px;padding:8px 12px;background:{% if dim.level == 'HIGH' %}#FEF2F2{% elif dim.level == 'MEDIUM' %}#FFFBEB{% else %}#F0FDF4{% endif %}">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <span style="font-size:9pt;font-weight:700;color:#111827">{{ dim.dimension }}</span>
+      <span style="font-size:7pt;font-weight:700;padding:1px 8px;border-radius:8px;color:white;background:{% if dim.level == 'HIGH' %}#DC2626{% elif dim.level == 'MEDIUM' %}#D97706{% else %}#059669{% endif %}">{{ dim.level }}</span>
+    </div>
+    <div style="font-size:8pt;color:#374151;line-height:1.4">{{ dim.key_data }}</div>
+    <div style="font-size:7.5pt;color:#6B7280;line-height:1.3;margin-top:4px;font-style:italic">{{ dim.do_implication }}</div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

@@ -1,0 +1,16 @@
+{# Industry Claim Patterns — extracted from litigation.html.j2 #}
+
+  {# --- Industry Claim Patterns --- #}
+  {% set patterns = lit.get('industry_patterns', []) %}
+  {% if patterns %}
+  <h3>Industry Claim Patterns</h3>
+  <ul class="list-disc ml-5 text-sm text-gray-700 space-y-1">
+    {% for pattern in patterns %}
+    <li>{{ pattern }}</li>
+    {% endfor %}
+  </ul>
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>Industry claim patterns indicate the most common allegation theories and plaintiff strategies for companies in this sector</li>
+    <li>These patterns inform both frequency and severity assumptions in D&amp;O underwriting</li>
+  </ul>
+  {% endif %}

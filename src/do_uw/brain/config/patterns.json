@@ -1,0 +1,1547 @@
+{
+  "$schema": "PATTERNS_V1",
+  "version": "1.0.0",
+  "description": "Composite risk patterns for D&O underwriting. Each pattern combines multiple checks to detect higher-order risk indicators.",
+  "last_updated": "2026-02-07",
+  "source": "SYSTEM/BRAIN/PATTERNS.md v1.0 (2026-01-30)",
+  "total_patterns": 19,
+  "allegation_types": {
+    "A": "Disclosure - 10b-5/Section 11 misstatement/omission claims",
+    "B": "Guidance - Forward-looking statement fraud claims",
+    "C": "Product/Ops - Operational and product-related claims",
+    "D": "Governance - Fiduciary breach and derivative claims",
+    "E": "M&A - Merger and acquisition-related claims"
+  },
+  "categories": {
+    "stock": {
+      "count": 6,
+      "concern": "Stock-based claims, loss causation"
+    },
+    "business": {
+      "count": 4,
+      "concern": "Operational fragility, sustainability"
+    },
+    "financial": {
+      "count": 3,
+      "concern": "Financial disclosure, guidance fraud"
+    },
+    "governance": {
+      "count": 3,
+      "concern": "Fiduciary duties, oversight failures"
+    },
+    "forward": {
+      "count": 3,
+      "concern": "Prospective disclosure risk"
+    }
+  },
+  "patterns": [
+    {
+      "id": "PATTERN.STOCK.EVENT_COLLAPSE",
+      "name": "Event Collapse",
+      "category": "stock",
+      "allegation_types": [
+        "A",
+        "B"
+      ],
+      "description": "Single-day stock price shock (>15%) caused by a company-specific event while peers remain stable. Most common trigger for securities class actions.",
+      "trigger_conditions": [
+        {
+          "field": "single_day_drop_pct",
+          "operator": "gt",
+          "value": 15,
+          "description": "Single-day drop exceeds 15%"
+        },
+        {
+          "field": "trigger_type",
+          "operator": "in",
+          "value": [
+            "earnings",
+            "guidance",
+            "fraud",
+            "restatement"
+          ],
+          "description": "Company-specific trigger identified"
+        },
+        {
+          "field": "peer_avg_drop_pct",
+          "operator": "lt",
+          "value": 5,
+          "description": "Peer average drop below 5% (company-specific)"
+        }
+      ],
+      "severity_modifiers": [
+        {
+          "field": "single_day_drop_pct",
+          "operator": "gt",
+          "value": 25,
+          "points": 1,
+          "label": "SEVERE drop"
+        },
+        {
+          "field": "trigger_type",
+          "operator": "eq",
+          "value": "earnings",
+          "points": 1,
+          "label": "Earnings trigger"
+        },
+        {
+          "field": "trigger_type",
+          "operator": "eq",
+          "value": "fraud",
+          "points": 2,
+          "label": "Fraud trigger"
+        }
+      ],
+      "score_impact": {
+        "F2": {
+          "base": 2,
+          "max": 5
+        }
+      },
+      "component_signals": [
+        "STOCK.PRICE.single_day_events",
+        "STOCK.PRICE.attribution",
+        "STOCK.LIT.existing_action"
+      ],
+      "litigation_correlation": "18-35%"
+    },
+    {
+      "id": "PATTERN.STOCK.INFORMED_TRADING",
+      "name": "Informed Trading",
+      "category": "stock",
+      "allegation_types": [
+        "D",
+        "A"
+      ],
+      "description": "Evidence that insiders positioned ahead of material non-public information. Provides scienter element for 10b-5 claims.",
+      "trigger_conditions": [
+        {
+          "field": "signals_detected_count",
+          "operator": "gte",
+          "value": 2,
+          "description": "At least 2 of the following signals detected"
+        }
+      ],
+      "signal_definitions": [
+        {
+          "field": "put_volume_ratio_30d",
+          "operator": "gt",
+          "value": 3.0,
+          "description": "Put volume spike >3x average in 30 days before drop"
+        },
+        {
+          "field": "ceo_cfo_sale_value",
+          "operator": "gt",
+          "value": 1000000,
+          "description": "CEO/CFO sale exceeds $1M"
+        },
+        {
+          "field": "insiders_selling_same_window",
+          "operator": "gte",
+          "value": 3,
+          "description": "3+ insiders selling in same window"
+        },
+        {
+          "field": "10b5_1_plan_modified_or_terminated",
+          "operator": "eq",
+          "value": true,
+          "description": "10b5-1 plan modified or terminated"
+        }
+      ],
+      "score_impact": {
+        "F2": {
+          "type": "multiplier",
+          "2_signals": 1.5,
+          "3_plus_signals": 2.0,
+          "ceo_sold_bonus": 0.25,
+          "cap": 15,
+          "formula": "F2_Final = MIN(F2_Base x Insider_Multiplier, 15)"
+        }
+      },
+      "component_signals": [
+        "STOCK.INSIDER.summary",
+        "STOCK.INSIDER.notable_activity",
+        "STOCK.INSIDER.10b5_1_analysis",
+        "STOCK.INSIDER.cluster_timing",
+        "GOV.INSIDER.sales_timing"
+      ],
+      "litigation_correlation": "12-22%"
+    },
+    {
+      "id": "PATTERN.STOCK.CASCADE",
+      "name": "Cascade Decline",
+      "category": "stock",
+      "allegation_types": [
+        "A"
+      ],
+      "description": "Sustained decline (>20 days) without recovery bounce, suggesting ongoing damage and persistent negative sentiment.",
+      "trigger_conditions": [
+        {
+          "field": "decline_duration_days",
+          "operator": "gt",
+          "value": 20,
+          "description": "Decline persists for more than 20 days"
+        },
+        {
+          "field": "max_bounce_pct",
+          "operator": "lt",
+          "value": 5,
+          "description": "Maximum recovery bounce below 5%"
+        },
+        {
+          "field": "short_interest_trend",
+          "operator": "eq",
+          "value": "RISING",
+          "description": "Short interest trend is rising"
+        }
+      ],
+      "severity_modifiers": [
+        {
+          "field": "decline_duration_days",
+          "operator": "gt",
+          "value": 40,
+          "points": 1,
+          "label": ">40 days decline"
+        },
+        {
+          "field": "short_interest_doubled",
+          "operator": "eq",
+          "value": true,
+          "points": 1,
+          "label": "Short interest doubling"
+        }
+      ],
+      "score_impact": {
+        "F2": {
+          "base": 2,
+          "max": 3
+        }
+      },
+      "component_signals": [
+        "STOCK.PRICE.returns_multi_horizon",
+        "STOCK.PRICE.recovery",
+        "STOCK.SHORT.trend"
+      ],
+      "litigation_correlation": "15-28%"
+    },
+    {
+      "id": "PATTERN.STOCK.PEER_DIVERGENCE",
+      "name": "Peer Divergence",
+      "category": "stock",
+      "allegation_types": [
+        "A"
+      ],
+      "description": "Company stock significantly underperforms direct peers, establishing company-specific causation.",
+      "trigger_conditions": [
+        {
+          "any_of": [
+            {
+              "field": "company_vs_peer_30d_pct",
+              "operator": "lt",
+              "value": -15,
+              "description": "30-day underperformance vs peers exceeds 15%"
+            },
+            {
+              "field": "company_vs_peer_90d_pct",
+              "operator": "lt",
+              "value": -20,
+              "description": "90-day underperformance vs peers exceeds 20%"
+            }
+          ]
+        }
+      ],
+      "severity_modifiers": [
+        {
+          "field": "divergence_gap_pct",
+          "operator": "gt",
+          "value": 30,
+          "points": 1,
+          "label": "Gap exceeds 30%"
+        },
+        {
+          "field": "gap_accelerating",
+          "operator": "eq",
+          "value": true,
+          "points": 1,
+          "label": "Gap is accelerating"
+        }
+      ],
+      "score_impact": {
+        "F2": {
+          "base": 3,
+          "max": 4
+        }
+      },
+      "component_signals": [
+        "STOCK.PRICE.peer_relative",
+        "STOCK.PRICE.attribution",
+        "BIZ.COMP.peer_litigation"
+      ],
+      "litigation_correlation": "22-38%"
+    },
+    {
+      "id": "PATTERN.STOCK.DEATH_SPIRAL",
+      "name": "Death Spiral",
+      "category": "stock",
+      "allegation_types": [
+        "A",
+        "D"
+      ],
+      "description": "Multi-factor distress pattern indicating company is on trajectory toward delisting or insolvency.",
+      "trigger_conditions": [
+        {
+          "field": "death_spiral_factors_count",
+          "operator": "gte",
+          "value": 3,
+          "description": "At least 3 of the following factors present"
+        }
+      ],
+      "factor_definitions": [
+        {
+          "field": "stock_price",
+          "operator": "lt",
+          "value": 5.0,
+          "description": "Stock price below $5 (penny stock threshold)"
+        },
+        {
+          "field": "convertibles_pct_market_cap",
+          "operator": "gt",
+          "value": 20,
+          "description": "Convertibles exceed 20% of market cap"
+        },
+        {
+          "field": "short_interest_vs_sector_ratio",
+          "operator": "gt",
+          "value": 2.0,
+          "description": "Short interest exceeds 2x sector average"
+        },
+        {
+          "field": "delisting_warning_received",
+          "operator": "eq",
+          "value": true,
+          "description": "Exchange delisting warning received"
+        },
+        {
+          "field": "cash_runway_months",
+          "operator": "lt",
+          "value": 12,
+          "description": "Cash runway below 12 months"
+        }
+      ],
+      "severity_levels": [
+        {
+          "factors_count": 3,
+          "severity": "DETECTED",
+          "f2_points": 3
+        },
+        {
+          "factors_count": 4,
+          "severity": "HIGH",
+          "f2_points": 5
+        },
+        {
+          "factors_count": 5,
+          "severity": "SEVERE",
+          "f2_points": 8
+        }
+      ],
+      "score_impact": {
+        "F2": {
+          "base": 3,
+          "max": 8
+        },
+        "F8": {
+          "base": 4,
+          "max": 4
+        }
+      },
+      "component_signals": [
+        "STOCK.PRICE.position",
+        "STOCK.PRICE.delisting_risk",
+        "STOCK.SHORT.position",
+        "FIN.DEBT.structure",
+        "FIN.LIQ.cash_burn"
+      ],
+      "litigation_correlation": "25-45%",
+      "note": "Max impact in PATTERNS.md says +10 (F2 max 8 + F8 base 4 can exceed 10 total across factors)"
+    },
+    {
+      "id": "PATTERN.STOCK.SHORT_ATTACK",
+      "name": "Short Seller Attack",
+      "category": "stock",
+      "allegation_types": [
+        "A"
+      ],
+      "description": "Coordinated short seller campaign targeting the company with fraud allegations. Short seller reports often precede or accompany securities litigation.",
+      "trigger_conditions": [
+        {
+          "field": "short_attack_signals_count",
+          "operator": "gte",
+          "value": 2,
+          "description": "At least 2 of the following signals present"
+        }
+      ],
+      "signal_definitions": [
+        {
+          "field": "short_seller_report_published",
+          "operator": "eq",
+          "value": true,
+          "description": "Named short seller report published"
+        },
+        {
+          "field": "short_interest_mom_change_pct",
+          "operator": "gt",
+          "value": 50,
+          "description": "Short interest spike >50% month-over-month"
+        },
+        {
+          "field": "stock_drop_on_report_day_pct",
+          "operator": "gt",
+          "value": 15,
+          "description": "Stock drops >15% on report day"
+        },
+        {
+          "field": "company_issued_rebuttal",
+          "operator": "eq",
+          "value": true,
+          "description": "Company issues formal rebuttal"
+        },
+        {
+          "field": "sec_doj_inquiry_post_report",
+          "operator": "eq",
+          "value": true,
+          "description": "SEC/DOJ inquiry announced after report"
+        }
+      ],
+      "score_impact": {
+        "F6": {
+          "active_attack_with_fraud": 8,
+          "post_attack_or_valuation_only": 4,
+          "max": 8
+        }
+      },
+      "status_values": [
+        "ACTIVE_ATTACK",
+        "POST_ATTACK",
+        "NO_ATTACK"
+      ],
+      "component_signals": [
+        "STOCK.SHORT.report",
+        "STOCK.SHORT.trend",
+        "STOCK.PRICE.single_day_events",
+        "STOCK.LIT.existing_action"
+      ],
+      "litigation_correlation": "28-42% (fraud allegations); 12-18% (valuation-only)"
+    },
+    {
+      "id": "PATTERN.BIZ.SUSTAINABILITY_RISK",
+      "name": "Sustainability Risk",
+      "category": "business",
+      "allegation_types": [
+        "A",
+        "C"
+      ],
+      "description": "Business model faces existential pressure from multiple concentration and dependency risks.",
+      "trigger_conditions": [
+        {
+          "field": "sustainability_triggers_count",
+          "operator": "gte",
+          "value": 3,
+          "description": "At least 3 of the following triggers present"
+        }
+      ],
+      "signal_definitions": [
+        {
+          "field": "top_customer_revenue_pct",
+          "operator": "gt",
+          "value": 40,
+          "description": "Customer concentration exceeds 40% single customer"
+        },
+        {
+          "field": "project_based_revenue_pct",
+          "operator": "gt",
+          "value": 80,
+          "description": "Revenue model exceeds 80% project-based"
+        },
+        {
+          "field": "regulatory_dependency",
+          "operator": "eq",
+          "value": "ENTIRE_MODEL",
+          "description": "Entire business model depends on regulatory approval"
+        },
+        {
+          "field": "technology_disruption_risk",
+          "operator": "eq",
+          "value": "HIGH",
+          "description": "Technology disruption risk is HIGH"
+        },
+        {
+          "field": "operating_leverage_high_and_revenue_declining",
+          "operator": "eq",
+          "value": true,
+          "description": "Operating leverage is HIGH with declining revenue"
+        },
+        {
+          "field": "supplier_concentration",
+          "operator": "eq",
+          "value": "CRITICAL",
+          "description": "Supplier concentration is critical"
+        }
+      ],
+      "severity_levels": [
+        {
+          "triggers_count_range": [
+            0,
+            1
+          ],
+          "severity": "BASELINE",
+          "points": 0
+        },
+        {
+          "triggers_count_range": [
+            2,
+            3
+          ],
+          "severity": "ELEVATED",
+          "points": 2
+        },
+        {
+          "triggers_count_range": [
+            4,
+            5
+          ],
+          "severity": "HIGH",
+          "points": 3
+        },
+        {
+          "triggers_count_min": 6,
+          "severity": "SEVERE",
+          "points": 4
+        }
+      ],
+      "score_impact": {
+        "F9": {
+          "base": 2,
+          "max": 4
+        }
+      },
+      "component_signals": [
+        "BIZ.MODEL.sustainability",
+        "BIZ.DEPEND.customer_concentration",
+        "BIZ.MODEL.revenue_type",
+        "BIZ.MODEL.disruption",
+        "BIZ.MODEL.leverage_ops"
+      ]
+    },
+    {
+      "id": "PATTERN.BIZ.GROWTH_TRAJECTORY",
+      "name": "Growth Trajectory Risk",
+      "category": "business",
+      "allegation_types": [
+        "B",
+        "A"
+      ],
+      "description": "Decelerating growth trajectory with elevated market expectations. Classic 'growth darling' risk profile.",
+      "trigger_conditions": [
+        {
+          "field": "consecutive_years_decelerating_revenue",
+          "operator": "gte",
+          "value": 3,
+          "description": "3 consecutive years of decelerating revenue growth"
+        },
+        {
+          "field": "pe_ratio_vs_sector_avg",
+          "operator": "gt",
+          "value": 2.0,
+          "description": "P/E ratio exceeds 2x sector average"
+        },
+        {
+          "field": "analyst_consensus",
+          "operator": "eq",
+          "value": "BUY",
+          "description": "High analyst coverage with consensus BUY",
+          "note": "This condition is qualitative - need to define 'high coverage' threshold. Suggested: 10+ analysts covering."
+        },
+        {
+          "field": "provides_specific_growth_guidance",
+          "operator": "eq",
+          "value": true,
+          "description": "Company provides specific growth guidance"
+        }
+      ],
+      "trigger_logic": "deceleration AND elevated_expectations (first 2 conditions required, plus at least 1 of conditions 3-4)",
+      "score_impact": {
+        "F5": {
+          "base": 3,
+          "max": 3
+        }
+      },
+      "component_signals": [
+        "BIZ.SIZE.geographic_scope",
+        "STOCK.ANALYST.coverage",
+        "FIN.GUIDE.track_record"
+      ],
+      "note": "PATTERNS.md maps scoring to F6 (Guidance Miss Risk) but the factor description in scoring_weights.json maps guidance to F5. Using F5 as canonical."
+    },
+    {
+      "id": "PATTERN.BIZ.CONCENTRATION",
+      "name": "Compound Concentration Risk",
+      "category": "business",
+      "allegation_types": [
+        "A"
+      ],
+      "description": "Compound concentration risk where multiple dependency factors create systemic fragility.",
+      "trigger_conditions": [
+        {
+          "field": "concentration_triggers_count",
+          "operator": "gte",
+          "value": 2,
+          "description": "At least 2 of the following concentration factors present"
+        }
+      ],
+      "signal_definitions": [
+        {
+          "field": "single_customer_revenue_pct",
+          "operator": "gt",
+          "value": 20,
+          "description": "Single customer exceeds 20% revenue"
+        },
+        {
+          "field": "single_supplier_input_pct",
+          "operator": "gt",
+          "value": 30,
+          "description": "Single supplier exceeds 30% inputs"
+        },
+        {
+          "field": "single_geography_revenue_pct",
+          "operator": "gt",
+          "value": 50,
+          "description": "Single geography exceeds 50% revenue"
+        },
+        {
+          "field": "single_product_revenue_pct",
+          "operator": "gt",
+          "value": 60,
+          "description": "Single product exceeds 60% revenue"
+        },
+        {
+          "field": "single_channel_distribution_pct",
+          "operator": "gt",
+          "value": 60,
+          "description": "Single channel exceeds 60% distribution"
+        },
+        {
+          "field": "single_technology_dependency",
+          "operator": "eq",
+          "value": true,
+          "description": "Single technology dependency"
+        },
+        {
+          "field": "single_regulatory_relationship",
+          "operator": "eq",
+          "value": true,
+          "description": "Single regulatory relationship"
+        },
+        {
+          "field": "key_person_dependency",
+          "operator": "eq",
+          "value": "HIGH",
+          "description": "Key person dependency is HIGH"
+        }
+      ],
+      "severity_levels": [
+        {
+          "triggers_count_range": [
+            0,
+            1
+          ],
+          "severity": "BASELINE",
+          "points": 0
+        },
+        {
+          "triggers_count": 2,
+          "severity": "ELEVATED",
+          "points": 2
+        },
+        {
+          "triggers_count_range": [
+            3,
+            4
+          ],
+          "severity": "HIGH",
+          "points": 4
+        },
+        {
+          "triggers_count_min": 5,
+          "severity": "SEVERE",
+          "points": 6
+        }
+      ],
+      "score_impact": {
+        "F9": {
+          "base": 2,
+          "max": 6
+        }
+      },
+      "component_signals": [
+        "BIZ.DEPEND.customer_concentration",
+        "BIZ.DEPEND.supplier_concentration",
+        "BIZ.MODEL.revenue_geo",
+        "BIZ.MODEL.revenue_segment",
+        "BIZ.DEPEND.labor"
+      ]
+    },
+    {
+      "id": "PATTERN.FIN.LIQUIDITY_STRESS",
+      "name": "Liquidity Stress",
+      "category": "financial",
+      "allegation_types": [
+        "A"
+      ],
+      "description": "Multiple liquidity warning signs present simultaneously, indicating undisclosed financial distress.",
+      "trigger_conditions": [
+        {
+          "field": "liquidity_stress_signals_count",
+          "operator": "gte",
+          "value": 4,
+          "description": "At least 4 of the following stress signals present"
+        }
+      ],
+      "signal_definitions": [
+        {
+          "field": "current_ratio_declining_quarters",
+          "operator": "gte",
+          "value": 3,
+          "description": "Current ratio declining 3+ consecutive quarters"
+        },
+        {
+          "field": "cash_position_declining_quarters",
+          "operator": "gte",
+          "value": 3,
+          "description": "Cash position declining 3+ consecutive quarters"
+        },
+        {
+          "field": "working_capital_negative_or_declining_rapidly",
+          "operator": "eq",
+          "value": true,
+          "description": "Working capital negative or declining rapidly"
+        },
+        {
+          "field": "ocf_negative_or_declining",
+          "operator": "eq",
+          "value": true,
+          "description": "Operating cash flow negative or declining"
+        },
+        {
+          "field": "revolver_utilization_pct",
+          "operator": "gt",
+          "value": 50,
+          "description": "Revolver utilization exceeds 50% and rising",
+          "note": "'Rising' is qualitative -- need to define as QoQ increase"
+        },
+        {
+          "field": "cash_runway_months",
+          "operator": "lt",
+          "value": 12,
+          "description": "Cash runway below 12 months"
+        },
+        {
+          "field": "debt_covenants_at_risk",
+          "operator": "eq",
+          "value": true,
+          "description": "Debt covenants at risk of breach"
+        }
+      ],
+      "score_impact": {
+        "F8": {
+          "base": 4,
+          "max": 4
+        }
+      },
+      "component_signals": [
+        "FIN.LIQ.position",
+        "FIN.LIQ.working_capital",
+        "FIN.LIQ.trend",
+        "FIN.LIQ.cash_burn",
+        "FIN.DEBT.covenants"
+      ],
+      "note": "PATTERNS.md says 3 signals = ELEVATED but pattern only fires at 4+. The 3-signal ELEVATED state exists as an advisory."
+    },
+    {
+      "id": "PATTERN.FIN.GUIDANCE_TRACK_RECORD",
+      "name": "Guidance Track Record",
+      "category": "financial",
+      "allegation_types": [
+        "B"
+      ],
+      "description": "Historical pattern of guidance misses indicates management cannot reliably forecast.",
+      "trigger_conditions": [
+        {
+          "any_of": [
+            {
+              "field": "misses_in_12_quarters",
+              "operator": "gte",
+              "value": 3,
+              "description": "3+ misses in 12 quarters"
+            },
+            {
+              "field": "consecutive_misses",
+              "operator": "gte",
+              "value": 2,
+              "description": "2+ consecutive misses"
+            }
+          ]
+        }
+      ],
+      "classification": {
+        "POOR": "3+ misses in 12 quarters OR 2+ consecutive misses",
+        "MODERATE": "1-2 misses in 12 quarters",
+        "CLEAN": "Consistently meets/beats"
+      },
+      "score_impact": {
+        "F5": {
+          "3_plus_consecutive_misses": 8,
+          "2_consecutive_misses": 5,
+          "recent_miss_plus_lowered_guidance": 6,
+          "1_miss_in_4_quarters": 2,
+          "max": 8
+        }
+      },
+      "component_signals": [
+        "FIN.GUIDE.track_record",
+        "FIN.GUIDE.consistency",
+        "FIN.GUIDE.reaction",
+        "FWRD.EVENT.earnings_risk"
+      ]
+    },
+    {
+      "id": "PATTERN.GOV.TURNOVER_STRESS",
+      "name": "Turnover Stress",
+      "category": "governance",
+      "allegation_types": [
+        "D"
+      ],
+      "description": "Leadership instability pattern suggesting underlying problems. Executive departures during stress periods are red flags for derivative claims.",
+      "trigger_conditions": [
+        {
+          "field": "turnover_triggers_count",
+          "operator": "gte",
+          "value": 2,
+          "description": "At least 2 of the following turnover triggers present"
+        }
+      ],
+      "signal_definitions": [
+        {
+          "field": "ceo_tenure_years",
+          "operator": "lt",
+          "value": 2,
+          "description": "CEO tenure below 2 years"
+        },
+        {
+          "field": "cfo_tenure_years",
+          "operator": "lt",
+          "value": 1,
+          "description": "CFO tenure below 1 year"
+        },
+        {
+          "field": "ceo_and_cfo_both_under_1yr",
+          "operator": "eq",
+          "value": true,
+          "description": "Both CEO and CFO tenure under 1 year"
+        },
+        {
+          "field": "csuite_departures_12mo",
+          "operator": "gte",
+          "value": 2,
+          "description": "2+ C-suite departures in 12 months"
+        },
+        {
+          "field": "departure_during_financial_stress",
+          "operator": "eq",
+          "value": true,
+          "description": "Departure occurred during financial stress period"
+        },
+        {
+          "field": "departure_unclear_or_forced",
+          "operator": "eq",
+          "value": true,
+          "description": "Departure reason unclear or forced"
+        },
+        {
+          "field": "has_interim_ceo_cfo_cao",
+          "operator": "eq",
+          "value": true,
+          "description": "Current interim CEO, CFO, or CAO"
+        },
+        {
+          "field": "no_succession_planning_disclosed",
+          "operator": "eq",
+          "value": true,
+          "description": "No succession planning disclosed"
+        }
+      ],
+      "severity_levels": [
+        {
+          "triggers_count_range": [
+            0,
+            1
+          ],
+          "severity": "BASELINE",
+          "points": 0
+        },
+        {
+          "triggers_count_range": [
+            2,
+            3
+          ],
+          "severity": "ELEVATED",
+          "f10_points": 2
+        },
+        {
+          "triggers_count_range": [
+            4,
+            5
+          ],
+          "severity": "HIGH",
+          "f10_points": 4
+        },
+        {
+          "triggers_count_min": 6,
+          "severity": "SEVERE",
+          "f10_points": 6
+        }
+      ],
+      "score_impact": {
+        "F10": {
+          "base": 2,
+          "max": 6
+        },
+        "F9": {
+          "base": 2,
+          "max": 2
+        }
+      },
+      "component_signals": [
+        "GOV.EXEC.ceo_profile",
+        "GOV.EXEC.cfo_profile",
+        "GOV.EXEC.departures_24mo",
+        "GOV.EXEC.depart_stress",
+        "GOV.EXEC.succession",
+        "GOV.EXEC.interim"
+      ],
+      "note": "PATTERNS.md scoring references F7 (Officer Changes) and F10 (Governance Quality) but the factor model has F9=Governance and F10=Officer Stability. Mapped to F10 and F9 per the factor model."
+    },
+    {
+      "id": "PATTERN.GOV.CREDIBILITY_RISK",
+      "name": "Credibility Risk",
+      "category": "governance",
+      "allegation_types": [
+        "B",
+        "D"
+      ],
+      "description": "Management has a pattern of over-promising and under-delivering, creating forward-looking statement liability.",
+      "trigger_conditions": [
+        {
+          "field": "credibility_triggers_count",
+          "operator": "gte",
+          "value": 2,
+          "description": "At least 2 of the following credibility triggers present"
+        }
+      ],
+      "signal_definitions": [
+        {
+          "field": "guidance_misses_in_12q",
+          "operator": "gte",
+          "value": 3,
+          "description": "3+ guidance misses in 12 quarters"
+        },
+        {
+          "field": "consecutive_guidance_misses",
+          "operator": "gte",
+          "value": 2,
+          "description": "2+ consecutive guidance misses"
+        },
+        {
+          "field": "major_strategic_initiative_failed",
+          "operator": "eq",
+          "value": true,
+          "description": "Major strategic initiative failed"
+        },
+        {
+          "field": "acquisition_synergies_achieved_pct",
+          "operator": "lt",
+          "value": 70,
+          "description": "Acquisition synergies below 70% of target",
+          "note": "Requires M&A integration data, may not be available for all companies"
+        },
+        {
+          "field": "ceo_prior_track_record_misses",
+          "operator": "eq",
+          "value": true,
+          "description": "CEO has prior track record of misses at other companies"
+        },
+        {
+          "field": "cfo_prior_accounting_issues",
+          "operator": "eq",
+          "value": true,
+          "description": "CFO has prior accounting issues"
+        },
+        {
+          "field": "guidance_revised_down_count_year",
+          "operator": "gte",
+          "value": 2,
+          "description": "Guidance revised down 2+ times in year"
+        },
+        {
+          "field": "transformational_claims_not_backed",
+          "operator": "eq",
+          "value": true,
+          "description": "'Transformational' claims not backed by results",
+          "note": "Qualitative assessment -- needs analyst or NLP-based evaluation"
+        }
+      ],
+      "severity_levels": [
+        {
+          "triggers_count_range": [
+            0,
+            1
+          ],
+          "severity": "BASELINE",
+          "points": 0
+        },
+        {
+          "triggers_count_range": [
+            2,
+            3
+          ],
+          "severity": "ELEVATED"
+        },
+        {
+          "triggers_count_range": [
+            4,
+            5
+          ],
+          "severity": "HIGH"
+        },
+        {
+          "triggers_count_min": 6,
+          "severity": "SEVERE"
+        }
+      ],
+      "score_impact": {
+        "F9": {
+          "base": 2,
+          "max": 4
+        },
+        "F5": {
+          "base": 2,
+          "max": 2
+        }
+      },
+      "component_signals": [
+        "FIN.GUIDE.track_record",
+        "GOV.EXEC.ceo_credibility",
+        "GOV.EXEC.cfo_credibility",
+        "GOV.INSIDER.ownership_pct"
+      ],
+      "note": "PATTERNS.md references F10 (Governance Quality) but per factor model F9=Governance. Mapped accordingly."
+    },
+    {
+      "id": "PATTERN.GOV.PROXY_ADVISOR_RISK",
+      "name": "Proxy Advisor Risk",
+      "category": "governance",
+      "allegation_types": [
+        "D"
+      ],
+      "description": "Proxy advisors (ISS/Glass Lewis) identify significant governance problems, indicating derivative claim risk.",
+      "trigger_conditions": [
+        {
+          "field": "proxy_advisor_triggers_count",
+          "operator": "gte",
+          "value": 2,
+          "description": "At least 2 of the following proxy triggers present"
+        }
+      ],
+      "signal_definitions": [
+        {
+          "field": "iss_overall_quality_score_decile",
+          "operator": "gte",
+          "value": 9,
+          "description": "ISS Overall QualityScore decile 9-10 (worst)"
+        },
+        {
+          "field": "iss_say_on_pay_recommendation",
+          "operator": "eq",
+          "value": "AGAINST",
+          "description": "ISS recommends AGAINST say-on-pay"
+        },
+        {
+          "field": "glass_lewis_say_on_pay_recommendation",
+          "operator": "eq",
+          "value": "AGAINST",
+          "description": "Glass Lewis recommends AGAINST say-on-pay"
+        },
+        {
+          "field": "iss_p4p_flag",
+          "operator": "eq",
+          "value": "HIGH_CONCERN",
+          "description": "ISS Pay-for-Performance HIGH CONCERN flag"
+        },
+        {
+          "field": "directors_with_against_recommendations",
+          "operator": "gte",
+          "value": 2,
+          "description": "Multiple directors with AGAINST recommendations"
+        },
+        {
+          "field": "prior_year_director_support_pct",
+          "operator": "lt",
+          "value": 80,
+          "description": "Prior year director support below 80%"
+        },
+        {
+          "field": "failed_to_respond_to_low_sop",
+          "operator": "eq",
+          "value": true,
+          "description": "Failed to respond to low say-on-pay (<70%)"
+        },
+        {
+          "field": "majority_shareholder_proposal_ignored",
+          "operator": "eq",
+          "value": true,
+          "description": "Majority shareholder proposal ignored"
+        },
+        {
+          "field": "iss_flags_problematic_provisions",
+          "operator": "eq",
+          "value": true,
+          "description": "ISS flags problematic governance provisions"
+        }
+      ],
+      "severity_levels": [
+        {
+          "triggers_count_range": [
+            0,
+            1
+          ],
+          "severity": "BASELINE",
+          "points": 0
+        },
+        {
+          "triggers_count_range": [
+            2,
+            3
+          ],
+          "severity": "ELEVATED",
+          "points": 2
+        },
+        {
+          "triggers_count_range": [
+            4,
+            5
+          ],
+          "severity": "HIGH",
+          "points": 4
+        },
+        {
+          "triggers_count_min": 6,
+          "severity": "SEVERE",
+          "points": 6
+        }
+      ],
+      "score_impact": {
+        "F9": {
+          "base": 2,
+          "max": 6
+        }
+      },
+      "component_signals": [
+        "GOV.EFFECT.proxy_advisory",
+        "GOV.PAY.say_on_pay",
+        "GOV.BOARD.director_support",
+        "GOV.EFFECT.shareholder_proposal"
+      ],
+      "note": "PATTERNS.md references F10 (Governance Quality) but per factor model F9=Governance. Mapped accordingly."
+    },
+    {
+      "id": "PATTERN.FWRD.DISCLOSURE_QUALITY",
+      "name": "Disclosure Quality Risk",
+      "category": "forward",
+      "allegation_types": [
+        "A"
+      ],
+      "description": "Disclosure practices raise concerns about transparency and completeness.",
+      "trigger_conditions": [
+        {
+          "field": "disclosure_triggers_count",
+          "operator": "gte",
+          "value": 2,
+          "description": "At least 2 of the following disclosure triggers present"
+        }
+      ],
+      "signal_definitions": [
+        {
+          "field": "material_risk_factors_removed_without_explanation",
+          "operator": "eq",
+          "value": true,
+          "description": "Material risk factors removed without explanation"
+        },
+        {
+          "field": "mda_is_generic_boilerplate",
+          "operator": "eq",
+          "value": true,
+          "description": "MD&A is generic/boilerplate",
+          "note": "Qualitative assessment -- needs NLP-based evaluation or manual review"
+        },
+        {
+          "field": "sec_comment_letter_recent",
+          "operator": "eq",
+          "value": true,
+          "description": "Recent SEC comment letter"
+        },
+        {
+          "field": "non_gaap_reconciliation_unclear",
+          "operator": "eq",
+          "value": true,
+          "description": "Non-GAAP reconciliation is unclear"
+        },
+        {
+          "field": "metric_definition_changed_without_disclosure",
+          "operator": "eq",
+          "value": true,
+          "description": "Metric definition changed without disclosure"
+        },
+        {
+          "field": "kpis_dropped_from_disclosure",
+          "operator": "eq",
+          "value": true,
+          "description": "KPIs dropped from disclosure"
+        },
+        {
+          "field": "segment_changes_reduce_visibility",
+          "operator": "eq",
+          "value": true,
+          "description": "Segment changes reduce visibility"
+        },
+        {
+          "field": "guidance_methodology_changed",
+          "operator": "eq",
+          "value": true,
+          "description": "Guidance methodology changed"
+        },
+        {
+          "field": "prior_restatement_history",
+          "operator": "eq",
+          "value": true,
+          "description": "Prior restatement history exists"
+        }
+      ],
+      "severity_levels": [
+        {
+          "triggers_count_range": [
+            0,
+            1
+          ],
+          "severity": "BASELINE",
+          "points": 0
+        },
+        {
+          "triggers_count_range": [
+            2,
+            3
+          ],
+          "severity": "ELEVATED",
+          "points": 2
+        },
+        {
+          "triggers_count_range": [
+            4,
+            5
+          ],
+          "severity": "HIGH",
+          "points": 4
+        },
+        {
+          "triggers_count_min": 6,
+          "severity": "SEVERE",
+          "points": 6
+        }
+      ],
+      "score_impact": {
+        "F3": {
+          "base": 2,
+          "max": 6
+        }
+      },
+      "component_signals": [
+        "FWRD.NARRATIVE.disclosure_quality",
+        "FWRD.NARRATIVE.risk_factors",
+        "FWRD.NARRATIVE.non_gaap",
+        "FWRD.NARRATIVE.sec_comment",
+        "FWRD.NARRATIVE.prior_restatement"
+      ]
+    },
+    {
+      "id": "PATTERN.FWRD.NARRATIVE_COHERENCE",
+      "name": "Narrative Coherence Risk",
+      "category": "forward",
+      "allegation_types": [
+        "A",
+        "B"
+      ],
+      "description": "Management narrative is inconsistent across disclosure channels, suggesting potential misrepresentation.",
+      "trigger_conditions": [
+        {
+          "field": "narrative_triggers_count",
+          "operator": "gte",
+          "value": 2,
+          "description": "At least 2 of the following narrative triggers present"
+        }
+      ],
+      "signal_definitions": [
+        {
+          "field": "10k_earnings_call_contradict",
+          "operator": "eq",
+          "value": true,
+          "description": "10-K and earnings call contradict"
+        },
+        {
+          "field": "investor_pres_differs_from_sec_filings",
+          "operator": "eq",
+          "value": true,
+          "description": "Investor presentation differs materially from SEC filings"
+        },
+        {
+          "field": "management_dodges_analyst_questions",
+          "operator": "eq",
+          "value": true,
+          "description": "Management dodges analyst questions repeatedly",
+          "note": "Qualitative -- needs earnings call NLP or manual review"
+        },
+        {
+          "field": "cfo_ceo_conflicting_signals",
+          "operator": "eq",
+          "value": true,
+          "description": "CFO and CEO give conflicting signals"
+        },
+        {
+          "field": "analyst_downgrades_citing_credibility",
+          "operator": "eq",
+          "value": true,
+          "description": "Analyst downgrades citing credibility concerns"
+        },
+        {
+          "field": "detailed_short_seller_report_published",
+          "operator": "eq",
+          "value": true,
+          "description": "Detailed short seller report published"
+        },
+        {
+          "field": "auditor_added_new_cam_or_concern",
+          "operator": "eq",
+          "value": true,
+          "description": "Auditor added new Critical Audit Matter or concern"
+        },
+        {
+          "field": "industry_experts_publicly_skeptical",
+          "operator": "eq",
+          "value": true,
+          "description": "Industry experts publicly skeptical"
+        },
+        {
+          "field": "forward_guidance_language_more_hedged",
+          "operator": "eq",
+          "value": true,
+          "description": "Forward guidance language significantly more hedged"
+        }
+      ],
+      "severity_levels": [
+        {
+          "triggers_count_range": [
+            0,
+            1
+          ],
+          "severity": "BASELINE",
+          "points": 0
+        },
+        {
+          "triggers_count_range": [
+            2,
+            3
+          ],
+          "severity": "ELEVATED",
+          "points": 2
+        },
+        {
+          "triggers_count_range": [
+            4,
+            5
+          ],
+          "severity": "HIGH",
+          "points": 4
+        },
+        {
+          "triggers_count_min": 6,
+          "severity": "SEVERE",
+          "points": 6
+        }
+      ],
+      "score_impact": {
+        "F9": {
+          "base": 2,
+          "max": 6
+        }
+      },
+      "component_signals": [
+        "FWRD.SECTOR.biot_pipeline",
+        "FWRD.SECTOR.biot_pdufa",
+        "FWRD.SECTOR.tech_regulation",
+        "FWRD.SECTOR.engy_commodity"
+      ],
+      "note": "PATTERNS.md references F10 (Governance Quality) but per factor model F9=Governance. Mapped accordingly. Component checks are sector-specific proxies."
+    },
+    {
+      "id": "PATTERN.FWRD.CATALYST_RISK",
+      "name": "Catalyst Risk",
+      "category": "forward",
+      "allegation_types": [
+        "A",
+        "B",
+        "C",
+        "E"
+      ],
+      "description": "Binary event or material catalyst within 12 months creates concentrated risk window during policy period.",
+      "trigger_conditions": [
+        {
+          "field": "material_catalyst_in_policy_period",
+          "operator": "eq",
+          "value": true,
+          "description": "Material catalyst event expected within policy period"
+        }
+      ],
+      "catalyst_types": [
+        {
+          "type": "fda_decision",
+          "field": "fda_decision_pending",
+          "sector": "BIOT",
+          "f_impact": "F5",
+          "points": 3,
+          "description": "FDA decision pending (biotech)"
+        },
+        {
+          "type": "clinical_trial_readout",
+          "field": "clinical_trial_readout_pending",
+          "sector": "BIOT",
+          "f_impact": "F5",
+          "points": 3,
+          "description": "Clinical trial readout expected"
+        },
+        {
+          "type": "major_contract_renewal",
+          "field": "major_contract_renewal_pct_revenue",
+          "operator": "gt",
+          "value": 10,
+          "f_impact": "F5",
+          "points": 2,
+          "description": "Major contract renewal (>10% revenue)"
+        },
+        {
+          "type": "regulatory_decision",
+          "field": "regulatory_decision_pending",
+          "f_impact": "F5",
+          "points": 3,
+          "description": "Regulatory decision pending"
+        },
+        {
+          "type": "debt_maturity",
+          "field": "debt_maturity_amount",
+          "operator": "gt",
+          "value": 100000000,
+          "f_impact": "F8",
+          "points": 3,
+          "description": "Debt maturity exceeds $100M"
+        },
+        {
+          "type": "covenant_test",
+          "field": "covenant_headroom_pct",
+          "operator": "lt",
+          "value": 10,
+          "f_impact": "F8",
+          "points": 2,
+          "description": "Covenant test with marginal headroom (<10%)"
+        },
+        {
+          "type": "lockup_expiration",
+          "field": "lockup_expiration_pending",
+          "f_impact": "F4",
+          "points": 2,
+          "description": "Lock-up expiration for recent IPO"
+        },
+        {
+          "type": "ma_closing",
+          "field": "pending_ma_deal",
+          "f_impact": "F4",
+          "points": 3,
+          "description": "M&A closing pending"
+        }
+      ],
+      "score_impact": {
+        "F4": {
+          "max": 3
+        },
+        "F5": {
+          "max": 3
+        },
+        "F8": {
+          "max": 3
+        }
+      },
+      "component_signals": [
+        "FWRD.EVENT.catalyst_dates",
+        "FWRD.EVENT.regulatory_decision",
+        "FWRD.EVENT.debt_maturity",
+        "FWRD.EVENT.contract_renewal",
+        "FWRD.EVENT.lockup_expiry"
+      ],
+      "note": "PATTERNS.md references F8 (M&A Activity), F6 (Guidance Miss Risk), F5 (Regulatory Exposure) which don't align with factor IDs. Mapped to closest factor matches: F4 (IPO/SPAC/M&A), F5 (Guidance Misses), F8 (Financial Distress)."
+    },
+    {
+      "id": "PATTERN.BIZ.AI_WASHING_RISK",
+      "name": "AI Washing Risk",
+      "category": "business",
+      "allegation_types": ["A", "C"],
+      "description": "Company makes AI-related claims that may not be substantiated by actual AI capabilities or revenue. Potential 10b-5 and product misrepresentation claims.",
+      "trigger_conditions": [
+        {"field": "business_description_mentions_ai", "operator": "eq", "value": true, "description": "Business description references AI/ML capabilities"},
+        {"field": "revenue_from_ai_pct", "operator": "lt", "value": 10, "description": "Less than 10% revenue from AI products (proxy: low tech R&D ratio)"},
+        {"field": "recent_ai_announcements", "operator": "gt", "value": 0, "description": "Recent AI-related press releases or 8-K filings"}
+      ],
+      "severity_modifiers": [
+        {"field": "stock_increase_post_ai_announcement", "operator": "gt", "value": 10, "points": 1, "label": "Stock pop on AI announcement"},
+        {"field": "regulatory_ai_scrutiny", "operator": "eq", "value": true, "points": 2, "label": "Regulatory AI scrutiny"}
+      ],
+      "score_impact": {"F7": {"base": 1, "max": 3}},
+      "component_signals": [],
+      "risk_narrative": "Company positioning as AI-driven may expose to disclosure fraud claims if AI capabilities are overstated."
+    },
+    {
+      "id": "PATTERN.FIN.EARNINGS_QUALITY_DETERIORATION",
+      "name": "Earnings Quality Deterioration",
+      "category": "financial",
+      "allegation_types": ["A"],
+      "description": "Declining earnings quality metrics suggesting potential accounting manipulation or unsustainable earnings. Key input for 10b-5 disclosure claims.",
+      "trigger_conditions": [
+        {"field": "accruals_ratio", "operator": "gt", "value": 0.1, "description": "Accruals ratio exceeds 10% (earnings vs. cash flow divergence)"},
+        {"field": "beneish_m_score_zone", "operator": "eq", "value": "DISTRESS", "description": "Beneish M-Score in manipulation zone"},
+        {"field": "dso_trend_increasing", "operator": "eq", "value": true, "description": "Days Sales Outstanding trending up (revenue recognition concern)"}
+      ],
+      "severity_modifiers": [
+        {"field": "ocf_to_ni_divergence", "operator": "gt", "value": 0.3, "points": 1, "label": "Major OCF/NI divergence"},
+        {"field": "consecutive_earnings_beats_suspect", "operator": "eq", "value": true, "points": 1, "label": "Suspiciously consistent beats"}
+      ],
+      "score_impact": {"F3": {"base": 1, "max": 3}, "F5": {"base": 1, "max": 2}},
+      "component_signals": [],
+      "risk_narrative": "Deteriorating earnings quality is a leading indicator of restatement risk and securities class actions."
+    }
+  ]
+}

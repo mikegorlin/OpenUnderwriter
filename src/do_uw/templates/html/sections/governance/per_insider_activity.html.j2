@@ -1,0 +1,42 @@
+{# Per-Insider Trading Activity Detail -- Phase 135 GOV-05 #}
+
+  {% if gov.get('has_per_insider_activity') %}
+  <h3>Insider Trading Activity Detail</h3>
+  <p class="text-xs text-gray-500 mb-2">
+    {{ gov.get('insider_count', 0) }} insider{{ 's' if gov.get('insider_count', 0) != 1 else '' }} with selling activity
+    {% if gov.get('total_insider_sales_fmt') %}totaling {{ gov.total_insider_sales_fmt }}{% endif %}
+  </p>
+
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Name</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Position</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right px-2 py-2 tabular-nums">Total Sales ($)</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right px-2 py-2 tabular-nums">% O/S</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2 tabular-nums">Tx Count</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2">10b5-1 Status</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Activity Period</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for insider in gov.get('per_insider_activity', []) %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 font-semibold">{{ insider.name }}</td>
+        <td class="p-1 text-xs text-gray-600">{{ insider.position if insider.position else '&mdash;' }}</td>
+        <td class="px-2 py-2 text-right tabular-nums">{{ insider.total_sold_fmt }}</td>
+        <td class="px-2 py-2 text-right tabular-nums">{{ insider.pct_os }}</td>
+        <td class="px-2 py-2 text-center tabular-nums">{{ insider.tx_count }}</td>
+        <td class="px-2 py-2 text-center">
+          {% if insider.ten_b5_1_badge == '10b5-1' %}
+          <span style="background: #DCFCE7; color: #166534; font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 3px;">10b5-1</span>
+          {% else %}
+          <span style="background: #FEF3C7; color: #92400E; font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 3px;">Discretionary</span>
+          {% endif %}
+        </td>
+        <td class="p-1 text-xs tabular-nums text-gray-600">{{ insider.activity_period if insider.activity_period != 'N/A' else '&mdash;' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}

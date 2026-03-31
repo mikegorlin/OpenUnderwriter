@@ -1,0 +1,23 @@
+{
+  "weights": {
+    "independence": 0.2,
+    "ceo_chair": 0.15,
+    "refreshment": 0.13,
+    "overboarding": 0.1,
+    "committee_structure": 0.15,
+    "say_on_pay": 0.12,
+    "tenure": 0.15
+  },
+  "thresholds": {
+    "independence_high": 0.75,
+    "independence_medium": 0.5,
+    "overboarded_boards": 4,
+    "refreshment_new_directors_3yr": 2,
+    "tenure_ideal_min": 5,
+    "tenure_ideal_max": 10,
+    "tenure_concern_max": 15,
+    "say_on_pay_strong": 90.0,
+    "say_on_pay_concern": 70.0
+  },
+  "description": "Governance quality scoring weights and thresholds for SECT5-07"
+}

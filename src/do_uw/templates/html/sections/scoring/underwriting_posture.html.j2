@@ -1,0 +1,45 @@
+{# Suggested Underwriting Posture -- algorithmic recommendation (Phase 117 -- SCORE-03)
+   Decision matrix from brain YAML, rendered as table with overrides. #}
+{% set post = posture_data | default({}) %}
+{% if post.get('posture_available', false) %}
+<h3 id="underwriting-posture">Suggested Underwriting Posture</h3>
+<div class="flex items-center gap-2 mb-3">
+  <span class="font-heading text-xs uppercase tracking-wide text-gray-500">Based on:</span>
+  <span class="px-2 py-1 rounded text-sm font-bold {{ post.posture_tier_class }}">{{ post.posture_tier }}</span>
+  <span class="text-xs text-gray-500">tier classification</span>
+</div>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase w-1/5">Element</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase w-2/5">Recommendation</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase w-2/5">Rationale</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for elem in post.posture_elements %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold text-navy">{{ elem.element }}</td>
+      <td class="p-1">{{ elem.recommendation }}</td>
+      <td class="p-1 text-xs text-gray-600">{{ elem.rationale }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% if post.has_overrides %}
+<div class="bg-amber-50 border border-amber-200 rounded p-3 my-3">
+  <p class="font-heading text-xs font-semibold uppercase tracking-wide text-amber-700 m-0 mb-1">Factor Overrides Applied</p>
+  <ul class="list-disc ml-4 text-xs text-amber-800 m-0">
+    {% for override in post.overrides_applied %}
+    <li>{{ override }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+{% if post.get('llm_recommendation') %}
+<div style="background:#F8FAFC;border:1px solid #E2E8F0;border-left:4px solid #1F3A5C;border-radius:4px;padding:10px 14px;margin:8px 0;line-height:1.55">
+  <div style="font-size:8pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Underwriting Analysis</div>
+  <div style="font-size:9pt;color:#374151">{{ post.llm_recommendation | clean_narrative | safe }}</div>
+</div>
+{% endif %}
+{% endif %}

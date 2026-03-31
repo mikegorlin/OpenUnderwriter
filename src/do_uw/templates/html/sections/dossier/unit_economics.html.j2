@@ -1,0 +1,30 @@
+{# Unit Economics -- key metrics table + narrative (Phase 118) #}
+{% set ue = dossier_unit | default({}) %}
+{% if ue.get('unit_economics_available', false) %}
+<h3 id="dossier-unit-economics">Unit Economics</h3>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Metric</th>
+      <th class="text-right p-1 border-b font-heading text-xs font-semibold uppercase">Value</th>
+      <th class="text-right p-1 border-b font-heading text-xs font-semibold uppercase">Benchmark</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Assessment</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">D&amp;O Risk</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for m in ue.metrics %}
+    <tr class="{{ m.row_class | default('', true) }} {{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ m.metric }}</td>
+      <td class="p-1 text-right font-mono">{{ m.value | default('--', true) }}</td>
+      <td class="p-1 text-right font-mono">{{ m.benchmark | default('--', true) }}</td>
+      <td class="p-1 text-xs">{{ m.assessment | default('--', true) }}</td>
+      <td class="p-1 text-xs">{{ m.do_risk }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% if ue.narrative %}
+<p class="text-sm leading-relaxed mb-3">{{ ue.narrative }}</p>
+{% endif %}
+{% endif %}

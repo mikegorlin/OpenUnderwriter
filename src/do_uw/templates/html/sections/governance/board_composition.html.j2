@@ -1,0 +1,102 @@
+{# Board Composition — visual bars for key metrics #}
+
+  {# --- Board Composition --- #}
+  {% set board = gov.get('board', {}) %}
+  {% if board %}
+  <h3>Board Composition</h3>
+
+  {# Visual metric bars #}
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0;">
+    {# Independence Ratio #}
+    <div style="padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background: white;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 600; color: #1e3a5f; text-transform: uppercase; letter-spacing: 0.05em;">Independence</span>
+        <span style="font-size: 14px; font-weight: 700; color: #1e3a5f; font-variant-numeric: tabular-nums;">{{ board.get('independence', 'N/A') }}</span>
+      </div>
+      {% set indep_str = board.get('independence', '')|string|replace('%', '') %}
+      {% set indep_num = indep_str|float(default=0) %}
+      <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+        <div style="height: 100%; width: {{ indep_num|int }}%; background: {{ '#16a34a' if indep_num >= 75 else '#d97706' if indep_num >= 50 else '#dc2626' }}; border-radius: 4px; transition: width 0.3s;"></div>
+      </div>
+      <div style="font-size: 9px; color: #94a3b8; margin-top: 3px;">NYSE req: majority independent</div>
+    </div>
+
+    {# Gender Diversity — removed per user direction, not relevant to D&O underwriting #}
+
+    {# Avg Tenure #}
+    <div style="padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background: white;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 600; color: #1e3a5f; text-transform: uppercase; letter-spacing: 0.05em;">Avg Tenure</span>
+        <span style="font-size: 14px; font-weight: 700; color: #1e3a5f; font-variant-numeric: tabular-nums;">{{ board.get('avg_tenure', 'N/A') }}</span>
+      </div>
+      {% set tenure_str = board.get('avg_tenure', '')|string|replace(' years', '')|replace('y', '') %}
+      {% set tenure_num = tenure_str|float(default=0) %}
+      {% set tenure_pct = [tenure_num / 20 * 100, 100]|min %}
+      <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+        <div style="height: 100%; width: {{ tenure_pct|int }}%; background: {{ '#d97706' if tenure_num > 12 else '#16a34a' if tenure_num > 3 else '#2563eb' }}; border-radius: 4px; transition: width 0.3s;"></div>
+      </div>
+      <div style="font-size: 9px; color: #94a3b8; margin-top: 3px;">{{ 'High tenure may indicate entrenchment' if tenure_num > 12 else 'Healthy range: 5-12 years' if tenure_num > 3 else 'Short tenure — new board' }}</div>
+    </div>
+
+    {# Board Size + Key Governance #}
+    <div style="padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background: white;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 600; color: #1e3a5f; text-transform: uppercase; letter-spacing: 0.05em;">Board Size</span>
+        <span style="font-size: 14px; font-weight: 700; color: #1e3a5f; font-variant-numeric: tabular-nums;">{{ board.get('size', 'N/A') }}</span>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+        {% if board.get('ceo_chair_separated') == 'No' %}
+          <span class="gov-badge gov-badge--negative">CEO = Chair</span>
+        {% else %}
+          <span class="gov-badge gov-badge--positive">Separate Chair</span>
+        {% endif %}
+        {% if gov.get('classified_board') == 'Yes' %}
+          <span class="gov-badge gov-badge--warning">Classified Board</span>
+        {% endif %}
+        {% if gov.get('dual_class') == 'Yes' %}
+          <span class="gov-badge gov-badge--negative">Dual-Class</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {# do_context removed — generic brain YAML boilerplate #}
+
+  {# Board composition interpretation #}
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    {% if board.get('ceo_chair_separated') == 'No' or board.get('ceo_chair_separated') == false %}
+    <li>CEO/Chair duality concentrates power and is a significant governance risk factor&mdash;dual-role companies face 15-25% higher SCA frequency per academic studies</li>
+    {% elif board.get('ceo_chair_separated') == 'Yes' or board.get('ceo_chair_separated') == true %}
+    <li>Separate CEO and Chair roles provide independent oversight of management&mdash;a positive governance factor for D&amp;O underwriting</li>
+    {% endif %}
+    {% if board.get('independence') and board.get('independence') != 'N/A' %}
+    {% set indep_str = board.get('independence', '')|string|replace('%', '') %}
+    {% if indep_str|float(default=0) >= 75 %}
+    <li>Board independence ratio of {{ board.get('independence') }} exceeds NYSE/NASDAQ requirements, indicating strong independent oversight</li>
+    {% elif indep_str|float(default=0) < 50 %}
+    <li>Board independence below 50% is a material governance concern&mdash;insufficient independent oversight increases derivative suit exposure</li>
+    {% endif %}
+    {% endif %}
+    {% if board.get('size') and board.get('size') != 'N/A' %}
+    {% set size_num = board.get('size')|int(default=0) %}
+    {% if size_num > 15 %}
+    <li>Board size of {{ board.get('size') }} is large, which can impair decision-making agility and oversight effectiveness</li>
+    {% elif size_num < 5 %}
+    <li>Board size of {{ board.get('size') }} is unusually small, which may limit committee capacity and diversity of expertise</li>
+    {% elif size_num >= 5 and size_num <= 8 %}
+    <li>Board size of {{ board.get('size') }} is below the S&amp;P 500 median (10-11 directors) &mdash; smaller boards can be more agile but may lack specialized committee depth for audit, compensation, and compliance oversight</li>
+    {% elif size_num >= 9 and size_num <= 13 %}
+    <li>Board size of {{ board.get('size') }} is within the typical range for public companies (9-13 directors) &mdash; provides sufficient committee capacity for independent oversight</li>
+    {% endif %}
+    {% endif %}
+    {% if board.get('gender_diversity') and board.get('gender_diversity') != 'N/A' %}
+    {% set gd_str = board.get('gender_diversity', '')|string|replace('%', '') %}
+    {% set gd_num = gd_str|float(default=0) %}
+    {% if gd_num < 20 %}
+    <li>Gender diversity of {{ board.get('gender_diversity') }} is below institutional investor expectations (typically >25%) &mdash; may attract proxy advisory firm opposition and shareholder activism</li>
+    {% endif %}
+    {% endif %}
+  </ul>
+  {% else %}
+  {{ gap_notice("Board Composition", "Board data not fully extracted from proxy filings") }}
+  {% endif %}

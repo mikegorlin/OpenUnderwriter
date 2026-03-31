@@ -1,0 +1,226 @@
+{# Compensation Analysis -- full CEO pay breakdown, comp mix, pay context,
+   governance provisions. Phase 61: Surfaces hidden CompensationAnalysis data.
+   SURF-08: Source attribution via title tooltips and confidence dots. #}
+
+{% set comp_analysis = gov.get('compensation_analysis', {}) %}
+{% if comp_analysis and (comp_analysis.get('ceo_total', 'N/A') != 'N/A' or comp_analysis.get('comp_mix')) %}
+  <h3>Compensation Analysis</h3>
+
+  {# --- A. CEO Pay Dashboard (compact grid) --- #}
+  {% set src = comp_analysis.get('_sources', {}) %}
+  {% set conf = comp_analysis.get('_confidence', {}) %}
+
+  {% macro conf_dot(field) %}
+    {%- set level = conf.get(field, '') -%}
+    {%- if level -%}
+      <span class="confidence-dot confidence-{{ level|lower }}" title="Confidence: {{ level }}"></span>
+    {%- endif -%}
+  {% endmacro %}
+
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 12px 0;">
+    {# Total Compensation #}
+    <div style="background: linear-gradient(135deg, #1e3a5f, #2d5a8c); border-radius: 8px; padding: 14px; text-align: center; color: white;">
+      <div style="font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.8;">CEO Total Comp</div>
+      <div style="font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 4px;" title="{{ src.get('ceo_total', '') }}">{{ comp_analysis.ceo_total }}{{ conf_dot('ceo_total') }}</div>
+    </div>
+    {# Pay Ratio #}
+    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; text-align: center;">
+      <div style="font-size: 9px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em;">CEO Pay Ratio</div>
+      {% set ratio_val = comp_analysis.get('ceo_pay_ratio', 'N/A') %}
+      {% set ratio_num = ratio_val|replace(':1', '')|int(default=0) %}
+      <div style="font-size: 22px; font-weight: 700; color: {{ '#dc2626' if ratio_num > 300 else '#d97706' if ratio_num > 200 else '#1e3a5f' }}; font-variant-numeric: tabular-nums; margin-top: 4px;">{{ ratio_val }}</div>
+    </div>
+    {# Say-on-Pay #}
+    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; text-align: center;">
+      <div style="font-size: 9px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em;">Say-on-Pay</div>
+      {% set sop = comp_analysis.get('say_on_pay_pct', 'N/A')|string|replace('%', '') %}
+      {% set sop_num = sop|float(default=100) %}
+      <div style="font-size: 22px; font-weight: 700; color: {{ '#16a34a' if sop_num >= 90 else '#d97706' if sop_num >= 70 else '#dc2626' }}; font-variant-numeric: tabular-nums; margin-top: 4px;">{{ comp_analysis.get('say_on_pay_pct', 'N/A') }}</div>
+    </div>
+  </div>
+
+  {# --- B. Pay Component Breakdown --- #}
+  {% set has_pay_components = (comp_analysis.get('ceo_salary') and comp_analysis.ceo_salary != 'N/A') or (comp_analysis.get('ceo_bonus') and comp_analysis.ceo_bonus != 'N/A') or (comp_analysis.get('ceo_equity') and comp_analysis.ceo_equity != 'N/A') or (comp_analysis.get('ceo_other') and comp_analysis.ceo_other != 'N/A') %}
+  {% if has_pay_components %}
+  <h4>CEO Pay Breakdown</h4>
+  <table class="kv-paired w-full text-sm border-collapse">
+    <tbody>
+      <tr>
+        {% if comp_analysis.get('ceo_salary') and comp_analysis.ceo_salary != 'N/A' %}
+        <td class="font-semibold text-navy py-1 px-2 w-1/4">Base Salary</td>
+        <td class="py-1 px-2 tabular-nums w-1/4" title="{{ src.get('ceo_salary', '') }}">{{ comp_analysis.ceo_salary }}{{ conf_dot('ceo_salary') }}</td>
+        {% endif %}
+        {% if comp_analysis.get('ceo_bonus') and comp_analysis.ceo_bonus != 'N/A' %}
+        <td class="font-semibold text-navy py-1 px-2 w-1/4">Cash Bonus/Incentive</td>
+        <td class="py-1 px-2 tabular-nums w-1/4" title="{{ src.get('ceo_bonus', '') }}">{{ comp_analysis.ceo_bonus }}{{ conf_dot('ceo_bonus') }}</td>
+        {% endif %}
+      </tr>
+      <tr class="bg-gray-50">
+        {% if comp_analysis.get('ceo_equity') and comp_analysis.ceo_equity != 'N/A' %}
+        <td class="font-semibold text-navy py-1 px-2">Equity Awards</td>
+        <td class="py-1 px-2 tabular-nums" title="{{ src.get('ceo_equity', '') }}">{{ comp_analysis.ceo_equity }}{{ conf_dot('ceo_equity') }}</td>
+        {% endif %}
+        {% if comp_analysis.get('ceo_other') and comp_analysis.ceo_other != 'N/A' %}
+        <td class="font-semibold text-navy py-1 px-2">Other Compensation</td>
+        <td class="py-1 px-2 tabular-nums" title="{{ src.get('ceo_other', '') }}">{{ comp_analysis.ceo_other }}{{ conf_dot('ceo_other') }}</td>
+        {% endif %}
+      </tr>
+    </tbody>
+  </table>
+  {% endif %}
+
+  {# --- C. Compensation Mix (horizontal stacked bar) --- #}
+  {% set mix = comp_analysis.get('comp_mix', []) %}
+  {% if mix %}
+  <h4>Compensation Mix</h4>
+  <div class="comp-mix-bar">
+    {% for item in mix %}
+    <div class="comp-mix-segment" style="width: {{ item.pct }}" title="{{ item.name }}: {{ item.pct }}">
+      <span>{{ item.name }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="flex justify-between text-xs text-gray-500 mt-1 px-1">
+    {% for item in mix %}
+    <span>{{ item.name }}: {{ item.pct }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# --- D. Pay Context --- #}
+  {% set trend = comp_analysis.get('say_on_pay_trend', 'N/A') %}
+  {% set peer = comp_analysis.get('ceo_pay_vs_peer_median', 'N/A') %}
+  {% if peer != 'N/A' or (trend and trend != 'N/A') %}
+  <h4>Pay Context</h4>
+  {% set trend_arrow = '' %}
+  {% if trend == 'IMPROVING' %}{% set trend_arrow = ' &#x2191;' %}
+  {% elif trend == 'DECLINING' %}{% set trend_arrow = ' &#x2193;' %}
+  {% elif trend == 'STABLE' %}{% set trend_arrow = ' &#x2192;' %}
+  {% endif %}
+  {{ kv_table([
+    {'key': 'CEO Pay vs Peer Median', 'value': peer},
+    {'key': 'Say-on-Pay Trend', 'value': (trend ~ trend_arrow) if trend and trend != 'N/A' else 'N/A'},
+  ]) }}
+  {% endif %}
+
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    {% if sop_num < 70 %}
+    <li>Say-on-Pay approval below 70% is a significant governance risk factor&mdash;low shareholder support frequently precedes activist campaigns and derivative suits</li>
+    {% elif sop_num >= 90 %}
+    <li>Strong Say-on-Pay approval indicates shareholder confidence in compensation structure</li>
+    {% endif %}
+    {% if ratio_num > 300 %}
+    <li>CEO pay ratio exceeding 300:1 attracts shareholder scrutiny and may signal excessive compensation risk</li>
+    {% endif %}
+  </ul>
+
+  {# --- E. Pay-vs-Performance (ECD from DEF 14A XBRL) --- #}
+  {% set ecd = comp_analysis.get('ecd', {}) %}
+  {% if ecd and (ecd.get('ceo_comp_actually_paid') or ecd.get('company_tsr')) %}
+  <h4>Pay-vs-Performance (ECD)</h4>
+  <table class="kv-paired w-full text-sm border-collapse">
+    <tbody>
+      <tr>
+        <td class="font-semibold text-navy py-1 px-2 w-1/4">CEO Total Comp (SCT)</td>
+        <td class="py-1 px-2 tabular-nums w-1/4">{{ ecd.get('ceo_total_comp', 'N/A') }}</td>
+        <td class="font-semibold text-navy py-1 px-2 w-1/4">CEO Comp Actually Paid</td>
+        <td class="py-1 px-2 tabular-nums w-1/4">{{ ecd.get('ceo_comp_actually_paid', 'N/A') }}</td>
+      </tr>
+      <tr class="bg-gray-50">
+        <td class="font-semibold text-navy py-1 px-2">Pay-for-Performance Delta</td>
+        <td class="py-1 px-2 tabular-nums" style="color:{{ '#dc2626' if ecd.get('pfp_direction') == 'above' else '#16a34a' }}">{{ ecd.get('pfp_delta', 'N/A') }} {{ ecd.get('pfp_direction', '') }}</td>
+        <td class="font-semibold text-navy py-1 px-2">NEO Avg Total Comp</td>
+        <td class="py-1 px-2 tabular-nums">{{ ecd.get('neo_avg_total_comp', 'N/A') }}</td>
+      </tr>
+      <tr>
+        <td class="font-semibold text-navy py-1 px-2">NEO Avg Actually Paid</td>
+        <td class="py-1 px-2 tabular-nums">{{ ecd.get('neo_avg_comp_actually_paid', 'N/A') }}</td>
+        <td class="font-semibold text-navy py-1 px-2">Company TSR</td>
+        <td class="py-1 px-2 tabular-nums">{{ ecd.get('company_tsr', 'N/A') }}</td>
+      </tr>
+      <tr class="bg-gray-50">
+        <td class="font-semibold text-navy py-1 px-2">Peer Group TSR</td>
+        <td class="py-1 px-2 tabular-nums{% if ecd.get('tsr_vs_peers') == 'underperforming' %} text-red-600 font-semibold{% endif %}">{{ ecd.get('peer_group_tsr', 'N/A') }}{% if ecd.get('tsr_vs_peers') %} ({{ ecd.tsr_vs_peers }}){% endif %}</td>
+        <td class="font-semibold text-navy py-1 px-2">{{ ecd.get('selected_measure_name', 'Selected Measure') }}</td>
+        <td class="py-1 px-2 tabular-nums">{{ ecd.get('selected_measure_amt', 'N/A') }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>SEC ECD rules require companies to disclose Compensation Actually Paid (CAP), which adjusts SCT totals for equity award fair value changes&mdash;a large CAP-to-SCT gap signals equity-heavy pay sensitive to stock price drops</li>
+    {% if ecd.get('tsr_vs_peers') == 'underperforming' %}
+    <li>Company TSR underperforming peer group while CAP exceeds SCT total may indicate a pay-for-performance disconnect&mdash;a common shareholder derivative claim theory</li>
+    {% endif %}
+  </ul>
+  {% endif %}
+
+  {# --- ECD Award Timing & Insider Trading Policy Badges (5.4.5-7) --- #}
+  {% set ecd_badges = ecd.get('ecd_badges', []) if ecd else [] %}
+  {% if ecd_badges %}
+  <h4>Award Timing &amp; Trading Policy</h4>
+  <div style="display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0;">
+    {% for badge in ecd_badges %}
+    {% if badge.color == 'green' %}
+    <span class="inline-block px-2 py-1 text-xs rounded bg-green-100 border border-green-200 font-semibold text-green-800">{{ badge.label }}: {{ badge.value }}</span>
+    {% elif badge.color == 'red' %}
+    <span class="inline-block px-2 py-1 text-xs rounded bg-red-100 border border-red-200 font-semibold text-red-800">{{ badge.label }}: {{ badge.value }}</span>
+    {% else %}
+    <span class="inline-block px-2 py-1 text-xs rounded bg-amber-100 border border-amber-200 font-semibold text-amber-800">{{ badge.label }}: {{ badge.value }}</span>
+    {% endif %}
+    {% endfor %}
+  </div>
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>SEC ECD rules require disclosure of whether MNPI is considered in award timing and whether the company has a formal insider trading policy&mdash;absence of either is a governance gap that increases exposure to insider trading allegations and derivative claims</li>
+  </ul>
+  {% endif %}
+
+  {# --- F. Governance Provisions --- #}
+  <h4>Governance Provisions</h4>
+  <div style="display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0;">
+    {% if comp_analysis.get('has_clawback') == 'Yes' %}
+      <span class="inline-block px-2 py-1 text-xs rounded bg-green-100 border border-green-200 font-semibold text-green-800">Clawback: {{ comp_analysis.get('clawback_scope', 'Yes') }}</span>
+    {% elif comp_analysis.get('has_clawback') == 'No' %}
+      <span class="inline-block px-2 py-1 text-xs rounded bg-red-100 border border-red-200 font-semibold text-red-800">No Clawback</span>
+    {% endif %}
+    {% set gp = comp_analysis.get('golden_parachute') or gov.get('golden_parachute') %}
+    {% if gp and gp != 'N/A' %}
+      <span class="inline-block px-2 py-1 text-xs rounded bg-amber-100 border border-amber-200 font-semibold text-amber-800">Golden Parachute: {{ gp }}</span>
+    {% endif %}
+  </div>
+  {% if gp and gp != 'N/A' %}
+  <ul class="text-xs text-gray-500 mt-1 mb-2 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>Golden parachute of {{ gp }} represents change-in-control payments from the proxy statement&mdash;excessive parachutes attract shareholder say-on-golden-parachute opposition and can drive derivative claims alleging corporate waste</li>
+  </ul>
+  {% endif %}
+
+  {% set perf = comp_analysis.get('performance_metrics', []) %}
+  {% if perf %}
+  <h5 class="font-semibold text-sm mt-2 mb-1">Incentive Performance Metrics</h5>
+  <ul class="list-disc ml-5 text-sm text-gray-700 space-y-0.5">
+    {% for metric in perf %}
+    <li>{{ metric }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% set rpt = comp_analysis.get('related_party_transactions', []) %}
+  {% if rpt %}
+  <h5 class="font-semibold text-sm mt-2 mb-1">Related-Party Transactions</h5>
+  <ul class="list-disc ml-5 text-sm text-gray-700 space-y-0.5">
+    {% for txn in rpt %}
+    <li>{{ txn }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% set perks = comp_analysis.get('notable_perquisites', []) %}
+  {% if perks %}
+  <h5 class="font-semibold text-sm mt-2 mb-1">Notable Perquisites</h5>
+  <ul class="list-disc ml-5 text-sm text-gray-700 space-y-0.5">
+    {% for perk in perks %}
+    <li>{{ perk }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+{% endif %}

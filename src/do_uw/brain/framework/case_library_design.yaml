@@ -1,0 +1,510 @@
+# Case Library Design
+# Design artifact for Phase 109 implementation.
+# Defines the schema, similarity metrics, SCAC seed structure,
+# and maintenance procedures for the precedent match case library.
+#
+# Created: Phase 106-02 (v7.0 Signal-Render Integrity)
+# Dependencies:
+#   - pattern_engine_design.yaml: Precedent Match engine uses this library
+#   - brain_schema.py: PatternDefinition schema for structural reference
+#   - rap_scac_validation.yaml: SCAC claim type taxonomy
+#   - rap_taxonomy.yaml: H/A/E subcategory structure
+
+version: 1
+name: "Case Library Design"
+status: design_artifact
+implementation_phase: 109
+
+# ---------------------------------------------------------------
+# Section 1: Case Entry Schema
+# ---------------------------------------------------------------
+
+case_schema:
+  description: >
+    Schema for a single case library entry. Each entry represents
+    a historical D&O case with a reconstructed signal profile
+    (the "fingerprint" at the time of filing) and outcome data.
+    Used by the Precedent Match engine for similarity computation.
+
+  fields:
+    - name: case_id
+      type: string
+      required: true
+      description: "Unique identifier (e.g., 'ENRON-2001', 'THERANOS-2018')"
+      format: "TICKER-YEAR or COMPANY_NAME-YEAR"
+
+    - name: company_name
+      type: string
+      required: true
+      description: "Company name at time of filing"
+
+    - name: ticker
+      type: string
+      required: true
+      description: "Stock ticker at time of filing (may be delisted)"
+
+    - name: filing_date
+      type: date
+      required: true
+      description: "Date of initial SCA/enforcement filing"
+
+    - name: claim_type
+      type: string
+      required: true
+      description: "Primary claim type from SCAC taxonomy"
+      enum:
+        - securities_fraud_10b5
+        - section_11_offering
+        - derivative_caremark
+        - derivative_waste
+        - merger_objection
+        - regulatory_enforcement
+        - erisa
+        - whistleblower_retaliation
+        - other
+
+    - name: market_cap_at_filing
+      type: float
+      required: true
+      description: "Market capitalization in USD at filing date"
+      unit: USD
+
+    - name: sector
+      type: string
+      required: true
+      description: "GICS sector code at time of filing"
+
+    - name: signal_profile
+      type: "dict[str, str]"
+      required: true
+      description: >
+        Map of signal_id to evaluation status at time of filing.
+        Status values: RED, YELLOW, CLEAR, UNKNOWN (for signals
+        where historical data is unavailable). This is the
+        "fingerprint" used by Precedent Match engine.
+      example:
+        FIN.ACCT.restatement: RED
+        GOV.INSIDER.cluster_sales: RED
+        FIN.FORENSIC.m_score_composite: YELLOW
+        FIN.PROFIT.revenue: CLEAR
+        GOV.BOARD.independence: UNKNOWN
+
+    - name: signal_summary
+      type: "dict[str, int]"
+      required: true
+      description: >
+        Aggregated view: count of fired signals per rap_subcategory.
+        Derived from signal_profile for fast comparison.
+      example:
+        agent.financial_conduct: 5
+        agent.executive_conduct: 3
+        host.identity: 1
+        environment.market_signals: 2
+
+    - name: outcome
+      type: string
+      required: true
+      description: "Case outcome"
+      enum:
+        - settlement
+        - dismissal
+        - ongoing
+        - judgment
+        - stayed
+        - voluntary_dismissal
+
+    - name: outcome_amount_usd
+      type: float
+      required: false
+      description: "Settlement or judgment amount in USD (null if dismissed or ongoing)"
+
+    - name: outcome_date
+      type: date
+      required: false
+      description: "Date of resolution (null if ongoing)"
+
+    - name: class_period
+      type: object
+      required: false
+      description: "Class period start and end dates"
+      fields:
+        - name: start
+          type: date
+        - name: end
+          type: date
+
+    - name: key_allegations
+      type: "list[str]"
+      required: true
+      description: "Primary allegation categories from complaint"
+      examples:
+        - "financial_misrepresentation"
+        - "insider_trading"
+        - "failure_to_disclose"
+        - "restatement"
+        - "revenue_recognition"
+        - "merger_process"
+
+    - name: named_defendants
+      type: int
+      required: false
+      description: "Number of individually named defendants"
+
+    - name: jurisdiction
+      type: string
+      required: false
+      description: "Court district (e.g., 'SDNY', 'NDCal', 'Del_Chancery')"
+
+    - name: lead_plaintiff_type
+      type: string
+      required: false
+      description: "Type of lead plaintiff"
+      enum: [institutional, individual, government]
+
+    - name: signal_profile_confidence
+      type: string
+      required: true
+      description: "Confidence in the reconstructed signal profile"
+      enum:
+        - HIGH    # documented facts directly map to signals
+        - MEDIUM  # inferred from public record and complaint
+        - LOW     # estimated from case type and general characteristics
+
+    - name: notes
+      type: string
+      required: false
+      description: "Free-text context for underwriters"
+
+# ---------------------------------------------------------------
+# Section 2: Similarity Metrics
+# ---------------------------------------------------------------
+
+similarity_metrics:
+  primary_metric:
+    name: "Weighted Jaccard Similarity"
+    description: >
+      Primary similarity metric for Precedent Match engine.
+      Computes overlap between fired-signal sets with importance
+      weighting. CRF and elevated-threshold signals get higher
+      weight, ensuring matches on critical signals are valued
+      more than matches on routine signals.
+    formula: >
+      weighted_jaccard(A, B) =
+        sum(w_i * min(A_i, B_i)) / sum(w_i * max(A_i, B_i))
+      where A_i, B_i in {0, 1} and w_i is signal importance weight.
+    weights:
+      crf_signals: 3.0
+      elevated_threshold: 2.0
+      standard: 1.0
+    range: "[0, 1]"
+    interpretation:
+      - range: "[0, 0.15)"
+        label: "No meaningful similarity"
+      - range: "[0.15, 0.30)"
+        label: "Weak similarity"
+      - range: "[0.30, 0.50)"
+        label: "Notable match"
+      - range: "[0.50, 0.70)"
+        label: "Strong match"
+      - range: "[0.70, 1.0]"
+        label: "Very strong match"
+
+  alternative_metric:
+    name: "Cosine Similarity on RAP Subcategory Vectors"
+    description: >
+      Alternative metric operating at the subcategory level rather
+      than individual signal level. Computes cosine similarity
+      between the signal_summary vectors (count of fired signals
+      per rap_subcategory). Less granular but more robust when
+      signal profiles are incomplete.
+    formula: >
+      cosine(A, B) = dot(A_summary, B_summary) /
+                     (norm(A_summary) * norm(B_summary))
+    use_case: "Fallback when signal_profile_confidence is LOW"
+
+  adjustments:
+    sector_boost:
+      description: "Same-sector matches get a similarity boost"
+      multiplier: 1.2
+      rationale: "Same-sector companies share structural characteristics"
+
+    market_cap_tier_boost:
+      description: "Same market cap tier matches get a similarity boost"
+      multiplier: 1.1
+      rationale: "Similar-sized companies have comparable damages quantum"
+      tiers:
+        - label: "micro"
+          range: "$0 - $300M"
+        - label: "small"
+          range: "$300M - $2B"
+        - label: "mid"
+          range: "$2B - $10B"
+        - label: "large"
+          range: "$10B - $100B"
+        - label: "mega"
+          range: "$100B+"
+
+# ---------------------------------------------------------------
+# Section 3: SCAC Seed Data Structure
+# ---------------------------------------------------------------
+
+scac_seed:
+  description: >
+    The case library is seeded from Stanford SCAC data. SCAC provides
+    structured data on securities class actions that maps to the
+    case library schema. Signal profiles for historical cases are
+    APPROXIMATE -- reconstructed from known facts, not from actual
+    signal engine runs.
+
+  scac_to_case_mapping:
+    scac_filing_date: case_schema.filing_date
+    scac_company: case_schema.company_name
+    scac_ticker: case_schema.ticker
+    scac_sector: case_schema.sector
+    scac_claim_type: case_schema.claim_type
+    scac_outcome: case_schema.outcome
+    scac_settlement_amount: case_schema.outcome_amount_usd
+    scac_class_period: case_schema.class_period
+    scac_court: case_schema.jurisdiction
+    scac_lead_counsel: case_schema.notes
+
+  signal_profile_reconstruction:
+    description: >
+      For historical cases, we reconstruct signal profiles from
+      known facts in complaints, SEC filings, and public records.
+      This is inherently approximate -- we know what happened but
+      cannot perfectly reconstruct all 514 signal evaluations.
+    methodology:
+      - fact: "Restatement announced"
+        signals_fired:
+          - "FIN.ACCT.restatement -> RED"
+          - "FIN.ACCT.restatement_magnitude -> RED or YELLOW (based on magnitude)"
+      - fact: "Insider selling cluster before disclosure"
+        signals_fired:
+          - "GOV.INSIDER.cluster_sales -> RED"
+          - "GOV.INSIDER.unusual_timing -> RED"
+          - "EXEC.INSIDER.cluster_selling -> RED"
+      - fact: "SEC investigation announced"
+        signals_fired:
+          - "LIT.REG.sec_investigation -> RED"
+          - "LIT.REG.sec_active -> RED"
+      - fact: "Material weakness disclosed"
+        signals_fired:
+          - "FIN.ACCT.material_weakness -> RED"
+          - "GOV.EFFECT.material_weakness -> RED"
+      - fact: "Auditor changed during accounting issues"
+        signals_fired:
+          - "GOV.EFFECT.auditor_change -> RED"
+      - fact: "Stock dropped >40%"
+        signals_fired:
+          - "STOCK.PRICE.recent_drop_alert -> RED"
+          - "STOCK.PRICE.returns_multi_horizon -> RED"
+      - fact: "Short seller report published"
+        signals_fired:
+          - "STOCK.SHORT.report -> RED"
+          - "STOCK.PATTERN.short_attack -> RED"
+      - fact: "CEO/CFO departed suddenly"
+        signals_fired:
+          - "GOV.EXEC.departure_context -> RED"
+          - "EXEC.DEPARTURE.cfo_departure_timing -> RED or YELLOW"
+      - fact: "Guidance miss or withdrawal"
+        signals_fired:
+          - "FIN.GUIDE.track_record -> RED or YELLOW"
+          - "FIN.GUIDE.earnings_reaction -> RED"
+      - fact: "Zone of insolvency"
+        signals_fired:
+          - "FWRD.WARN.zone_of_insolvency -> RED"
+          - "FIN.LIQ.cash_burn -> RED"
+
+  priority_seed_cases:
+    description: >
+      20 canonical D&O cases that every underwriter knows.
+      These form the initial case library for Precedent Match.
+    cases:
+      - case_id: "ENRON-2001"
+        claim_type: securities_fraud_10b5
+        outcome: settlement
+        outcome_amount_usd: 7200000000
+        signal_profile_confidence: HIGH
+        key_facts: "Massive accounting fraud, SPE off-balance-sheet, restatement, insider selling"
+
+      - case_id: "WORLDCOM-2002"
+        claim_type: securities_fraud_10b5
+        outcome: settlement
+        outcome_amount_usd: 6100000000
+        signal_profile_confidence: HIGH
+        key_facts: "Capitalized operating expenses, restatement, CEO fraud"
+
+      - case_id: "TYCO-2002"
+        claim_type: securities_fraud_10b5
+        outcome: settlement
+        outcome_amount_usd: 3200000000
+        signal_profile_confidence: HIGH
+        key_facts: "Executive looting, unauthorized compensation, governance collapse"
+
+      - case_id: "THERANOS-2018"
+        claim_type: regulatory_enforcement
+        outcome: settlement
+        outcome_amount_usd: 500000000
+        signal_profile_confidence: HIGH
+        key_facts: "Fake technology claims, SEC enforcement, criminal conviction"
+
+      - case_id: "WIRECARD-2020"
+        claim_type: securities_fraud_10b5
+        outcome: ongoing
+        outcome_amount_usd: null
+        signal_profile_confidence: HIGH
+        key_facts: "Fabricated revenue, missing cash, short seller reports, auditor failure"
+
+      - case_id: "FTX-2022"
+        claim_type: securities_fraud_10b5
+        outcome: ongoing
+        outcome_amount_usd: null
+        signal_profile_confidence: HIGH
+        key_facts: "Commingled funds, governance vacuum, zone of insolvency"
+
+      - case_id: "LUCKIN-2020"
+        claim_type: securities_fraud_10b5
+        outcome: settlement
+        outcome_amount_usd: 175000000
+        signal_profile_confidence: HIGH
+        key_facts: "Fabricated revenue transactions, short seller report, restatement"
+
+      - case_id: "VALEANT-2015"
+        claim_type: securities_fraud_10b5
+        outcome: settlement
+        outcome_amount_usd: 1210000000
+        signal_profile_confidence: HIGH
+        key_facts: "Channel stuffing via Philidor, aggressive M&A, restatement"
+
+      - case_id: "WELLS_FARGO-2016"
+        claim_type: securities_fraud_10b5
+        outcome: settlement
+        outcome_amount_usd: 480000000
+        signal_profile_confidence: HIGH
+        key_facts: "Fake accounts scandal, regulatory enforcement, CEO departure"
+
+      - case_id: "VOLKSWAGEN-2015"
+        claim_type: securities_fraud_10b5
+        outcome: settlement
+        outcome_amount_usd: 1500000000
+        signal_profile_confidence: HIGH
+        key_facts: "Emissions fraud, regulatory enforcement, massive stock decline"
+
+      - case_id: "UNDER_ARMOUR-2019"
+        claim_type: securities_fraud_10b5
+        outcome: settlement
+        outcome_amount_usd: 434000000
+        signal_profile_confidence: MEDIUM
+        key_facts: "Revenue acceleration, SEC investigation, channel stuffing"
+
+      - case_id: "NIKOLA-2020"
+        claim_type: securities_fraud_10b5
+        outcome: settlement
+        outcome_amount_usd: 125000000
+        signal_profile_confidence: HIGH
+        key_facts: "SPAC fraud, fake technology demo, short seller report, criminal conviction"
+
+      - case_id: "CLOVER_HEALTH-2021"
+        claim_type: securities_fraud_10b5
+        outcome: settlement
+        outcome_amount_usd: 22000000
+        signal_profile_confidence: MEDIUM
+        key_facts: "SPAC disclosure failures, Hindenburg short report, DOJ investigation"
+
+      - case_id: "LORDSTOWN-2021"
+        claim_type: securities_fraud_10b5
+        outcome: settlement
+        outcome_amount_usd: 25000000
+        signal_profile_confidence: MEDIUM
+        key_facts: "SPAC, fake pre-orders, SEC investigation, zone of insolvency"
+
+      - case_id: "BOEING-2019"
+        claim_type: derivative_caremark
+        outcome: settlement
+        outcome_amount_usd: 237500000
+        signal_profile_confidence: HIGH
+        key_facts: "737 MAX oversight failure, Caremark duty of oversight, product safety"
+
+      - case_id: "PGE-2019"
+        claim_type: securities_fraud_10b5
+        outcome: settlement
+        outcome_amount_usd: 1000000000
+        signal_profile_confidence: HIGH
+        key_facts: "Wildfire liability, zone of insolvency, bankruptcy"
+
+      - case_id: "GE-2019"
+        claim_type: securities_fraud_10b5
+        outcome: settlement
+        outcome_amount_usd: 200000000
+        signal_profile_confidence: MEDIUM
+        key_facts: "Insurance reserve fraud, long-tail LTC liability concealment"
+
+      - case_id: "KRAFT_HEINZ-2019"
+        claim_type: securities_fraud_10b5
+        outcome: settlement
+        outcome_amount_usd: 450000000
+        signal_profile_confidence: MEDIUM
+        key_facts: "Goodwill impairment, SEC investigation, procurement fraud"
+
+      - case_id: "PURDUE_PHARMA-2019"
+        claim_type: regulatory_enforcement
+        outcome: settlement
+        outcome_amount_usd: 8300000000
+        signal_profile_confidence: HIGH
+        key_facts: "Opioid marketing fraud, state AG coordination, bankruptcy"
+
+      - case_id: "ACTIVISION-2021"
+        claim_type: derivative_caremark
+        outcome: settlement
+        outcome_amount_usd: 18000000
+        signal_profile_confidence: MEDIUM
+        key_facts: "Workplace harassment, DFEH investigation, board oversight failure"
+
+# ---------------------------------------------------------------
+# Section 4: Case Library Maintenance
+# ---------------------------------------------------------------
+
+maintenance:
+  new_case_addition:
+    trigger: "New SCA filing or significant enforcement action"
+    process:
+      - step: 1
+        action: "Create case_id from ticker and year"
+      - step: 2
+        action: "Populate schema fields from SCAC data and public filings"
+      - step: 3
+        action: "Reconstruct signal profile from known facts at filing date"
+      - step: 4
+        action: "Assign signal_profile_confidence (HIGH/MEDIUM/LOW)"
+      - step: 5
+        action: "Add to case library with outcome=ongoing"
+      - step: 6
+        action: "Update outcome when resolution occurs"
+
+  signal_profile_updates:
+    description: >
+      When new signals are added to the brain (new YAML signal files),
+      historical case profiles should be reviewed to determine if the
+      new signal would have fired. For most historical cases, new
+      signals will be set to UNKNOWN unless the case facts clearly
+      indicate a RED or CLEAR value.
+
+  versioning:
+    description: >
+      Each case library entry is immutable once created. Updates
+      (e.g., outcome resolution, signal profile refinement) create
+      a new version. The latest version is used for matching.
+    schema:
+      version: int
+      created_at: datetime
+      updated_at: datetime
+      update_reason: string
+
+  quality_metrics:
+    minimum_seed_cases: 20
+    target_library_size: 100
+    signal_profile_completeness: >
+      Target: >50% of signals have a known value (not UNKNOWN)
+      for HIGH-confidence cases. Accept lower completeness for
+      MEDIUM/LOW confidence.

@@ -1,0 +1,477 @@
+# Phase 72 — Peer-Relative XBRL Benchmarking Signals
+# 6 signals evaluating company position vs SEC filer universe.
+# Data source: state.benchmark.frames_percentiles (populated by frames_benchmarker).
+# field_key prefix: benchmarked.frames_percentiles.{metric}
+- id: FIN.PEER.revenue_bottom_quartile
+  execution_mode: AUTO
+  name: Revenue Bottom Quartile (Cross-Filer)
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_FRAMES
+  data_locations:
+    SEC_FRAMES:
+    - frames_revenue
+  data_strategy:
+    field_key: benchmarked.frames_percentiles.revenue.overall
+    primary_source: SEC_FRAMES
+  threshold:
+    type: tiered
+    red: < 10
+    yellow: < 25
+    clear: '>= 25'
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  worksheet_section: financial
+  display_when: has_data
+  provenance:
+    origin: v3.1_peer_benchmarking
+    confidence: HIGH
+    source_author: system
+    added_by: Phase72
+    data_source: SEC_FRAMES
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: peer_matrix
+    formula: ''
+  display:
+    value_format: percentile
+    source_type: SEC_FRAMES
+    threshold_context: Revenue below 25th percentile of all SEC filers — small company
+      risk premium
+  schema_version: 3
+  evaluation:
+    formula: THRESHOLD_COMPARE
+    mechanism: peer_comparison
+  group: peer_matrix
+  signal_class: evaluative
+  field_path: benchmarked.frames_percentiles.revenue.overall
+  depends_on: []
+  epistemology:
+    rule_origin: 'Peer comparison methodology: deviation from sector median financial
+      metrics indicates relative over/under-performance risk'
+    threshold_basis: 'Peer deviation >1.5 standard deviations from sector median:
+      statistical outlier threshold for relative risk assessment'
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Revenue Bottom Quartile (Cross-Filer) at {value} (threshold:
+        < 10) signals elevated Financial Irregularities / Restatement Risk risk (F3).
+        Peer-relative revenue underperformance makes the company a statistical outlier
+        -- outlier financial metrics are disproportionately represented in SCA filing
+        populations, and revenue laggards face elevated analyst scrutiny. Peer deviation
+        >1.5 standard deviations from sector median: statistical outlier threshold
+        for relative risk assessment.'
+      TRIGGERED_YELLOW: '{company} Revenue Bottom Quartile (Cross-Filer) at {value}
+        (threshold: < 25) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Revenue Bottom Quartile (Cross-Filer) at {value} is within
+        acceptable range for Financial Irregularities / Restatement Risk (F3) — this
+        level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.PEER.leverage_top_decile
+  execution_mode: AUTO
+  name: Leverage Top Decile (Sector-Relative)
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_FRAMES
+  data_locations:
+    SEC_FRAMES:
+    - frames_debt_to_equity
+  data_strategy:
+    field_key: benchmarked.frames_percentiles.debt_to_equity.sector
+    primary_source: SEC_FRAMES
+  threshold:
+    type: tiered
+    red: '> 95'
+    yellow: '> 90'
+    clear: <= 90
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.3'
+  worksheet_section: financial
+  display_when: has_data
+  provenance:
+    origin: v3.1_peer_benchmarking
+    confidence: HIGH
+    source_author: system
+    added_by: Phase72
+    data_source: SEC_FRAMES
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: peer_matrix
+    formula: ''
+  display:
+    value_format: percentile
+    source_type: SEC_FRAMES
+    threshold_context: Debt-to-equity exceeds 90th percentile of sector peers — extreme
+      leverage
+  schema_version: 3
+  evaluation:
+    formula: THRESHOLD_COMPARE
+    mechanism: peer_comparison
+  group: peer_matrix
+  signal_class: evaluative
+  field_path: benchmarked.frames_percentiles.debt_to_equity.sector
+  depends_on: []
+  epistemology:
+    rule_origin: 'Peer comparison methodology: deviation from sector median financial
+      metrics indicates relative over/under-performance risk'
+    threshold_basis: 'Peer deviation >1.5 standard deviations from sector median:
+      statistical outlier threshold for relative risk assessment'
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Leverage Top Decile (Sector-Relative) at {value} (threshold:
+        > 95) signals elevated Financial Irregularities / Restatement Risk risk (F3).
+        Peer-relative leverage outlier status increases the probability that a sector-wide
+        downturn hits this company disproportionately -- concentrated leverage exposure
+        amplifies D&O claim risk during industry stress events. Peer deviation >1.5
+        standard deviations from sector median: statistical outlier threshold for
+        relative risk assessment.'
+      TRIGGERED_YELLOW: '{company} Leverage Top Decile (Sector-Relative) at {value}
+        (threshold: > 90) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Leverage Top Decile (Sector-Relative) at {value} is within
+        acceptable range for Financial Irregularities / Restatement Risk (F3) — this
+        level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.PEER.margin_compression
+  execution_mode: AUTO
+  name: Operating Margin Compression (Cross-Filer)
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_FRAMES
+  data_locations:
+    SEC_FRAMES:
+    - frames_operating_margin
+  data_strategy:
+    field_key: benchmarked.frames_percentiles.operating_margin.overall
+    primary_source: SEC_FRAMES
+  threshold:
+    type: tiered
+    red: < 10
+    yellow: < 25
+    clear: '>= 25'
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.2'
+  worksheet_section: financial
+  display_when: has_data
+  provenance:
+    origin: v3.1_peer_benchmarking
+    confidence: HIGH
+    source_author: system
+    added_by: Phase72
+    data_source: SEC_FRAMES
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: peer_matrix
+    formula: ''
+  display:
+    value_format: percentile
+    source_type: SEC_FRAMES
+    threshold_context: Operating margin below 25th percentile — profitability concerns
+  schema_version: 3
+  evaluation:
+    formula: THRESHOLD_COMPARE
+    mechanism: peer_comparison
+  group: peer_matrix
+  signal_class: evaluative
+  field_path: benchmarked.frames_percentiles.operating_margin.overall
+  depends_on: []
+  epistemology:
+    rule_origin: 'Peer comparison methodology: deviation from sector median financial
+      metrics indicates relative over/under-performance risk'
+    threshold_basis: 'Peer deviation >1.5 standard deviations from sector median:
+      statistical outlier threshold for relative risk assessment'
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Operating Margin Compression (Cross-Filer) at {value}
+        (threshold: < 10) signals elevated Financial Irregularities / Restatement
+        Risk risk (F3). Margin compression below peer benchmarks creates analyst downgrade
+        risk and signals potential cost structure concealment -- both are frequent
+        precursors to the stock decline that initiates SCA filing decisions. Peer
+        deviation >1.5 standard deviations from sector median: statistical outlier
+        threshold for relative risk assessment.'
+      TRIGGERED_YELLOW: '{company} Operating Margin Compression (Cross-Filer) at {value}
+        (threshold: < 25) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Operating Margin Compression (Cross-Filer) at {value} is within
+        acceptable range for Financial Irregularities / Restatement Risk (F3) — this
+        level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.PEER.profitability_laggard
+  execution_mode: AUTO
+  name: Profitability Laggard (Sector-Relative)
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_FRAMES
+  data_locations:
+    SEC_FRAMES:
+    - frames_roe
+  data_strategy:
+    field_key: benchmarked.frames_percentiles.roe.sector
+    primary_source: SEC_FRAMES
+  threshold:
+    type: tiered
+    red: < 10
+    yellow: < 20
+    clear: '>= 20'
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.2'
+  worksheet_section: financial
+  display_when: has_data
+  provenance:
+    origin: v3.1_peer_benchmarking
+    confidence: HIGH
+    source_author: system
+    added_by: Phase72
+    data_source: SEC_FRAMES
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: peer_matrix
+    formula: ''
+  display:
+    value_format: percentile
+    source_type: SEC_FRAMES
+    threshold_context: ROE below 20th percentile of sector — underperforming capital
+      returns
+  schema_version: 3
+  evaluation:
+    formula: THRESHOLD_COMPARE
+    mechanism: peer_comparison
+  group: peer_matrix
+  signal_class: evaluative
+  field_path: benchmarked.frames_percentiles.roe.sector
+  depends_on: []
+  epistemology:
+    rule_origin: 'Peer comparison methodology: deviation from sector median financial
+      metrics indicates relative over/under-performance risk'
+    threshold_basis: 'Peer deviation >1.5 standard deviations from sector median:
+      statistical outlier threshold for relative risk assessment'
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Profitability Laggard (Sector-Relative) at {value}
+        (threshold: < 10) signals elevated Financial Irregularities / Restatement
+        Risk risk (F3). Current profitability weakness increases the probability of
+        future earnings misses, which trigger the stock price declines that are the
+        primary catalyst for SCA filings under Section 10(b). Peer deviation >1.5
+        standard deviations from sector median: statistical outlier threshold for
+        relative risk assessment.'
+      TRIGGERED_YELLOW: '{company} Profitability Laggard (Sector-Relative) at {value}
+        (threshold: < 20) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Profitability Laggard (Sector-Relative) at {value} is within
+        acceptable range for Financial Irregularities / Restatement Risk (F3) — this
+        level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.PEER.size_outlier_small
+  execution_mode: AUTO
+  name: Size Outlier Small (Cross-Filer)
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_FRAMES
+  data_locations:
+    SEC_FRAMES:
+    - frames_total_assets
+  data_strategy:
+    field_key: benchmarked.frames_percentiles.total_assets.overall
+    primary_source: SEC_FRAMES
+  threshold:
+    type: tiered
+    red: < 5
+    yellow: < 10
+    clear: '>= 10'
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  worksheet_section: financial
+  display_when: has_data
+  provenance:
+    origin: v3.1_peer_benchmarking
+    confidence: HIGH
+    source_author: system
+    added_by: Phase72
+    data_source: SEC_FRAMES
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: peer_matrix
+    formula: ''
+  display:
+    value_format: percentile
+    source_type: SEC_FRAMES
+    threshold_context: Total assets below 10th percentile — very small company exposure
+  schema_version: 3
+  evaluation:
+    formula: THRESHOLD_COMPARE
+    mechanism: peer_comparison
+  group: peer_matrix
+  signal_class: evaluative
+  field_path: benchmarked.frames_percentiles.total_assets.overall
+  depends_on: []
+  epistemology:
+    rule_origin: 'Peer comparison methodology: deviation from sector median financial
+      metrics indicates relative over/under-performance risk'
+    threshold_basis: 'Peer deviation >1.5 standard deviations from sector median:
+      statistical outlier threshold for relative risk assessment'
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Size Outlier Small (Cross-Filer) at {value} (threshold:
+        < 5) signals elevated Financial Irregularities / Restatement Risk risk (F3).
+        Relative size creates asymmetric litigation risk: smaller companies within
+        a peer group face higher per-market-cap legal costs and are more vulnerable
+        to event-driven claims that larger peers could absorb. Peer deviation >1.5
+        standard deviations from sector median: statistical outlier threshold for
+        relative risk assessment.'
+      TRIGGERED_YELLOW: '{company} Size Outlier Small (Cross-Filer) at {value} (threshold:
+        < 10) is in the caution zone for Financial Irregularities / Restatement Risk
+        (F3). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Size Outlier Small (Cross-Filer) at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.PEER.cash_flow_weak
+  execution_mode: AUTO
+  name: Cash Flow Weakness (Cross-Filer)
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_FRAMES
+  data_locations:
+    SEC_FRAMES:
+    - frames_cash_from_operations
+  data_strategy:
+    field_key: benchmarked.frames_percentiles.cash_from_operations.overall
+    primary_source: SEC_FRAMES
+  threshold:
+    type: tiered
+    red: < 10
+    yellow: < 25
+    clear: '>= 25'
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: financial
+  display_when: has_data
+  provenance:
+    origin: v3.1_peer_benchmarking
+    confidence: HIGH
+    source_author: system
+    added_by: Phase72
+    data_source: SEC_FRAMES
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: peer_matrix
+    formula: ''
+  display:
+    value_format: percentile
+    source_type: SEC_FRAMES
+    threshold_context: Operating cash flow below 25th percentile — liquidity risk
+      signal
+  schema_version: 3
+  evaluation:
+    formula: THRESHOLD_COMPARE
+    mechanism: peer_comparison
+  group: peer_matrix
+  signal_class: evaluative
+  field_path: benchmarked.frames_percentiles.cash_from_operations.overall
+  depends_on: []
+  epistemology:
+    rule_origin: 'Peer comparison methodology: deviation from sector median financial
+      metrics indicates relative over/under-performance risk'
+    threshold_basis: 'Peer deviation >1.5 standard deviations from sector median:
+      statistical outlier threshold for relative risk assessment'
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Cash Flow Weakness (Cross-Filer) at {value} (threshold:
+        < 10) signals elevated Financial Irregularities / Restatement Risk risk (F3).
+        Peer-relative cash flow weakness signals company-specific operational problems.
+        When peers generate adequate cash flows but this company cannot, it supports
+        allegations that management concealed fundamental operational deterioration.
+        Peer deviation >1.5 standard deviations from sector median: statistical outlier
+        threshold for relative risk assessment.'
+      TRIGGERED_YELLOW: '{company} Cash Flow Weakness (Cross-Filer) at {value} (threshold:
+        < 25) is in the caution zone for Financial Irregularities / Restatement Risk
+        (F3). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Cash Flow Weakness (Cross-Filer) at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'

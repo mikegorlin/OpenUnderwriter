@@ -1,0 +1,46 @@
+- id: ABS.DISC.goodwill_impairment
+  name: Missing Goodwill Impairment Disclosure
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: 'Expected disclosure absent: goodwill > 20% of total_assets'
+  provenance:
+    origin: phase_110_absence
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Absence detection for FIN.BAL.goodwill_impairment
+    threshold_provenance:
+      source: standard
+      rationale: Significant goodwill (>20% assets) requires annual impairment testing disclosure
+  signal_class: inference
+  group: transparency_disclosure
+  rap_class: host
+  rap_subcategory: host.financials
+  epistemology:
+    rule_origin: ASC 350 goodwill impairment testing and disclosure requirements
+    threshold_basis: Significant goodwill (>20% assets) requires annual impairment testing disclosure
+  evaluation:
+    mechanism: absence
+    absence_rules:
+      expectation_type: company_profile
+      expected_signals:
+      - FIN.BAL.goodwill_impairment
+      condition: goodwill > 20% of total_assets
+      expected_status: TRIGGERED
+      absence_trigger: SKIPPED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} missing goodwill impairment disclosure at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} missing goodwill impairment disclosure at {value} is a moderate indicator for D&O risk
+        assessment, warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} missing goodwill impairment disclosure at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

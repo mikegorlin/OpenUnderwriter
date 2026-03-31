@@ -1,0 +1,11 @@
+{# D&O Exposure Factors — extracted from company.html.j2 #}
+{% set factors = co.get('exposure_factors', []) %}
+{% if factors %}
+<h3>D&O Exposure Factors</h3>
+{{ data_table(
+  ['Factor', 'Level', 'Rationale'],
+  factors|map(attribute='name')|list|zip(factors|map(attribute='level')|list, factors|map(attribute='rationale')|list)|list
+) }}
+{% else %}
+{{ gap_notice("D&O Exposure Factors", "Not yet extracted from filings") }}
+{% endif %}

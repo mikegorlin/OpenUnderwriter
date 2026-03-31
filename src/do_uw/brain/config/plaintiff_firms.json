@@ -1,0 +1,36 @@
+{
+  "tiers": {
+    "1": {
+      "label": "elite",
+      "severity_multiplier": 2.0,
+      "firms": [
+        "Bernstein Litowitz Berger & Grossmann",
+        "Robbins Geller Rudman & Dowd",
+        "Kessler Topaz Meltzer & Check",
+        "Labaton Keller Sucharow",
+        "Grant & Eisenhofer"
+      ]
+    },
+    "2": {
+      "label": "major",
+      "severity_multiplier": 1.5,
+      "firms": [
+        "Bleichmar Fonti & Auld",
+        "Pomerantz",
+        "Cohen Milstein Sellers & Toll",
+        "Hagens Berman Sobol Shapiro",
+        "Kirby McInerney",
+        "Glancy Prongay & Murray",
+        "Scott+Scott Attorneys at Law",
+        "Motley Rice",
+        "Barrack Rodos & Bacine"
+      ]
+    },
+    "3": {
+      "label": "regional",
+      "severity_multiplier": 1.0,
+      "default": true
+    }
+  },
+  "match_strategy": "substring"
+}

@@ -1,0 +1,502 @@
+{# Risk Scorecard — dense single-page underwriting intelligence.
+   Shows: verdict strip, claim probability, severity/DDL, tower,
+   allegation exposure, factor scores, top concerns.
+   Rework: 2026-03-17 workshop directive. #}
+
+{% from "components/hae_badge.html.j2" import hae_badge %}
+
+{% set sc = scorecard if scorecard is defined else {} %}
+{% if sc.get('scorecard_available', false) %}
+<section id="scorecard" class="scorecard-page">
+
+  {# Header: section title, company name is in the permanent topbar #}
+  <div class="scorecard-header">
+    <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
+      <h2 style="margin:0; font-size:1rem;">D&amp;O Decision Dashboard</h2>
+    </div>
+  </div>
+
+  {# ─── VERDICT STRIP ─── #}
+  <div class="sc-verdict">
+    <div class="sc-verdict-tier">
+      {# SVG Score Gauge (INFO-01) #}
+      {% if sc.gauge_svg %}
+      <div class="sc-gauge-container">{{ sc.gauge_svg | safe }}</div>
+      {% else %}
+      <div class="scorecard-tier scorecard-tier--{{ sc.tier | lower | replace(' ', '_') }}">
+        {{ sc.tier }}
+      </div>
+      {% endif %}
+    </div>
+    <div class="sc-verdict-stats">
+      <div class="sc-vstat">
+        <span class="sc-vstat-value">{{ sc.quality_score }}</span>
+        <span class="sc-vstat-label">Quality Score</span>
+      </div>
+      {% if sc.risk_type.available %}
+      <div class="sc-vstat">
+        <span class="sc-vstat-value sc-vstat--type">{{ sc.risk_type.primary_label }}</span>
+        <span class="sc-vstat-label">Risk Type</span>
+      </div>
+      {% endif %}
+      {% if sc.severity.available %}
+      <div class="sc-vstat">
+        <span class="sc-vstat-value sc-vstat--zone sc-zone--{{ sc.severity.zone | lower }}">{{ sc.severity.zone }}</span>
+        <span class="sc-vstat-label">P × S Zone</span>
+      </div>
+      {% endif %}
+      {% if sc.claim_prob.available %}
+      <div class="sc-vstat">
+        <span class="sc-vstat-value sc-vstat--band sc-band--{{ sc.claim_prob.band | lower }}">{{ sc.claim_prob.band }}</span>
+        <span class="sc-vstat-label">Claim Probability</span>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {# ─── FACTOR HEATMAP (quick visual of where risk concentrates) ─── #}
+  {% if sc.factors_summary %}
+  <div class="sc-heatmap">
+    <div class="sc-heatmap-bar">
+      {% for f in sc.factors_summary %}
+      <div class="sc-heatmap-cell {{ 'sc-heat--clear' if not f.has_deduction else 'sc-heat--critical' if f.pct >= 60 else 'sc-heat--elevated' if f.pct >= 30 else 'sc-heat--minor' }}"
+           title="{{ f.name }}: {{ f.score }}/{{ f.max }} ({{ f.pct }}% impact)">
+        <span class="sc-heat-id">{{ f.id }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# ─── DDL / DAMAGE EXPOSURE ANALYSIS (full width) ─── #}
+  {% set dl = ddl if ddl is defined else {} %}
+  {% if dl.get('available', false) and dl.get('has_exposure', false) %}
+  {% set dd = dl.primary %}
+  <div class="sc-ddl-section">
+    <div class="sc-panel-title">Damage Exposure — If Suit Filed Today</div>
+    <div class="sc-ddl-layout">
+
+      {# Left: Stock chart with damage period #}
+      <div class="sc-ddl-chart">
+        {% if dl.chart_data %}
+        {% set cd = dl.chart_data %}
+        {% set price_min = dl.low_2y * 0.95 %}
+        {% set price_max = dl.high_2y * 1.05 %}
+        {% set price_range = price_max - price_min %}
+        {# Chart area: x 35-870 (left margin for Y axis), y 10-170 (top/bottom margin) #}
+        {% set cx_min = 35 %}
+        {% set cx_max = 870 %}
+        {% set cy_min = 10 %}
+        {% set cy_max = 170 %}
+        {% set cx_range = cx_max - cx_min %}
+        {% set cy_range = cy_max - cy_min %}
+        <svg viewBox="0 0 900 200" class="sc-ddl-svg">
+          <rect width="900" height="200" fill="#f8fafc" rx="4"/>
+
+          {# Damage period shading #}
+          {% if cd.damage_periods %}
+          {% set dp = cd.damage_periods[0] %}
+          {% set x1 = (dp.start_idx / cd.total_points * cx_range) + cx_min %}
+          <rect x="{{ x1 }}" y="{{ cy_min }}" width="{{ cx_max - x1 }}" height="{{ cy_range }}"
+                fill="#fef2f2" rx="2"/>
+          {% endif %}
+
+          {# Y-axis (price) #}
+          <line x1="{{ cx_min }}" y1="{{ cy_min }}" x2="{{ cx_min }}" y2="{{ cy_max }}"
+                stroke="#cbd5e1" stroke-width="1"/>
+          {# Y-axis ticks + labels (4 levels) #}
+          {% for frac in [0.0, 0.25, 0.5, 0.75, 1.0] %}
+          {% set ty = cy_max - frac * cy_range %}
+          {% set tprice = price_min + frac * price_range %}
+          <line x1="{{ cx_min - 3 }}" y1="{{ ty }}" x2="{{ cx_min }}" y2="{{ ty }}"
+                stroke="#cbd5e1" stroke-width="1"/>
+          <line x1="{{ cx_min }}" y1="{{ ty }}" x2="{{ cx_max }}" y2="{{ ty }}"
+                stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2,4"/>
+          <text x="{{ cx_min - 5 }}" y="{{ ty + 3 }}" font-size="7" fill="#9ca3af"
+                text-anchor="end" font-family="system-ui, sans-serif">${{ tprice | round | int }}</text>
+          {% endfor %}
+
+          {# X-axis (time) #}
+          <line x1="{{ cx_min }}" y1="{{ cy_max }}" x2="{{ cx_max }}" y2="{{ cy_max }}"
+                stroke="#cbd5e1" stroke-width="1"/>
+          {# X-axis ticks — show quarterly markers #}
+          {% set quarter_count = (cd.total_points / 63) | round | int %}
+          {% for q in range(quarter_count + 1) %}
+          {% set qi = (q * 63) | int %}
+          {% if qi < cd.total_points %}
+          {% set tx = (qi / cd.total_points * cx_range) + cx_min %}
+          <line x1="{{ tx }}" y1="{{ cy_max }}" x2="{{ tx }}" y2="{{ cy_max + 3 }}"
+                stroke="#cbd5e1" stroke-width="1"/>
+          <text x="{{ tx }}" y="{{ cy_max + 12 }}" font-size="7" fill="#9ca3af"
+                text-anchor="middle" font-family="system-ui, sans-serif">{{ cd.dates[qi][:7] }}</text>
+          {% endif %}
+          {% endfor %}
+          {# Last date #}
+          <text x="{{ cx_max }}" y="{{ cy_max + 12 }}" font-size="7" fill="#9ca3af"
+                text-anchor="end" font-family="system-ui, sans-serif">{{ cd.dates[-1][:7] }}</text>
+
+          {# Price line — mountain fill below #}
+          <polygon fill="#0B1D3A" opacity="0.06"
+            points="{% for c in cd.closes %}{{ (loop.index0 / cd.total_points * cx_range + cx_min) | round(1) }},{{ (cy_max - (c - price_min) / price_range * cy_range) | round(1) }} {% endfor %}{{ cx_max }},{{ cy_max }} {{ cx_min }},{{ cy_max }}"/>
+          <polyline fill="none" stroke="#0B1D3A" stroke-width="1.8" stroke-linejoin="round"
+            points="{% for c in cd.closes %}{{ (loop.index0 / cd.total_points * cx_range + cx_min) | round(1) }},{{ (cy_max - (c - price_min) / price_range * cy_range) | round(1) }} {% endfor %}"/>
+
+          {# Peak badge (green box) #}
+          {% set peak_x = (dd.peak_idx / cd.total_points * cx_range) + cx_min %}
+          {% set peak_y = (cy_max - (dd.peak_price - price_min) / price_range * cy_range) %}
+          <circle cx="{{ peak_x }}" cy="{{ peak_y }}" r="4" fill="#059669" stroke="#fff" stroke-width="1.5"/>
+          <line x1="{{ peak_x }}" y1="{{ peak_y }}" x2="{{ cx_max }}" y2="{{ peak_y }}"
+                stroke="#059669" stroke-width="0.75" stroke-dasharray="4,3" opacity="0.35"/>
+          {# Peak label box #}
+          {% set peak_lbl = "$" ~ dd.peak_price %}
+          <rect x="{{ peak_x + 6 }}" y="{{ peak_y - 14 }}" width="58" height="16" rx="3"
+                fill="#059669"/>
+          <text x="{{ peak_x + 35 }}" y="{{ peak_y - 3 }}" font-size="9" fill="#fff"
+                font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">{{ peak_lbl }}</text>
+
+          {# Current price badge (red box) #}
+          {% set cur_y = (cy_max - (dl.current_price - price_min) / price_range * cy_range) %}
+          <circle cx="{{ cx_max }}" cy="{{ cur_y }}" r="4" fill="#B91C1C" stroke="#fff" stroke-width="1.5"/>
+          {# Current label box — pulled left of the dot #}
+          {% set cur_lbl = "$" ~ dl.current_price %}
+          <rect x="{{ cx_max - 62 }}" y="{{ cur_y - 8 }}" width="56" height="16" rx="3"
+                fill="#B91C1C"/>
+          <text x="{{ cx_max - 34 }}" y="{{ cur_y + 4 }}" font-size="9" fill="#fff"
+                font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">{{ cur_lbl }}</text>
+
+          {# Drop arrow #}
+          <defs>
+            <marker id="ddl-arrow" viewBox="0 0 10 10" refX="8" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#B91C1C"/>
+            </marker>
+          </defs>
+          <line x1="{{ peak_x + 15 }}" y1="{{ peak_y + 10 }}"
+                x2="{{ cx_max - 10 }}" y2="{{ cur_y - 10 }}"
+                stroke="#B91C1C" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ddl-arrow)"/>
+
+          {# Drop percentage badge (centered on arrow) #}
+          {% set mid_x = (peak_x + cx_max) / 2 %}
+          {% set mid_y = (peak_y + cur_y) / 2 %}
+          <rect x="{{ mid_x - 24 }}" y="{{ mid_y - 9 }}" width="48" height="18" rx="3"
+                fill="#B91C1C"/>
+          <text x="{{ mid_x }}" y="{{ mid_y + 4 }}" font-size="10" fill="#fff"
+                font-weight="800" text-anchor="middle" font-family="system-ui, sans-serif">-{{ dd.drop_pct }}%</text>
+        </svg>
+        {% endif %}
+      </div>
+
+      {# Metrics strip below chart — Fix 5: Expected loss prominent, DDL as reference #}
+      <div class="sc-ddl-strip">
+        <div class="sc-ddl-strip-item sc-ddl-strip-item--ddl" style="background:#F0FDF4;border:1px solid #BBF7D0">
+          <span class="sc-ddl-strip-label" style="color:#16A34A;font-weight:700">Expected Loss (2-5%)</span>
+          <span class="sc-ddl-strip-value sc-ddl-strip-value--primary" style="color:#16A34A">{{ dd.settlement_low }} – {{ dd.settlement_high }}</span>
+        </div>
+        <div class="sc-ddl-strip-item">
+          <span class="sc-ddl-strip-label">Theoretical Max DDL</span>
+          <span class="sc-ddl-strip-value">{{ dd.ddl_fmt }}</span>
+        </div>
+        <div class="sc-ddl-strip-item">
+          <span class="sc-ddl-strip-label">Drawdown</span>
+          <span class="sc-ddl-strip-value">-{{ dd.drop_pct }}%</span>
+        </div>
+        <div class="sc-ddl-strip-item">
+          <span class="sc-ddl-strip-label">Class Period</span>
+          <span class="sc-ddl-strip-value">{{ dd.duration_days }}d</span>
+        </div>
+        <div class="sc-ddl-strip-item">
+          <span class="sc-ddl-strip-label">Turnover</span>
+          <span class="sc-ddl-strip-value">{{ dd.turnover }}x ({{ dd.total_volume_fmt }})</span>
+        </div>
+        <div class="sc-ddl-strip-item">
+          <span class="sc-ddl-strip-label">Prior SCAs</span>
+          {% if dl.has_sca_exclusions %}
+          <span class="sc-ddl-strip-value" style="color:#B91C1C">{{ dl.sca_exclusions | length }} — clock reset</span>
+          {% else %}
+          <span class="sc-ddl-strip-value" style="color:#059669">None — full window</span>
+          {% endif %}
+        </div>
+      </div>
+      {# Fix 5: DDL context note — theoretical max vs expected loss #}
+      <div style="font-size:7pt;color:#6B7280;font-style:italic;padding:2px 8px;line-height:1.4">
+        DDL (Dollar Damage Line) is the theoretical maximum exposure if 100% of damaged shares were in the plaintiff class. Expected primary layer loss (2-5% settlement range) is the actuarially relevant figure for underwriting.
+      </div>
+      {# Alt windows on single line if present #}
+      {% if dl.exposure_count > 1 %}
+      <div class="sc-ddl-alt-strip">
+        {% for exp in dl.exposures %}{% if exp != dd %}
+        <span class="sc-ddl-alt-item">Alt: from {{ exp.peak_date }} (${{ exp.peak_price }}) -{{ exp.drop_pct }}% | DDL {{ exp.ddl_fmt }} | Settlement {{ exp.settlement_low }}–{{ exp.settlement_high }}</span>
+        {% endif %}{% endfor %}
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+  {% endif %}
+
+  {# ─── TWO-COLUMN CORE: Left = Probability/Allegations/Factors, Right = Severity/Tower ─── #}
+  <div class="sc-core">
+
+    {# LEFT COLUMN #}
+    <div class="sc-col-left">
+
+      {# Claim Probability Panel #}
+      {% if sc.claim_prob.available %}
+      <div class="sc-panel">
+        <div class="sc-panel-title">Claim Probability <span class="sc-uncalibrated">Scoring v2.0</span></div>
+        <div class="sc-prob-visual">
+          <div class="sc-prob-gauge">
+            <div class="sc-prob-track">
+              {# Range indicator #}
+              <div class="sc-prob-range"
+                   style="left: {{ (sc.claim_prob.range_low / 5 * 100) | round }}%;
+                          width: {{ ((sc.claim_prob.range_high - sc.claim_prob.range_low) / 5 * 100) | round }}%">
+              </div>
+              {# Industry baseline marker #}
+              <div class="sc-prob-baseline"
+                   style="left: {{ (sc.claim_prob.industry_base / 5 * 100) | round }}%"
+                   title="Industry base rate: {{ sc.claim_prob.industry_base }}%">
+              </div>
+            </div>
+            <div class="sc-prob-labels">
+              <span>0%</span><span>1%</span><span>2%</span><span>3%</span><span>4%</span><span>5%</span>
+            </div>
+          </div>
+          <div class="sc-prob-numbers">
+            <div class="sc-prob-stat">
+              <span class="sc-prob-val">{{ sc.claim_prob.range_low }}% – {{ sc.claim_prob.range_high }}%</span>
+              <span class="sc-prob-lbl">Company Range</span>
+            </div>
+            <div class="sc-prob-stat">
+              <span class="sc-prob-val">{{ sc.claim_prob.industry_base }}%</span>
+              <span class="sc-prob-lbl">Industry Base</span>
+            </div>
+            <div class="sc-prob-stat">
+              <span class="sc-prob-val sc-prob--{{ sc.claim_prob.vs_industry }}">
+                {{ sc.claim_prob.vs_industry | upper }}
+              </span>
+              <span class="sc-prob-lbl">vs Industry</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {# Allegation Exposure Panel #}
+      {% if sc.allegations.available %}
+      <div class="sc-panel">
+        <div class="sc-panel-title">Allegation Exposure <span class="sc-uncalibrated">Scoring v2.0</span></div>
+        <div class="sc-allegation-list">
+          {% for t in sc.allegations.theories %}
+          <div class="sc-allegation-row {{ 'sc-allegation--primary' if t.is_primary else '' }}">
+            <span class="sc-allegation-label">{{ t.label }}</span>
+            <span class="sc-allegation-exposure sc-exposure--{{ t.exposure | lower }}">{{ t.exposure }}</span>
+            {% if t.is_primary %}<span class="sc-allegation-primary-tag">PRIMARY</span>{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      {# Factor Scores Panel #}
+      <div class="sc-panel">
+        <div class="sc-panel-title">Scoring Factors ({{ sc.quality_score }} / 100) <span class="sc-uncalibrated">Scoring v2.0</span></div>
+        <table class="sc-factor-table">
+          <thead>
+            <tr>
+              <th>Factor</th>
+              <th class="text-right-nums">Pts</th>
+              <th class="text-right-nums">Max</th>
+              <th style="width:100px">Impact</th>
+              <th>Context</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for f in sc.factors_summary %}
+            <tr class="{{ 'sc-factor--active' if f.has_deduction else 'sc-factor--clear' }} heat-factor" style="--intensity: {{ (f.pct / 100) | round(2) }}">
+              <td class="sc-factor-name">
+                <span class="sc-factor-id">{{ f.id }}</span>
+                {{ f.name }}
+              </td>
+              <td class="text-right-nums">{{ "%.1f" | format(f.score) }}</td>
+              <td class="text-right-nums sc-factor-max">{{ f.max }}</td>
+              <td>
+                <div class="scorecard-bar-track">
+                  <div class="scorecard-bar-fill {% if f.pct >= 60 %}bar-critical{% elif f.pct >= 30 %}bar-elevated{% else %}bar-normal{% endif %}"
+                       style="width: {{ f.pct }}%"></div>
+                </div>
+              </td>
+              <td class="sc-factor-context">
+                {% if f.has_deduction and f.evidence %}
+                  {{ f.evidence | humanize_evidence }}
+                {% elif not f.has_deduction %}
+                  <span class="sc-factor-clear-text">Clear</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>{# /sc-col-left #}
+
+    {# RIGHT COLUMN #}
+    <div class="sc-col-right">
+
+      {# Severity & DDL Panel #}
+      {% if sc.severity.available %}
+      <div class="sc-panel">
+        <div class="sc-panel-title">Loss Severity <span class="sc-uncalibrated">Scoring v2.0</span>
+          <span class="sc-zone-badge sc-zone--{{ sc.severity.zone | lower }}">{{ sc.severity.zone }}</span>
+        </div>
+        <div class="sc-severity-grid">
+          <div class="sc-sev-stat">
+            <span class="sc-sev-label">Est. Settlement</span>
+            <span class="sc-sev-value">{{ sc.severity.settlement_fmt | default('—') }}</span>
+          </div>
+          <div class="sc-sev-stat">
+            <span class="sc-sev-label">Max Damages</span>
+            <span class="sc-sev-value">{{ sc.severity.damages_fmt | default('—') }}</span>
+          </div>
+          <div class="sc-sev-stat">
+            <span class="sc-sev-label">Defense Costs</span>
+            <span class="sc-sev-value">{{ sc.severity.defense_fmt | default('—') }}</span>
+          </div>
+          <div class="sc-sev-stat">
+            <span class="sc-sev-label">Amplifiers Fired</span>
+            <span class="sc-sev-value">{{ sc.severity.amplifiers_fired | default(0) }} / {{ sc.severity.amplifiers_total | default(0) }}</span>
+          </div>
+        </div>
+        {% if sc.severity.ddl_percentiles %}
+        <div class="sc-sev-scenarios">
+          <div class="sc-sev-scenario-title">Settlement Scenarios</div>
+          <div class="sc-scenario-grid">
+            {% for s in sc.severity.ddl_percentiles %}
+            <div class="sc-scenario-item">
+              <span class="sc-scenario-pctl">{{ s.label | title }}</span>
+              <span class="sc-scenario-amt">{{ s.settlement }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+        {% if sc.severity.ddl_scenarios %}
+        <div class="sc-sev-ddl">
+          <div class="sc-sev-scenario-title">Stock Drop → DDL Exposure</div>
+          <div class="sc-ddl-grid">
+            {% for drop, amt in sc.severity.ddl_scenarios.items() %}
+            <div class="sc-ddl-item">
+              <span class="sc-ddl-drop">-{{ drop }}</span>
+              <span class="sc-ddl-amt">{{ amt }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {# Tower Recommendation Panel #}
+      {% if sc.tower.available %}
+      <div class="sc-panel">
+        <div class="sc-panel-title">Tower Recommendation <span class="sc-uncalibrated">Scoring v2.0</span></div>
+        <div class="sc-tower-rec">
+          <span class="sc-tower-pos sc-tower-pos--{{ sc.tower.recommended_position | lower }}">
+            {{ sc.tower.recommended_label }}
+          </span>
+          <span class="sc-tower-attach">Att: {{ sc.tower.minimum_attachment }}</span>
+        </div>
+        <div class="sc-tower-visual">
+          {% for layer in sc.tower.layers %}
+          <div class="sc-tower-layer sc-tower-layer--{{ loop.index }}">
+            <span class="sc-tower-layer-name">{{ layer.label }}</span>
+            <span class="sc-tower-layer-range">{{ layer.attachment_range }}</span>
+            <span class="sc-tower-layer-premium">{{ layer.premium_guidance }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        {% if sc.tower.side_a %}
+        <div class="sc-tower-sidea">Side A: {{ sc.tower.side_a }}</div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {# Actuarial model hidden until calibrated — produces unrealistic numbers #}
+
+      {# H/A/E Composites (compact) #}
+      {% if sc.hae.available %}
+      <div class="sc-panel sc-hae-panel">
+        <div class="sc-panel-title">H/A/E Risk Profile <span class="sc-uncalibrated">Scoring v2.0</span></div>
+        <div class="sc-hae-bars">
+          {% for dim, label, color in [('host', 'Host', '#1D4ED8'), ('agent', 'Agent', '#B91C1C'), ('environment', 'Env', '#059669')] %}
+          {% set pct = sc.hae.composites_pct.get(dim, 0) %}
+          <div class="sc-hae-row">
+            <span class="sc-hae-dim" style="color: {{ color }}">{{ label }}</span>
+            <div class="sc-hae-track">
+              <div class="sc-hae-fill" style="width: {{ pct }}%; background: {{ color }}"></div>
+            </div>
+            <span class="sc-hae-val">{{ pct }}%</span>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="sc-hae-footer">
+          Product: {{ sc.hae.product_score }}% | CRF: {{ sc.hae.crf_active }}/{{ sc.hae.crf_total }} active
+        </div>
+      </div>
+      {% endif %}
+
+      {# Underwriter Guidance (compact) #}
+      {% if sc.recommendations.available %}
+      <div class="sc-panel sc-rec-panel">
+        <div class="sc-panel-title">Underwriter Guidance <span class="sc-uncalibrated">Scoring v2.0</span></div>
+        <div class="sc-rec-list">
+          {% if sc.recommendations.pricing %}
+          <div class="sc-rec-item">
+            <span class="sc-rec-key">Pricing</span>
+            <span class="sc-rec-val">{{ sc.recommendations.pricing }}</span>
+          </div>
+          {% endif %}
+          {% if sc.recommendations.layer_comfort %}
+          <div class="sc-rec-item">
+            <span class="sc-rec-key">Layers</span>
+            <span class="sc-rec-val">{{ sc.recommendations.layer_comfort }}</span>
+          </div>
+          {% endif %}
+          {% if sc.recommendations.tone %}
+          <div class="sc-rec-item">
+            <span class="sc-rec-key">Tone</span>
+            <span class="sc-rec-val">{{ sc.recommendations.tone }}</span>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+    </div>{# /sc-col-right #}
+
+  </div>{# /sc-core #}
+
+  {# ─── TOP CONCERNS (full width) ─── #}
+  {% if sc.top_concerns %}
+  <div class="sc-concerns">
+    <div class="sc-panel-title">Top Risk Concerns <span class="sc-uncalibrated">Scoring v2.0</span></div>
+    <div class="sc-concerns-list">
+      {% for concern in sc.top_concerns %}
+      <div class="sc-concern sc-concern--{{ concern.level | default('') }}">
+        <span class="sc-concern-num">{{ loop.index }}</span>
+        <div class="sc-concern-body">
+          <span class="sc-concern-name">{{ concern.signal_name | default(concern.signal_id) }}</span>
+          {% if concern.rap_label %}
+          <span class="sc-concern-rap">{{ concern.rap_label }}</span>
+          {% endif %}
+          <span class="sc-concern-explanation">{{ concern.explanation | default(concern.evidence | default('') | humanize_evidence) }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</section>
+{% endif %}

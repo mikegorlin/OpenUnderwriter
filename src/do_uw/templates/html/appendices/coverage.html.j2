@@ -1,0 +1,115 @@
+{# Data Coverage appendix template.
+   Shows % checks evaluated, sources available,
+   per-section gap analysis, and blind spot discovery status. #}
+
+<section id="coverage" class="page-break">
+  <h2>Appendix B: Data Coverage & Quality</h2>
+
+  {{ section_narrative("This appendix summarizes data completeness across all evaluation dimensions. Gaps indicate areas where additional data acquisition may improve assessment quality.", ) }}
+
+  {# --- Overall Coverage Summary --- #}
+  {% set stats = coverage_stats|default({}) %}
+  {% if stats %}
+  <div class="grid grid-cols-4 gap-4 my-4">
+    <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+      <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Total Checks</p>
+      <p class="text-2xl font-bold text-navy m-0">{{ stats.get('total', 0) }}</p>
+    </div>
+    <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+      <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Evaluated</p>
+      <p class="text-2xl font-bold text-risk-blue m-0">{{ stats.get('evaluated', 0) }}</p>
+    </div>
+    <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+      <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Skipped</p>
+      <p class="text-2xl font-bold text-risk-amber m-0">{{ stats.get('skipped', 0) }}</p>
+    </div>
+    <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+      <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Coverage</p>
+      <p class="text-2xl font-bold
+        {% if stats.get('coverage_pct', '0')|int >= 80 %} text-risk-blue
+        {% elif stats.get('coverage_pct', '0')|int >= 50 %} text-risk-amber
+        {% else %} text-risk-red
+        {% endif %}
+        m-0">{{ stats.get('coverage_pct', '0') }}%</p>
+    </div>
+  </div>
+  {% endif %}
+
+  {# --- Per-Section Coverage Table --- #}
+  {% set section_coverage = coverage_by_section|default({}) %}
+  {% if section_coverage %}
+  <h3>Per-Section Coverage</h3>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Section</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Total</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Evaluated</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Skipped</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Coverage %</th>
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for section_name, sec_stats in section_coverage.items() %}
+      {% set sec_pct = sec_stats.get('coverage_pct', 0) %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }} hover:bg-slate-100 transition-colors">
+        <td class="p-1 font-heading text-xs font-semibold text-navy">{{ section_name }}</td>
+        <td class="p-1 text-right">{{ sec_stats.get('total', 0) }}</td>
+        <td class="p-1 text-right">{{ sec_stats.get('evaluated', 0) }}</td>
+        <td class="p-1 text-right">{{ sec_stats.get('skipped', 0) }}</td>
+        <td class="p-1 text-right font-semibold
+          {% if sec_pct >= 80 %} text-risk-blue
+          {% elif sec_pct >= 50 %} text-risk-amber
+          {% else %} text-risk-red
+          {% endif %}
+        ">{{ sec_pct }}%</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {# --- Gap Notices per Section --- #}
+  {% set gaps = coverage_gaps|default({}) %}
+  {% if gaps %}
+  <h3>Data Gaps</h3>
+  {% for section_name, gap_list in gaps.items() %}
+  <h4>{{ section_name }}</h4>
+  {% for gap in gap_list %}
+    {{ gap_notice(gap.name|default(gap.id|default('Unknown')), gap.reason|default('Data not acquired') | humanize_source) }}
+  {% endfor %}
+  {% endfor %}
+  {% endif %}
+
+  {# --- Blind Spot Discovery Status --- #}
+  {% set blind_spot = blind_spot_status|default({}) %}
+  {% if blind_spot %}
+  <h3>Blind Spot Discovery</h3>
+  {% if blind_spot.get('search_configured') %}
+    {{ discovery_box(
+      "Proactive Discovery Search Completed",
+      "Web search was performed to discover risks not captured by structured data sources. " ~
+      "Found " ~ blind_spot.get('findings_count', 0) ~ " additional findings."
+    ) }}
+  {% else %}
+    {{ warning_box(
+      "Blind spot discovery was not performed. Web search was not configured for this run. " ~
+      "Consider configuring SERPER_API_KEY for comprehensive risk coverage.",
+      "Missing blind spot data means potentially undetected litigation, enforcement, or reputational risks."
+    ) }}
+  {% endif %}
+  {% endif %}
+
+  {# --- Data Sources Summary --- #}
+  {% set sources = data_sources|default([]) %}
+  {% if sources %}
+  <h3>Data Sources</h3>
+  {{ data_table(
+    ['Source', 'Type', 'Status'],
+    sources|map(attribute='name')|list|zip(
+      sources|map(attribute='type')|list,
+      sources|map(attribute='status')|list
+    )|list
+  ) }}
+  {% endif %}
+</section>

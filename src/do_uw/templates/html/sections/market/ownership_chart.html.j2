@@ -1,0 +1,5 @@
+{# Ownership Chart — extracted from market.html.j2 #}
+  {# --- Ownership Chart (VIS-02) --- #}
+  {% if (chart_svgs is defined and chart_svgs.get('ownership')) or (chart_images is defined and chart_images.get('ownership')) %}
+  {{ embed_chart("ownership", "Ownership Distribution", figure_num=3, full_width=false) }}
+  {% endif %}

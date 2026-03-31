@@ -1,0 +1,54 @@
+# Domain 7: D&O Program & Pricing
+# "What does the current program look like and is it adequate?"
+# This is where underwriting meets the market. The underwriter needs
+# to assess the tower, retention, expiring terms, and whether the
+# risk is properly priced.
+
+domain: program_pricing
+domain_label: "D&O Program & Pricing"
+order: 7
+description: >
+  Evaluate the D&O insurance program structure, tower adequacy, retention
+  appropriateness, and pricing relative to exposure. This domain bridges
+  the risk assessment (Domains 1-6) with the underwriting decision.
+
+questions:
+  - question_id: PRG-01
+    text: "What's the current D&O tower and is it adequate for the exposure?"
+    weight: 10
+    data_sources: [supabase_pricing, yfinance.info.marketCap]
+    answer_template: "Tower: {tower_limit}. Retention: {retention}. Market cap: {market_cap}. Limit/MCap ratio: {limit_ratio}%."
+    upgrade_criteria: "Tower >1% of market cap, adequate Side A DIC, reasonable retention"
+    downgrade_criteria: "Underinsured relative to market cap, no Side A DIC, excessive retention"
+
+  - question_id: PRG-02
+    text: "What's the claims history on this specific program?"
+    weight: 9
+    data_sources: [supabase_pricing, litigation.cases]
+    answer_template: "{program_claims_history}"
+    upgrade_criteria: "Clean claims history, no losses in current tower"
+    downgrade_criteria: "Prior claims, tower penetration, coverage litigation"
+
+  - question_id: PRG-03
+    text: "How does this risk price relative to peers?"
+    weight: 8
+    data_sources: [supabase_pricing, benchmark.peer_comparison]
+    answer_template: "Rate per million: {rpm}. Peer median: {peer_rpm}. Percentile: {rpm_pctl}."
+    upgrade_criteria: "At or above peer median rate, rate adequate for exposure"
+    downgrade_criteria: "Below peer median rate, rate compression despite elevated risk"
+
+  - question_id: PRG-04
+    text: "What retention level is appropriate for this risk?"
+    weight: 8
+    data_sources: [supabase_pricing, yfinance.info.marketCap]
+    answer_template: "Current retention: {retention}. Recommended minimum: {min_retention}."
+    upgrade_criteria: "Retention >$1M for large-cap, appropriate for company size"
+    downgrade_criteria: "Low retention relative to market cap, retention eroding over renewals"
+
+  - question_id: PRG-05
+    text: "Are there coverage gaps or problematic exclusions?"
+    weight: 7
+    data_sources: [supabase_pricing]
+    answer_template: "{coverage_assessment}"
+    upgrade_criteria: "Standard broad form, entity coverage, employment practices"
+    downgrade_criteria: "Specific litigation exclusion, prior acts restriction, insolvency carve-out"

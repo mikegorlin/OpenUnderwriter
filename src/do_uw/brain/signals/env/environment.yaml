@@ -1,0 +1,534 @@
+# Domain: env/environment.yaml  |  Count: 5
+# Phase 97: External environment assessment signals for D&O underwriting
+# Evaluates regulatory intensity, geopolitical exposure, ESG gaps,
+# cyber risk, and macroeconomic sensitivity from existing state data
+- id: ENVR.regulatory_intensity
+  name: Regulatory Intensity
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+  threshold:
+    type: tiered
+    red: '>3 high-intensity regulators identified in filings'
+    yellow: 2-3 regulators identified
+    clear: 0-1 regulators identified
+  claims_correlation: 0.7
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - REGULATORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.5'
+  data_strategy:
+    field_key: regulatory_intensity_score
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_envr
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Multi-regulator exposure increases D&O risk through parallel enforcement, consent decrees, and 
+        compliance cost pressures that amplify SCA filing probability
+    render_target: external_environment
+    formula: count_distinct_regulators(risk_factors_REGULATORY + llm_regulatory_environment)
+  display:
+    value_format: count
+    source_type: SEC_10K
+    threshold_context: Count of distinct high-intensity regulators (SEC, FDA, EPA, DOJ, FTC, CFPB, FERC, NRC, OCC, FDIC,
+      state AG)
+  group: external_environment
+  signal_class: evaluative
+  field_path: regulatory_intensity_score
+  depends_on: []
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - extracted.risk_factors[category=REGULATORY]
+      - llm.regulatory_environment
+    - type: WEB_SEARCH
+      fields:
+      - regulatory_actions
+  evaluation:
+    formula: regulatory_intensity_score
+    thresholds:
+    - op: '>'
+      value: 3
+      label: RED
+    - op: '>'
+      value: 1
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: '{value} regulators'
+    - level: standard
+      template: '{value} distinct high-intensity regulators identified in filings'
+    - level: deep
+      fields:
+      - regulatory_intensity_score
+      - regulatory_details
+    context_templates:
+      TRIGGERED: 'Multi-regulator exposure: {value} high-intensity regulators (elevated enforcement risk)'
+      CLEAR: Minimal regulatory intensity -- 0-1 regulators identified
+    do_context:
+      TRIGGERED_RED: '{company} Regulatory Intensity at {value} (threshold: >3 high-intensity regulators identified in filings)
+        signals elevated Litigation History / Settlement Patterns risk (F1, F10). Elevated regulatory intensity increases the probability of enforcement actions that trigger disclosure events. Companies in heavily regulated industries face continuous regulatory exposure that compounds SCA filing probability.'
+      TRIGGERED_YELLOW: '{company} Regulatory Intensity at {value} (threshold: 2-3 regulators identified) is in the caution
+        zone for Litigation History / Settlement Patterns (F1, F10). Monitor for deterioration — trend direction and peer
+        comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Regulatory Intensity at {value} is within acceptable range for Litigation History / Settlement Patterns
+        (F1, F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'Multi-regulator exposure analysis from D&O claims data: parallel enforcement by multiple agencies amplifies
+      defense costs and settlement exposure'
+    threshold_basis: Multi-regulator exposure increases D&O risk through parallel enforcement, consent decrees, and 
+      compliance cost pressures that amplify SCA filing probability
+  rap_class: host
+  rap_subcategory: host.environment_exposure
+- id: ENVR.geopolitical
+  name: Geopolitical Risk Exposure
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+  threshold:
+    type: tiered
+    red: Operations in OFAC-sanctioned countries
+    yellow: Operations in >3 elevated geopolitical risk countries
+    clear: Operations in low-risk jurisdictions only
+  claims_correlation: 0.65
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - REGULATORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.5'
+  data_strategy:
+    field_key: geopolitical_risk_score
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_envr
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Operations in sanctioned or high-risk countries create OFAC violation exposure, supply chain disruption
+        risk, and director liability for failure to monitor geopolitical compliance
+    render_target: external_environment
+    formula: score_geographic_risk(geographic_footprint, sanctioned_countries, high_risk_countries)
+  display:
+    value_format: score
+    source_type: SEC_10K
+    threshold_context: Score based on geographic operations vs sanctioned/high-risk country lists
+  group: external_environment
+  signal_class: evaluative
+  field_path: geopolitical_risk_score
+  depends_on: []
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - company.geographic_footprint
+      - llm.geographic_regions
+    - type: WEB_SEARCH
+      fields:
+      - sanctions_violations
+  evaluation:
+    formula: geopolitical_risk_score
+    thresholds:
+    - op: '>='
+      value: 3
+      label: RED
+    - op: '>='
+      value: 1
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Geopolitical risk: {value}'
+    - level: standard
+      template: Geopolitical risk score {value} based on country-level operations analysis
+    - level: deep
+      fields:
+      - geopolitical_risk_score
+      - geopolitical_details
+    context_templates:
+      TRIGGERED: 'Geopolitical exposure detected: score {value} (sanctioned/high-risk country operations)'
+      CLEAR: Operations in low-risk jurisdictions only
+    do_context:
+      TRIGGERED_RED: '{company} Geopolitical Risk Exposure at {value} (threshold: Operations in OFAC-sanctioned countries)
+        signals elevated Litigation History / Settlement Patterns risk (F1). Geopolitical risk exposure creates sudden-event disclosure risk. Sanctions, trade restrictions, or political instability force material disclosure events that plaintiffs cite when the impact was foreseeable but undisclosed.'
+      TRIGGERED_YELLOW: '{company} Geopolitical Risk Exposure at {value} (threshold: Operations in >3 elevated geopolitical
+        risk countries) is in the caution zone for Litigation History / Settlement Patterns (F1). Monitor for deterioration
+        — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Geopolitical Risk Exposure at {value} is within acceptable range for Litigation History / Settlement
+        Patterns (F1) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'D&O claims analysis: operations in sanctioned or high-risk countries create OFAC violation exposure and
+      supply chain disruption risk'
+    threshold_basis: Operations in sanctioned or high-risk countries create OFAC violation exposure, supply chain 
+      disruption risk, and director liability for failure to monitor geopolitical compliance
+  rap_class: host
+  rap_subcategory: host.environment_exposure
+- id: ENVR.esg_gap
+  name: ESG Commitment-Action Gap
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_DEF14A
+  data_locations:
+    SEC_10K:
+    - item_1a_risk_factors
+    - item_7_mda
+    SEC_DEF14A:
+    - esg_disclosures
+  threshold:
+    type: tiered
+    red: ESG risk factors AND ESG-related litigation/enforcement (commitment-action gap)
+    yellow: ESG risk factors with severity HIGH (exposure without mitigation evidence)
+    clear: No ESG risk factors or low-severity only
+  claims_correlation: 0.6
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '1.5'
+  data_strategy:
+    field_key: esg_gap_score
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_envr
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Growing ESG litigation trend -- greenwashing claims, climate risk disclosure failures, and diversity 
+        commitment lawsuits create D&O exposure when ESG risk factors exist alongside ESG litigation
+    render_target: external_environment
+    formula: score_esg_gap(risk_factors_ESG, esg_litigation_present)
+  display:
+    value_format: score
+    source_type: SEC_10K
+    threshold_context: Score based on ESG risk factor presence vs ESG-related litigation/enforcement
+  group: external_environment
+  signal_class: evaluative
+  field_path: esg_gap_score
+  depends_on: []
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - extracted.risk_factors[category=ESG]
+    - type: SEC_DEF14A
+      fields:
+      - governance.esg_disclosures
+    - type: litigation
+      fields:
+      - litigation.securities_class_actions
+  evaluation:
+    formula: esg_gap_score
+    thresholds:
+    - op: '>='
+      value: 3
+      label: RED
+    - op: '>='
+      value: 1
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'ESG gap: {value}'
+    - level: standard
+      template: ESG commitment-action gap score {value}
+    - level: deep
+      fields:
+      - esg_gap_score
+      - esg_gap_details
+    context_templates:
+      TRIGGERED: 'ESG gap detected: score {value} (ESG risk factors with litigation/enforcement)'
+      CLEAR: No significant ESG commitment-action gap
+    do_context:
+      TRIGGERED_RED: '{company} ESG Commitment-Action Gap at {value} (threshold: ESG risk factors AND ESG-related litigation/enforcement
+        (commitment-action gap)) signals elevated Litigation History / Settlement Patterns risk (F1, F10). ESG commitment-action gaps create greenwashing exposure. When stated ESG commitments are not supported by actual practices, shareholders file derivative claims and securities fraud actions alleging misleading ESG disclosures.'
+      TRIGGERED_YELLOW: '{company} ESG Commitment-Action Gap at {value} (threshold: ESG risk factors with severity HIGH (exposure
+        without mitigation evidence)) is in the caution zone for Litigation History / Settlement Patterns (F1, F10). Monitor
+        for deterioration — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} ESG Commitment-Action Gap at {value} is within acceptable range for Litigation History / Settlement
+        Patterns (F1, F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'D&O claims analysis: growing ESG litigation trend -- greenwashing claims, climate risk disclosure failures,
+      and diversity pledge accountability'
+    threshold_basis: Growing ESG litigation trend -- greenwashing claims, climate risk disclosure failures, and 
+      diversity commitment lawsuits create D&O exposure when ESG risk factors exist alongside ESG litigation
+  rap_class: host
+  rap_subcategory: host.environment_exposure
+- id: ENVR.cyber_risk
+  name: Cyber Risk Exposure
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1a_risk_factors
+  threshold:
+    type: tiered
+    red: CYBER risk factors HIGH severity OR breach history detected
+    yellow: CYBER risk factors present (data sensitivity acknowledged)
+    clear: No significant cyber risk factors
+  claims_correlation: 0.7
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.5'
+  data_strategy:
+    field_key: cyber_risk_score
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_envr
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Data breaches are a leading driver of D&O claims; companies acknowledging high cyber risk in filings 
+        without mitigation evidence face elevated SCA and regulatory action exposure
+    render_target: external_environment
+    formula: score_cyber_risk(risk_factors_CYBER, breach_indicators)
+  display:
+    value_format: score
+    source_type: SEC_10K
+    threshold_context: Score based on CYBER risk factor severity and breach history indicators
+  group: external_environment
+  signal_class: evaluative
+  field_path: cyber_risk_score
+  depends_on: []
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - extracted.risk_factors[category=CYBER]
+    - type: WEB_SEARCH
+      fields:
+      - breach_history
+      - cybersecurity_incidents
+  evaluation:
+    formula: cyber_risk_score
+    thresholds:
+    - op: '>='
+      value: 3
+      label: RED
+    - op: '>='
+      value: 1
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Cyber risk: {value}'
+    - level: standard
+      template: Cyber risk score {value} based on risk factor analysis and breach indicators
+    - level: deep
+      fields:
+      - cyber_risk_score
+      - cyber_risk_details
+    context_templates:
+      TRIGGERED: 'Elevated cyber risk: score {value} (breach history or high-severity risk factors)'
+      CLEAR: No significant cyber risk indicators
+    do_context:
+      TRIGGERED_RED: '{company} Cyber Risk Exposure at {value} (threshold: CYBER risk factors HIGH severity OR breach history
+        detected) signals elevated Litigation History / Settlement Patterns risk (F1). Cyber risk exposure creates disclosure obligations under SEC cybersecurity rules. Data breaches trigger immediate notification requirements and SCA filings alleging inadequate cybersecurity investment and disclosure.'
+      TRIGGERED_YELLOW: '{company} Cyber Risk Exposure at {value} (threshold: CYBER risk factors present (data sensitivity
+        acknowledged)) is in the caution zone for Litigation History / Settlement Patterns (F1). Monitor for deterioration
+        — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Cyber Risk Exposure at {value} is within acceptable range for Litigation History / Settlement Patterns
+        (F1) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'D&O claims analysis: data breaches are a leading driver of D&O claims; companies acknowledging high cyber
+      risk face elevated exposure'
+    threshold_basis: Data breaches are a leading driver of D&O claims; companies acknowledging high cyber risk in 
+      filings without mitigation evidence face elevated SCA and regulatory action exposure
+  rap_class: host
+  rap_subcategory: host.environment_exposure
+- id: ENVR.macro_sensitivity
+  name: Macroeconomic Sensitivity
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1a_risk_factors
+    - item_7a_market_risk
+  threshold:
+    type: tiered
+    red: Sensitive to 3+ macro dimensions (rates, currency, commodity, inflation, recession, tariff)
+    yellow: Sensitive to 1-2 macro dimensions
+    clear: Minimal macroeconomic sensitivity
+  claims_correlation: 0.55
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.5'
+  data_strategy:
+    field_key: macro_sensitivity_score
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_envr
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Multi-dimensional macro sensitivity amplifies D&O risk during economic downturns through stock price 
+        declines, covenant breaches, and going concern issues
+    render_target: external_environment
+    formula: count_macro_dimensions(interest_rate, currency, commodity, inflation, recession, tariff)
+  display:
+    value_format: count
+    source_type: SEC_10K
+    threshold_context: Count of macro dimensions with material exposure (interest rate, currency, commodity, inflation, 
+      recession, tariff)
+  group: external_environment
+  signal_class: evaluative
+  field_path: macro_sensitivity_score
+  depends_on: []
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - llm.interest_rate_risk
+      - llm.currency_risk
+      - extracted.risk_factors[category=FINANCIAL]
+  evaluation:
+    formula: macro_sensitivity_score
+    thresholds:
+    - op: '>='
+      value: 3
+      label: RED
+    - op: '>='
+      value: 1
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: '{value} macro dimensions'
+    - level: standard
+      template: '{value} macroeconomic sensitivity dimensions identified'
+    - level: deep
+      fields:
+      - macro_sensitivity_score
+      - macro_sensitivity_details
+    context_templates:
+      TRIGGERED: 'Multi-dimensional macro exposure: {value} sensitivity dimensions (economic downturn amplifier)'
+      CLEAR: Minimal macroeconomic sensitivity
+    do_context:
+      TRIGGERED_RED: '{company} Macroeconomic Sensitivity at {value} (threshold: Sensitive to 3+ macro dimensions (rates,
+        currency, commodity, inflation, recession, tariff)) signals elevated Litigation History / Settlement Patterns risk
+        (F1). Elevated macroeconomic sensitivity means external economic shocks disproportionately impact this company. When macro events trigger stock declines, plaintiffs allege management failed to disclose the sensitivity.'
+      TRIGGERED_YELLOW: '{company} Macroeconomic Sensitivity at {value} (threshold: Sensitive to 1-2 macro dimensions) is
+        in the caution zone for Litigation History / Settlement Patterns (F1). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Macroeconomic Sensitivity at {value} is within acceptable range for Litigation History / Settlement
+        Patterns (F1) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'D&O claims analysis: multi-dimensional macro sensitivity amplifies D&O risk during economic downturns through
+      stock price volatility'
+    threshold_basis: Multi-dimensional macro sensitivity amplifies D&O risk during economic downturns through stock 
+      price declines, covenant breaches, and going concern issues
+  rap_class: host
+  rap_subcategory: host.environment_exposure

@@ -1,0 +1,49 @@
+# Company-specific monitoring trigger definitions.
+# Thresholds are computed at runtime from the company's actual data.
+# Each trigger maps to a state field for automated threshold derivation.
+#
+# Phase 117: Forward-Looking Risk Framework
+
+triggers:
+  - id: MON-01
+    name: "SCA Filing"
+    description: "Securities class action filed against the company"
+    action: "Immediate review of coverage terms and reserves"
+    default_threshold: "Any Stanford SCAC match"
+    threshold_source: "Stanford SCAC database"
+    data_field: "extracted.litigation.active_cases"
+  - id: MON-02
+    name: "Stock Below Support"
+    description: "Stock price drops below technical support level"
+    action: "Review stock drop analysis and D&O exposure"
+    default_threshold: "Price below 52-week low"
+    threshold_source: "market_data.year_low"
+    data_field: "extracted.market.stock_performance.fifty_two_week_low"
+  - id: MON-03
+    name: "Insider Selling Pace"
+    description: "Insider selling acceleration beyond normal pace"
+    action: "Review insider trading patterns for scienter indicators"
+    default_threshold: ">2x current quarterly selling rate"
+    threshold_source: "insider_trading analysis"
+    data_field: "extracted.market.insider_trading.quarterly_sell_value"
+  - id: MON-04
+    name: "EPS Miss"
+    description: "Earnings per share miss exceeds threshold"
+    action: "Review earnings guidance credibility and forward statements"
+    default_threshold: ">10% miss vs guidance midpoint"
+    threshold_source: "earnings_guidance analysis"
+    data_field: "extracted.market.earnings_guidance.quarters"
+  - id: MON-05
+    name: "C-Suite Departure"
+    description: "CEO, CFO, or other C-suite executive departure"
+    action: "Review circumstances of departure and D&O implications"
+    default_threshold: "Any CEO/CFO/COO departure"
+    threshold_source: "8-K Item 5.02 filings"
+    data_field: "extracted.governance.leadership"
+  - id: MON-06
+    name: "Peer SCA"
+    description: "Securities class action filed against industry peer"
+    action: "Review for sector contagion risk"
+    default_threshold: "Any SCAC match in same SIC code"
+    threshold_source: "Stanford SCAC + SIC classification"
+    data_field: "company.sic_code"

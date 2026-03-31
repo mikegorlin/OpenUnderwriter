@@ -1,0 +1,314 @@
+# Restructuring & Impairment Signals — XBRL-sourced D&O risk indicators
+# Domain: fin/restructuring.yaml  |  Count: 4
+- id: FIN.RESTRUCT.charges
+  name: Restructuring Charges
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_10Q
+  data_locations:
+    SEC_10K:
+    - income_statement
+    - restructuring_note
+    SEC_10Q:
+    - income_statement
+  threshold:
+    type: tiered
+    red: Restructuring charges > 2% of revenue — major restructuring program impacting operations
+    yellow: Restructuring charges > 0 — active restructuring in progress
+    clear: No restructuring charges
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.3'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:RestructuringCharges
+    - us-gaap:RestructuringAndRelatedCostIncurredCost
+    - us-gaap:RestructuringCostsAndAssetImpairmentCharges
+    expected_type: numeric
+    no_data_sentinel: Restructuring charge data not found in XBRL
+    validation_rule: restructuring_charges >= 0
+  data_strategy:
+    field_key: xbrl_restructuring_charges
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Any restructuring charges indicate active organizational upheaval; >2% of revenue signals major program that may indicate fundamental business model problems
+    render_target: key_metrics
+    formula: restructuring_charges / revenue
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_restructuring_charges
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'D&O claims analysis: restructuring programs often follow periods of poor performance that were inadequately disclosed — the restructuring announcement itself can be the corrective disclosure event that defines the SCA class period end'
+    threshold_basis: 'Any charges > 0: active restructuring indicates business model stress; >2% of revenue: major program indicating fundamental problems per restructuring frequency analysis'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} restructuring charges at {value} (threshold: >2% of revenue) signals a major restructuring program (F6). Restructuring at this scale indicates fundamental business model problems — the restructuring announcement often serves as the corrective disclosure that ends a SCA class period, with plaintiffs alleging management concealed the severity of operational deterioration before the restructuring was announced.'
+      TRIGGERED_YELLOW: '{company} restructuring charges at {value} (threshold: >$0) indicates active restructuring in progress (F6). Restructuring programs signal organizational stress — monitor for scope expansion, additional charges beyond initial estimates, and employee litigation arising from workforce actions.'
+      CLEAR: '{company} has no restructuring charges in the current period (F6) — no evidence of active restructuring programs or organizational upheaval.'
+
+- id: FIN.RESTRUCT.severance
+  name: Severance Costs
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - restructuring_note
+  threshold:
+    type: tiered
+    red: Severance costs > 1% of revenue — significant workforce reduction
+    yellow: Severance costs > 0 — workforce reduction in progress
+    clear: No severance costs
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.3'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:SeveranceCosts1
+    - us-gaap:EmployeeSeveranceMember
+    - us-gaap:RestructuringReserveAccrualAdjustment
+    expected_type: numeric
+    no_data_sentinel: Severance cost data not found in XBRL
+    validation_rule: severance_costs >= 0
+  data_strategy:
+    field_key: xbrl_severance_costs
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Any severance costs indicate active workforce reduction; >1% of revenue signals large-scale layoffs with employment litigation exposure
+    render_target: key_metrics
+    formula: severance_costs
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_severance_costs
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Employment practices liability: severance costs confirm active workforce reductions that generate age discrimination (ADEA), WARN Act, and wrongful termination claims — these EPL claims create D&O Side A/B exposure and signal business deterioration'
+    threshold_basis: 'Any severance > 0: workforce reduction confirmed; >1% of revenue: large-scale layoffs with elevated WARN Act and age discrimination exposure'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} severance costs at {value} (threshold: >1% of revenue) signals significant workforce reduction (F6). Large-scale layoffs generate employment claims (ADEA age discrimination, WARN Act violations, wrongful termination) that create EPL exposure on the D&O program and signal business deterioration that may not have been adequately disclosed to investors.'
+      TRIGGERED_YELLOW: '{company} severance costs at {value} (threshold: >$0) indicates workforce reduction in progress (F6). Severance accruals confirm headcount actions — monitor for WARN Act compliance, disparate impact patterns in affected populations, and adequacy of prior workforce-related disclosures.'
+      CLEAR: '{company} has no severance costs in the current period (F6) — no evidence of workforce reduction programs.'
+
+- id: FIN.IMPAIR.asset_writedown
+  name: Asset Impairment
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_10Q
+  data_locations:
+    SEC_10K:
+    - income_statement
+    - impairment_note
+    SEC_10Q:
+    - income_statement
+  threshold:
+    type: tiered
+    red: Asset impairment > 3% of total assets — major writedown event
+    yellow: Asset impairment > 1% of total assets — material writedown
+    clear: Asset impairment <= 1% of total assets or none
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:AssetImpairmentCharges
+    - us-gaap:ImpairmentOfLongLivedAssetsHeldForUse
+    - us-gaap:TangibleAssetImpairmentCharges
+    expected_type: numeric
+    no_data_sentinel: Asset impairment data not found in XBRL
+    validation_rule: impairment >= 0
+  data_strategy:
+    field_key: xbrl_asset_impairment_pct
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Asset impairment >1% of total assets is material per SAB 99; >3% signals major writedown that often triggers SCA filings
+    render_target: key_metrics
+    formula: asset_impairment_charges / total_assets
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_asset_impairment_pct
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'D&O claims analysis: asset impairments are among the most frequent SCA triggers — they signal that asset values were previously overstated, supporting allegations that management delayed recognition of deteriorating asset values to maintain earnings'
+    threshold_basis: 'Impairment >1% of assets: material writedown per SAB 99 materiality guidance; >3%: major writedown event frequently correlated with SCA filings per Cornerstone Research data'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} asset impairment at {value} of total assets (threshold: >3%) signals a major writedown event (F3/F6). Impairments at this scale demonstrate assets were previously carried at inflated values — plaintiffs will allege management knew or should have known about deteriorated asset values earlier, creating the disclosure gap timeline that forms the SCA class period.'
+      TRIGGERED_YELLOW: '{company} asset impairment at {value} of total assets (threshold: >1%) indicates a material writedown (F3/F6). Asset impairments signal management''s prior carrying value estimates were too optimistic — monitor for additional impairment indicators and the timing of management''s recognition relative to observable market signals.'
+      CLEAR: '{company} asset impairment at {value} of total assets is within normal parameters (F3/F6) — no material writedown activity in the current period.'
+
+- id: FIN.IMPAIR.intangible_writedown
+  name: Intangible Asset Impairment
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - income_statement
+    - goodwill_intangibles_note
+  threshold:
+    type: tiered
+    red: Intangible/goodwill impairment > 5% of total intangible assets — significant value deterioration
+    yellow: Intangible/goodwill impairment > 0 — acquisition value declining
+    clear: No intangible impairment
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:GoodwillImpairmentLoss
+    - us-gaap:ImpairmentOfIntangibleAssetsExcludingGoodwill
+    - us-gaap:ImpairmentOfIntangibleAssetsFinitelivedStatementOfIncomeOrComprehensiveIncomeExtensibleEnumeration
+    - us-gaap:Goodwill
+    - us-gaap:IntangibleAssetsNetExcludingGoodwill
+    expected_type: numeric
+    no_data_sentinel: Intangible impairment data not found in XBRL
+    validation_rule: intangible_impairment >= 0
+  data_strategy:
+    field_key: xbrl_intangible_impairment
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Any goodwill/intangible impairment indicates acquisition value destruction; >5% of intangible assets signals significant deterioration of acquired businesses
+    render_target: key_metrics
+    formula: (goodwill_impairment + intangible_impairment) / (goodwill + intangible_assets_net)
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_intangible_impairment
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'M&A liability analysis: goodwill/intangible impairments confirm acquisition overpayment or deterioration of acquired businesses — these writedowns are the most common SCA trigger for serial acquirers and frequently lead to derivative suits alleging board failure in M&A due diligence'
+    threshold_basis: 'Any impairment > 0: acquisition value declining; >5% of intangible assets: significant deterioration indicating possible overpayment or integration failure'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} intangible/goodwill impairment at {value} (threshold: >5% of intangible assets) signals significant acquisition value deterioration (F3/F6). Impairment at this level confirms the board overpaid for acquisitions or the acquired businesses have deteriorated — plaintiffs in derivative suits will allege the board breached its fiduciary duty in approving the acquisition and in failing to recognize the impairment sooner.'
+      TRIGGERED_YELLOW: '{company} intangible/goodwill impairment at {value} (threshold: >$0) indicates acquisition value is declining (F3/F6). Any goodwill impairment signals that management''s original acquisition assumptions were too optimistic — monitor for additional reporting units at risk and the gap between carrying value and fair value in annual impairment testing.'
+      CLEAR: '{company} has no intangible or goodwill impairment in the current period (F3/F6) — no evidence of acquisition value deterioration.'

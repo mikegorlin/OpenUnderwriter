@@ -1,0 +1,10 @@
+{
+  "co_fire_threshold": 0.70,
+  "min_runs_for_calibration": 5,
+  "high_fire_rate_threshold": 0.80,
+  "low_fire_rate_threshold": 0.02,
+  "confidence_levels": {
+    "low_max_n": 9,
+    "medium_max_n": 24
+  }
+}

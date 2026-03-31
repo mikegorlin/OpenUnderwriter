@@ -1,0 +1,46 @@
+- id: ABS.DISC.related_party
+  name: Missing Related-Party Transaction Disclosure
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: 'Expected disclosure absent: has_subsidiaries or insider_ownership > 5%'
+  provenance:
+    origin: phase_110_absence
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Absence detection for GOV.RPT.related_party
+    threshold_provenance:
+      source: standard
+      rationale: Companies with subsidiaries or significant insider ownership expected to disclose RPTs
+  signal_class: inference
+  group: audit_profile
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  epistemology:
+    rule_origin: ASC 850 related-party disclosure requirements; D&O claims experience with undisclosed RPTs
+    threshold_basis: Companies with subsidiaries or significant insider ownership expected to disclose RPTs
+  evaluation:
+    mechanism: absence
+    absence_rules:
+      expectation_type: company_profile
+      expected_signals:
+      - GOV.RPT.related_party
+      condition: has_subsidiaries or insider_ownership > 5%
+      expected_status: TRIGGERED
+      absence_trigger: SKIPPED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} missing related-party transaction disclosure at {value} represents agent risk (executive/director
+        actions and decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} missing related-party transaction disclosure at {value} is a moderate indicator for D&O
+        risk assessment, warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} missing related-party transaction disclosure at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

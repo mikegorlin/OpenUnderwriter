@@ -1,0 +1,98 @@
+## Section 5: Governance & Leadership Quality -- Board, Compensation & Control Structure
+{{ density_indicator("governance") }}
+{% if governance %}
+{% if governance_narrative %}{{ governance_narrative }}
+
+{% endif %}
+{% if governance.governance_score %}**Governance Quality Score:** {{ governance.governance_score }}
+{% endif %}
+{% if governance.executives %}
+### Leadership Stability
+
+| Name | Title | Tenure (Yrs) | Status | Prior Lit. |
+|------|-------|-------------|--------|-----------|
+{% for exec in governance.executives %}| {{ exec.name }} | {{ exec.title }} | {{ exec.tenure }} | {{ exec.status }} | {{ exec.prior_litigation }} |
+{% endfor %}{% endif %}
+
+### Board Composition & Quality
+
+| Metric | Value |
+|--------|-------|
+| Board Size | {{ governance.board_size or "N/A" }} |
+| Independence Ratio | {{ governance.independence_ratio or "N/A" }} |
+| CEO/Chair Duality | {{ governance.ceo_duality or "N/A" }} |
+| Average Tenure | {{ governance.avg_tenure or "N/A" }} |
+| Classified Board | {{ governance.classified_board or "N/A" }} |
+| Dual-Class Structure | {{ governance.dual_class or "N/A" }} |
+| Overboarded Directors | {{ governance.overboarded_count or "N/A" }} |
+
+{% if governance.board_members %}
+### Board Member Forensic Profiles
+
+{% for bm in governance.board_members %}
+#### {{ bm.name }}
+
+| Attribute | Detail |
+|-----------|--------|
+| Tenure (Years) | {{ bm.tenure }} |
+| Independent | {{ bm.independent }} |
+| Committees | {{ bm.committees }} |
+| Other Board Seats | {{ bm.other_boards }} |
+| Overboarded | {{ bm.is_overboarded }} |
+| Prior Litigation | {{ bm.prior_litigation }} |
+
+{% if bm.interlocks %}**Interlocks:**
+{% for item in bm.interlocks %}- {{ item }}
+{% endfor %}{% else %}**Interlocks:** None found
+{% endif %}
+{% if bm.relationship_flags %}**Relationship Flags:**
+{% for item in bm.relationship_flags %}- {{ item }}
+{% endfor %}{% else %}**Relationship Flags:** None found
+{% endif %}
+{% if bm.independence_concerns %}**Independence Concerns:**
+{% for item in bm.independence_concerns %}- {{ item }}
+{% endfor %}{% else %}**Independence Concerns:** None found
+{% endif %}
+
+{% endfor %}{% endif %}
+
+### Compensation & Ownership
+
+| CEO Comp | Say-on-Pay |{% if governance.ceo_pay_ratio is defined %} Pay Ratio |{% endif %} Institutional | Insider |
+|----------|-----------|{% if governance.ceo_pay_ratio is defined %}-----------|{% endif %}--------------|---------|
+| {{ governance.ceo_comp or "N/A" }} | {{ governance.say_on_pay or "N/A" }} |{% if governance.ceo_pay_ratio is defined %} {{ governance.ceo_pay_ratio }} |{% endif %} {{ governance.institutional_pct or "N/A" }} | {{ governance.insider_pct or "N/A" }} |
+
+{% if governance.top_holders %}**Top Holders:**
+{% for h in governance.top_holders %}- {{ h.name }}{% if h.pct %}: {{ h.pct }}{% endif %}
+{% endfor %}{% endif %}
+{% if governance.known_activists %}**Known Activist Positions:** {{ governance.known_activists|join(", ") }}
+{% endif %}
+{% if governance.anti_takeover %}
+### Anti-Takeover Provisions
+
+| Provision | Status | D&O Implication |
+|-----------|--------|----------------|
+{% for at in governance.anti_takeover %}| {{ at.provision }} | {{ at.status }} | {{ at.implication }} |
+{% endfor %}{% endif %}
+
+{% if governance.has_sentiment_data %}
+### Sentiment & Narrative Coherence
+
+| Management Tone | Hedging Language | Q&A Evasion |
+|----------------|-----------------|------------|
+| {{ governance.management_tone or "N/A" }} | {{ governance.hedging_language or "N/A" }} | {{ governance.qa_evasion or "N/A" }} |
+{% endif %}
+
+{% if governance.departures_18mo %}
+### Recent Executive Departures (18 months)
+
+| Name | Title | Type |
+|------|-------|------|
+{% for dep in governance.departures_18mo %}| {{ dep.name }} | {{ dep.title }} | {{ dep.type }} |
+{% endfor %}{% endif %}
+{% if chart_dir %}![Ownership Structure](images/ownership.png)
+{% endif %}
+{{ triggered_block(5) }}
+{% else %}
+*Governance data not available.*
+{% endif %}

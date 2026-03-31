@@ -1,0 +1,115 @@
+# Brain Risk Framework Definition
+# Source of truth for the D&O underwriting risk model.
+# DuckDB is rebuilt from this file via `brain build`.
+#
+# Based on: ISO 31000, NERA LEAD Model, Willis/Marsh/AIG peril taxonomy
+
+version: 1
+name: "D&O Underwriting Risk Framework"
+description: >
+  Three-layer risk decomposition for Directors & Officers liability
+  underwriting, combining ISO 31000 risk management standards with
+  actuarial frequency/severity modeling (NERA LEAD) and peril-based
+  claim classification (Willis/Marsh/AIG).
+
+# ---------------------------------------------------------------
+# Risk Framework Layers (ISO 31000 decomposition)
+# ---------------------------------------------------------------
+layers:
+  - id: inherent_risk
+    legacy_id: inherent_risk
+    name: "Inherent Risk"
+    description: >
+      Structural company attributes that determine base risk level
+      before any controls or mitigants. Industry, size, complexity,
+      business model, geographic footprint.
+
+  - id: peril_indicator
+    legacy_id: hazard
+    name: "Peril Indicator"
+    description: >
+      Checks that directly indicate specific D&O claim perils.
+      Active litigation, enforcement actions, filed complaints,
+      and forward-looking event triggers that could crystallize
+      into claims during the policy period.
+
+  - id: risk_modifier
+    legacy_id: risk_characteristic
+    name: "Risk Modifier"
+    description: >
+      Checks that amplify, mitigate, or contextualize base risk.
+      Financial distress signals amplify securities claim risk.
+      Strong governance mitigates derivative suit risk. Market
+      signals provide context for underwriting judgment.
+
+# ---------------------------------------------------------------
+# Factor Dimensions (NERA LEAD frequency × severity model)
+# ---------------------------------------------------------------
+# Each scoring factor's role in driving claim probability (frequency)
+# vs loss amount (severity). Fundamental to D&O pricing.
+factor_dimensions:
+  F1:
+    name: "Prior Litigation History"
+    role: FREQUENCY
+    rationale: "Strongest predictor of future filings (recidivism)"
+
+  F2:
+    name: "Stock Price Decline"
+    role: BOTH
+    rationale: "Triggers claims (frequency) AND correlates with settlement size (severity per NERA)"
+
+  F3:
+    name: "Financial Restatement / Audit Issues"
+    role: FREQUENCY
+    rationale: "Direct SCA trigger — nearly automatic filing after material restatement"
+
+  F4:
+    name: "IPO / SPAC / M&A Activity"
+    role: FREQUENCY
+    rationale: "Event-based claim trigger — Section 11 for IPO, fiduciary for M&A"
+
+  F5:
+    name: "Guidance / Earnings Misses"
+    role: FREQUENCY
+    rationale: "Scienter evidence for fraud claims — builds plaintiff case"
+
+  F6:
+    name: "Short Interest / Bearish Signals"
+    role: FREQUENCY
+    rationale: "Leading indicator of fraud allegations — short sellers do deep research"
+
+  F7:
+    name: "Stock Volatility"
+    role: SEVERITY
+    rationale: "Correlates with damages quantum per NERA research — higher vol = larger class"
+
+  F8:
+    name: "Financial Distress"
+    role: BOTH
+    rationale: "Triggers claims (zone of insolvency) AND increases loss amount (less ability to settle)"
+
+  F9:
+    name: "Governance Quality"
+    role: FREQUENCY
+    rationale: "Weak governance → more claims filed (Caremark, derivative suits)"
+
+  F10:
+    name: "Officer Stability"
+    role: FREQUENCY
+    rationale: "Turnover signals problems before they surface — departure timing matters"
+
+# ---------------------------------------------------------------
+# Signal Types (risk modifier classification)
+# ---------------------------------------------------------------
+signal_types:
+  amplifier:
+    description: "Increases claim probability or severity"
+    strengths: [very_strong, strong, moderate, weak]
+
+  mitigator:
+    description: "Decreases claim probability or severity"
+    strengths: [very_strong, strong, moderate, weak]
+
+  context:
+    description: "Informational — direction depends on value"
+    strengths: [moderate, weak]

@@ -1,0 +1,101 @@
+{# ═══════════════════════════════════════════════════════════════════════════
+   UNDERWRITING DECISION FRAMEWORK
+   55+ questions across 8 domains — auto-answered from pipeline data.
+   SCA-derived questions slotted inline by domain with source badges.
+   Follows the logical order a D&O underwriter uses to evaluate an account.
+   ═══════════════════════════════════════════════════════════════════════════ #}
+{% set uq = b.uw_questions %}
+{% if uq and uq.domains %}
+<div id="uw-decision-framework" style="margin-top:14px">
+  {# Section header #}
+  <div style="background:#1F3A5C;color:white;padding:6px 10px;border-radius:4px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <span style="font-size:10pt;font-weight:800;letter-spacing:0.3px">Underwriting Decision Framework</span><br>
+      <span style="font-size:7.5pt;color:rgba(255,255,255,0.6)">{{ uq.total_questions }} questions across 8 domains — {{ uq.answer_pct }}% auto-answered from pipeline data</span>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span style="padding:2px 8px;border-radius:8px;font-size:7pt;font-weight:700;background:{% if uq.section_verdict == 'FAVORABLE' %}#065F46{% elif uq.section_verdict == 'UNFAVORABLE' %}#991B1B{% else %}#374151{% endif %};color:white">{{ uq.section_verdict | default(uq.net_assessment) }}</span>
+      <span style="font-size:7.5pt;color:rgba(255,255,255,0.6)">{{ uq.total_upgrades }}&#8593; {{ uq.total_downgrades }}&#8595;</span>
+    </div>
+  </div>
+
+  {# Domain groups #}
+  {% for domain in uq.domains %}
+  <div style="margin-bottom:8px">
+    {# Domain header with verdict badge #}
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:#F3F4F6;border-radius:3px;margin-bottom:3px">
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:9pt;font-weight:700;color:#1F3A5C">{{ domain.domain_label }}</span>
+        {# Domain verdict badge #}
+        <span style="padding:1px 5px;border-radius:6px;font-size:6pt;font-weight:700;letter-spacing:0.3px;color:white;background:{% if domain.verdict == 'FAVORABLE' %}#065F46{% elif domain.verdict == 'UNFAVORABLE' %}#991B1B{% else %}#374151{% endif %}">{{ domain.verdict }}</span>
+        <span style="font-size:7pt;color:#6B7280">{{ domain.answered_count }}/{{ domain.total_count }} answered</span>
+      </div>
+      <div style="display:flex;gap:4px;align-items:center">
+        {% if domain.upgrades > 0 %}<span style="font-size:6.5pt;font-weight:600;color:#065F46">{{ domain.upgrades }}&#8593;</span>{% endif %}
+        {% if domain.downgrades > 0 %}<span style="font-size:6.5pt;font-weight:600;color:#991B1B">{{ domain.downgrades }}&#8595;</span>{% endif %}
+        {# Answer completeness bar #}
+        <div style="width:40px;height:4px;background:#E5E7EB;border-radius:2px;overflow:hidden">
+          <div style="width:{{ domain.answer_pct }}%;height:100%;background:{% if domain.answer_pct >= 80 %}#059669{% elif domain.answer_pct >= 50 %}#D97706{% else %}#DC2626{% endif %};border-radius:2px"></div>
+        </div>
+      </div>
+    </div>
+
+    {# Questions #}
+    <div style="background:white;border:1px solid #E5E7EB;border-radius:4px;overflow:hidden">
+      {% for q in domain.questions %}
+      <div style="display:flex;gap:6px;padding:5px 8px;{% if not loop.last %}border-bottom:1px solid #F3F4F6;{% endif %}align-items:flex-start">
+        {# Verdict badge #}
+        <div style="width:14px;height:14px;border-radius:7px;flex-shrink:0;margin-top:2px;background:{% if q.verdict == 'UPGRADE' %}#059669{% elif q.verdict == 'DOWNGRADE' %}#DC2626{% elif q.verdict == 'NEUTRAL' %}#6B7280{% else %}#D97706{% endif %};display:flex;align-items:center;justify-content:center">
+          <span style="font-size:7pt;color:white;font-weight:700">{% if q.verdict == 'UPGRADE' %}+{% elif q.verdict == 'DOWNGRADE' %}-{% elif q.verdict == 'NEUTRAL' %}={% else %}?{% endif %}</span>
+        </div>
+        <div style="flex:1;min-width:0">
+          {# Question text with optional SCA source badge #}
+          <div style="font-size:8.5pt;color:#374151;font-weight:600;line-height:1.4">
+            {{ q.text }}
+            {% if q.source %}<span style="display:inline-block;padding:0 4px;border-radius:3px;font-size:5.5pt;font-weight:700;letter-spacing:0.3px;background:#6366F1;color:white;margin-left:4px;vertical-align:middle">{{ q.source }}</span>{% endif %}
+          </div>
+          {% if q.has_answer %}
+          {# Answer #}
+          <div style="font-size:8pt;color:#1F2937;line-height:1.45;margin-top:2px">{{ q.answer }}</div>
+          {% if q.evidence %}
+          <div style="font-size:6.5pt;color:#9CA3AF;margin-top:1px;line-height:1.3">{{ q.evidence }}</div>
+          {% endif %}
+          {% else %}
+          {# Needs review #}
+          <div style="font-size:7.5pt;color:#D97706;margin-top:2px;font-style:italic">
+            Needs Review{% if q.filing_ref %} — check {{ q.filing_ref }}{% endif %}
+          </div>
+          {% endif %}
+        </div>
+        {# Question ID #}
+        <div style="font-size:6pt;color:#D1D5DB;flex-shrink:0;margin-top:2px">{{ q.question_id }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{# Print CSS for verdict badges and colored elements #}
+<style>
+@media print {
+  #uw-decision-framework {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  #uw-decision-framework [style*="background:#065F46"],
+  #uw-decision-framework [style*="background:#991B1B"],
+  #uw-decision-framework [style*="background:#374151"],
+  #uw-decision-framework [style*="background:#059669"],
+  #uw-decision-framework [style*="background:#DC2626"],
+  #uw-decision-framework [style*="background:#6B7280"],
+  #uw-decision-framework [style*="background:#D97706"],
+  #uw-decision-framework [style*="background:#6366F1"],
+  #uw-decision-framework [style*="background:#1F3A5C"],
+  #uw-decision-framework [style*="background:#F3F4F6"] {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+</style>
+{% endif %}

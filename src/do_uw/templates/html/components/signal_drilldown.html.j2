@@ -1,0 +1,23 @@
+{# Signal Drill-Down Macro -- expandable inline detail panel showing
+   signal provenance data. Uses <div> pattern. Hidden in print.
+   Phase 114-02. #}
+
+{% macro signal_drill(signal) %}
+<div>
+  <div style="font-weight:600;margin-bottom:4px">
+    <span class="signal-drilldown-status signal-drilldown-status--{{ signal.status | lower }}"></span>
+  </div>
+  <div class="signal-drilldown-panel">
+    <table class="signal-drilldown-table">
+      <tr><th>Signal ID</th><td class="font-mono">{{ signal.id }}</td></tr>
+      <tr><th>Status</th><td>{{ signal.status }}</td></tr>
+      {% if signal.value %}<tr><th>Value</th><td>{{ signal.value | format_signal_value }}</td></tr>{% endif %}
+      {% if signal.level %}<tr><th>Level</th><td>{{ signal.level }}</td></tr>{% endif %}
+      {% if signal.source is defined %}<tr><th>Source</th><td>{{ signal.source | humanize_source }}</td></tr>{% endif %}
+      {% if signal.threshold_context is defined %}<tr><th>Threshold</th><td>{{ signal.threshold_context }}</td></tr>{% endif %}
+      {% if signal.rule_origin is defined %}<tr><th>Rule Origin</th><td>{{ signal.rule_origin }}</td></tr>{% endif %}
+      {% if signal.confidence is defined %}<tr><th>Confidence</th><td>{{ signal.confidence }}</td></tr>{% endif %}
+    </table>
+  </div>
+</div>
+{% endmacro %}

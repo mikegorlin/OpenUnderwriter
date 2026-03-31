@@ -1,0 +1,46 @@
+- id: ABS.DISC.going_concern
+  name: Missing Going Concern Assessment
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: 'Expected disclosure absent: ASU 2014-15 requires management going concern assessment'
+  provenance:
+    origin: phase_110_absence
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Absence detection for FIN.ACCT.auditor
+    threshold_provenance:
+      source: standard
+      rationale: All entities must assess going concern; absence noted by auditors
+  signal_class: inference
+  group: audit_profile
+  rap_class: host
+  rap_subcategory: host.financials
+  epistemology:
+    rule_origin: ASU 2014-15 going concern disclosure requirements
+    threshold_basis: All entities must assess going concern; absence noted by auditors
+  evaluation:
+    mechanism: absence
+    absence_rules:
+      expectation_type: always_expected
+      expected_signals:
+      - FIN.ACCT.auditor
+      condition: ASU 2014-15 requires management going concern assessment
+      expected_status: TRIGGERED
+      absence_trigger: SKIPPED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} missing going concern assessment at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} missing going concern assessment at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} missing going concern assessment at {value} is within normal parameters for D&O risk assessment —
+        no D&O concern at this level.'

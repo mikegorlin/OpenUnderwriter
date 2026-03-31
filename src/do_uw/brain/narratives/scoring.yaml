@@ -1,0 +1,41 @@
+# Narrative configuration for Scoring section
+# 5-layer architecture: Verdict > Thesis > Evidence Grid > Implications > Deep Context
+
+id: scoring
+name: Scoring & Risk Assessment
+
+verdict:
+  thresholds:
+    CRITICAL: CRITICAL
+    ELEVATED: CONCERNING
+    CLEAN: FAVORABLE
+  tier_overrides:
+    WIN: FAVORABLE
+    WANT: FAVORABLE
+    WRITE: NEUTRAL
+    WATCH: CONCERNING
+    WALK: CRITICAL
+    NO_TOUCH: CRITICAL
+
+thesis_template: >
+  Proprietary scoring yields {{ tier }} classification with overall score {{ overall_score }}.
+  {% if high_peril %}Elevated peril scores indicate heightened claim probability across multiple allegation theories.{% endif %}
+  {% if hazard_amplification %}Hazard interaction effects amplify risk beyond individual factor assessment.{% endif %}
+
+evidence_keys:
+  - scoring.ten_factor_scores
+  - scoring.risk_tier
+  - scoring.peril_assessment
+  - scoring.red_flags
+  - scoring.allegation_mapping
+  - scoring.claim_probability
+
+implications_template: >
+  Overall risk profile directly informs primary and excess layer structure decisions.
+  {% if high_peril %}High peril scores warrant conservative attachment point and increased limits consideration.{% endif %}
+
+deep_context_keys:
+  - scoring.hazard_profile
+  - scoring.forensic_composites
+  - scoring.temporal_signals
+  - scoring.severity_scenarios

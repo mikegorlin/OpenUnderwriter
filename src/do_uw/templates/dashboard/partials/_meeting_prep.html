@@ -1,0 +1,108 @@
+{# Meeting prep questions partial.
+   Category filter tabs using DaisyUI, question list with badges,
+   good/bad answer callouts (blue/red, no green), follow-up text,
+   and print-friendly layout via @media print in CSS.
+#}
+
+<div class="card bg-base-100 shadow-md">
+  <div class="card-body p-5">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="card-title text-base" style="color: var(--ad-navy);">Meeting Prep Questions</h3>
+      {% if questions %}
+      <span class="badge badge-info badge-sm">{{ questions|length }} questions</span>
+      {% endif %}
+    </div>
+
+    <!-- Category filter tabs -->
+    <div class="tabs tabs-box mb-4">
+      <a class="tab tab-sm {% if not active_category %}tab-active{% endif %}"
+         hx-get="/meeting-prep"
+         hx-target="#detail-panel"
+         hx-swap="innerHTML"
+         hx-indicator="#global-indicator">
+        All
+      </a>
+      <a class="tab tab-sm {% if active_category == 'CLARIFICATION' %}tab-active{% endif %}"
+         hx-get="/meeting-prep?category=CLARIFICATION"
+         hx-target="#detail-panel"
+         hx-swap="innerHTML"
+         hx-indicator="#global-indicator">
+        Clarification
+      </a>
+      <a class="tab tab-sm {% if active_category == 'FORWARD_INDICATOR' %}tab-active{% endif %}"
+         hx-get="/meeting-prep?category=FORWARD_INDICATOR"
+         hx-target="#detail-panel"
+         hx-swap="innerHTML"
+         hx-indicator="#global-indicator">
+        Forward Indicator
+      </a>
+      <a class="tab tab-sm {% if active_category == 'GAP_FILLER' %}tab-active{% endif %}"
+         hx-get="/meeting-prep?category=GAP_FILLER"
+         hx-target="#detail-panel"
+         hx-swap="innerHTML"
+         hx-indicator="#global-indicator">
+        Gap Filler
+      </a>
+      <a class="tab tab-sm {% if active_category == 'CREDIBILITY_TEST' %}tab-active{% endif %}"
+         hx-get="/meeting-prep?category=CREDIBILITY_TEST"
+         hx-target="#detail-panel"
+         hx-swap="innerHTML"
+         hx-indicator="#global-indicator">
+        Credibility Test
+      </a>
+    </div>
+
+    <!-- Questions list -->
+    <div id="questions-list" class="space-y-4">
+      {% if questions %}
+      {% for q in questions %}
+      <div class="border rounded-lg p-4 bg-base-200">
+        <!-- Category badge and question -->
+        <div class="flex items-start gap-2 mb-2">
+          {% if q.category == "CLARIFICATION" %}
+          <span class="badge badge-info badge-sm shrink-0">CLARIFICATION</span>
+          {% elif q.category == "FORWARD_INDICATOR" %}
+          <span class="badge badge-warning badge-sm shrink-0">FORWARD</span>
+          {% elif q.category == "GAP_FILLER" %}
+          <span class="badge badge-ghost badge-sm shrink-0">GAP</span>
+          {% elif q.category == "CREDIBILITY_TEST" %}
+          <span class="badge badge-error badge-sm shrink-0">CREDIBILITY</span>
+          {% else %}
+          <span class="badge badge-ghost badge-sm shrink-0">{{ q.category }}</span>
+          {% endif %}
+          <p class="font-semibold text-sm" style="color: var(--ad-navy);">{{ q.question }}</p>
+        </div>
+
+        <!-- Context -->
+        {% if q.context %}
+        <p class="text-xs opacity-70 mb-3 pl-2 border-l-2" style="border-color: var(--ad-navy);">{{ q.context }}</p>
+        {% endif %}
+
+        <!-- Good/Bad answer callouts (blue/red, NO green) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
+          {% if q.good_answer %}
+          <div class="p-2 rounded text-xs" style="background-color: var(--fmt-improving); border-left: 3px solid var(--risk-moderate);">
+            <span class="font-semibold opacity-70">Good answer:</span>
+            <p class="mt-1">{{ q.good_answer }}</p>
+          </div>
+          {% endif %}
+          {% if q.bad_answer %}
+          <div class="p-2 rounded text-xs" style="background-color: var(--fmt-deteriorating); border-left: 3px solid var(--risk-critical);">
+            <span class="font-semibold opacity-70">Bad answer:</span>
+            <p class="mt-1">{{ q.bad_answer }}</p>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Follow-up -->
+        {% if q.follow_up %}
+        <p class="text-xs opacity-60 italic">Follow-up: {{ q.follow_up }}</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+      {% else %}
+      <p class="text-sm opacity-50">No meeting prep questions generated. Run analysis first.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>

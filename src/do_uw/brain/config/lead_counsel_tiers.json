@@ -1,0 +1,22 @@
+{
+  "tier_1": [
+    "Bernstein Litowitz Berger & Grossmann",
+    "Robbins Geller Rudman & Dowd",
+    "Kessler Topaz Meltzer & Check",
+    "Labaton Keller Sucharow",
+    "Grant & Eisenhofer"
+  ],
+  "tier_2": [
+    "Bleichmar Fonti & Auld",
+    "Pomerantz",
+    "Cohen Milstein Sellers & Toll",
+    "Hagens Berman Sobol Shapiro",
+    "Kirby McInerney",
+    "Glancy Prongay & Murray",
+    "Scott+Scott Attorneys at Law",
+    "Motley Rice",
+    "Barrack Rodos & Bacine"
+  ],
+  "tier_3_default": true,
+  "match_strategy": "substring"
+}

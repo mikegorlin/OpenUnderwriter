@@ -1,0 +1,114 @@
+{# Corporate Events & Transaction Risk - full template (Phase 100) #}
+{% set events = company.corporate_events_signals if company.corporate_events_signals else {} %}
+{% if company.has_corporate_events is defined and company.has_corporate_events and events %}
+<div class="subsection" id="corporate-events">
+  <h4>Corporate Events &amp; Transaction Risk</h4>
+  <table class="kv-table">
+    <tbody>
+      {# M&A Activity #}
+      {% if events.ma_activity %}
+      {% set ma = events.ma_activity %}
+      <tr>
+        <td class="kv-label">M&amp;A Activity</td>
+        <td class="kv-value">
+          {% if ma.color == 'red' %}
+          <span class="badge-pill bg-red-700 text-white">{{ ma.level }}</span>
+          {% elif ma.color == 'amber' %}
+          <span class="badge-pill bg-amber-500 text-white">{{ ma.level }}</span>
+          {% else %}
+          <span class="badge-pill bg-emerald-600 text-white">{{ ma.level }}</span>
+          {% endif %}
+          <br>
+          <span class="text-xs text-gray-500">
+            {{ ma.acquisition_count }} acquisition year{{ "s" if ma.acquisition_count != 1 }}
+            {%- if ma.acquisition_years %} ({{ ma.acquisition_years | join(", ") }}){% endif %}
+            {% if ma.total_acquisition_spend and ma.total_acquisition_spend != 'N/A' %} | Total spend: {{ ma.total_acquisition_spend }}{% endif %}
+            {% if ma.is_serial_acquirer %} | <strong>Serial Acquirer</strong>{% endif %}
+          </span>
+          {% if ma.goodwill_growth_rate != 'N/A' or ma.acquisition_to_revenue != 'N/A' %}
+          <br>
+          <span class="text-xs text-gray-500">
+            <em>D&amp;O relevance:</em>
+            {% if ma.goodwill_growth_rate != 'N/A' %} Goodwill growth {{ ma.goodwill_growth_rate }} (impairment write-down risk){% endif %}
+            {% if ma.acquisition_to_revenue != 'N/A' %}{% if ma.goodwill_growth_rate != 'N/A' %};{% endif %} Acq/Rev ratio {{ ma.acquisition_to_revenue }}{% endif %}
+          </span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endif %}
+
+      {# IPO / Offering Exposure #}
+      {% if events.ipo_exposure %}
+      {% set ipo = events.ipo_exposure %}
+      <tr>
+        <td class="kv-label">IPO / Offering Exposure</td>
+        <td class="kv-value">
+          {% if ipo.color == 'red' %}
+          <span class="badge-pill bg-red-700 text-white">{{ ipo.level }}</span>
+          {% elif ipo.color == 'amber' %}
+          <span class="badge-pill bg-amber-500 text-white">{{ ipo.level }}</span>
+          {% else %}
+          <span class="badge-pill bg-emerald-600 text-white">{{ ipo.level }}</span>
+          {% endif %}
+          <span class="text-xs text-gray-500 ml-1">
+            {{ ipo.years_public }} year{{ "s" if ipo.years_public != 1 }} public
+            {% if ipo.in_ipo_window %} | Within IPO litigation window{% endif %}
+          </span>
+        </td>
+      </tr>
+      {% endif %}
+
+      {# Restatement History #}
+      {% if events.restatements %}
+      {% set rest = events.restatements %}
+      <tr>
+        <td class="kv-label">Restatement History</td>
+        <td class="kv-value">
+          {% if rest.color == 'red' %}
+          <span class="badge-pill bg-red-700 text-white">{{ rest.level }}</span>
+          {% elif rest.color == 'amber' %}
+          <span class="badge-pill bg-amber-500 text-white">{{ rest.level }}</span>
+          {% else %}
+          <span class="badge-pill bg-emerald-600 text-white">{{ rest.level }}</span>
+          {% endif %}
+          <span class="text-xs text-gray-500 ml-1">
+            {% if rest.has_restatement %}Restatement detected{% endif %}
+            {% if rest.material_weakness %}{% if rest.has_restatement %} | {% endif %}Material weakness{% endif %}
+          </span>
+        </td>
+      </tr>
+      {% endif %}
+
+      {# Capital Structure Changes #}
+      {% if events.capital_changes %}
+      <tr>
+        <td class="kv-label">Capital Structure Changes</td>
+        <td class="kv-value">
+          <ul class="list-disc list-inside text-sm text-gray-600 m-0 p-0">
+            {% for change in events.capital_changes %}
+            <li>{{ change }}</li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      {% endif %}
+
+      {# Business Changes #}
+      {% if events.business_changes %}
+      <tr>
+        <td class="kv-label">Business Changes</td>
+        <td class="kv-value">
+          <ul class="list-disc list-inside text-sm text-gray-600 m-0 p-0">
+            {% for change in events.business_changes %}
+            <li>{{ change }}</li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="text-sm text-gray-400 italic">No corporate event data available.</p>
+{% endif %}

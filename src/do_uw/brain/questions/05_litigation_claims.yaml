@@ -1,0 +1,69 @@
+# Domain 5: Litigation & Claims History
+# "Has this company been sued before and what's the current exposure?"
+# Past is prologue. Repeat filers have 3-5x the claim frequency.
+# Understanding the litigation posture tells you what's coming.
+
+domain: litigation_claims
+domain_label: "Litigation & Claims"
+order: 5
+description: >
+  Review SCA history, settlement patterns, active litigation, SEC enforcement,
+  and regulatory exposure. The most predictive factor for future D&O claims
+  is past D&O claims.
+
+questions:
+  - question_id: LIT-01
+    text: "Has this company ever been the target of a securities class action?"
+    weight: 10
+    data_sources: [litigation.risk_card, litigation.cases, supabase_sca]
+    answer_template: "{sca_history}"
+    upgrade_criteria: "No SCA history — first-time buyer premium"
+    downgrade_criteria: "Repeat filer — especially if settled for >$10M or multiple filings"
+
+  - question_id: LIT-02
+    text: "Are there any active SCA or derivative lawsuits pending?"
+    weight: 10
+    data_sources: [litigation.cases, litigation.active_cases]
+    answer_template: "{active_litigation}"
+    upgrade_criteria: "No pending D&O-related litigation"
+    downgrade_criteria: "Active SCA, derivative suit, or SEC investigation — potential known loss"
+
+  - question_id: LIT-03
+    text: "What's the settlement history — amounts, theories, and outcomes?"
+    weight: 9
+    data_sources: [litigation.settlements, supabase_sca]
+    answer_template: "{settlement_history}"
+    upgrade_criteria: "Dismissed cases, no settlements"
+    downgrade_criteria: "Large settlements (>$10M), multiple settlements, ongoing pattern"
+
+  - question_id: LIT-04
+    text: "Has the SEC or any regulator investigated or sanctioned the company?"
+    weight: 9
+    data_sources: [analysis.signals.sec_enforcement_*, extracted.sec_filings]
+    answer_template: "{sec_enforcement_status}"
+    upgrade_criteria: "No SEC enforcement actions, no Wells notices"
+    downgrade_criteria: "Active SEC investigation, AAER, consent decree, or Wells notice"
+
+  - question_id: LIT-05
+    text: "What litigation theories apply to this company's risk profile?"
+    weight: 8
+    data_sources: [analysis.peril_map, scoring.allegation_mapping]
+    answer_template: "Primary theories: {top_theories}. Peril map: {peril_assessment}."
+    upgrade_criteria: "Low-frequency theories only (e.g., plain vanilla merger objection)"
+    downgrade_criteria: "High-severity theories: accounting fraud, disclosure failure, insider trading"
+
+  - question_id: LIT-06
+    text: "Are there non-SCA lawsuits that could generate D&O exposure?"
+    weight: 7
+    data_sources: [analysis.signals.regulatory_*, web_search]
+    answer_template: "{non_sca_exposure}"
+    upgrade_criteria: "No significant non-SCA litigation"
+    downgrade_criteria: "Antitrust, ERISA, environmental, whistleblower, or government investigation"
+
+  - question_id: LIT-07
+    text: "What's the statute of limitations window for recent events?"
+    weight: 7
+    data_sources: [analysis.stock_events, litigation.cases]
+    answer_template: "{sol_window}"
+    upgrade_criteria: "No recent triggers within SOL window"
+    downgrade_criteria: "Recent stock drop, restatement, or executive departure within 2-5 year SOL"

@@ -1,0 +1,27 @@
+{# Committee Membership Detail — which director chairs/sits on which committee #}
+
+  {% set comms = gov.get('committee_detail') %}
+  {% if comms %}
+  <h3>Committee Membership</h3>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 8px 0 12px;">
+    {% for comm in comms.committees %}
+    <div style="padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background: white;">
+      <div style="font-size: 11px; font-weight: 700; color: #1e3a5f; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; border-bottom: 2px solid #1e3a5f; padding-bottom: 4px;">{{ comm.name }}</div>
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        {% for member in comm.members %}
+        <div style="font-size: 12px; color: #334155; display: flex; align-items: center; gap: 4px;">
+          {% if comm.chair and member == comm.chair %}
+            <span style="font-size: 9px; font-weight: 700; color: #1e3a5f; background: #e2e8f0; padding: 1px 4px; border-radius: 3px;">CHAIR</span>
+          {% endif %}
+          {{ member }}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>{{ comms.total_committees }} standing committee{{ 's' if comms.total_committees != 1 }} identified from proxy filings</li>
+    <li>Audit committee financial expertise is required by SOX; compensation and nominating committees should be fully independent under exchange rules</li>
+  </ul>
+  {% endif %}

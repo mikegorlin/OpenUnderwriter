@@ -1,0 +1,58 @@
+- id: CTX.COMP.lifecycle
+  name: CEO Compensation in Lifecycle Context
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of EXEC.COMP.ceo_total_comp through lifecycle_stage lens
+    threshold_provenance:
+      source: calibrated
+      rationale: Lifecycle adjustments calibrated from Equilar CEO pay survey data by company maturity
+  signal_class: inference
+  group: compensation_analysis
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  epistemology:
+    rule_origin: ISS pay-for-performance methodology adjusted for company lifecycle stage
+    threshold_basis: Lifecycle adjustments calibrated from Equilar CEO pay survey data by company maturity
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: EXEC.COMP.ceo_total_comp
+      context_dimensions:
+      - lifecycle_stage
+      context_adjustments:
+        pre_revenue:
+          threshold_adjustment: 0.3
+          rationale: Pre-revenue CEO comp should be minimal; excessive pay is red flag
+        post_ipo:
+          threshold_adjustment: 0.5
+          rationale: Post-IPO comp ramp-up expected but should be moderate
+        growth:
+          threshold_adjustment: 0.8
+          rationale: Growth companies may justify higher comp with equity incentives
+        mature:
+          threshold_adjustment: 1.2
+          rationale: Mature company comp benchmarked to peers; higher bar for concern
+        distressed:
+          threshold_adjustment: 0.4
+          rationale: Distressed company executives should not receive elevated comp
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} ceo compensation in lifecycle context at {value} represents agent risk (executive/director
+        actions and decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} ceo compensation in lifecycle context at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} ceo compensation in lifecycle context at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

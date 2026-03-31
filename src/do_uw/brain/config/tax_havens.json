@@ -1,0 +1,164 @@
+{
+  "jurisdictions": [
+    {
+      "name": "Cayman Islands",
+      "country_code": "KY",
+      "category": "zero_tax"
+    },
+    {
+      "name": "British Virgin Islands",
+      "country_code": "VG",
+      "category": "zero_tax"
+    },
+    {
+      "name": "Bermuda",
+      "country_code": "BM",
+      "category": "zero_tax"
+    },
+    {
+      "name": "Bahamas",
+      "country_code": "BS",
+      "category": "zero_tax"
+    },
+    {
+      "name": "Turks and Caicos",
+      "country_code": "TC",
+      "category": "zero_tax"
+    },
+    {
+      "name": "Anguilla",
+      "country_code": "AI",
+      "category": "zero_tax"
+    },
+    {
+      "name": "Guernsey",
+      "country_code": "GG",
+      "category": "zero_tax"
+    },
+    {
+      "name": "Jersey",
+      "country_code": "JE",
+      "category": "zero_tax"
+    },
+    {
+      "name": "Isle of Man",
+      "country_code": "IM",
+      "category": "zero_tax"
+    },
+    {
+      "name": "Vanuatu",
+      "country_code": "VU",
+      "category": "zero_tax"
+    },
+    {
+      "name": "Monaco",
+      "country_code": "MC",
+      "category": "zero_tax"
+    },
+    {
+      "name": "Ireland",
+      "country_code": "IE",
+      "category": "low_tax"
+    },
+    {
+      "name": "Singapore",
+      "country_code": "SG",
+      "category": "low_tax"
+    },
+    {
+      "name": "Hong Kong",
+      "country_code": "HK",
+      "category": "low_tax"
+    },
+    {
+      "name": "Switzerland",
+      "country_code": "CH",
+      "category": "low_tax"
+    },
+    {
+      "name": "Luxembourg",
+      "country_code": "LU",
+      "category": "low_tax"
+    },
+    {
+      "name": "Netherlands",
+      "country_code": "NL",
+      "category": "low_tax"
+    },
+    {
+      "name": "Cyprus",
+      "country_code": "CY",
+      "category": "low_tax"
+    },
+    {
+      "name": "Malta",
+      "country_code": "MT",
+      "category": "low_tax"
+    },
+    {
+      "name": "Mauritius",
+      "country_code": "MU",
+      "category": "low_tax"
+    },
+    {
+      "name": "United Arab Emirates",
+      "country_code": "AE",
+      "category": "low_tax"
+    },
+    {
+      "name": "Barbados",
+      "country_code": "BB",
+      "category": "low_tax"
+    },
+    {
+      "name": "Liechtenstein",
+      "country_code": "LI",
+      "category": "low_tax"
+    },
+    {
+      "name": "Andorra",
+      "country_code": "AD",
+      "category": "low_tax"
+    },
+    {
+      "name": "Panama",
+      "country_code": "PA",
+      "category": "preferential_regime"
+    },
+    {
+      "name": "Belize",
+      "country_code": "BZ",
+      "category": "preferential_regime"
+    },
+    {
+      "name": "Costa Rica",
+      "country_code": "CR",
+      "category": "preferential_regime"
+    },
+    {
+      "name": "Seychelles",
+      "country_code": "SC",
+      "category": "preferential_regime"
+    },
+    {
+      "name": "Samoa",
+      "country_code": "WS",
+      "category": "preferential_regime"
+    },
+    {
+      "name": "Marshall Islands",
+      "country_code": "MH",
+      "category": "preferential_regime"
+    },
+    {
+      "name": "Liberia",
+      "country_code": "LR",
+      "category": "preferential_regime"
+    },
+    {
+      "name": "Curacao",
+      "country_code": "CW",
+      "category": "preferential_regime"
+    }
+  ]
+}

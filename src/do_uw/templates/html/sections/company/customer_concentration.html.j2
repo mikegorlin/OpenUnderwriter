@@ -1,0 +1,21 @@
+{# Customer Concentration — extracted from company.html.j2 #}
+{% set customers = co.get('customer_concentration', []) %}
+{% if customers %}
+<h3>Customer Concentration</h3>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Customer</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Revenue %</th>
+    </tr>
+  </thead>
+  <tbody class="tabular-nums">
+    {% for c in customers %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1">{{ c.description }}</td>
+      <td class="p-1 text-right font-semibold">{{ c.pct | default('—') }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}

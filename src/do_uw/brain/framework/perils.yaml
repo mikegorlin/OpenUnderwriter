@@ -1,0 +1,107 @@
+# D&O Claim Perils — grouping layer above HAZ-* codes
+# Source of truth. DuckDB rebuilt from this file via `brain build`.
+#
+# 8 perils covering all 15 HAZ codes. Perils are additive — they
+# group HAZ codes for underwriter-friendly querying. All 15 HAZ
+# codes are preserved as children.
+#
+# Based on: Willis Towers Watson, Marsh, AIG D&O claim taxonomies
+
+version: 1
+
+perils:
+  - id: SECURITIES
+    name: "Securities Claims"
+    description: >
+      Claims arising from alleged misrepresentation or omission of
+      material facts in securities transactions. Includes 10b-5
+      fraud claims and Section 11 strict liability.
+    haz_codes: [HAZ-SCA, HAZ-S11]
+    frequency: moderate
+    severity: high
+    typical_settlement_range: "$5M - $500M+"
+    key_drivers: ["stock decline", "restatement", "insider trading"]
+
+  - id: FIDUCIARY
+    name: "Fiduciary Breach"
+    description: >
+      Derivative suits and breach of fiduciary duty claims.
+      Caremark duty of oversight, corporate waste, controlling
+      stockholder self-dealing, books-and-records demands.
+    haz_codes: [HAZ-DER]
+    frequency: growing
+    severity: variable
+    typical_settlement_range: "$1M - $100M"
+    key_drivers: ["governance failure", "M&A transactions", "activist pressure"]
+
+  - id: REGULATORY
+    name: "Government Enforcement"
+    description: >
+      SEC enforcement actions, DOJ criminal investigations,
+      and industry-specific regulatory proceedings. Often triggers
+      follow-on civil litigation.
+    haz_codes: [HAZ-SEC, HAZ-DOJ, HAZ-REG]
+    frequency: stable
+    severity: high
+    typical_settlement_range: "$10M - $1B+ (fines + disgorgement)"
+    key_drivers: ["accounting fraud", "market manipulation", "industry violations"]
+
+  - id: EMPLOYMENT
+    name: "Employment & Whistleblower"
+    description: >
+      Employment discrimination, wrongful termination, ERISA claims,
+      and whistleblower retaliation. High frequency but typically
+      lower individual severity.
+    haz_codes: [HAZ-EMPL]
+    frequency: high
+    severity: lower
+    typical_settlement_range: "$500K - $50M"
+    key_drivers: ["workforce reduction", "discrimination", "whistleblower retaliation"]
+
+  - id: FINANCIAL_DISTRESS
+    name: "Insolvency & Bankruptcy"
+    description: >
+      Claims triggered by financial distress, zone of insolvency,
+      and bankruptcy proceedings. Catastrophic severity — often
+      exceeds policy limits.
+    haz_codes: [HAZ-BANK]
+    frequency: event_driven
+    severity: catastrophic
+    typical_settlement_range: "$50M - $1B+"
+    key_drivers: ["liquidity crisis", "covenant breach", "going concern"]
+
+  - id: EMERGING
+    name: "Emerging Risks"
+    description: >
+      Rapidly evolving claim categories with uncertain actuarial
+      data. Cyber-related D&O claims, AI liability, ESG/greenwashing,
+      and SPAC-related litigation.
+    haz_codes: [HAZ-CYBER, HAZ-AI, HAZ-ESG, HAZ-SPAC]
+    frequency: growing
+    severity: uncertain
+    typical_settlement_range: "$5M - $200M"
+    key_drivers: ["technology disruption", "regulatory evolution", "societal expectations"]
+
+  - id: CONSUMER
+    name: "Consumer & Product Claims"
+    description: >
+      Product liability escalation to D&O level, consumer class
+      actions with D&O exposure, and privacy-related claims that
+      trigger board-level liability.
+    haz_codes: [HAZ-PRODUCT]
+    frequency: high
+    severity: variable
+    typical_settlement_range: "$10M - $500M"
+    key_drivers: ["product defects", "safety failures", "consumer privacy"]
+
+  - id: COMMERCIAL
+    name: "Commercial Litigation"
+    description: >
+      Antitrust/competition claims and intellectual property
+      disputes that create D&O exposure. Stable frequency,
+      highly industry-dependent.
+    haz_codes: [HAZ-ANTITRUST, HAZ-IP]
+    frequency: stable
+    severity: industry_dependent
+    typical_settlement_range: "$5M - $500M (treble damages for antitrust)"
+    key_drivers: ["market dominance", "patent disputes", "trade secrets"]

@@ -1,0 +1,34 @@
+# Narrative configuration for Governance section
+# 5-layer architecture: Verdict > Thesis > Evidence Grid > Implications > Deep Context
+
+id: governance
+name: Governance & Leadership
+
+verdict:
+  thresholds:
+    CRITICAL: CRITICAL
+    ELEVATED: CONCERNING
+    CLEAN: FAVORABLE
+
+thesis_template: >
+  Governance structure {{ 'presents critical deficiencies' if density_level == 'CRITICAL' else 'shows areas of concern' if density_level == 'ELEVATED' else 'meets institutional standards' }}.
+  {% if board_independence_gap %}Board independence gaps may weaken Caremark defense.{% endif %}
+  {% if insider_activity %}Insider trading patterns detected — strengthens scienter allegations.{% endif %}
+
+evidence_keys:
+  - governance.board_composition
+  - governance.executive_leadership
+  - governance.compensation
+  - governance.insider_trading
+  - governance.structural_governance
+  - governance.activist_risk
+
+implications_template: >
+  {% if density_level == 'CRITICAL' %}Critical governance gaps directly increase derivative suit exposure and weaken director defense.{% endif %}
+  {% if density_level == 'ELEVATED' %}Governance concerns warrant enhanced insured-vs-insured exclusion review.{% endif %}
+  {% if density_level == 'CLEAN' %}Standard governance profile supports baseline D&O terms.{% endif %}
+
+deep_context_keys:
+  - governance.board_forensics
+  - governance.transparency_disclosure
+  - governance.ownership_structure

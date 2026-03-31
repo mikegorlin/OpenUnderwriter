@@ -1,0 +1,110 @@
+{# Section detail panel -- loaded as htmx fragment into #detail-panel.
+   Shows section title, applicable charts, data tables, and expandable findings list.
+#}
+{% from "partials/_chart_container.html" import chart %}
+
+<div class="card bg-base-100 shadow-md">
+  <div class="card-body">
+    <!-- Back link -->
+    <div class="mb-3">
+      <a href="/" class="btn btn-sm btn-ghost gap-1" style="color: var(--ad-navy);">
+        &larr; Back to Overview
+      </a>
+    </div>
+
+    <!-- Section header -->
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="card-title text-xl" style="color: var(--ad-navy);">{{ detail.title }}</h2>
+      {% if detail.data %}
+      <span class="badge badge-success badge-sm">Available</span>
+      {% else %}
+      <span class="badge badge-ghost badge-sm">No data</span>
+      {% endif %}
+    </div>
+
+    <!-- Section charts (if applicable) -->
+    {% if detail.charts %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+      {% for c in detail.charts %}
+      {{ chart(c.id, c.url, c.title, "200px") }}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Rich data table for section data -->
+    {% if detail.data and detail.data is mapping %}
+    <div class="overflow-x-auto mb-4">
+      <table class="table table-xs table-zebra">
+        <thead>
+          <tr>
+            <th class="text-xs" style="color: var(--ad-navy);">Metric</th>
+            <th class="text-xs" style="color: var(--ad-navy);">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for key, val in detail.data.items() %}
+          {% if val is not none and not key.startswith("has_") and val is not mapping and val is not iterable or val is string %}
+          <tr class="hover">
+            <td class="text-xs font-medium">{{ key.replace("_", " ").title() }}</td>
+            <td class="text-xs">{{ val }}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    <!-- Findings list -->
+    {% if detail.findings %}
+    <h3 class="font-semibold text-sm mb-2" style="color: var(--ad-navy);">Findings ({{ detail.findings|length }})</h3>
+    <div class="space-y-2">
+      {% for item in detail.findings %}
+      <div class="collapse collapse-arrow bg-base-200 rounded-lg">
+        <input type="checkbox" />
+        <div class="collapse-title text-sm font-medium flex items-center gap-2">
+          <span>{{ item.label }}</span>
+          {% if item.confidence == "HIGH" %}
+          <span class="badge badge-info badge-xs">HIGH</span>
+          {% elif item.confidence == "MEDIUM" %}
+          <span class="badge badge-warning badge-xs">MEDIUM</span>
+          {% else %}
+          <span class="badge badge-ghost badge-xs">LOW</span>
+          {% endif %}
+        </div>
+        <div class="collapse-content">
+          <p class="text-sm opacity-80 mb-2">{{ item.value }}</p>
+          {% if item.evidence %}
+          <div class="mt-1 mb-2">
+            <p class="text-xs font-semibold opacity-60">Evidence</p>
+            <ul class="list-disc list-inside text-xs space-y-1 opacity-70">
+              {% for ev in item.evidence %}
+              <li>{{ ev }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+          {% if item.rules %}
+          <div class="mt-1">
+            <p class="text-xs font-semibold opacity-60">Rules Triggered</p>
+            <p class="text-xs opacity-70">{{ item.rules | join(", ") }}</p>
+          </div>
+          {% endif %}
+          <div hx-get="/section/{{ detail.section_id }}/finding/{{ item.idx }}"
+               hx-trigger="revealed"
+               hx-target="this"
+               hx-swap="innerHTML"
+               hx-indicator="#global-indicator">
+            <span class="loading loading-spinner loading-xs"></span>
+            <span class="text-xs opacity-50">Loading detail...</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-sm opacity-50 mt-4">No findings available for this section. Run analysis first.</p>
+    {% endif %}
+
+  </div>
+</div>

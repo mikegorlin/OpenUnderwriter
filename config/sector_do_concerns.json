@@ -1,0 +1,223 @@
+{
+  "sectors": [
+    {
+      "name": "Technology",
+      "sic_ranges": [[3570, 3579], [3670, 3679], [7370, 7379], [7380, 7389]],
+      "concerns": [
+        {
+          "concern": "IP litigation and trade secret theft",
+          "relevance": "HIGH",
+          "do_implication": "Patent infringement suits create D&O exposure when management failed to protect IP portfolio or knowingly used third-party IP without license"
+        },
+        {
+          "concern": "Data privacy and breach notification",
+          "relevance": "HIGH",
+          "do_implication": "CCPA/GDPR violations trigger Section 10b-5 SCA when data breach impacts stock price and management delayed disclosure"
+        },
+        {
+          "concern": "Antitrust and monopoly practices",
+          "relevance": "MEDIUM",
+          "do_implication": "DOJ/FTC antitrust actions create Section 10b-5 exposure if monopoly maintenance or anticompetitive conduct was concealed from investors"
+        },
+        {
+          "concern": "Revenue recognition and SaaS metrics manipulation",
+          "relevance": "HIGH",
+          "do_implication": "Channel stuffing, premature recognition, or inflated ARR/MRR metrics trigger accounting fraud SCA under Section 10b-5"
+        },
+        {
+          "concern": "AI liability and algorithmic bias",
+          "relevance": "MEDIUM",
+          "do_implication": "Emerging AI tort liability and EU AI Act non-compliance create novel derivative suit exposure for failure of board oversight"
+        }
+      ]
+    },
+    {
+      "name": "Healthcare / Pharma",
+      "sic_ranges": [[2830, 2836], [2840, 2844], [3841, 3851], [5912, 5912], [8000, 8099]],
+      "concerns": [
+        {
+          "concern": "FDA approval and clinical trial disclosure",
+          "relevance": "HIGH",
+          "do_implication": "Failure to disclose adverse clinical trial results or FDA rejection risk triggers Section 10b-5 SCA when stock drops on negative FDA decision"
+        },
+        {
+          "concern": "Drug pricing and PBM litigation",
+          "relevance": "HIGH",
+          "do_implication": "State AG and federal drug pricing investigations create derivative suit exposure for board failure to oversee pricing practices"
+        },
+        {
+          "concern": "False Claims Act and Medicare/Medicaid fraud",
+          "relevance": "HIGH",
+          "do_implication": "Qui tam FCA suits and DOJ interventions trigger SCA when government fraud investigation causes stock decline"
+        },
+        {
+          "concern": "Patent cliff and generic competition",
+          "relevance": "MEDIUM",
+          "do_implication": "Failure to disclose imminent loss of exclusivity or ANDA paragraph IV challenges creates revenue miss SCA theory"
+        }
+      ]
+    },
+    {
+      "name": "Financial Services",
+      "sic_ranges": [[6000, 6199], [6200, 6299], [6300, 6399], [6400, 6499], [6500, 6599]],
+      "concerns": [
+        {
+          "concern": "Consumer lending and fair lending violations",
+          "relevance": "HIGH",
+          "do_implication": "CFPB consent orders and fair lending violations create derivative suit exposure under Caremark duty of oversight"
+        },
+        {
+          "concern": "BSA/AML compliance failures",
+          "relevance": "HIGH",
+          "do_implication": "FinCEN enforcement actions for BSA/AML failures trigger SCA when remediation costs and regulatory penalties impact earnings"
+        },
+        {
+          "concern": "Interchange and payment network litigation",
+          "relevance": "MEDIUM",
+          "do_implication": "MDL interchange fee litigation and merchant class actions create ongoing D&O exposure for failure to disclose litigation reserves"
+        },
+        {
+          "concern": "Interest rate risk and loan loss reserve adequacy",
+          "relevance": "HIGH",
+          "do_implication": "Understated loan loss reserves trigger accounting fraud SCA when credit losses materially exceed disclosed estimates"
+        }
+      ]
+    },
+    {
+      "name": "Industrials / Manufacturing",
+      "sic_ranges": [[2000, 2099], [2400, 2499], [2800, 2829], [2850, 2899], [2900, 2999], [3000, 3569], [3580, 3669], [3680, 3699], [3700, 3799], [3800, 3840]],
+      "concerns": [
+        {
+          "concern": "Product liability and mass tort exposure",
+          "relevance": "HIGH",
+          "do_implication": "Product defect mass torts (asbestos, PFAS, talc) create SCA when management concealed known defects or understated reserves"
+        },
+        {
+          "concern": "Environmental remediation and Superfund liability",
+          "relevance": "HIGH",
+          "do_implication": "EPA CERCLA actions and state environmental enforcement trigger SCA when cleanup costs materially exceed disclosed environmental reserves"
+        },
+        {
+          "concern": "OSHA workplace safety violations",
+          "relevance": "MEDIUM",
+          "do_implication": "Repeated OSHA citations and willful violations create Caremark derivative exposure for board failure to oversee safety compliance"
+        },
+        {
+          "concern": "Supply chain concentration and sole-source risk",
+          "relevance": "MEDIUM",
+          "do_implication": "Undisclosed supply chain concentration creates Section 10b-5 exposure when disruption causes revenue miss"
+        }
+      ]
+    },
+    {
+      "name": "Consumer / Retail",
+      "sic_ranges": [[5200, 5599], [5600, 5699], [5700, 5799], [5800, 5899], [5900, 5911], [5913, 5999]],
+      "concerns": [
+        {
+          "concern": "Same-store sales and comp metrics manipulation",
+          "relevance": "HIGH",
+          "do_implication": "Inflated same-store sales or misleading comp metrics trigger Section 10b-5 SCA when actual performance falls short"
+        },
+        {
+          "concern": "Product safety recalls and CPSC actions",
+          "relevance": "MEDIUM",
+          "do_implication": "Delayed recall disclosure creates derivative suit exposure for board failure to oversee product safety processes"
+        },
+        {
+          "concern": "Labor and employment class actions",
+          "relevance": "MEDIUM",
+          "do_implication": "Wage & hour class actions and EEOC pattern-or-practice suits create D&O exposure when settlement costs impact earnings guidance"
+        }
+      ]
+    },
+    {
+      "name": "Energy",
+      "sic_ranges": [[1000, 1499], [1300, 1399], [2910, 2911], [4900, 4911], [4920, 4932], [4940, 4942], [5171, 5172]],
+      "concerns": [
+        {
+          "concern": "Reserve estimation and impairment disclosure",
+          "relevance": "HIGH",
+          "do_implication": "Overstated proved reserves or delayed impairment recognition triggers accounting fraud SCA under Section 10b-5"
+        },
+        {
+          "concern": "Environmental and climate litigation",
+          "relevance": "HIGH",
+          "do_implication": "State AG climate fraud suits and SEC climate disclosure enforcement create novel SCA theories for climate risk misrepresentation"
+        },
+        {
+          "concern": "Pipeline safety and operational incidents",
+          "relevance": "MEDIUM",
+          "do_implication": "PHMSA enforcement and operational disasters create derivative suit exposure under Caremark for safety oversight failures"
+        },
+        {
+          "concern": "FCPA and international bribery",
+          "relevance": "MEDIUM",
+          "do_implication": "DOJ/SEC FCPA enforcement for foreign government payments triggers SCA when investigation disclosure impacts stock price"
+        }
+      ]
+    },
+    {
+      "name": "Real Estate",
+      "sic_ranges": [[6500, 6553], [6700, 6799], [1500, 1542]],
+      "concerns": [
+        {
+          "concern": "REIT distribution sustainability and FFO manipulation",
+          "relevance": "HIGH",
+          "do_implication": "Misleading FFO/AFFO metrics or unsustainable distribution coverage triggers SCA when distribution cut causes stock decline"
+        },
+        {
+          "concern": "Related party transactions and conflicts of interest",
+          "relevance": "HIGH",
+          "do_implication": "External management conflicts and related party leasing create derivative suit exposure for breach of duty of loyalty"
+        },
+        {
+          "concern": "Environmental contamination liability",
+          "relevance": "MEDIUM",
+          "do_implication": "Undisclosed property contamination creates Section 10b-5 exposure when remediation costs materially exceed reserves"
+        }
+      ]
+    },
+    {
+      "name": "Utilities",
+      "sic_ranges": [[4910, 4919], [4931, 4939], [4941, 4959], [4960, 4991]],
+      "concerns": [
+        {
+          "concern": "Rate case outcomes and regulatory lag",
+          "relevance": "HIGH",
+          "do_implication": "Failure to disclose adverse rate case risk triggers SCA when PUC denial causes earnings miss and stock decline"
+        },
+        {
+          "concern": "Wildfire and infrastructure liability",
+          "relevance": "HIGH",
+          "do_implication": "Inverse condemnation and wildfire liability (PG&E precedent) create catastrophic D&O exposure when infrastructure failure causes mass casualties"
+        },
+        {
+          "concern": "Nuclear decommissioning and waste disposal",
+          "relevance": "MEDIUM",
+          "do_implication": "Understated decommissioning reserves create SCA exposure when NRC enforcement or cost escalation impacts earnings"
+        }
+      ]
+    },
+    {
+      "name": "Communications / Media",
+      "sic_ranges": [[4800, 4899], [2710, 2741], [4810, 4813], [4830, 4841], [7810, 7819], [7820, 7829], [7830, 7833]],
+      "concerns": [
+        {
+          "concern": "Subscriber metrics and churn rate manipulation",
+          "relevance": "HIGH",
+          "do_implication": "Inflated subscriber counts or concealed churn rates trigger Section 10b-5 SCA when actual metrics fall below guidance"
+        },
+        {
+          "concern": "Content licensing and programming cost escalation",
+          "relevance": "MEDIUM",
+          "do_implication": "Undisclosed programming cost inflation or key content license loss creates earnings miss SCA theory"
+        },
+        {
+          "concern": "FCC regulatory enforcement and spectrum compliance",
+          "relevance": "MEDIUM",
+          "do_implication": "FCC enforcement actions and spectrum auction obligations create D&O exposure when regulatory penalties impact guidance"
+        }
+      ]
+    }
+  ]
+}

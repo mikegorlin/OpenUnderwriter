@@ -1,0 +1,311 @@
+# Adversarial Critique Rules -- Devil's Advocate
+# Phase 110-02: Rule catalog for 4 caveat types.
+# Each rule is declarative; Python evaluates conditions against signal_results.
+#
+# Rules NEVER modify scores, tiers, or severity. They produce informational
+# caveats that challenge the recommendation.
+
+false_positive_rules:
+  # Each rule: if target_signal is TRIGGERED and enough mitigating_signals
+  # are CLEAR, the trigger may be a false positive.
+
+  - id: fp_ceo_comp_justified
+    target_signal: host.compensation.ceo_total_comp
+    mitigating_signals:
+      - environment.market.stock_performance_1y
+      - host.financial.revenue_growth
+      - host.financial.eps_growth
+    minimum_mitigating: 2
+    headline_template: "CEO compensation flag may be justified by strong performance"
+    explanation_template: "The CEO compensation signal fired, but {mitigating_count} performance indicators (stock returns, revenue growth, EPS growth) are positive. High comp may be performance-linked rather than excessive."
+    severity: caution
+
+  - id: fp_leverage_sector_normal
+    target_signal: host.financial.leverage_ratio
+    mitigating_signals:
+      - host.financial.interest_coverage
+      - host.financial.current_ratio
+      - host.financial.debt_to_equity
+    minimum_mitigating: 2
+    headline_template: "High leverage may be normal for capital-intensive sectors"
+    explanation_template: "Leverage flag fired, but {mitigating_count} balance sheet health indicators are clear. Asset-heavy industries (utilities, real estate, industrials) typically carry higher leverage."
+    severity: info
+
+  - id: fp_insider_selling_planned
+    target_signal: agent.insider.insider_selling_activity
+    mitigating_signals:
+      - agent.insider.insider_10b5_1_plan
+      - agent.insider.insider_buying_activity
+      - agent.governance.executive_tenure
+    minimum_mitigating: 1
+    headline_template: "Insider selling may be routine (10b5-1 plan or balanced by buying)"
+    explanation_template: "Insider selling flagged, but selling may be pre-planned under 10b5-1 programs or offset by insider buying. {mitigating_count} mitigating indicators are clear."
+    severity: info
+
+  - id: fp_litigation_financial_normal
+    target_signal: environment.litigation.active_sca_count
+    mitigating_signals:
+      - host.financial.revenue_growth
+      - host.financial.operating_margin
+      - environment.market.stock_performance_1y
+    minimum_mitigating: 2
+    headline_template: "Litigation frequency may be normal for large financial companies"
+    explanation_template: "Active litigation flagged, but large companies in financial services face baseline litigation. {mitigating_count} indicators of operational health are clear."
+    severity: info
+
+  - id: fp_revenue_decline_cyclical
+    target_signal: host.financial.revenue_growth
+    mitigating_signals:
+      - host.financial.operating_margin
+      - host.financial.cash_flow_operations
+      - environment.market.sector_performance
+    minimum_mitigating: 2
+    headline_template: "Revenue decline may be cyclical, not structural"
+    explanation_template: "Revenue decline flagged, but {mitigating_count} indicators suggest the business remains fundamentally healthy. Decline may be cyclical or sector-wide rather than company-specific."
+    severity: caution
+
+  - id: fp_auditor_change_upgrade
+    target_signal: agent.governance.auditor_change
+    mitigating_signals:
+      - host.financial.revenue_growth
+      - agent.governance.governance_quality_score
+      - host.financial.earnings_quality
+    minimum_mitigating: 2
+    headline_template: "Auditor change may be an upgrade, not a red flag"
+    explanation_template: "Auditor change flagged, but {mitigating_count} governance and financial health indicators are clear. Growing companies often switch to Big 4 firms as they mature."
+    severity: info
+
+  - id: fp_board_turnover_planned
+    target_signal: agent.governance.board_turnover
+    mitigating_signals:
+      - agent.governance.governance_quality_score
+      - agent.governance.board_independence
+      - host.financial.revenue_growth
+    minimum_mitigating: 2
+    headline_template: "Board turnover may be planned (M&A, restructuring, refreshment)"
+    explanation_template: "Board turnover flagged, but {mitigating_count} governance quality indicators remain strong. Turnover may reflect planned board refreshment or post-M&A restructuring."
+    severity: info
+
+  - id: fp_short_interest_ipo
+    target_signal: environment.market.short_interest
+    mitigating_signals:
+      - environment.market.stock_performance_1y
+      - host.financial.revenue_growth
+      - environment.market.analyst_consensus
+    minimum_mitigating: 1
+    headline_template: "Elevated short interest may be normal for recently-listed company"
+    explanation_template: "Short interest flagged, but {mitigating_count} positive indicators exist. Newly public companies often have elevated short interest as price discovery plays out."
+    severity: info
+
+false_negative_rules:
+  # Each rule: if target_signal is CLEAR but exposure_indicators suggest
+  # the company should have exposure, this may be a blind spot.
+
+  - id: fn_governance_small_board
+    target_signal: agent.governance.governance_quality_score
+    exposure_indicators:
+      - agent.governance.board_size_small
+      - agent.governance.board_independence
+    minimum_indicators: 1
+    headline_template: "Governance CLEAR but small board size suggests potential gap"
+    explanation_template: "Governance passed, but the board may be too small (<5 members) for adequate oversight. Small boards have less diversity of expertise and fewer independent voices."
+    severity: caution
+
+  - id: fn_litigation_high_sca_sector
+    target_signal: environment.litigation.active_sca_count
+    exposure_indicators:
+      - environment.sector.sca_filing_rate
+      - environment.litigation.peer_litigation_frequency
+    minimum_indicators: 1
+    headline_template: "No active litigation but sector has high SCA frequency"
+    explanation_template: "No active securities class actions detected, but the company operates in a high-SCA-frequency sector. Absence of litigation does not equal absence of risk."
+    severity: caution
+
+  - id: fn_insider_lockup_expiry
+    target_signal: agent.insider.insider_selling_activity
+    exposure_indicators:
+      - agent.insider.lockup_expiry_approaching
+      - environment.market.ipo_recent
+    minimum_indicators: 1
+    headline_template: "No insider selling but lockup expiry approaching"
+    explanation_template: "No insider selling flagged, but lockup expiry is approaching or company recently IPO'd. Post-lockup selling pressure is a common catalyst for stock drops."
+    severity: caution
+
+  - id: fn_distress_off_balance_sheet
+    target_signal: host.financial.altman_z_score
+    exposure_indicators:
+      - host.financial.off_balance_sheet_items
+      - host.financial.operating_lease_obligations
+    minimum_indicators: 1
+    headline_template: "Financial distress CLEAR but significant off-balance-sheet exposure"
+    explanation_template: "Financial distress indicators are clear, but off-balance-sheet items or operating leases may hide true leverage. Traditional distress models miss these obligations."
+    severity: caution
+
+  - id: fn_regulatory_heavy_sector
+    target_signal: environment.regulatory.regulatory_action_count
+    exposure_indicators:
+      - environment.sector.regulatory_intensity
+      - environment.regulatory.industry_enforcement_trend
+    minimum_indicators: 1
+    headline_template: "No regulatory issues but sector is heavily regulated"
+    explanation_template: "No regulatory actions detected, but the company operates in a heavily regulated sector. Regulatory risk may be underweighted in the current assessment."
+    severity: info
+
+  - id: fn_restatement_accounting_changes
+    target_signal: host.financial.restatement_history
+    exposure_indicators:
+      - host.financial.accounting_policy_changes
+      - host.financial.audit_opinion_qualified
+    minimum_indicators: 1
+    headline_template: "No restatement but frequent accounting policy changes"
+    explanation_template: "No restatement history, but frequent accounting policy changes or qualified audit opinions may signal building risk. Restatements often follow periods of aggressive accounting."
+    severity: caution
+
+  - id: fn_cyber_large_data
+    target_signal: environment.cyber.data_breach_history
+    exposure_indicators:
+      - environment.cyber.customer_data_volume
+      - environment.cyber.pii_exposure
+    minimum_indicators: 1
+    headline_template: "No cyber incidents but large customer data holdings"
+    explanation_template: "No data breach history detected, but the company holds significant customer data. Large data holdings increase cyber exposure regardless of breach history."
+    severity: info
+
+  - id: fn_esg_environmental_footprint
+    target_signal: environment.esg.esg_controversy_score
+    exposure_indicators:
+      - environment.esg.environmental_footprint
+      - environment.esg.carbon_intensity
+    minimum_indicators: 1
+    headline_template: "ESG CLEAR but heavy environmental footprint"
+    explanation_template: "No ESG controversies detected, but the company has a significant environmental footprint. ESG litigation is accelerating in high-footprint industries."
+    severity: info
+
+contradiction_rules:
+  # Each rule: if signal_a has expected_a_status and signal_b has
+  # expected_b_status, the combination is contradictory.
+
+  - id: ct_revenue_margin_divergence
+    signal_a: host.financial.revenue_growth
+    signal_b: host.financial.operating_margin
+    expected_a_status: "CLEAR"
+    expected_b_status: "TRIGGERED"
+    headline_template: "Revenue growing but margins declining -- potential revenue quality issue"
+    explanation_template: "Revenue growth is positive (signal clear) but operating margins are declining (signal triggered). This divergence may indicate revenue growth through discounting, channel stuffing, or unsustainable practices."
+    severity: warning
+    confidence_level: 1.0
+
+  - id: ct_governance_exec_departure
+    signal_a: agent.governance.governance_quality_score
+    signal_b: agent.governance.executive_departure
+    expected_a_status: "CLEAR"
+    expected_b_status: "TRIGGERED"
+    headline_template: "Strong governance but executive departures -- incomplete picture"
+    explanation_template: "Governance quality scores well, but recent executive departures suggest potential internal issues not captured by governance metrics. Departures may precede governance problems."
+    severity: caution
+    confidence_level: 0.7
+
+  - id: ct_litigation_legal_fees
+    signal_a: environment.litigation.active_sca_count
+    signal_b: host.financial.legal_expense_ratio
+    expected_a_status: "CLEAR"
+    expected_b_status: "TRIGGERED"
+    headline_template: "Low litigation risk but high legal fees -- potential undisclosed matters"
+    explanation_template: "No active litigation detected, but legal expenses are unusually high. Elevated legal costs without visible litigation may indicate undisclosed pre-filing investigations or regulatory inquiries."
+    severity: warning
+    confidence_level: 0.9
+
+  - id: ct_conservative_aggressive_guidance
+    signal_a: host.financial.earnings_quality
+    signal_b: host.financial.guidance_aggressiveness
+    expected_a_status: "CLEAR"
+    expected_b_status: "TRIGGERED"
+    headline_template: "Conservative accounting but aggressive guidance -- mixed management signals"
+    explanation_template: "Accounting appears conservative, but management guidance is unusually aggressive. This disconnect may indicate pressure to maintain market expectations despite underlying uncertainty."
+    severity: caution
+    confidence_level: 0.7
+
+  - id: ct_insider_not_buying_decline
+    signal_a: agent.insider.insider_ownership_high
+    signal_b: agent.insider.insider_buying_activity
+    expected_a_status: "CLEAR"
+    expected_b_status: "CLEAR"
+    headline_template: "High insider ownership but no insider buying during stock decline"
+    explanation_template: "Insiders hold significant equity but are not buying during a decline. If insiders are not backing the company with their own money, they may lack confidence in a recovery."
+    severity: caution
+    confidence_level: 0.6
+
+  - id: ct_balance_sheet_credit_downgrade
+    signal_a: host.financial.current_ratio
+    signal_b: environment.market.credit_rating_downgrade
+    expected_a_status: "CLEAR"
+    expected_b_status: "TRIGGERED"
+    headline_template: "Strong balance sheet but credit downgrade -- external assessment contradicts"
+    explanation_template: "Balance sheet metrics appear healthy, but a credit rating downgrade suggests external analysts see risks not captured in standard financial ratios."
+    severity: warning
+    confidence_level: 0.8
+
+data_completeness_rules:
+  # Each rule: if indicator_signals are SKIPPED/DATA_UNAVAILABLE,
+  # the corresponding analysis domain is unreliable.
+  # Special rule_type=overall_rate checks overall evaluation percentage.
+
+  - id: dc_no_proxy
+    indicator_signals:
+      - agent.governance.board_independence
+      - agent.governance.board_size_small
+      - agent.governance.governance_quality_score
+      - agent.governance.executive_tenure
+    minimum_missing: 3
+    headline_template: "No proxy data -- governance conclusions unreliable"
+    explanation_template: "Most governance signals are unavailable, likely due to missing DEF 14A proxy statement. Board composition, independence, and governance quality assessments should not be relied upon."
+    severity: warning
+
+  - id: dc_no_recent_10k
+    indicator_signals:
+      - host.financial.revenue_growth
+      - host.financial.operating_margin
+      - host.financial.leverage_ratio
+      - host.financial.current_ratio
+    minimum_missing: 3
+    headline_template: "No recent 10-K -- financial data may be stale"
+    explanation_template: "Most financial signals are unavailable, likely due to missing or outdated 10-K filing. Financial analysis may be based on stale or incomplete data."
+    severity: warning
+
+  - id: dc_no_litigation
+    indicator_signals:
+      - environment.litigation.active_sca_count
+      - environment.litigation.settlement_history
+      - environment.litigation.regulatory_actions
+    minimum_missing: 2
+    headline_template: "No litigation data -- litigation assessment incomplete"
+    explanation_template: "Litigation-related signals are unavailable. The litigation risk assessment may significantly understate actual exposure."
+    severity: warning
+
+  - id: dc_no_insider_data
+    indicator_signals:
+      - agent.insider.insider_selling_activity
+      - agent.insider.insider_buying_activity
+      - agent.insider.insider_ownership_high
+    minimum_missing: 2
+    headline_template: "No insider transaction data -- insider behavior unknown"
+    explanation_template: "Insider trading signals are unavailable. Cannot assess whether insiders are buying, selling, or holding -- a key behavioral risk indicator."
+    severity: caution
+
+  - id: dc_no_peer_comparison
+    indicator_signals:
+      - environment.market.sector_performance
+      - environment.sector.sca_filing_rate
+      - environment.market.analyst_consensus
+    minimum_missing: 2
+    headline_template: "No peer comparison data -- benchmarking unavailable"
+    explanation_template: "Sector and peer comparison signals are unavailable. Risk assessment lacks relative context -- company may appear better or worse than it actually is relative to peers."
+    severity: caution
+
+  - id: dc_overall_low_rate
+    rule_type: overall_rate
+    minimum_evaluation_pct: 50
+    headline_template: "Low overall signal evaluation rate -- assessment confidence reduced"
+    explanation_template: "Less than {eval_pct}% of signals were fully evaluated. The overall risk assessment has reduced confidence due to significant data gaps across multiple domains."
+    severity: warning
+    indicator_signals: []

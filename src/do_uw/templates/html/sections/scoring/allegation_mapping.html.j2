@@ -1,0 +1,77 @@
+{# Allegation Theory Mapping — full theory detail with D&O coverage (SURF-07) #}
+{% set allegations = sc.get('allegation_map', []) %}
+{% if allegations %}
+<h3>Allegation Theory Mapping</h3>
+
+{# Exposure Summary Bar — visual theory overview #}
+<div class="allegation-bar my-3">
+  {% for a in allegations %}
+  <div class="allegation-segment
+    {% if a.exposure_level == 'HIGH' %}bg-red-500
+    {% elif a.exposure_level == 'MODERATE' %}bg-amber-500
+    {% else %}bg-green-500{% endif %}"
+    title="{{ a.get('theory_name', a.theory) }}: {{ a.exposure_level }}"
+    style="flex: 1">
+    <span>{{ a.theory[:3] }}</span>
+  </div>
+  {% endfor %}
+</div>
+
+{# Detail Cards per theory (expandable) #}
+{% for a in allegations %}
+<div>
+  <div style="font-weight:600;margin-bottom:4px">
+    {{ traffic_light(a.exposure_level|default('INFO'), a.get('theory_name', a.theory|humanize_theory)) }}
+    {% if a.get('factor_sources') %}
+    <span class="text-xs text-gray-500 ml-2">{{ a.factor_sources|join(', ') }}</span>
+    {% endif %}
+  </div>
+  <div class="p-1">
+    {% if a.get('claim_types') %}
+    <div class="mb-2">
+      <span class="text-xs font-semibold">D&amp;O Claim Types:</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.25rem;">
+        {% for ct in a.claim_types %}
+        <span class="inline-block px-2 py-0.5 text-xs rounded border border-gray-200 bg-gray-50">{{ ct }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    {% if a.get('all_findings') %}
+    <div>
+      <span class="text-xs font-semibold">Evidence:</span>
+      <ul class="text-xs list-disc pl-4 mt-1 text-gray-600">
+        {% for f in a.all_findings %}
+        <li>{{ f | humanize_evidence }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    {% if a.get('factor_sources') %}
+    <div class="mt-1">
+      <span class="text-xs text-gray-400">Contributing Factors: {{ a.factor_sources|join(', ') }}</span>
+    </div>
+    {% endif %}
+    {# do_context removed — generic brain YAML boilerplate #}
+  </div>
+</div>
+{% endfor %}
+
+{# Concentration analysis and primary exposure #}
+{% if sc.get('allegation_concentration') or sc.get('primary_exposure') %}
+<div class="bg-bg-alt border border-gray-200 rounded p-3 my-2 text-sm">
+  {% if sc.get('primary_exposure') %}<strong>Primary Exposure:</strong> {{ sc.primary_exposure | humanize_theory }}{% endif %}
+  {% if sc.get('allegation_concentration') %}{% if sc.get('primary_exposure') %} &mdash; {% endif %}{{ sc.allegation_concentration }}{% endif %}
+</div>
+{% endif %}
+
+{# D&O Coverage Implications summary #}
+<div class="bg-bg-alt border border-gray-200 rounded p-3 my-2 text-xs">
+  <strong>D&amp;O Coverage Implications:</strong>
+  <ul class="list-disc pl-4 mt-1">
+    <li>Maps risk indicators to specific claim types: 10b-5 securities fraud, Section 11 registration, breach of fiduciary duty</li>
+    <li>High-exposure theories indicate areas most likely to generate claims against the D&amp;O policy</li>
+    <li>Factor sources trace each theory back to the 10-factor scoring evidence</li>
+  </ul>
+</div>
+{% endif %}

@@ -1,0 +1,103 @@
+{# Peer Comparison Matrix -- full benchmark data with percentile bars.
+   Phase 61: Surfaces hidden MetricBenchmark data from BenchmarkResult.
+   SURF-08: Source attribution via title tooltips. #}
+
+{% if peer_matrix %}
+<h3>Peer Comparison Matrix</h3>
+
+{# Summary bar #}
+<div class="flex gap-4 text-sm mb-3 px-1">
+  <span class="font-semibold">Position: <span class="text-navy">{{ peer_matrix.relative_position }}</span></span>
+  <span>Sector Avg: <span class="tabular-nums font-semibold">{{ peer_matrix.sector_average }}</span></span>
+  <span>Peers: <span class="tabular-nums font-semibold">{{ peer_matrix.peer_count }}</span></span>
+</div>
+
+{# Metric comparison table #}
+{% set metrics = peer_matrix.get('metrics', []) %}
+{% if metrics %}
+<table class="data-grid w-full border-collapse text-sm sticky-header">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="py-1 px-2 text-left">Metric</th>
+      <th class="py-1 px-2 text-right">Company</th>
+      <th class="py-1 px-2 text-center" style="min-width: 120px">Percentile</th>
+      <th class="py-1 px-2 text-right">Sector Baseline</th>
+      <th class="py-1 px-2 text-center">Peers</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for m in metrics %}
+    <tr class="{{ 'bg-gray-50' if loop.index is odd else '' }}">
+      <td class="py-1 px-2 font-semibold text-navy" title="Section: {{ m.section }}{% if m.higher_is_better %} (higher is better){% else %} (lower is better){% endif %}">{{ m.name }}</td>
+      <td class="py-1 px-2 text-right tabular-nums">{{ m.company_value }}</td>
+      <td class="py-1 px-2">
+        {% if m.percentile_rank is not none %}
+        <div class="percentile-bar" title="{{ m.percentile_rank }}th percentile among {{ m.peer_count }} peers">
+          <div class="percentile-fill" style="width: {{ m.percentile_rank }}%; background: {% if m.percentile_rank >= 75 %}#22c55e{% elif m.percentile_rank >= 40 %}#eab308{% else %}#ef4444{% endif %};"></div>
+          <span>{{ m.percentile_rank }}%</span>
+        </div>
+        {% else %}
+        <span class="text-gray-400 text-xs">—</span>
+        {% endif %}
+      </td>
+      <td class="py-1 px-2 text-right tabular-nums text-gray-500">{{ m.baseline_value }}</td>
+      <td class="py-1 px-2 text-center tabular-nums">{{ m.peer_count }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+{# Peer quality scores (collapsible) #}
+{% set peers = peer_matrix.get('peers', []) %}
+{% if peers %}
+<div>
+  <div style="font-weight:600;margin-bottom:4px">Peer Group Quality Scores ({{ peers|length }} peers)</div>
+  <div class="collapsible-content">
+    <table class="w-full border-collapse text-sm">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="py-1 px-2 text-left">Ticker</th>
+          <th class="py-1 px-2 text-right">Quality Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in peers|sort(attribute='quality_score', reverse=true) %}
+        <tr class="{{ 'bg-gray-50' if loop.index is odd else '' }}">
+          <td class="py-1 px-2 font-mono text-navy">{{ p.ticker }}</td>
+          <td class="py-1 px-2 text-right tabular-nums">{{ p.quality_score }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+{# Peer rankings by metric (collapsible) #}
+{% set rankings = peer_matrix.get('peer_rankings', {}) %}
+{% if rankings %}
+<div>
+  <div style="font-weight:600;margin-bottom:4px">Percentile Rankings by Metric</div>
+  <div class="collapsible-content">
+    <table class="w-full border-collapse text-sm">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="py-1 px-2 text-left">Metric</th>
+          <th class="py-1 px-2 text-right">Percentile</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for metric, pct in rankings.items() %}
+        <tr class="{{ 'bg-gray-50' if loop.index is odd else '' }}">
+          <td class="py-1 px-2">{{ metric|replace('_', ' ')|title }}</td>
+          <td class="py-1 px-2 text-right tabular-nums">{{ pct }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+{% endif %}

@@ -1,0 +1,280 @@
+{# ═══════════════════════════════════════════════════════════════════════════
+   MANIFEST SECTION 6: LITIGATION & REGULATORY — Securities actions, enforcement
+   ═══════════════════════════════════════════════════════════════════════════ #}
+{% set ld = b.lit_detail %}
+{% if ld %}
+<div id="litigation" style="margin-top:14px">
+  <div style="background:#1F3A5C;color:white;padding:6px 10px;border-radius:4px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+    <div><span style="font-size:10pt;font-weight:800;letter-spacing:0.3px">Legal & Litigation</span><br><span style="font-size:7.5pt;color:rgba(255,255,255,0.6)">Securities actions, regulatory matters, and legal proceedings</span></div>
+    <div id="beta-legal"></div>
+<div style="display:flex;gap:6px">
+      <span style="padding:2px 8px;border-radius:10px;font-size:8pt;font-weight:700;background:{% if ld.active_matter_count > 0 %}#DC2626{% else %}#16A34A{% endif %};color:white">{{ ld.active_matter_count }} Active</span>
+      <span style="padding:2px 8px;border-radius:10px;font-size:8pt;background:#F3F4F6;color:#374151">{{ ld.historical_matter_count }} Historical</span>
+      {% if ld.industry_sweep %}<span style="padding:2px 8px;border-radius:10px;font-size:8pt;font-weight:700;background:#DC2626;color:white">Industry Sweep Detected</span>{% endif %}
+    </div>
+  </div>
+
+  {% if ld._stage_banner is defined and ld._stage_banner %}
+  <div style="background:#FEF3C7;border-left:4px solid #F59E0B;padding:8px 12px;margin-bottom:8px;font-size:9pt;color:#92400E;border-radius:0 4px 4px 0">
+    {{ ld._stage_banner }}
+  </div>
+  {% endif %}
+
+  {# ── LLM Critical Insight ── #}
+  {% with insight_id="litigation" %}{% include "components/section_insight.html.j2" %}{% endwith %}
+
+  {# ── Section Summary Card ── #}
+  <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:4px">
+    {% for card in [
+      {"label":"Total Cases","value":ld.total_cases if ld.total_cases is defined else None},
+      {"label":"Active","value":ld.status_active if ld.status_active is defined and ld.status_active > 0 else None,"color":"#DC2626"},
+      {"label":"Settled","value":ld.status_settled if ld.status_settled is defined and ld.status_settled > 0 else None,"color":"#F59E0B"},
+      {"label":"Dismissed","value":ld.status_dismissed if ld.status_dismissed is defined and ld.status_dismissed > 0 else None,"color":"#16A34A"},
+      {"label":"Open SOL Windows","value":ld.sol_window_count if ld.sol_window_count is defined and ld.sol_window_count > 0 else None,"color":"#D97706"},
+      {"label":"Total Reserve","value":ld.total_reserve if ld.total_reserve else None}
+    ] %}
+    {% if card.value is not none %}
+    <div style="flex:1;min-width:14%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px;text-align:center">
+      <div style="font-size:12pt;font-weight:800;color:{{ card.color if card.color is defined else '#374151' }}">{{ card.value }}</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:1px">{{ card.label }}</div>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+  {# Section verdict #}
+  {% if ld.active_matter_count is defined %}
+  <div style="font-size:8.5pt;color:#374151;background:#F9FAFB;border-left:3px solid {% if ld.active_matter_count > 0 %}#DC2626{% elif ld.historical_matter_count > 0 %}#D97706{% else %}#16A34A{% endif %};padding:4px 10px;margin-bottom:6px;line-height:1.4">
+    {% if ld.active_matter_count > 0 %}{{ ld.active_matter_count }} active legal matter{{ 's' if ld.active_matter_count > 1 }} with {{ ld.historical_matter_count }} historical — {% if ld.industry_sweep %}industry-wide litigation sweep detected.{% else %}review case details for class period overlap and settlement exposure.{% endif %}
+    {% elif ld.historical_matter_count > 0 %}No active matters; {{ ld.historical_matter_count }} historical case{{ 's' if ld.historical_matter_count > 1 }} provide prior loss development data for pricing.
+    {% else %}Clean litigation history — no securities class actions or regulatory proceedings identified.
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {# Section opener — data-driven litigation connection #}
+  {% if ld.section_opener %}
+  <div style="font-size:10.5pt;color:#1F3A5C;line-height:1.6;margin:4px 0 8px;padding:10px 14px;background:#F0F4F8;border:1px solid #1F3A5C;border-radius:5px;border-left:4px solid #1F3A5C">
+    {{ ld.section_opener }}
+  </div>
+  {% elif ld.narrative %}
+  <div style="font-size:10.5pt;color:#1F3A5C;line-height:1.6;margin:4px 0 8px;padding:10px 14px;background:#F0F4F8;border:1px solid #1F3A5C;border-radius:5px;border-left:4px solid #1F3A5C">
+    {{ ld.narrative | strip_md }}
+  </div>
+  {% endif %}
+
+  {# Summary #}
+  {% if ld.litigation_summary %}
+  <div style="font-size:10.5pt;color:#374151;line-height:1.55;margin:4px 0 8px;padding:6px 10px;background:white;border:1px solid #E5E7EB;border-radius:5px">{{ ld.litigation_summary | strip_md }}</div>
+  {% endif %}
+
+  {# ── Litigation Visualizations: Case Status Summary + SOL Timeline ── #}
+  <div style="display:flex;gap:6px;margin-bottom:8px">
+    {# Case Status Summary — colored circles with counts #}
+    {% if ld.total_cases is defined and ld.total_cases > 0 %}
+    <div style="flex:0 0 200px;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:8px 12px">
+      <div style="font-size:8pt;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.3px;font-weight:700;margin-bottom:6px">Case Status Summary</div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        {% if ld.status_active > 0 %}<div style="display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:10px;height:10px;border-radius:5px;background:#DC2626"></span><span style="font-size:9pt;font-weight:700;color:#DC2626">{{ ld.status_active }}</span><span style="font-size:8pt;color:#6B7280">Active</span></div>{% endif %}
+        {% if ld.status_appeal > 0 %}<div style="display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:10px;height:10px;border-radius:5px;background:#D97706"></span><span style="font-size:9pt;font-weight:700;color:#D97706">{{ ld.status_appeal }}</span><span style="font-size:8pt;color:#6B7280">On Appeal</span></div>{% endif %}
+        {% if ld.status_settled > 0 %}<div style="display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:10px;height:10px;border-radius:5px;background:#F59E0B"></span><span style="font-size:9pt;font-weight:700;color:#F59E0B">{{ ld.status_settled }}</span><span style="font-size:8pt;color:#6B7280">Settled</span></div>{% endif %}
+        {% if ld.status_dismissed > 0 %}<div style="display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:10px;height:10px;border-radius:5px;background:#16A34A"></span><span style="font-size:9pt;font-weight:700;color:#16A34A">{{ ld.status_dismissed }}</span><span style="font-size:8pt;color:#6B7280">Dismissed</span></div>{% endif %}
+        {% if ld.status_other > 0 %}<div style="display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:10px;height:10px;border-radius:5px;background:#6B7280"></span><span style="font-size:9pt;font-weight:700;color:#6B7280">{{ ld.status_other }}</span><span style="font-size:8pt;color:#6B7280">Other</span></div>{% endif %}
+      </div>
+      <div style="font-size:7pt;color:#9CA3AF;margin-top:6px;border-top:1px solid #F3F4F6;padding-top:4px">{{ ld.total_cases }} total matter{{ 's' if ld.total_cases != 1 }}</div>
+    </div>
+    {% endif %}
+
+    {# SOL Timeline removed — was generic textbook chart of theoretical
+       claim type windows, not company-specific. An underwriter learns
+       nothing from it. If actual SOL data is extracted per-case (real
+       filing dates + jurisdiction-specific SOL), re-add with real data. #}
+  </div>
+
+  {# Securities Class Actions — full case cards per manifest 6.1.1-6.1.13 #}
+  {% if ld.scas %}
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin:8px 0 4px"><span style="font-size:9pt;font-weight:700;color:#DC2626">Securities Class Actions ({{ ld.scas | length }})</span></div>
+  {% for sca in ld.scas %}
+  <div style="background:white;border:1px solid #E5E7EB;border-radius:5px;padding:10px 14px;margin-bottom:8px;{% if sca.status in ['ACTIVE','PENDING'] %}border-left:4px solid #DC2626{% elif sca.status == 'SETTLED' %}border-left:4px solid #D97706{% elif sca.status == 'DISMISSED' %}border-left:4px solid #16A34A{% else %}border-left:4px solid #6B7280{% endif %}">
+    {# Header: Case name + status + settlement badge #}
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+      <div style="flex:1">
+        <span style="font-size:10.5pt;font-weight:700;color:#111827">{{ sca.case_name }}</span>
+        {% if sca.docket_number %}<span style="font-size:8pt;color:#9CA3AF;margin-left:6px">{{ sca.docket_number }}</span>{% endif %}
+      </div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0">
+        {% if sca.settlement_amount %}
+        <span style="padding:3px 10px;border-radius:10px;font-size:9pt;font-weight:700;background:#FEF3C7;border:1px solid #F59E0B;color:#92400E">{{ sca.settlement_amount }}</span>
+        {% endif %}
+        <span style="padding:3px 10px;border-radius:10px;font-size:8pt;font-weight:700;background:{% if sca.status in ['ACTIVE','PENDING'] %}#DC2626{% elif sca.status == 'SETTLED' %}#D97706{% elif sca.status == 'DISMISSED' %}#16A34A{% else %}#6B7280{% endif %};color:white">{{ sca.status }}</span>
+      </div>
+    </div>
+
+    {# Key details: filed date, court, class period — as structured pills #}
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">
+      {% if sca.filing_date and sca.filing_date != 'N/A' %}
+      <span style="font-size:8.5pt;padding:2px 8px;border-radius:6px;background:#F3F4F6;color:#374151"><b>Filed:</b> {{ sca.filing_date }}</span>
+      {% endif %}
+      {% if sca.court and sca.court != 'N/A' %}
+      <span style="font-size:8.5pt;padding:2px 8px;border-radius:6px;background:#F3F4F6;color:#374151"><b>Court:</b> {{ sca.court }}</span>
+      {% endif %}
+      {% if sca.class_period_start %}
+      <span style="font-size:8.5pt;padding:2px 8px;border-radius:6px;background:#FEF2F2;border:1px solid #FECACA;color:#991B1B"><b>Class Period:</b> {{ sca.class_period_start }}{% if sca.class_period_end %} — {{ sca.class_period_end }}{% endif %}</span>
+      {% endif %}
+      {% if sca.case_duration %}<span style="font-size:8.5pt;padding:2px 8px;border-radius:6px;background:#F3F4F6;color:#374151"><b>Duration:</b> {{ sca.case_duration }}</span>{% endif %}
+    </div>
+
+    {# Legal theory badges #}
+    {% if sca.legal_theories %}
+    <div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:5px">
+      {% for theory in sca.legal_theories %}
+      <span style="font-size:7.5pt;font-weight:600;padding:2px 7px;border-radius:8px;background:#FEF2F2;border:1px solid #FECACA;color:#991B1B">{{ theory }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {# Named defendants + lead counsel on same line #}
+    <div style="display:flex;gap:12px;margin-top:4px;flex-wrap:wrap">
+      {% if sca.named_defendants %}
+      <div style="font-size:8.5pt;color:#4B5563"><span style="font-weight:600;color:#6B7280">Defendants: </span>{{ sca.named_defendants | join(', ') }}</div>
+      {% endif %}
+      {% if sca.lead_counsel %}
+      <div style="font-size:8.5pt;color:#4B5563"><span style="font-weight:600;color:#6B7280">Lead Counsel: </span>{{ sca.lead_counsel }}</div>
+      {% endif %}
+    </div>
+
+    {# Allegations — the substance #}
+    {% if sca.allegations %}<div style="font-size:9.5pt;color:#374151;margin-top:6px;line-height:1.5;border-left:3px solid #FECACA;padding-left:8px">{{ sca.allegations }}</div>{% endif %}
+
+    {# Damages + procedural posture #}
+    {% if sca.damages_claimed or sca.procedural_posture %}
+    <div style="display:flex;gap:12px;margin-top:4px;flex-wrap:wrap">
+      {% if sca.damages_claimed %}<div style="font-size:8.5pt;color:#DC2626;font-weight:600">Damages: {{ sca.damages_claimed }}</div>{% endif %}
+      {% if sca.procedural_posture %}<div style="font-size:8.5pt;color:#6B7280">Posture: {{ sca.procedural_posture }}</div>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  {# Derivative Suits #}
+  {% if ld.derivative_suits %}
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin:8px 0 4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Derivative Suits ({{ ld.derivative_suits | length }})</span></div>
+  {% for ds in ld.derivative_suits %}
+  {% if ds.case_name and ds.case_name != 'N/A' %}
+  <div style="background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 10px;margin-bottom:3px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:9pt;font-weight:600;color:#111827">{{ ds.case_name }}</span>
+    <div style="display:flex;gap:4px;align-items:center">
+      {% if ds.filing_date and ds.filing_date != 'N/A' %}<span style="font-size:7.5pt;color:#6B7280">{{ ds.filing_date }}</span>{% endif %}
+      {% if ds.status and ds.status != 'N/A' %}<span style="padding:1px 6px;border-radius:8px;font-size:7pt;font-weight:600;background:#F3F4F6;color:#374151">{{ ds.status }}</span>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+
+  {# SEC Enforcement #}
+  {% if ld.sec_enforcement %}
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin:8px 0 4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">SEC Enforcement Actions</span></div>
+  {% for sec in ld.sec_enforcement %}
+  {% if sec.action_type and sec.action_type != 'N/A' %}
+  <div style="background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 10px;margin-bottom:3px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:9pt;font-weight:600;color:#111827">{{ sec.action_type }}</span>
+      {% if sec.status and sec.status != 'N/A' %}<span style="padding:1px 6px;border-radius:8px;font-size:7pt;font-weight:600;background:#F3F4F6;color:#374151">{{ sec.status }}</span>{% endif %}
+    </div>
+    {% if sec.description and sec.description != 'N/A' %}<div style="font-size:8pt;color:#4B5563;margin-top:2px">{{ sec.description }}</div>{% endif %}
+  </div>
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+
+  {# Regulatory Proceedings #}
+  {% if ld.regulatory_proceedings %}
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin:8px 0 4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Regulatory Proceedings</span></div>
+  {% for rp in ld.regulatory_proceedings %}
+  <div style="background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 10px;margin-bottom:3px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:9pt;font-weight:600;color:#111827">{{ rp.agency if rp.agency and rp.agency != 'N/A' else 'Regulatory Agency' }}</span>
+      {% if rp.status and rp.status != 'N/A' %}<span style="padding:1px 6px;border-radius:8px;font-size:7pt;font-weight:600;background:#F3F4F6;color:#374151">{{ rp.status }}</span>{% endif %}
+    </div>
+    {% if rp.description and rp.description != 'N/A' %}<div style="font-size:8pt;color:#4B5563;margin-top:2px">{{ rp.description }}</div>{% endif %}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  {# No litigation notice #}
+  {% if not ld.scas and not ld.derivative_suits and not ld.sec_enforcement and not ld.regulatory_proceedings %}
+  <div style="padding:10px;text-align:center;color:#16A34A;font-size:9pt;font-weight:600;background:white;border:1px solid #BBF7D0;border-radius:5px">No material litigation or regulatory matters identified</div>
+  {% endif %}
+
+  {% if ld.commentary_factual %}
+  <div style="margin:6px 0">
+    <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">What Was Said</div>
+    <div style="font-size:10.5pt;color:#374151;line-height:1.55;padding:6px 10px;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:4px">{{ ld.commentary_factual | strip_md }}</div>
+  </div>
+  {% endif %}
+  {% if ld.commentary_bullets %}
+  <div style="margin:6px 0">
+    <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Underwriting Commentary</div>
+    <div style="font-size:10.5pt;color:#374151;line-height:1.55;padding:6px 10px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;border-left:3px solid #2563EB">{{ ld.commentary_bullets | strip_md }}</div>
+  </div>
+  {% endif %}
+
+  {# Full litigation detail from existing sub-templates #}
+  {% set lit = litigation or {} %}
+  <div style="margin-top:12px">
+
+  {# ── LAYER 1: Overview & Risk Card ── #}
+  <div style="border:1px solid #1F3A5C;border-radius:6px;padding:10px;margin-bottom:12px;background:#FAFAFA">
+    <div style="font-size:8pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #1F3A5C;padding-bottom:4px">Overview — Risk Assessment & Case Summary</div>
+    {% include "sections/litigation/risk_card.html.j2" %}
+  </div>
+
+  {# ── LAYER 2: Active Cases ── #}
+  <div style="border:1px solid #FECACA;border-radius:6px;padding:10px;margin-bottom:12px;background:#FFFBFB">
+    <div style="font-size:8pt;font-weight:700;color:#991B1B;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #DC2626;padding-bottom:4px">Active Cases — Securities Class Actions, Derivatives & Pending Matters</div>
+    {% include "sections/litigation/active_matters.html.j2" %}
+    {% include "sections/litigation/derivative_suits.html.j2" %}
+  </div>
+
+  {# ── LAYER 3: Defense & SOL ── #}
+  <div style="border:1px solid #FDE68A;border-radius:6px;padding:10px;margin-bottom:12px;background:#FFFEF5">
+    <div style="font-size:8pt;font-weight:700;color:#92400E;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #D97706;padding-bottom:4px">Defense & Statute of Limitations — Defense Strength & SOL Windows</div>
+    {% include "sections/litigation/defense_strength.html.j2" %}
+    {% include "sections/litigation/sol_analysis.html.j2" %}
+  </div>
+
+  {# ── LAYER 4: SEC & Regulatory ── #}
+  <div style="border:1px solid #BFDBFE;border-radius:6px;padding:10px;margin-bottom:12px;background:#F8FBFF">
+    <div style="font-size:8pt;font-weight:700;color:#1E40AF;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #2563EB;padding-bottom:4px">SEC & Regulatory — Enforcement Actions & Regulatory Proceedings</div>
+    {% include "sections/litigation/sec_enforcement.html.j2" %}
+    {% include "sections/litigation/regulatory_proceedings.html.j2" %}
+  </div>
+
+  {# ── LAYER 5: Historical ── #}
+  <div style="border:1px solid #1F3A5C;border-radius:6px;padding:10px;margin-bottom:12px;background:#FAFAFA">
+    <div style="font-size:8pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #1F3A5C;padding-bottom:4px">Historical — Settlements, Deal Litigation & Timeline</div>
+    {% include "sections/litigation/settlement_history.html.j2" %}
+    {% include "sections/litigation/deal_litigation.html.j2" %}
+    {% include "sections/litigation/timeline_events.html.j2" %}
+  </div>
+
+  {# ── LAYER 6: Other Matters ── #}
+  <div style="border:1px solid #BFDBFE;border-radius:6px;padding:10px;margin-bottom:12px;background:#F8FBFF">
+    <div style="font-size:8pt;font-weight:700;color:#1E40AF;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #2563EB;padding-bottom:4px">Other Matters — Industry Patterns, Whistleblower & Contingent Liabilities</div>
+    {% include "sections/litigation/contingent_liabilities.html.j2" %}
+    {% include "sections/litigation/industry_patterns.html.j2" %}
+    {% include "sections/litigation/whistleblower.html.j2" %}
+    {% include "sections/litigation/workforce_product_env.html.j2" %}
+  </div>
+
+  {# ── LAYER 7: Checks ── #}
+  <div style="border:1px solid #BBF7D0;border-radius:6px;padding:10px;margin-bottom:12px;background:#F7FFF9">
+    <div style="font-size:8pt;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #16A34A;padding-bottom:4px">Litigation Checks — Data Quality & Completeness</div>
+    {% include "sections/litigation/litigation_checks.html.j2" %}
+    {% include "sections/litigation/litigation_density_alerts.html.j2" ignore missing %}
+  </div>
+
+  </div>
+</div>
+{% endif %}

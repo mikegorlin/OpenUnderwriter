@@ -1,0 +1,33 @@
+# Narrative configuration for Business Profile section
+# 5-layer architecture: Verdict > Thesis > Evidence Grid > Implications > Deep Context
+
+id: business_profile
+name: Company Profile
+
+verdict:
+  thresholds:
+    CRITICAL: CRITICAL
+    ELEVATED: CONCERNING
+    CLEAN: FAVORABLE
+
+thesis_template: >
+  {{ company_name }} operates in {{ sector }} with {{ market_cap_label }} market capitalization.
+  {% if regulatory_heavy %}Regulatory-intensive industry profile elevates baseline D&O exposure.{% endif %}
+  {% if concentration_risk %}Revenue concentration detected, creating event-driven claim vulnerability.{% endif %}
+
+evidence_keys:
+  - company.business_description
+  - company.sic_code
+  - company.sector
+  - company.revenue_segments
+  - company.geographic_footprint
+  - company.risk_factors
+
+implications_template: >
+  Industry classification and operational complexity inform D&O underwriting approach.
+  {% if regulatory_heavy %}Consider industry-specific endorsements for regulatory investigation coverage.{% endif %}
+
+deep_context_keys:
+  - company.exposure_factors
+  - company.customer_concentration
+  - company.supplier_concentration

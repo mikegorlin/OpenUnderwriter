@@ -1,0 +1,81 @@
+{# M&A Profile — acquisition activity, goodwill exposure, deal history #}
+{% set mp = b.ma_profile %}
+{% if mp %}
+<div style="margin-top:10px;margin-bottom:8px">
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:11pt;font-weight:700;color:#1F3A5C">M&A Profile</span>
+    <span style="font-size:7.5pt;font-weight:600;padding:2px 8px;border-radius:10px;background:{{ mp.risk_color }}20;color:{{ mp.risk_color }}">{{ mp.risk_level }}</span>
+  </div>
+
+  {# Key metrics row #}
+  <div style="display:flex;gap:12px;margin-bottom:6px">
+    {% if mp.goodwill != 'N/A' %}
+    <div style="flex:1;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:4px;padding:6px 8px">
+      <div style="font-size:7pt;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px">Goodwill</div>
+      <div style="font-size:12pt;font-weight:700;color:#111827">{{ mp.goodwill }}</div>
+      {% if mp.goodwill_pct_equity != 'N/A' %}
+      <div style="font-size:7.5pt;color:#6B7280">{{ mp.goodwill_pct_equity }} of equity</div>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% if mp.spend != 'N/A' %}
+    <div style="flex:1;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:4px;padding:6px 8px">
+      <div style="font-size:7pt;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px">Acquisition Spend</div>
+      <div style="font-size:12pt;font-weight:700;color:#111827">{{ mp.spend }}</div>
+      {% if mp.spend_pct_revenue != 'N/A' %}
+      <div style="font-size:7.5pt;color:#6B7280">{{ mp.spend_pct_revenue }} of revenue</div>
+      {% endif %}
+    </div>
+    {% endif %}
+    <div style="flex:1;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:4px;padding:6px 8px">
+      <div style="font-size:7pt;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px">Acquisitions</div>
+      <div style="font-size:12pt;font-weight:700;color:#111827">{{ mp.acquisition_count }}</div>
+      {% if mp.is_serial_acquirer %}
+      <div style="font-size:7.5pt;font-weight:600;color:#DC2626">Serial acquirer pattern</div>
+      {% endif %}
+    </div>
+    {% if mp.goodwill_growth != 'N/A' %}
+    <div style="flex:1;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:4px;padding:6px 8px">
+      <div style="font-size:7pt;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px">Goodwill Growth</div>
+      <div style="font-size:12pt;font-weight:700;color:#111827">{{ mp.goodwill_growth }}</div>
+    </div>
+    {% endif %}
+  </div>
+
+  {# Goodwill trajectory #}
+  {% if mp.goodwill_change != 'N/A' %}
+  <div style="padding:4px 8px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:4px;margin-bottom:6px">
+    <span style="font-size:7pt;font-weight:600;color:#92400E;text-transform:uppercase">Goodwill Trajectory</span>
+    <div style="font-size:8.5pt;color:#78350F;margin-top:2px">{{ mp.goodwill_change }}</div>
+  </div>
+  {% endif %}
+
+  {# Acquisition list #}
+  {% if mp.acquisitions %}
+  <table style="width:100%;border-collapse:collapse;font-size:8pt;margin-bottom:4px">
+    <tr style="background:#F9FAFB;border-bottom:1px solid #E5E7EB">
+      <th style="text-align:left;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">#</th>
+      <th style="text-align:left;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Acquisition Details</th>
+    </tr>
+    {% for acq in mp.acquisitions %}
+    <tr style="border-bottom:1px solid #F3F4F6">
+      <td style="padding:3px 4px;color:#6B7280;width:24px">{{ loop.index }}</td>
+      <td style="padding:3px 4px;color:#111827">{{ acq }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+
+  {# Signal-based D&O context #}
+  {% if mp.signals %}
+  {% for sig_id, sig in mp.signals.items() %}
+  {% if sig.status == 'TRIGGERED' and sig.do_context %}
+  <div style="padding:4px 8px;background:#FEF2F2;border-left:3px solid #DC2626;border-radius:0 4px 4px 0;margin-bottom:3px">
+    <span style="font-size:7pt;font-weight:600;color:#991B1B">{{ sig.signal_name | default(sig_id) }}</span>
+    <div style="font-size:8.5pt;color:#7F1D1D;margin-top:1px">{{ sig.do_context }}</div>
+  </div>
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+</div>
+{% endif %}

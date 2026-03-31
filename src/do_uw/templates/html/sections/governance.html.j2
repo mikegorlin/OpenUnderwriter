@@ -1,0 +1,67 @@
+{# Governance & Leadership section template.
+   Board composition, leadership forensics with per-subsection density
+   overrides (4.1-4.4), compensation analysis, and activist investor risk.
+
+   Phase 56: Decomposed into 9 fragment templates in sections/governance/.
+   Facets are dispatched from section_context when available; falls back to
+   legacy inline rendering if section_context is not populated. #}
+
+{% from "macros/dual_voice.html.j2" import dual_voice_block %}
+{% set density = densities.get('governance', {}) %}
+{% set level = density.level|default('CLEAN') if density else 'CLEAN' %}
+{% set gov = governance or {} %}
+{% set sub_overrides = density.subsection_overrides|default({}) if density else {} %}
+
+<section id="governance" class="page-break">
+  <h2>Governance & Leadership
+    {% if level == 'CRITICAL' %}<span class="section-risk-badge section-risk--critical">Critical</span>
+    {% elif level == 'ELEVATED' %}<span class="section-risk-badge section-risk--elevated">Elevated</span>
+    {% endif %}
+  </h2>
+
+  {{ dual_voice_block(commentary.get('governance') if commentary else none, 'Governance & Leadership') }}
+
+  {# --- 5-Layer Narrative Architecture (NARR-01) --- #}
+  {% set sn = section_narratives.get('governance', {}) if section_narratives is defined else {} %}
+  {% if sn %}
+    {{ narrative_5layer(sn.verdict, sn.thesis, sn.evidence_items, sn.implications, sn.deep_context) }}
+  {% else %}
+    {# Fallback: SCR + pre-computed narrative + D&O Implications #}
+    {% if scr_narratives is defined and scr_narratives.get('governance') %}
+      {{ scr_narrative(scr_narratives.governance) }}
+    {% endif %}
+    {% set narr = narratives.governance if narratives else none %}
+    {{ section_narrative(narr) }}
+    {% if do_implications_data is defined and do_implications_data.get('governance') %}
+      {{ do_implications(do_implications_data.governance) }}
+    {% endif %}
+  {% endif %}
+
+  <div>
+    <div style="font-weight:600;margin-bottom:4px">Governance Details</div>
+    <div class="collapsible-content">
+      {# --- Facet-driven dispatch (Phase 56) --- #}
+      {% if section_context is defined and section_context.get('governance') %}
+        {% for facet in section_context.governance.facets %}
+          {% include facet.template %}
+        {% endfor %}
+      {% else %}
+        {# Legacy fallback — inline fragment includes #}
+        {% include "sections/governance/people_risk.html.j2" %}
+        {% include "sections/governance/board_composition.html.j2" %}
+        {% include "sections/governance/tenure_distribution.html.j2" %}
+        {% include "sections/governance/governance_score_breakdown.html.j2" %}
+        {% include "sections/governance/board_forensics.html.j2" %}
+        {% include "sections/governance/skills_matrix.html.j2" %}
+        {% include "sections/governance/committee_detail.html.j2" %}
+        {% include "sections/governance/structural_governance.html.j2" %}
+        {% include "sections/governance/ownership_structure.html.j2" %}
+        {% include "sections/governance/compensation_analysis.html.j2" %}
+        {% include "sections/governance/transparency_disclosure.html.j2" %}
+        {% include "sections/governance/activist_risk.html.j2" %}
+        {% include "sections/governance/governance_checks.html.j2" %}
+        {% include "sections/governance/governance_density_alerts.html.j2" %}
+      {% endif %}
+    </div>
+  </div>
+</section>

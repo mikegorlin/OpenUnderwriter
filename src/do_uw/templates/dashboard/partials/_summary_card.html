@@ -1,0 +1,33 @@
+{# Reusable section summary card macro.
+   Renders a DaisyUI card with hover effect, hx-get for drill-down,
+   key metrics from the section data, and data status badge.
+#}
+
+{% macro summary_card(title, section_id, badge_class, metrics, finding_count=0) %}
+<div class="card bg-base-100 shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200"
+     hx-get="/section/{{ section_id }}"
+     hx-target="#detail-panel"
+     hx-swap="innerHTML"
+     hx-indicator="#global-indicator">
+  <div class="card-body p-5">
+    <div class="flex items-center justify-between mb-2">
+      <h3 class="card-title text-base" style="color: var(--ad-navy);">{{ title }}</h3>
+      <div class="flex gap-1">
+        {% if finding_count > 0 %}
+        <span class="badge badge-warning badge-xs">{{ finding_count }}</span>
+        {% endif %}
+        <span class="badge {{ badge_class }} badge-sm">{{ "Available" if metrics else "No data" }}</span>
+      </div>
+    </div>
+    {% if metrics %}
+    <div class="text-sm space-y-1">
+      {% for key, value in metrics.items() %}
+      <p><span class="opacity-60">{{ key }}:</span> {{ value }}</p>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-sm opacity-50">No data available. Run analysis first.</p>
+    {% endif %}
+  </div>
+</div>
+{% endmacro %}

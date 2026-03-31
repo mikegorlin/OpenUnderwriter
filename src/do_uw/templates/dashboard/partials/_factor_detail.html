@@ -1,0 +1,54 @@
+{# Scoring factor drill-down partial.
+   Shows factor name, points deducted/max, contributing checks,
+   evidence narratives, and source citations.
+#}
+
+{% if factor %}
+<div class="bg-base-200 rounded-lg p-4 mb-3">
+  <div class="flex items-center justify-between mb-3">
+    <h4 class="font-bold text-sm" style="color: var(--ad-navy);">{{ factor.name }}</h4>
+    <div class="text-sm">
+      <span class="font-mono">{{ factor.score }}</span>
+      <span class="opacity-60"> / {{ factor.weight }} pts</span>
+    </div>
+  </div>
+
+  {% if factor.checks %}
+  <div class="mb-3">
+    <p class="text-xs font-semibold opacity-60 mb-1">Contributing Checks</p>
+    <div class="space-y-1">
+      {% for check in factor.checks %}
+      <div class="flex items-center gap-2 text-xs">
+        {% if check.passed %}
+        <span class="badge badge-info badge-xs">PASS</span>
+        {% else %}
+        <span class="badge badge-error badge-xs">FAIL</span>
+        {% endif %}
+        <span>{{ check.id }}</span>
+        {% if check.description %}
+        <span class="opacity-60">-- {{ check.description }}</span>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if factor.evidence %}
+  <div class="mb-3">
+    <p class="text-xs font-semibold opacity-60 mb-1">Evidence</p>
+    <ul class="list-disc list-inside text-xs space-y-1">
+      {% for ev in factor.evidence %}
+      <li>{{ ev }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if factor.source %}
+  <div class="source-citation">
+    <span class="text-xs opacity-50">Source: {{ factor.source }}</span>
+  </div>
+  {% endif %}
+</div>
+{% endif %}

@@ -1,0 +1,71 @@
+{# Forward Estimates — EPS and Revenue consensus estimates.
+   Data from mkt.eps_estimates and mkt.revenue_estimates. #}
+
+{% set eps = mkt.get('eps_estimates', []) %}
+{% set rev = mkt.get('revenue_estimates', []) %}
+
+{% if eps or rev %}
+  <h3>Forward Estimates</h3>
+
+  {% if eps %}
+  <h4>EPS Estimates</h4>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Period</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Consensus</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Low</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">High</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Year Ago</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Growth</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Analysts</th>
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for row in eps %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 font-semibold">{{ row.period }}</td>
+        <td class="p-1 text-right font-semibold">{{ row.avg }}</td>
+        <td class="p-1 text-right text-gray-500">{{ row.low }}</td>
+        <td class="p-1 text-right text-gray-500">{{ row.high }}</td>
+        <td class="p-1 text-right">{{ row.year_ago }}</td>
+        <td class="p-1 text-right {% if row.growth and row.growth.startswith('+') %}text-green-700{% elif row.growth and row.growth.startswith('-') %}text-risk-red{% endif %}">{{ row.growth }}</td>
+        <td class="p-1 text-right text-gray-500">{{ row.analysts }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if rev %}
+  <h4>Revenue Estimates</h4>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Period</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Consensus</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Low</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">High</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Growth</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Analysts</th>
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for row in rev %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 font-semibold">{{ row.period }}</td>
+        <td class="p-1 text-right font-semibold">{{ row.avg }}</td>
+        <td class="p-1 text-right text-gray-500">{{ row.low }}</td>
+        <td class="p-1 text-right text-gray-500">{{ row.high }}</td>
+        <td class="p-1 text-right {% if row.growth and row.growth.startswith('+') %}text-green-700{% elif row.growth and row.growth.startswith('-') %}text-risk-red{% endif %}">{{ row.growth }}</td>
+        <td class="p-1 text-right text-gray-500">{{ row.analysts }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>Significant divergence between analyst estimates and actual results is the primary catalyst for securities class action filings&mdash;wide estimate ranges suggest uncertainty</li>
+  </ul>
+{% endif %}

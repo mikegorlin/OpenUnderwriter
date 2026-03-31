@@ -1,0 +1,382 @@
+# ══════════════════════════════════════════════════════════════
+# CARD REGISTRY — The lego manifest
+# ══════════════════════════════════════════════════════════════
+#
+# Every card in the worksheet. Toggle active/inactive, reorder,
+# configure data pulls. The renderer reads this to assemble the worksheet.
+#
+# To remove a card: set active: false
+# To reorder: change the order in the list
+# To add a card: add a new entry with a unique id
+#
+# Each card declares:
+#   - id: unique reference (e.g., "00", "15", "42")
+#   - section: which section it belongs to
+#   - title: display name
+#   - active: true/false — is it rendered?
+#   - template: which Jinja2 template renders it (null = not yet built)
+#   - data_keys: what state/context keys this card reads from
+#   - elements: sub-elements inside the card (for the tracker)
+#   - status: design pipeline state
+#
+# STATUS VALUES:
+#   draft     — card defined but no template exists
+#   designed  — visual design approved
+#   wired     — template exists and pulls real data
+#   verified  — data verified against state.json across 3+ tickers
+#   synthesized — LLM narrative/synthesis quality checked
+#   qa_passed — full QA (visual + data + cross-ticker)
+#
+# ══════════════════════════════════════════════════════════════
+
+schema_version: 1
+
+# Global settings
+settings:
+  default_theme: catalog_v4
+  show_data_source_pills: true
+  show_card_numbers: true
+  show_section_headers: true
+
+# ── DATA POOL ──
+# All available data elements that cards can pull from.
+# Each element: key path in the render context, source, description.
+data_pool:
+
+  # Company Identity
+  company.ticker: { source: state, desc: "Stock ticker symbol" }
+  company.legal_name: { source: state, desc: "Legal entity name" }
+  company.sic_code: { source: state, desc: "SIC industry code" }
+  company.gics_code: { source: state, desc: "GICS classification" }
+  company.exchange: { source: state, desc: "Exchange listing" }
+  company.state_of_inc: { source: state, desc: "State of incorporation" }
+  company.cik: { source: state, desc: "SEC CIK number" }
+  company.filer_category: { source: state, desc: "SEC filer category" }
+  company.years_public: { source: state, desc: "Years since IPO" }
+  company.market_cap: { source: state, desc: "Market capitalization" }
+  company.employee_count: { source: state, desc: "Total employees" }
+  company.business_description: { source: state, desc: "Business model narrative" }
+  company.revenue_segments: { source: state, desc: "Revenue segment breakdown" }
+  company.geographic_footprint: { source: state, desc: "Geographic revenue split" }
+  company.customer_concentration: { source: state, desc: "Customer concentration data" }
+  company.supplier_concentration: { source: state, desc: "Supplier concentration data" }
+
+  # Market / Stock
+  market.current_price: { source: yfinance, desc: "Current stock price" }
+  market.52w_high: { source: yfinance, desc: "52-week high" }
+  market.52w_low: { source: yfinance, desc: "52-week low" }
+  market.beta: { source: yfinance, desc: "Beta coefficient" }
+  market.short_interest: { source: yfinance, desc: "Short interest %" }
+  market.price_history_1y: { source: yfinance, desc: "1Y daily price data" }
+  market.price_history_5y: { source: yfinance, desc: "5Y weekly price data" }
+  market.insider_transactions: { source: yfinance, desc: "Insider buys/sells" }
+  market.institutional_holders: { source: yfinance, desc: "Top institutional holders" }
+  market.institutional_holder_changes: { source: yfinance, desc: "% change in institutional holdings (who's buying/dumping)" }
+  market.major_holders: { source: yfinance, desc: "Insider/institutional/float breakdown" }
+  market.float_shares: { source: yfinance, desc: "Tradeable float shares" }
+  market.exposed_market_cap: { source: computed, desc: "Float × price — the litigation-relevant market cap plaintiffs claim on" }
+  market.concentrated_holder_risk: { source: computed, desc: "Top 5 holder % — concentrated selling = stock drop catalyst" }
+  market.short_interest_trend: { source: yfinance, desc: "Short interest current vs prior month — direction matters" }
+  market.analyst_recommendations: { source: yfinance, desc: "Analyst ratings" }
+  market.earnings_dates: { source: yfinance, desc: "Quarterly earnings dates" }
+  market.earnings_history: { source: yfinance, desc: "EPS beat/miss history" }
+
+  # Financials (XBRL)
+  xbrl.revenue: { source: xbrl, desc: "Total revenue (audited)" }
+  xbrl.net_income: { source: xbrl, desc: "Net income" }
+  xbrl.total_assets: { source: xbrl, desc: "Total assets" }
+  xbrl.total_liabilities: { source: xbrl, desc: "Total liabilities" }
+  xbrl.stockholders_equity: { source: xbrl, desc: "Stockholders equity" }
+  xbrl.cash: { source: xbrl, desc: "Cash and equivalents" }
+  xbrl.long_term_debt: { source: xbrl, desc: "Long-term debt" }
+  xbrl.operating_income: { source: xbrl, desc: "Operating income" }
+  xbrl.ebitda: { source: xbrl, desc: "EBITDA" }
+  xbrl.operating_cash_flow: { source: xbrl, desc: "Operating cash flow" }
+  xbrl.goodwill: { source: xbrl, desc: "Goodwill" }
+  xbrl.income_statement_3y: { source: xbrl, desc: "3-year income statement" }
+  xbrl.balance_sheet_3y: { source: xbrl, desc: "3-year balance sheet" }
+  xbrl.cash_flow_3y: { source: xbrl, desc: "3-year cash flow" }
+
+  # Governance
+  governance.board: { source: sec, desc: "Board composition" }
+  governance.leadership: { source: sec, desc: "Named executive officers" }
+  governance.compensation: { source: sec, desc: "Executive compensation" }
+  governance.board_forensics: { source: web+llm, desc: "Director background investigation" }
+  governance.ownership: { source: yfinance, desc: "Ownership structure" }
+  governance.governance_score: { source: computed, desc: "ISS QualityScore" }
+
+  # Litigation
+  litigation.securities_class_actions: { source: supabase+sec, desc: "Active and historical SCAs" }
+  litigation.derivative_suits: { source: sec, desc: "Derivative actions" }
+  litigation.sec_enforcement: { source: sec, desc: "SEC enforcement actions" }
+  litigation.regulatory_proceedings: { source: sec+web, desc: "Regulatory proceedings" }
+  litigation.contingent_liabilities: { source: xbrl, desc: "ASC 450 contingent liabilities" }
+  litigation.sol_windows: { source: computed, desc: "Statute of limitations windows" }
+
+  # Scoring
+  scoring.quality_score: { source: computed, desc: "Quality score 0-100" }
+  scoring.tier: { source: computed, desc: "Tier classification" }
+  scoring.factor_scores: { source: computed, desc: "10-factor scores" }
+  scoring.red_flags: { source: computed, desc: "Critical risk flags" }
+  scoring.claim_probability: { source: computed, desc: "Claim probability estimate" }
+  scoring.severity_scenarios: { source: computed, desc: "Severity percentiles" }
+  scoring.tower_recommendation: { source: computed, desc: "Tower position recommendation" }
+  scoring.peril_map: { source: computed, desc: "D&O peril mapping" }
+
+  # Analysis
+  analysis.signal_results: { source: computed, desc: "Brain signal evaluation results" }
+  analysis.forensic_composites: { source: computed, desc: "Altman/Beneish/Piotroski/Ohlson" }
+  analysis.temporal_signals: { source: computed, desc: "Temporal trend analysis" }
+  analysis.patterns_detected: { source: computed, desc: "Pattern detection results" }
+  analysis.hazard_profile: { source: computed, desc: "H1-H7 hazard dimensions" }
+
+  # LLM Synthesis
+  llm.executive_summary: { source: llm, desc: "Executive narrative synthesis" }
+  llm.risk_thesis: { source: llm, desc: "Risk thesis with factors/mitigations" }
+  llm.key_findings: { source: llm, desc: "Synthesized key risk findings" }
+  llm.dual_voice: { source: llm, desc: "Factual + underwriting commentary" }
+  llm.section_reviews: { source: llm, desc: "Per-section LLM review" }
+  llm.company_profile: { source: llm, desc: "4-section company profile" }
+
+  # Charts (generated assets)
+  charts.stock_5y_svg: { source: matplotlib, desc: "5Y stock chart SVG" }
+  charts.stock_1y_svg: { source: matplotlib, desc: "1Y stock chart SVG" }
+  charts.unified_drop_svg: { source: matplotlib, desc: "2Y unified drop chart" }
+  charts.drawdown_1y: { source: matplotlib, desc: "1Y drawdown chart" }
+  charts.drawdown_5y: { source: matplotlib, desc: "5Y drawdown chart" }
+  charts.volatility_1y: { source: matplotlib, desc: "1Y volatility chart" }
+  charts.volatility_5y: { source: matplotlib, desc: "5Y volatility chart" }
+  charts.radar: { source: matplotlib, desc: "10-factor radar chart" }
+  charts.ownership_donut: { source: matplotlib, desc: "Ownership donut chart" }
+  charts.litigation_timeline: { source: matplotlib, desc: "Litigation timeline" }
+
+# ── CARD REGISTRY ──
+# Each card is a lego brick. Toggle active, set order, configure data.
+cards:
+
+  # ── Section 0: Overview ──
+  - id: "00"
+    section: overview
+    title: "Overview (Decision Dashboard)"
+    active: true
+    status: designed
+    template: sections/report/page0_dashboard.html.j2
+    data_keys: [company.ticker, company.legal_name, company.market_cap, market.current_price,
+                market.exposed_market_cap, market.float_shares, market.short_interest_trend,
+                xbrl.revenue, xbrl.total_assets, scoring.quality_score, scoring.tier,
+                scoring.red_flags, scoring.claim_probability, litigation.securities_class_actions,
+                charts.stock_5y_svg, charts.unified_drop_svg, llm.key_findings,
+                market.earnings_history, market.analyst_recommendations]
+    elements:
+      - { letter: A, name: "5Y Stock Strip", type: CHART, chart_ref: L-01 }
+      - { letter: B, name: "6 Financial Mini-Cards", type: CARDS, comp_ref: CARD-09 }
+      - { letter: C, name: "Litigation Status Bar", type: ALERT, comp_ref: CARD-04 }
+      - { letter: D, name: "2Y Drop Investigation Chart", type: CHART, chart_ref: L-03 }
+      - { letter: E, name: "Key Risk Findings", type: ALERT, comp_ref: CALL-01 }
+      - { letter: F, name: "UW Priority Metrics", type: CARDS, comp_ref: CARD-09 }
+      - { letter: G, name: "Plaintiff Exposure Matrix", type: TABLE, comp_ref: INF-08 }
+
+  # ── Section 1: Exec Brief ──
+  - id: "01"
+    section: exec_brief
+    title: "Recommendation & Red Flags"
+    active: true
+    status: designed
+    template: null  # part of exec_brief.html.j2
+    data_keys: [scoring.tier, scoring.quality_score, scoring.red_flags, scoring.claim_probability]
+    elements:
+      - { letter: A, name: "Recommendation Box", type: VERDICT }
+      - { letter: B, name: "Critical Red Flags", type: ALERT }
+      - { letter: C, name: "Key Negatives & Positives", type: TABLE }
+
+  - id: "02"
+    section: exec_brief
+    title: "Risk Thesis & Commentary"
+    active: true
+    status: designed
+    template: null
+    data_keys: [llm.risk_thesis, llm.dual_voice]
+    elements:
+      - { letter: A, name: "Risk Thesis", type: NARRATIVE }
+      - { letter: B, name: "Dual-Voice Commentary", type: NARRATIVE }
+
+  # ── Section 2: Company ──
+  - id: "03"
+    section: company
+    title: "Business Description & Revenue Model"
+    active: true
+    status: draft
+    template: null
+    data_keys: [company.business_description, company.sic_code, company.gics_code,
+                company.exchange, company.filer_category, company.years_public, llm.company_profile]
+
+  - id: "04"
+    section: company
+    title: "Revenue Deep Dive"
+    active: true
+    status: draft
+    template: null
+    data_keys: [company.revenue_segments, xbrl.revenue]
+
+  - id: "05"
+    section: company
+    title: "Concentration Risk"
+    active: true
+    status: draft
+    template: null
+    data_keys: [company.customer_concentration, company.supplier_concentration, company.geographic_footprint]
+
+  - id: "06"
+    section: company
+    title: "Risk Factors & D&O Exposure"
+    active: true
+    status: draft
+    template: null
+    data_keys: [analysis.signal_results]
+
+  - id: "07"
+    section: company
+    title: "10-K YoY & Peer SCA"
+    active: true
+    status: draft
+    template: null
+    data_keys: [litigation.securities_class_actions]
+
+  - id: "08"
+    section: company
+    title: "Sector Risk, Regulatory & News"
+    active: true
+    status: draft
+    template: null
+    data_keys: []
+
+  - id: "09"
+    section: company
+    title: "M&A Profile & Transaction History"
+    active: true
+    status: draft
+    template: null
+    data_keys: [xbrl.goodwill]
+
+  - id: "10"
+    section: company
+    title: "Corporate Events & IPO/Offerings"
+    active: true
+    status: draft
+    template: null
+    data_keys: [company.years_public]
+
+  - id: "11"
+    section: company
+    title: "Operational Complexity & Supply Chain"
+    active: true
+    status: draft
+    template: null
+    data_keys: []
+
+  - id: "12"
+    section: company
+    title: "Competitive Moat & Industry Position"
+    active: true
+    status: draft
+    template: null
+    data_keys: []
+
+  # ── Section 3: Stock & Market ──
+  - id: "13"
+    section: market
+    title: "Stock Performance & Drop Investigation"
+    active: true
+    status: draft
+    template: null
+    data_keys: [market.current_price, market.52w_high, market.52w_low, market.beta,
+                market.short_interest, market.price_history_1y, charts.unified_drop_svg]
+
+  - id: "14"
+    section: market
+    title: "Ownership, Insider Trading & Scienter Risk"
+    active: true
+    status: draft
+    template: null
+    data_keys: [market.insider_transactions, market.institutional_holders,
+                market.institutional_holder_changes, market.major_holders,
+                market.float_shares, market.exposed_market_cap,
+                market.concentrated_holder_risk, market.short_interest_trend]
+
+  - id: "15"
+    section: market
+    title: "Technical Analysis Charts"
+    active: true
+    status: draft
+    template: null
+    data_keys: [charts.drawdown_1y, charts.drawdown_5y, charts.volatility_1y, charts.volatility_5y]
+
+  - id: "16"
+    section: market
+    title: "Earnings & Guidance"
+    active: true
+    status: draft
+    template: null
+    data_keys: [market.earnings_history, market.earnings_dates]
+
+  - id: "17"
+    section: market
+    title: "Analyst Coverage & Estimates"
+    active: true
+    status: draft
+    template: null
+    data_keys: [market.analyst_recommendations]
+
+  - id: "18"
+    section: market
+    title: "Capital Returns, Sentiment & 8-K"
+    active: true
+    status: draft
+    template: null
+    data_keys: []
+
+  # ── Section 4-12: remaining cards set to draft ──
+  # (Full definitions in build_ops_dashboard.py — abbreviated here for clarity)
+  - { id: "19", section: financial, title: "Annual Financial Comparison", active: true, status: draft, template: null, data_keys: [xbrl.income_statement_3y, xbrl.balance_sheet_3y, xbrl.cash_flow_3y] }
+  - { id: "20", section: financial, title: "Key Metrics & Quarterly Trends", active: true, status: draft, template: null, data_keys: [xbrl.revenue, xbrl.ebitda, xbrl.net_income] }
+  - { id: "21", section: financial, title: "Distress & Forensic Models", active: true, status: draft, template: null, data_keys: [analysis.forensic_composites] }
+  - { id: "22", section: financial, title: "Audit & Tax Profile", active: true, status: draft, template: null, data_keys: [] }
+  - { id: "23", section: financial, title: "Debt, Liquidity & Balance Sheet Risk", active: true, status: draft, template: null, data_keys: [xbrl.long_term_debt, xbrl.cash] }
+  - { id: "24", section: financial, title: "Peer Benchmarking", active: true, status: draft, template: null, data_keys: [] }
+  - { id: "25", section: financial, title: "MD&A & Filing Analysis", active: true, status: draft, template: null, data_keys: [] }
+  - { id: "26", section: governance, title: "Board Composition & Skills", active: true, status: draft, template: null, data_keys: [governance.board] }
+  - { id: "27", section: governance, title: "Board & Officer Forensic Profiles", active: true, status: draft, template: null, data_keys: [governance.board_forensics, governance.leadership] }
+  - { id: "28", section: governance, title: "People Risk & Executive Profiles", active: true, status: draft, template: null, data_keys: [governance.leadership] }
+  - { id: "29", section: governance, title: "Compensation & Ownership", active: true, status: draft, template: null, data_keys: [governance.compensation, governance.ownership] }
+  - { id: "30", section: governance, title: "Structural Governance & Rights", active: true, status: draft, template: null, data_keys: [] }
+  - { id: "31", section: governance, title: "Compensation & Conflicts", active: true, status: draft, template: null, data_keys: [governance.compensation] }
+  - { id: "32", section: litigation, title: "Active Litigation & Defense", active: true, status: draft, template: null, data_keys: [litigation.securities_class_actions, litigation.derivative_suits] }
+  - { id: "33", section: litigation, title: "Exposure Windows & SOL", active: true, status: draft, template: null, data_keys: [litigation.sol_windows] }
+  - { id: "34", section: litigation, title: "SEC & Regulatory Enforcement", active: true, status: draft, template: null, data_keys: [litigation.sec_enforcement, litigation.regulatory_proceedings] }
+  - { id: "35", section: litigation, title: "Historical Litigation & Timeline", active: true, status: draft, template: null, data_keys: [charts.litigation_timeline, litigation.contingent_liabilities] }
+  - { id: "36", section: litigation, title: "Other Matters & Whistleblower", active: true, status: draft, template: null, data_keys: [] }
+  - { id: "37", section: forward, title: "Catalyst Events & Key Dates", active: true, status: draft, template: null, data_keys: [market.earnings_dates] }
+  - { id: "38", section: forward, title: "Scenario Analysis (Bull/Base/Bear)", active: true, status: draft, template: null, data_keys: [] }
+  - { id: "39", section: forward, title: "Short Seller & Alternative Signals", active: true, status: draft, template: null, data_keys: [market.short_interest] }
+  - { id: "40", section: forward, title: "Analyst Credibility & Disclosure Quality", active: true, status: draft, template: null, data_keys: [market.analyst_recommendations] }
+  - { id: "41", section: forward, title: "Macro, Geopolitical & Emerging Risk", active: true, status: draft, template: null, data_keys: [] }
+  - { id: "42", section: industry, title: "Competitive & Strategic Position", active: true, status: draft, template: null, data_keys: [] }
+  - { id: "43", section: industry, title: "AI Risk & Biotech Module", active: true, status: draft, template: null, data_keys: [] }
+  - { id: "44", section: scoring, title: "Tier & Factor Scoring", active: true, status: draft, template: null, data_keys: [scoring.quality_score, scoring.tier, scoring.factor_scores, scoring.red_flags, charts.radar] }
+  - { id: "45", section: scoring, title: "Loss Analysis & Scenarios", active: true, status: draft, template: null, data_keys: [scoring.claim_probability, scoring.severity_scenarios, scoring.tower_recommendation] }
+  - { id: "46", section: scoring, title: "Peril Assessment & Mapping", active: true, status: draft, template: null, data_keys: [scoring.peril_map] }
+  - { id: "47", section: scoring, title: "Investigative Depth", active: true, status: draft, template: null, data_keys: [analysis.hazard_profile, analysis.forensic_composites, analysis.temporal_signals, analysis.patterns_detected] }
+  - { id: "48", section: scoring, title: "UW Posture & Calibration", active: true, status: draft, template: null, data_keys: [llm.dual_voice] }
+  - { id: "49", section: scoring, title: "Altman Z-Score & Distress Models", active: true, status: draft, template: null, data_keys: [analysis.forensic_composites] }
+  - { id: "50", section: scoring, title: "Beneish M-Score (Manipulation)", active: true, status: draft, template: null, data_keys: [analysis.forensic_composites] }
+  - { id: "51", section: scoring, title: "Piotroski F-Score (Health)", active: true, status: draft, template: null, data_keys: [analysis.forensic_composites] }
+  - { id: "52", section: scoring, title: "Hazard Profile (H1-H7)", active: true, status: draft, template: null, data_keys: [analysis.hazard_profile] }
+  - { id: "53", section: scoring, title: "AI Risk Scoring", active: true, status: draft, template: null, data_keys: [] }
+  - { id: "54", section: scoring, title: "Frequency & Severity Modeling", active: true, status: draft, template: null, data_keys: [scoring.claim_probability, scoring.severity_scenarios] }
+  - { id: "55", section: scoring, title: "7-Lens Peril Mapping", active: true, status: draft, template: null, data_keys: [scoring.peril_map] }
+  - { id: "56", section: scoring, title: "Pattern Detection & Red Flags", active: true, status: draft, template: null, data_keys: [analysis.patterns_detected, scoring.red_flags] }
+  - { id: "57", section: uw_framework, title: "Underwriting Decision Questions", active: true, status: draft, template: null, data_keys: [] }
+  - { id: "58", section: meeting, title: "Meeting Preparation Questions", active: true, status: draft, template: null, data_keys: [] }
+  - { id: "59", section: audit, title: "Signal Disposition Audit", active: true, status: draft, template: null, data_keys: [analysis.signal_results] }
+  - { id: "60", section: audit, title: "Data Coverage & Gaps", active: true, status: draft, template: null, data_keys: [] }
+  - { id: "61", section: audit, title: "Decision Record & Provenance", active: true, status: draft, template: null, data_keys: [scoring.tier, scoring.quality_score] }

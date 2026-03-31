@@ -1,0 +1,71 @@
+{# Earnings Reaction Analysis — multi-window stock returns around earnings.
+   Data from mkt.earnings_reaction (built by build_earnings_trust).
+   Phase 133-02: Shows day-of, next-day, and 1-week returns per quarter. #}
+
+{% set er = mkt.get('earnings_reaction', []) %}
+{% if er %}
+  <h3>Earnings Reaction Analysis</h3>
+
+  {% if mkt.get('earnings_trust_narrative') %}
+  <div class="border-l-4 border-blue-600 bg-blue-50 pl-3 py-2 my-3 page-break-inside-avoid">
+    <p class="text-sm m-0">{{ mkt.earnings_trust_narrative }}</p>
+  </div>
+  {% endif %}
+
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Quarter</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">EPS Est</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">EPS Actual</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1">Result</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Day-Of Return</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Next-Day Return</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">1-Week Return</th>
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for q in er %}
+      <tr class="{{ 'bg-red-50' if q.result == 'MISS' else 'bg-blue-50' if q.result == 'BEAT' else ('bg-bg-alt' if loop.index is odd else 'bg-white') }}">
+        <td class="p-1 font-semibold">{{ q.quarter }}</td>
+        <td class="p-1 text-right">{{ q.eps_estimate }}</td>
+        <td class="p-1 text-right font-semibold">{{ q.eps_actual }}</td>
+        <td class="p-1 text-center">
+          {% if q.result == 'MISS' %}<span class="text-risk-red font-semibold">MISS</span>
+          {% elif q.result == 'BEAT' %}<span style="color:#16A34A" class="font-semibold">BEAT</span>
+          {% elif q.result == 'MEET' %}<span class="text-gray-500">MEET</span>
+          {% else %}{{ q.result }}{% endif %}
+        </td>
+        <td class="p-1 text-right {{ 'text-green-700' if q.day_of_return and q.day_of_return.startswith('+') else 'text-risk-red' if q.day_of_return and q.day_of_return.startswith('-') else '' }}">
+          {{ q.day_of_return }}
+        </td>
+        <td class="p-1 text-right {{ 'text-green-700' if q.next_day_return and q.next_day_return.startswith('+') else 'text-risk-red' if q.next_day_return and q.next_day_return.startswith('-') else '' }}">
+          {{ q.next_day_return }}
+        </td>
+        <td class="p-1 text-right {{ 'text-green-700' if q.week_return and q.week_return.startswith('+') else 'text-risk-red' if q.week_return and q.week_return.startswith('-') else '' }}">
+          {{ q.week_return }}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% set ts = mkt.get('earnings_trust_summary', {}) %}
+  {% if ts %}
+  <div class="flex gap-4 my-2 text-xs text-gray-600">
+    <span><strong>Beat Rate:</strong> {{ ts.beat_rate }}</span>
+    <span><strong>Beats:</strong> {{ ts.beat_count }}/{{ ts.total_quarters }}</span>
+    {% if ts.beat_sell_off_count > 0 %}
+    <span class="text-amber-700"><strong>Beat Sell-offs:</strong> {{ ts.beat_sell_off_count }}</span>
+    {% endif %}
+    {% if ts.severe_miss_count > 0 %}
+    <span class="text-risk-red"><strong>Severe Miss Reactions (>5%):</strong> {{ ts.severe_miss_count }}</span>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <p class="text-xs text-gray-500 mt-1">
+    Day-Of = stock return on earnings announcement date. Next-Day = following trading day. 1-Week = 5 trading days post-announcement.
+    Beat sell-offs indicate market distrust of earnings quality.
+  </p>
+{% endif %}

@@ -1,0 +1,89 @@
+{# Executive Summary section template.
+   Density-conditional rendering with unified company snapshot,
+   inherent risk/classification, thesis narrative, key findings,
+   claim probability, and tower recommendation.
+   Matches Word doc structure for full parity.
+
+   Phase 56: Decomposed into 7 fragment templates in sections/executive/.
+   Facets are dispatched from section_context when available; falls back to
+   legacy inline rendering if section_context is not populated. #}
+
+{% set density = densities.get('executive', {}) %}
+{% set level = density.level|default('CLEAN') if density else 'CLEAN' %}
+{% set es = executive_summary or {} %}
+
+<section id="executive-summary">
+  {{ density_indicator(level) }}
+  <h2>Executive Summary</h2>
+
+  {# --- 5-Layer Narrative Architecture (NARR-01) --- #}
+  {% set sn = section_narratives.get('executive_summary', {}) if section_narratives is defined else {} %}
+  {% if sn %}
+    {{ narrative_5layer(sn.verdict, sn.thesis, sn.evidence_items, sn.implications, sn.deep_context) }}
+  {% endif %}
+
+  {# --- Key Findings FIRST — underwriters need these immediately --- #}
+  {% include "sections/executive/key_findings.html.j2" %}
+
+  {# --- D&O Implications (NARR-06) --- #}
+  {% if sn %}
+    {# Already rendered in 5-layer deep context #}
+  {% else %}
+    {% if do_implications_data is defined and do_implications_data.get('executive_summary') %}
+      {{ do_implications(do_implications_data.executive_summary) }}
+    {% endif %}
+  {% endif %}
+
+  {# --- Bull/Bear Case Framing (NARR-02) --- #}
+  {% if bull_bear_data is defined and bull_bear_data.get('executive_summary') %}
+    {{ bull_bear_framing(bull_bear_data.executive_summary) }}
+  {% endif %}
+
+  {# --- SCR Analytical Framework — collapsible, not prominent --- #}
+  {% if not sn %}
+    {% if scr_narratives is defined and scr_narratives.get('executive_summary') %}
+      {% set scr = scr_narratives.executive_summary %}
+      {%- if scr and scr.situation and scr.complication and scr.resolution -%}
+      <div>
+        <div style="font-weight:600;margin-bottom:4px">
+          Analytical Framework
+        </div>
+        <div class="collapsible-content border-t-2 border-navy bg-slate-50 rounded px-4 py-3 mt-1">
+          <div class="scr-segments">
+            <div class="scr-segment mb-2">
+              <span class="scr-label font-heading text-xs font-semibold text-gray-500 uppercase tracking-wide">Situation</span>
+              <p class="font-body text-sm text-gray-700 leading-relaxed m-0 mt-0.5">{{ scr.situation }}</p>
+            </div>
+            <div class="scr-segment mb-2">
+              <span class="scr-label font-heading text-xs font-semibold text-amber-600 uppercase tracking-wide">Complication</span>
+              <p class="font-body text-sm text-gray-700 leading-relaxed m-0 mt-0.5">{{ scr.complication }}</p>
+            </div>
+            <div class="scr-segment">
+              <span class="scr-label font-heading text-xs font-semibold text-emerald-600 uppercase tracking-wide">Resolution</span>
+              <p class="font-body text-sm text-gray-700 leading-relaxed m-0 mt-0.5">{{ scr.resolution }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {%- endif -%}
+    {% endif %}
+  {% endif %}
+
+  {# --- Facet-driven dispatch (Phase 56) --- #}
+  {% if section_context is defined and section_context.get('executive_summary') %}
+    {% for facet in section_context.executive_summary.facets %}
+      {# key_findings already rendered above — skip duplicate #}
+      {% if facet.template != 'sections/executive/key_findings.html.j2' %}
+        {% include facet.template %}
+      {% endif %}
+    {% endfor %}
+  {% else %}
+    {# Legacy fallback — inline fragment includes (key_findings already rendered above) #}
+    {% include "sections/executive/data_quality_notice.html.j2" %}
+    {% include "sections/executive/company_profile.html.j2" %}
+    {% include "sections/executive/risk_classification.html.j2" %}
+    {% include "sections/executive/claim_probability.html.j2" %}
+    {% include "sections/executive/tower_recommendation.html.j2" %}
+    {% include "sections/executive/executive_density_alerts.html.j2" %}
+  {% endif %}
+</section>

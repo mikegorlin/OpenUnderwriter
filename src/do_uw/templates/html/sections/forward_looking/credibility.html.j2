@@ -1,0 +1,51 @@
+{# Management Credibility -- quarter-by-quarter guidance vs actual (Phase 117 -- FORWARD-02) #}
+{% set cred = credibility_data | default({}) %}
+{% if cred.get('credibility_available', false) %}
+<h3 id="mgmt-credibility">Management Credibility</h3>
+<div class="flex items-center gap-3 mb-3">
+  <div class="bg-bg-alt border border-gray-200 rounded px-4 py-2 text-center">
+    <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Credibility Score</p>
+    <p class="text-xl font-bold m-0 {{ cred.credibility_class }}">{{ cred.credibility_level }}</p>
+  </div>
+  <div class="bg-bg-alt border border-gray-200 rounded px-4 py-2 text-center">
+    <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Beat Rate</p>
+    <p class="text-xl font-bold text-navy m-0">{{ cred.beat_rate_pct }}</p>
+  </div>
+  <div class="bg-bg-alt border border-gray-200 rounded px-4 py-2 text-center">
+    <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Quarters Assessed</p>
+    <p class="text-xl font-bold text-navy m-0">{{ cred.quarters_assessed }}</p>
+  </div>
+</div>
+{% if cred.quarter_records %}
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Quarter</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Metric</th>
+      <th class="text-right p-1 border-b font-heading text-xs font-semibold uppercase">Guided</th>
+      <th class="text-right p-1 border-b font-heading text-xs font-semibold uppercase">Actual</th>
+      <th class="text-center p-1 border-b font-heading text-xs font-semibold uppercase">Result</th>
+      <th class="text-right p-1 border-b font-heading text-xs font-semibold uppercase">Magnitude</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for qr in cred.quarter_records %}
+    <tr class="{{ qr.row_class }} {{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ qr.quarter }}</td>
+      <td class="p-1">{{ qr.metric }}</td>
+      <td class="p-1 text-right font-mono">{{ qr.guided_value | default('--', true) }}</td>
+      <td class="p-1 text-right font-mono">{{ qr.actual_value | default('--', true) }}</td>
+      <td class="p-1 text-center font-semibold">
+        {% if qr.beat_or_miss == 'BEAT' %}<span class="text-green-600">BEAT</span>
+        {% elif qr.beat_or_miss == 'MISS' %}<span class="text-risk-red">MISS</span>
+        {% elif qr.beat_or_miss == 'INLINE' %}<span class="text-gray-500">INLINE</span>
+        {% else %}<span class="text-gray-400">{{ qr.beat_or_miss }}</span>{% endif %}
+      </td>
+      <td class="p-1 text-right font-mono text-xs">{{ qr.magnitude_pct | default('--', true) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+<p class="text-xs text-gray-400">Source: {{ cred.source | default('yfinance + 8-K analysis', true) }}</p>
+{% endif %}

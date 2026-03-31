@@ -1,0 +1,789 @@
+# Severity Estimation Model Design: S (Damages, Settlement, Amplifiers)
+# Design artifact for Phase 108 implementation.
+# Specifies how severity (S) is estimated from damages, settlement
+# regression, amplifiers, and how P x S produces expected loss.
+#
+# Created: Phase 106-01 (v7.0 Signal-Render Integrity)
+# Dependencies:
+#   - scoring_model_design.yaml: P composite for P x S matrix
+#   - causal_chains.yaml: empirical filing rates and median severity
+#   - brain_schema.py: SeverityAmplifier Pydantic schema
+#   - rap_taxonomy.yaml: H/A/E subcategory structure
+#
+# Research citations:
+#   - Cornerstone Research: "Securities Class Action Settlements" (annual, 2005-2024)
+#   - NERA Economic Consulting: "Recent Trends in Securities Class Action Litigation" (annual)
+#   - SCAC: Stanford Securities Class Action Clearinghouse database
+#   - Alexander (1991): "Estimation of the Damages in Securities Fraud Cases"
+#   - Bajaj et al. (2003): "Securities Class Action Settlements" (Journal of Law and Economics)
+#   - Cox & Thomas (2006): "Mapping the American Shareholder Litigation Experience"
+
+version: 1
+name: "Severity Estimation Model Design"
+status: design_artifact
+implementation_phase: 108
+
+# ---------------------------------------------------------------
+# Section 1: Damages Estimation Formula
+# ---------------------------------------------------------------
+
+damages_estimation:
+  description: >
+    Estimates maximum potential damages for a securities class action
+    based on the key determinants: market capitalization, stock price
+    decline during the class period, and share turnover. This is the
+    "damages ceiling" that informs settlement negotiation and
+    ultimately Liberty's exposure.
+
+  base_formula:
+    expression: "base_damages = market_cap x |class_period_return| x turnover_rate"
+    components:
+      market_cap:
+        description: "Market capitalization at the start of the class period"
+        source: "STOCK.PRICE.position, BIZ.SIZE.market_cap"
+        unit: "USD"
+        rationale: >
+          Market cap determines the pool of potential damages.
+          Cornerstone consistently shows market cap as the strongest
+          predictor of settlement amount (R-squared contribution ~0.30
+          in settlement regression models).
+
+      class_period_return:
+        description: "Absolute value of stock price decline during the class period"
+        source: "STOCK.PRICE.returns_multi_horizon, STOCK.PATTERN.event_collapse"
+        unit: "decimal (e.g., 0.35 for 35% decline)"
+        rationale: >
+          Stock decline determines per-share damages. NERA LEAD model
+          uses maximum stock decline as core input. Typical SCA class
+          periods involve 30-50% stock declines. The class period
+          return may not be known prospectively -- use recent stock
+          drop data as a proxy for potential class period.
+
+      turnover_rate:
+        description: "Fraction of outstanding shares traded during the class period"
+        source: "STOCK.TRADE.volume_patterns, STOCK.TRADE.liquidity"
+        unit: "decimal (0-1, often exceeds 1 for actively traded stocks)"
+        estimation_method: >
+          Academic standard: cumulative daily trading volume / shares
+          outstanding over the class period (CRSP/TAQ methodology).
+          Simplified proxy: average daily volume x class_period_days
+          / shares_outstanding. Cap at 1.0 for practical purposes
+          (proportional trading assumption from Bajaj et al. 2003).
+        calibration_required: true
+
+  allegation_type_modifiers:
+    description: >
+      The base damages formula is modified by allegation type. Different
+      claim theories produce different settlement outcomes relative to
+      estimated damages. These modifiers adjust the expected settlement
+      as a fraction of estimated damages.
+    source: "D&O underwriting practice; calibrate against Cornerstone settlement data in Phase 108"
+
+    modifiers:
+      - type: "financial_restatement"
+        multiplier: 1.5
+        rationale: >
+          Restatements provide strong scienter evidence. Cornerstone
+          data shows restatement cases settle at approximately 150% of
+          the rate predicted by damages alone. The restatement itself
+          establishes that financial statements were materially false.
+        signal_indicators:
+          - FIN.ACCT.restatement
+          - FIN.ACCT.restatement_magnitude
+        calibration_required: true
+
+      - type: "insider_trading"
+        multiplier: 1.3
+        rationale: >
+          Insider trading by executives during the class period
+          provides direct evidence of scienter (knowledge of fraud).
+          NERA data shows insider trading cases settle approximately
+          30% higher than comparable cases without insider selling.
+        signal_indicators:
+          - GOV.INSIDER.cluster_sales
+          - GOV.INSIDER.unusual_timing
+          - EXEC.INSIDER.cluster_selling
+        calibration_required: true
+
+      - type: "regulatory_action"
+        multiplier: 1.2
+        rationale: >
+          Government investigation (SEC, DOJ) adds credibility to
+          plaintiff claims and often produces documentary evidence
+          through enforcement proceedings. Parallel government
+          investigation increases settlement 10-25%.
+        signal_indicators:
+          - LIT.REG.sec_active
+          - LIT.REG.sec_investigation
+          - LIT.REG.doj_investigation
+        calibration_required: true
+
+      - type: "guidance_miss_only"
+        multiplier: 0.7
+        rationale: >
+          Pure guidance miss claims (no restatement, no insider
+          trading) are the weakest claim theory. PSLRA safe harbor
+          defense is stronger for forward-looking statements.
+          Historical dismissal rates are higher and settlements
+          lower for guidance-only cases.
+        signal_indicators:
+          - FIN.GUIDE.track_record
+          - FIN.GUIDE.earnings_reaction
+        calibration_required: true
+
+      - type: "merger_objection"
+        multiplier: 0.3
+        rationale: >
+          Merger objection suits, despite high filing frequency (85%),
+          typically settle for disclosure-only relief or modest
+          supplemental consideration. Median settlement is much lower
+          relative to deal value than fraud cases relative to damages.
+          Cornerstone data: median merger objection settlement ~$3M.
+        signal_indicators:
+          - LIT.SCA.merger_obj
+          - FWRD.EVENT.ma_closing
+        calibration_required: true
+
+      - type: "section_11_ipo"
+        multiplier: 1.1
+        rationale: >
+          Section 11 strict liability (no scienter requirement) makes
+          these cases harder to dismiss but settlement amounts are
+          modestly higher than guidance-only due to the strict
+          liability standard.
+        signal_indicators:
+          - BIZ.SIZE.public_tenure
+          - BIZ.EVENT.ipo_exposure
+          - FWRD.EVENT.lockup_expiry
+        calibration_required: true
+
+# ---------------------------------------------------------------
+# Section 2: Settlement Regression Features
+# ---------------------------------------------------------------
+
+settlement_regression:
+  description: >
+    Defines the feature vector for predicting settlement amount
+    based on empirical research. The regression model predicts
+    log(settlement) from case and company characteristics.
+    Actual coefficient fitting requires training data (in Phase 108).
+    Initial coefficient estimates from published research summaries.
+
+  model_type: "log-linear regression"
+  target_variable: "log10(settlement_amount_usd)"
+
+  features:
+    - name: "market_cap_at_filing"
+      type: "continuous"
+      transform: "log10"
+      coefficient_direction: "positive"
+      coefficient_estimate: 0.40
+      source: "Cornerstone annual reports: strongest predictor"
+      signal_source: "BIZ.SIZE.market_cap"
+      rationale: >
+        Log market cap is the single strongest predictor of settlement
+        amount, contributing approximately 0.30-0.40 R-squared in
+        published Cornerstone regression models. Larger companies
+        have more affected shareholders and deeper pockets.
+
+    - name: "max_stock_decline_pct"
+      type: "continuous"
+      transform: "none (already percentage)"
+      coefficient_direction: "positive"
+      coefficient_estimate: 0.30
+      source: "Cornerstone, NERA LEAD model: second strongest predictor"
+      signal_source: "STOCK.PRICE.recent_drop_alert, STOCK.PRICE.returns_multi_horizon"
+      rationale: >
+        Maximum stock decline during the class period directly
+        determines per-share damages. Second-strongest predictor
+        in published models.
+
+    - name: "allegation_type"
+      type: "categorical"
+      categories:
+        - financial_restatement
+        - insider_trading
+        - regulatory_action
+        - offering_securities
+        - guidance_miss
+        - merger_objection
+      baseline: "guidance_miss"
+      coefficient_direction: "positive (relative to baseline)"
+      coefficient_estimate: "varies by category; restatement ~+0.3, insider ~+0.2"
+      source: "SCAC claim taxonomy; Cornerstone settlement data by allegation type"
+      signal_source: "causal_chains.yaml claim_type mapping"
+      rationale: >
+        Allegation type affects both dismissal probability and
+        settlement quantum. Financial restatement and insider
+        trading cases consistently settle higher.
+
+    - name: "jurisdiction"
+      type: "categorical"
+      categories:
+        - SDNY
+        - NDCal
+        - DCt
+        - other_federal
+        - state_court
+      baseline: "other_federal"
+      coefficient_direction: "positive for SDNY, NDCal"
+      coefficient_estimate: "+0.10 for SDNY/NDCal vs other_federal"
+      source: "SCAC data: venue-specific filing and settlement patterns"
+      signal_source: "LIT.SCA.case_status (if jurisdiction data available)"
+      rationale: >
+        SDNY and NDCal have the most experienced judges and plaintiff
+        firms, leading to higher settlements. Delaware state court
+        (Chancery) is relevant for derivative/fiduciary claims.
+
+    - name: "lead_plaintiff_type"
+      type: "categorical"
+      categories:
+        - institutional
+        - individual
+        - government
+      baseline: "individual"
+      coefficient_direction: "positive for institutional, government"
+      coefficient_estimate: "+0.15 for institutional lead plaintiff"
+      source: "Cornerstone Research: institutional leads achieve 30-50% higher settlements"
+      signal_source: "LIT.SCA.lead_plaintiff (if available)"
+      rationale: >
+        Cornerstone data consistently shows institutional lead
+        plaintiffs achieve larger settlements. Government as lead
+        plaintiff (rare) achieves even larger outcomes.
+
+    - name: "class_period_length_days"
+      type: "continuous"
+      transform: "log10"
+      coefficient_direction: "positive"
+      coefficient_estimate: 0.15
+      source: "SCAC data: longer class periods correlate with higher settlements"
+      signal_source: "LIT.SCA.class_period"
+      rationale: >
+        Longer class periods mean more affected shareholders and
+        transactions. Each doubling of class period length increases
+        estimated settlement by approximately 15%.
+
+    - name: "restatement_present"
+      type: "binary"
+      coefficient_direction: "positive"
+      coefficient_estimate: "+0.25"
+      source: "Cornerstone: restatement cases settle ~50% higher"
+      signal_source: "FIN.ACCT.restatement"
+      rationale: >
+        Binary indicator capturing whether a financial restatement
+        occurred. Provides scienter evidence and typically extends
+        the class period.
+
+    - name: "sec_investigation_present"
+      type: "binary"
+      coefficient_direction: "positive"
+      coefficient_estimate: "+0.20"
+      source: "SCAC data: SEC investigation amplifies settlement by 20-40%"
+      signal_source: "LIT.REG.sec_active, LIT.REG.sec_investigation"
+      rationale: >
+        Parallel government investigation produces documentary
+        evidence (SEC complaint, consent decree) that plaintiff
+        firms use in private litigation. Government investigation
+        also signals regulatory seriousness.
+
+    - name: "number_of_named_defendants"
+      type: "continuous"
+      transform: "none"
+      coefficient_direction: "positive"
+      coefficient_estimate: 0.05
+      source: "SCAC filing data: more defendants = broader allegations = higher settlement"
+      signal_source: "LIT.SCA.allegations (if defendant count available)"
+      rationale: >
+        More named defendants typically indicates broader alleged
+        conspiracy or misconduct, increasing total liability. Each
+        additional defendant adds marginal settlement exposure.
+
+    - name: "company_sector"
+      type: "categorical"
+      categories: "GICS sector codes"
+      baseline: "Industrials"
+      coefficient_direction: "varies by sector"
+      coefficient_estimate: "+0.10 for Technology, Healthcare; -0.05 for Utilities"
+      source: "SCAC filing rates by sector; Cornerstone settlement analysis"
+      signal_source: "BIZ.CLASS.primary, BIZ.CLASS.secondary"
+      rationale: >
+        Technology and healthcare sectors have historically higher
+        settlement amounts (more volatile stocks, higher market caps,
+        more complex disclosures). Utilities and consumer staples
+        have lower settlement patterns.
+
+    - name: "prior_securities_litigation"
+      type: "binary"
+      coefficient_direction: "positive"
+      coefficient_estimate: "+0.10"
+      source: "SCAC recidivism data: prior SCA history predicts higher settlements"
+      signal_source: "BIZ.CLASS.litigation_history, LIT.SCA.historical"
+      rationale: >
+        Companies with prior securities litigation face higher
+        settlements in subsequent cases (recidivist premium).
+        Prior litigation undermines reform narrative defense.
+
+    - name: "auditor_change"
+      type: "binary"
+      coefficient_direction: "positive"
+      coefficient_estimate: "+0.10"
+      source: "D&O underwriting practice: auditor changes during accounting issues amplify settlements"
+      signal_source: "GOV.EFFECT.auditor_change"
+      rationale: >
+        Auditor change, especially during or immediately before
+        accounting issues, suggests the prior auditor identified
+        problems. Strengthens plaintiff narrative.
+      calibration_required: true
+
+  model_validation:
+    approach: >
+      Phase 108 implementation will attempt to fit the regression
+      on available settlement data from Cornerstone/SCAC public
+      reports. If insufficient training data is available, use
+      published coefficient estimates from Cornerstone annual
+      reports and Bajaj et al. (2003). Cross-validate on held-out
+      recent cases.
+    minimum_training_cases: 50
+    fallback: >
+      If <50 cases available, use the published Cornerstone median
+      settlement model (market_cap_tier x allegation_type lookup
+      table) instead of fitted regression.
+
+# ---------------------------------------------------------------
+# Section 3: Severity Amplifier Catalog
+# ---------------------------------------------------------------
+
+severity_amplifiers:
+  description: >
+    Severity amplifiers modify the estimated severity when specific
+    conditions are met. Each amplifier conforms to the SeverityAmplifier
+    Pydantic schema from brain_schema.py (id, name, description,
+    multiplier 1.0-5.0, trigger_condition, signal_ids, rap_class,
+    epistemology).
+
+  catalog:
+    - id: media_notoriety
+      name: "Media Notoriety Amplifier"
+      description: >
+        Extensive media coverage of fraud allegations increases
+        public awareness and plaintiff recruitment, driving larger
+        class sizes and higher settlements.
+      multiplier: 1.5
+      trigger_condition: "Significant media coverage of fraud allegations or corporate scandal"
+      signal_ids:
+        - FWRD.WARN.journalism_activity
+        - FWRD.WARN.social_sentiment
+        - FWRD.NARRATIVE.short_thesis
+      rap_class: environment
+      epistemology:
+        rule_origin: "Cornerstone Research settlement data: media-covered cases settle 40-60% higher"
+        threshold_basis: >
+          Cornerstone annual reports show median settlement for
+          media-covered cases is approximately 1.5x the settlement
+          for comparable non-covered cases, controlling for market
+          cap and stock decline.
+
+    - id: government_investigation
+      name: "Government Investigation Amplifier"
+      description: >
+        SEC or DOJ parallel investigation dramatically increases
+        settlement amounts through documentary evidence production,
+        government credibility, and threat of criminal prosecution.
+      multiplier: 2.0
+      trigger_condition: "Active SEC enforcement action or DOJ criminal investigation"
+      signal_ids:
+        - LIT.REG.sec_active
+        - LIT.REG.sec_investigation
+        - LIT.REG.doj_investigation
+        - LIT.REG.wells_notice
+      rap_class: agent
+      epistemology:
+        rule_origin: "SCAC data: SEC/DOJ parallel investigation increases settlement 2-3x"
+        threshold_basis: >
+          SCAC data shows median settlements in cases with parallel
+          government investigation are approximately 2x higher than
+          cases without. Government complaints provide plaintiffs
+          with detailed factual allegations at no discovery cost.
+
+    - id: fraud_type_scienter
+      name: "Intentional Fraud Scienter Amplifier"
+      description: >
+        Evidence of intentional fraud (vs negligence) significantly
+        increases settlement amounts due to stronger scienter evidence
+        and potential for punitive damages or criminal liability.
+      multiplier: 1.8
+      trigger_condition: "Evidence of intentional misrepresentation (restatement + insider trading + concealment)"
+      signal_ids:
+        - FIN.ACCT.restatement
+        - FIN.ACCT.earnings_manipulation
+        - GOV.INSIDER.cluster_sales
+        - GOV.INSIDER.unusual_timing
+      rap_class: agent
+      epistemology:
+        rule_origin: "SCAC filing data: intentional fraud cases face higher sanctions and less favorable settlement negotiations"
+        threshold_basis: >
+          Cases with strong scienter evidence (insider trading during
+          class period + restatement) settle approximately 1.5-2x
+          higher than cases based on negligence theories alone.
+
+    - id: jurisdiction_plaintiff_friendly
+      name: "Plaintiff-Friendly Jurisdiction Amplifier"
+      description: >
+        Filing in historically plaintiff-friendly jurisdictions
+        (SDNY, NDCal, Delaware Chancery) increases settlement
+        expectations due to experienced judges and plaintiff firms.
+      multiplier: 1.3
+      trigger_condition: "Case filed in SDNY, NDCal, or Delaware Chancery"
+      signal_ids:
+        - LIT.SCA.case_status
+      rap_class: environment
+      epistemology:
+        rule_origin: "SCAC venue analysis: SDNY and NDCal produce higher median settlements"
+        threshold_basis: >
+          SCAC data shows SDNY and NDCal median settlements are
+          approximately 25-35% higher than other federal courts,
+          after controlling for case characteristics. Driven by
+          experienced plaintiff firms and predictable judicial approach.
+
+    - id: restatement_magnitude
+      name: "Restatement Magnitude Amplifier"
+      description: >
+        Larger restatements (by dollar amount or number of periods)
+        increase both damages estimate and settlement quantum
+        proportionally.
+      multiplier: 1.5
+      trigger_condition: "Restatement magnitude exceeds 10% of prior-period revenue or covers 3+ quarters"
+      signal_ids:
+        - FIN.ACCT.restatement_magnitude
+        - FIN.ACCT.restatement_pattern
+      rap_class: agent
+      epistemology:
+        rule_origin: "Cornerstone settlement data: restatement magnitude correlates with settlement size"
+        threshold_basis: >
+          Cornerstone shows a linear relationship between restatement
+          magnitude (as % of revenue) and settlement amount. Large
+          restatements (>10% revenue) settle approximately 1.5x
+          higher than small restatements (<5% revenue).
+
+    - id: class_period_length
+      name: "Extended Class Period Amplifier"
+      description: >
+        Longer class periods mean more affected shareholders and
+        greater aggregate damages, increasing settlement pressure.
+      multiplier: 1.2
+      trigger_condition: "Class period exceeds 18 months"
+      signal_ids:
+        - LIT.SCA.class_period
+      rap_class: environment
+      epistemology:
+        rule_origin: "SCAC data: class period length correlates with settlement amount"
+        threshold_basis: >
+          Each doubling of class period increases estimated settlement
+          by approximately 15-20%. Class periods > 18 months capture
+          multiple reporting periods and more shareholder transactions.
+
+    - id: institutional_lead_plaintiff
+      name: "Institutional Lead Plaintiff Amplifier"
+      description: >
+        Institutional lead plaintiffs (pension funds, mutual funds)
+        achieve higher settlements through greater resources, credibility,
+        and willingness to pursue longer litigation.
+      multiplier: 1.4
+      trigger_condition: "Lead plaintiff is an institutional investor"
+      signal_ids:
+        - LIT.SCA.lead_plaintiff
+      rap_class: environment
+      epistemology:
+        rule_origin: "Cornerstone Research: institutional lead plaintiffs achieve 30-50% higher settlements"
+        threshold_basis: >
+          Cornerstone annual reports consistently show institutional
+          lead plaintiffs achieve median settlements 1.3-1.5x higher
+          than individual lead plaintiffs, controlling for case
+          characteristics. PSLRA intended this effect.
+
+    - id: multi_defendant
+      name: "Multiple Named Defendants Amplifier"
+      description: >
+        Cases naming multiple individual defendants indicate broader
+        alleged conspiracy and increase total liability exposure
+        across the tower.
+      multiplier: 1.2
+      trigger_condition: "5+ individual defendants named in complaint"
+      signal_ids:
+        - LIT.SCA.allegations
+      rap_class: agent
+      epistemology:
+        rule_origin: "SCAC filing data: multi-defendant cases settle higher"
+        threshold_basis: >
+          Cases with 5+ named individual defendants settle
+          approximately 15-25% higher than cases with fewer
+          defendants. More defendants = broader alleged scheme =
+          stronger plaintiff narrative.
+
+    - id: prior_securities_litigation
+      name: "Recidivist Company Amplifier"
+      description: >
+        Companies with prior securities litigation face higher
+        settlements due to recidivist narrative and inability to
+        claim reformed governance.
+      multiplier: 1.3
+      trigger_condition: "Prior securities class action within preceding 5 years"
+      signal_ids:
+        - BIZ.CLASS.litigation_history
+        - LIT.SCA.historical
+        - LIT.SCA.prior_settle
+      rap_class: agent
+      epistemology:
+        rule_origin: "SCAC recidivism data: prior SCA history increases subsequent settlement"
+        threshold_basis: >
+          SCAC data shows companies with prior securities litigation
+          in the preceding 5 years face settlements approximately
+          1.2-1.4x higher. Prior litigation undermines the "we
+          fixed it" narrative and suggests systemic governance issues.
+
+    - id: whistleblower_involvement
+      name: "Whistleblower Involvement Amplifier"
+      description: >
+        Cases involving whistleblower allegations or SEC whistleblower
+        awards settle higher and faster due to insider evidence and
+        government attention.
+      multiplier: 1.5
+      trigger_condition: "Whistleblower complaint or SEC whistleblower award related to company"
+      signal_ids:
+        - NLP.WHISTLE.language_detected
+        - NLP.WHISTLE.internal_investigation
+        - LIT.OTHER.whistleblower
+        - FWRD.WARN.whistleblower_exposure
+      rap_class: agent
+      epistemology:
+        rule_origin: "SEC whistleblower program data: whistleblower cases produce higher enforcement actions"
+        threshold_basis: >
+          SEC reports show whistleblower-originated cases produce
+          larger enforcement penalties. In private litigation,
+          whistleblower evidence accelerates discovery and strengthens
+          scienter allegations, driving settlements approximately
+          1.3-1.7x higher.
+
+    - id: death_spiral_pattern
+      name: "Death Spiral Market Pattern Amplifier"
+      description: >
+        Stock in death spiral pattern (sustained decline with
+        acceleration) indicates extreme severity potential with
+        large potential damages base.
+      multiplier: 1.4
+      trigger_condition: "Stock exhibits death spiral pattern with acceleration phase"
+      signal_ids:
+        - STOCK.PATTERN.death_spiral
+        - STOCK.PATTERN.cascade
+        - STOCK.PRICE.drawdown_duration
+      rap_class: environment
+      epistemology:
+        rule_origin: "D&O underwriting practice: death spiral patterns correlate with maximum-severity claims"
+        threshold_basis: >
+          Death spiral stocks typically have the largest class period
+          stock declines (60-90%+), maximizing per-share damages.
+          Historical cases (Enron -99%, Wirecard -98%) show death
+          spiral is the pattern most correlated with total tower
+          exhaustion. Multiplier of 1.4 is conservative.
+      calibration_required: true
+
+# ---------------------------------------------------------------
+# Section 4: P x S Matrix Structure
+# ---------------------------------------------------------------
+
+p_x_s_matrix:
+  description: >
+    The probability-severity matrix combines the P score (from the
+    multiplicative H x A x E scoring model) with the S score (from
+    the damages/settlement estimation model) to produce an expected
+    loss view for each account. This is the core risk visualization
+    for the D&O underwriting worksheet.
+
+  axes:
+    probability:
+      source: "scoring_model_design.yaml -> P = H x A x E"
+      range: "[0, 1]"
+      display_scale: "linear"
+      label: "Claim Probability (P)"
+      tick_labels: ["Very Low", "Low", "Moderate", "High", "Very High"]
+
+    severity:
+      source: "severity_model_design.yaml -> estimated settlement"
+      range: "[$100K, $10B]"
+      display_scale: "log10"
+      label: "Estimated Severity (S)"
+      tick_labels: ["$100K", "$1M", "$10M", "$100M", "$1B"]
+
+  expected_loss:
+    formula: "EL = P x S"
+    unit: "USD"
+    interpretation: >
+      Expected loss is the probability-weighted severity estimate.
+      It represents the long-run average loss per policy period if
+      the company were insured repeatedly under identical conditions.
+      For underwriting, EL should be compared to the premium being
+      charged to assess risk adequacy.
+
+  zones:
+    entries:
+      - zone: GREEN
+        color: "#2b8a3e"
+        label: "Standard Risk"
+        criteria: "P < 0.10 AND S < $10M"
+        interpretation: "Low claim probability and manageable severity. Standard pricing."
+        tier_range: [PREFERRED, STANDARD]
+
+      - zone: YELLOW
+        color: "#e67700"
+        label: "Cautious / Monitor"
+        criteria: "P >= 0.10 OR S >= $10M (but not both high)"
+        interpretation: "Moderate risk in one dimension. Price above standard, monitor."
+        tier_range: [CAUTIOUS]
+
+      - zone: ORANGE
+        color: "#c92a2a"
+        label: "Elevated / Referral"
+        criteria: "(P >= 0.25 AND S >= $5M) OR P >= 0.35 OR S >= $50M"
+        interpretation: "Significant risk requiring senior review. Consider reduced limit or high attachment."
+        tier_range: [ELEVATED]
+
+      - zone: RED
+        color: "#862e9c"
+        label: "Adverse / Prohibited"
+        criteria: "P >= 0.35 AND S >= $50M"
+        interpretation: "High probability of large claim. Normally decline."
+        tier_range: [ADVERSE, PROHIBITED]
+
+    calibration_required: true
+    calibration_note: >
+      Zone boundaries are conceptual. Phase 108 calibrates using
+      shadow mode output from Phase 107 scoring model plus historical
+      settlement data from Cornerstone/SCAC.
+
+  chart_specification:
+    chart_type: "scatter_heatmap"
+    description: >
+      2D scatter plot with color-coded zone backgrounds. Each account
+      is plotted as a point at its (P, S) coordinates. Color indicates
+      zone. Size indicates expected loss (P x S). Liberty's attachment
+      point can be overlaid as a horizontal line on the severity axis.
+
+    rendering_requirements:
+      - "Logarithmic severity axis (base 10)"
+      - "Linear probability axis"
+      - "Color-coded zone backgrounds (GREEN, YELLOW, ORANGE, RED)"
+      - "Account points sized by expected loss"
+      - "Liberty attachment line overlay (horizontal dashed)"
+      - "Hover tooltip: account name, P, S, EL, tier"
+      - "Export to PNG for worksheet embedding"
+
+    chart_registry_integration:
+      chart_id: "p_x_s_matrix"
+      section: "risk_summary"
+      position: 1
+      formats: ["html", "pdf"]
+      call_style: "standard"
+      note: "Phase 105 chart_registry.yaml will reference this spec"
+
+  individual_account_plot:
+    description: >
+      When viewing a single account, the P x S matrix shows the
+      account's position relative to the zone boundaries, with
+      annotations showing the contributing factors for both P and S.
+    annotations:
+      p_annotation: "Top 3 H/A/E subcategories contributing to P"
+      s_annotation: "Damages estimate, primary allegation type, key amplifiers"
+    comparison_reference: >
+      Overlay sector median P and S as reference point to show
+      whether this account is above or below sector norms.
+
+# ---------------------------------------------------------------
+# Section 5: Liberty Excess-Only Severity Adjustments
+# ---------------------------------------------------------------
+
+liberty_severity_adjustments:
+  description: >
+    Liberty writes ONLY excess D&O. The severity that matters to
+    Liberty is not the total estimated settlement but the portion
+    that exceeds Liberty's attachment point. This section specifies
+    how to adjust severity for Liberty's actual exposure.
+
+  attachment_adjustment:
+    formula: "liberty_severity = max(0, total_estimated_settlement - attachment_point)"
+    description: >
+      Liberty's exposure is the portion of the claim that exceeds
+      the layers below Liberty in the tower. If the estimated
+      settlement is $40M and Liberty attaches at $25M, Liberty's
+      severity exposure is $15M (capped by Liberty's limit).
+    cap: "min(liberty_severity, liberty_limit)"
+
+  layer_erosion_probability:
+    description: >
+      Not all claims reach Liberty's layer. Layer erosion probability
+      estimates what fraction of claims at a given severity level
+      would penetrate through underlying layers to reach Liberty.
+    formula: >
+      P_erosion = P(total_settlement > attachment_point)
+      Estimated from the settlement distribution: assume log-normal
+      distribution of settlements for the given claim type, with
+      parameters from Cornerstone data.
+    parameters:
+      distribution: "log-normal"
+      mu: "log10(median_settlement) from causal_chains.yaml"
+      sigma: "estimated from Cornerstone settlement dispersion data"
+      calibration_required: true
+
+    attachment_tier_examples:
+      entries:
+        - attachment: "$5M"
+          description: "Low excess -- most claim types have >50% chance of penetration"
+          erosion_probability_estimate: 0.50
+        - attachment: "$25M"
+          description: "Mid excess -- only medium-to-large claims penetrate"
+          erosion_probability_estimate: 0.25
+        - attachment: "$50M"
+          description: "High excess -- only large claims (restatement, financial distress) penetrate"
+          erosion_probability_estimate: 0.10
+        - attachment: "$100M"
+          description: "Very high excess -- only catastrophic claims (financial distress, massive fraud)"
+          erosion_probability_estimate: 0.03
+      calibration_required: true
+      calibration_source: "Tower data from uw_db (real attachment points and claim history)"
+
+  effective_expected_loss:
+    formula: "EL_liberty = P x P_erosion x liberty_severity"
+    description: >
+      Liberty's effective expected loss is the claim probability
+      times the probability that the claim reaches Liberty's layer
+      times the severity at Liberty's layer. This is the metric
+      that should be compared to Liberty's premium.
+    components:
+      P: "From scoring model (H x A x E)"
+      P_erosion: "From layer erosion probability"
+      liberty_severity: "max(0, S - attachment) capped by limit"
+
+  side_a_considerations:
+    description: >
+      Side A (directors and officers personal liability) has
+      different severity dynamics than ABC entity coverage.
+    differences:
+      - factor: "Defendant exposure"
+        abc: "Entity pays first; D&O coverage is backup"
+        side_a: "Individual director/officer directly exposed"
+      - factor: "Settlement mechanics"
+        abc: "Entity negotiates as defendant with D&O insurance"
+        side_a: "Individual defendants negotiate personal exposure"
+      - factor: "Severity distribution"
+        abc: "Driven by entity-level damages (market cap, stock decline)"
+        side_a: "Individual exposure can be lower (personal assets) but also higher (criminal liability)"
+      - factor: "DIC element"
+        abc: "N/A"
+        side_a: "Difference-in-conditions coverage can trigger when entity coverage refuses or is unavailable (bankruptcy)"
+    side_a_severity_adjustment: >
+      For Side A pricing, reduce entity-level severity by a factor
+      reflecting that individual liability is typically a fraction
+      of entity liability, EXCEPT when entity coverage is unavailable
+      (bankruptcy, coverage dispute), in which case Side A faces full
+      entity-level severity. Phase 108 implementation should model
+      both scenarios.
+    calibration_required: true

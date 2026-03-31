@@ -1,0 +1,97 @@
+{# Statute of Limitations Analysis — extracted from litigation.html.j2 #}
+
+  {# --- SOL Analysis --- #}
+  {% set sol_windows = lit.get('sol_windows', []) %}
+  {% set sol = lit.get('sol_analysis') %}
+  {# Split into windows from actual events vs proxy (10-K date fallback) #}
+  {% set actual_windows = [] %}
+  {% set proxy_windows = [] %}
+  {% for w in sol_windows %}
+    {% if w.get('confidence', 'LOW') != 'LOW' and 'proxy' not in w.get('trigger_desc', '')|lower %}
+      {% set _ = actual_windows.append(w) %}
+    {% else %}
+      {% set _ = proxy_windows.append(w) %}
+    {% endif %}
+  {% endfor %}
+  {% if actual_windows %}
+  <h3>Statute of Limitations — Active Windows</h3>
+  <p class="text-xs text-gray-500 mb-2">Based on actual litigation events or enforcement actions. These represent real filing windows for potential claims.</p>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Claim Type</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Trigger Date</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">SOL Expiry</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for w in actual_windows %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }} {{ 'bg-red-50' if w.status == 'OPEN' else '' }}">
+        <td class="p-1 font-semibold">{{ w.claim_type }}</td>
+        <td class="p-1 tabular-nums">{{ w.trigger_date }}</td>
+        <td class="p-1 tabular-nums">{{ w.sol_expiry }}</td>
+        <td class="p-1 text-center">
+          {% if w.status == 'OPEN' %}
+            <span class="text-risk-red font-semibold">OPEN</span>
+          {% else %}
+            <span class="text-gray-400">Closed</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {% if proxy_windows and not actual_windows %}
+  {# No real triggering events — don't show confusing theoretical table, just a summary line #}
+  <h3>Statute of Limitations</h3>
+  <p class="text-sm text-gray-600 mb-2">No triggering events identified during the analysis period. Standard statute of limitations windows apply.</p>
+  {% elif proxy_windows and actual_windows %}
+  {# Show theoretical windows only as supplement when actual windows exist #}
+  <h3>Theoretical Exposure Windows</h3>
+  <p class="text-xs text-gray-500 mb-2">Additional claim types based on annual report date as proxy. No actual triggering events identified for these categories.</p>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Claim Type</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Reference Date</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Window Closes</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1 border-b border-gray-300">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for w in proxy_windows %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1">{{ w.claim_type }}</td>
+        <td class="p-1 tabular-nums text-gray-500">{{ w.trigger_date }}</td>
+        <td class="p-1 tabular-nums text-gray-500">{{ w.sol_expiry }}</td>
+        <td class="p-1 text-center">
+          {% if w.status == 'OPEN' %}
+            <span class="text-amber-600">Open</span>
+          {% else %}
+            <span class="text-gray-400">Closed</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {% if actual_windows %}
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    {% set actual_open = actual_windows|selectattr('status', 'equalto', 'OPEN')|list|length %}
+    {% if actual_open > 0 %}
+    <li>{{ actual_open }} open SOL window{{ 's' if actual_open > 1 }} from actual events&mdash;plaintiffs can still initiate claims</li>
+    {% else %}
+    <li>All event-based SOL windows closed&mdash;reduced exposure from actual triggering events</li>
+    {% endif %}
+  </ul>
+  {% elif sol %}
+  <h3>Statute of Limitations Analysis</h3>
+  {{ kv_table([
+    {'key': 'Window Status', 'value': sol.get('window_status', 'N/A')},
+    {'key': 'Earliest Open', 'value': sol.get('earliest_open', 'N/A')},
+    {'key': 'Repose Deadline', 'value': sol.get('repose_deadline', 'N/A')},
+  ]) }}
+  {% endif %}

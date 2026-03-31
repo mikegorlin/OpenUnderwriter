@@ -1,0 +1,30 @@
+{# Forward-Looking Indicators -- Narrative Coherence facet template.
+   Renders FWRD.NARRATIVE.* signals as key-value pairs.
+   Part of facet dispatch for forward_looking section (Phase 62-01). #}
+
+{% set fwrd_signals = signal_results_by_section.get('FWRD', []) %}
+{% set narr_signals = [] %}
+{% for sig in fwrd_signals %}
+  {% if sig.signal_id.startswith('FWRD.NARRATIVE.') %}
+    {% set _ = narr_signals.append(sig) %}
+  {% endif %}
+{% endfor %}
+
+{% if narr_signals %}
+<h3>Narrative Coherence</h3>
+{% set kv_items = [] %}
+{% for sig in narr_signals %}
+  {% set sig_val = sig.formatted_value | default(sig.value | default('', true), true) %}
+  {% if sig_val and sig_val != 'N/A' %}
+  {% set _ = kv_items.append({
+    'key': sig.signal_name | humanize,
+    'value': sig_val
+  }) %}
+  {% endif %}
+{% endfor %}
+{% if kv_items %}{{ kv_table(kv_items) }}{% endif %}
+<ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+  <li>Narrative coherence measures alignment between 10-K filings, earnings calls, and investor communications</li>
+  <li>Divergence between public statements and SEC filings is a leading indicator of Section 10(b) liability exposure</li>
+</ul>
+{% endif %}

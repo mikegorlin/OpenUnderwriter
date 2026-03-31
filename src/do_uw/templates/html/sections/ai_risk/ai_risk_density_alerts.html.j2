@@ -1,0 +1,11 @@
+{# AI Risk Density Alerts — extracted from ai_risk.html.j2 #}
+{% if level is not defined %}{% set level = 'CLEAN' %}{% endif %}
+{% if density is not defined %}{% set density = {} %}{% endif %}
+
+  {# --- ELEVATED concerns --- #}
+  {% if level == "ELEVATED" %}
+    {% set concerns = density.concerns|default([]) if density else [] %}
+    {% for concern in concerns %}
+      {{ warning_box(concern, "AI disruption risk may affect long-term D&O exposure.") }}
+    {% endfor %}
+  {% endif %}

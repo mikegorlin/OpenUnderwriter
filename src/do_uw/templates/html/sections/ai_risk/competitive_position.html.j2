@@ -1,0 +1,18 @@
+{# Competitive Position — extracted from ai_risk.html.j2 #}
+{% if ai is not defined %}{% set ai = (ai_risk if ai_risk is defined and ai_risk else {}) %}{% endif %}
+
+  {# --- Competitive Position --- #}
+  {% set cp = ai.get('competitive_position', {}) %}
+  {% if cp and (cp.get('company_ai_mentions') or cp.get('adoption_stance')) %}
+  <h3>Competitive Position</h3>
+  {{ kv_table([
+    {'key': 'Company AI Mentions', 'value': cp.get('company_ai_mentions', 'N/A')},
+    {'key': 'Peer Avg AI Mentions', 'value': cp.get('peer_avg_mentions', 'N/A')},
+    {'key': 'Adoption Stance', 'value': cp.get('adoption_stance', 'N/A') | humanize},
+    {'key': 'Industry Model', 'value': ai.get('industry_model_id', 'N/A') | humanize},
+    {'key': 'Disclosure Trend', 'value': ai.get('disclosure_trend', 'N/A') | humanize},
+  ]) }}
+  {% if ai.get('peer_comparison_available') == false %}
+  <p class="text-xs text-gray-400 italic mt-1">Peer comparison data not available for this company.</p>
+  {% endif %}
+  {% endif %}

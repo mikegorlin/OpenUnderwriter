@@ -1,0 +1,807 @@
+# Multiplicative Scoring Model Design: P = H x A x E
+# Design artifact for Phase 107 implementation.
+# Specifies how H/A/E composite scores are computed, weighted,
+# combined multiplicatively, and mapped to decision tiers.
+#
+# Created: Phase 106-01 (v7.0 Signal-Render Integrity)
+# Dependencies:
+#   - rap_taxonomy.yaml: H/A/E subcategory structure (20 subcategories)
+#   - decision_framework.yaml: 6-tier decision output
+#   - rap_signal_mapping.yaml: signal -> subcategory assignments
+#   - causal_chains.yaml: empirical filing rates and severity data
+#
+# Research citations:
+#   - SCAC: Stanford Securities Class Action Clearinghouse annual reports
+#   - Cornerstone: Cornerstone Research "Securities Class Action Settlements" annual
+#   - NERA: NERA Economic Consulting "Recent Trends in Securities Class Action Litigation"
+#   - ISS: Institutional Shareholder Services governance scoring methodology
+#   - Beneish (1999): "The Detection of Earnings Manipulation" (The Accounting Review)
+#   - Altman (1968): "Financial Ratios, Discriminant Analysis, and the Prediction of Corporate Bankruptcy"
+#   - Dechow et al. (2011): "Predicting Material Accounting Misstatements" (Contemporary Accounting Research)
+#   - Loughran-McDonald (2011): "When Is a Liability Not a Liability?" (Journal of Finance)
+
+version: 1
+name: "Multiplicative Scoring Model Design"
+status: design_artifact
+implementation_phase: 107
+
+# ---------------------------------------------------------------
+# Section 1: H/A/E Composite Computation
+# ---------------------------------------------------------------
+# Each of the 3 categories (Host, Agent, Environment) produces a
+# composite score in [0, 1] from its subcategory scores. Each
+# subcategory score is computed from individual signal evaluations.
+
+composites:
+  signal_evaluation_mapping:
+    description: >
+      Signal evaluation outcomes map to numeric risk scores.
+      Higher = more risk. SKIPPED signals are excluded from
+      the denominator (they do not count as "clear").
+    values:
+      RED: 1.0
+      YELLOW: 0.5
+      CLEAR: 0.0
+      SKIPPED: null  # excluded from computation
+
+  subcategory_score_computation:
+    description: >
+      Each subcategory score = weighted average of signal scores
+      within that subcategory, excluding SKIPPED signals. If all
+      signals in a subcategory are SKIPPED, the subcategory score
+      is null and excluded from the category composite.
+    formula: >
+      subcategory_score = sum(signal_score_i * signal_weight_i)
+                        / sum(signal_weight_i)
+      where signal_score_i != null (not SKIPPED)
+    signal_weights:
+      description: >
+        Within a subcategory, signals are weighted by their
+        claims_correlation if available, otherwise equal weight.
+        CRF (critical_red_flag=true) signals get 3x base weight.
+      default: 1.0
+      crf_multiplier: 3.0
+      claims_correlation_source: "brain_effectiveness table fire_rate data"
+
+  category_composite_computation:
+    description: >
+      Category composite = weighted sum of subcategory scores,
+      normalized to [0, 1]. Weights reflect each subcategory's
+      contribution to D&O claim probability based on empirical
+      data and underwriting practice.
+    formula: >
+      category_composite = sum(subcategory_score_j * subcategory_weight_j)
+                         / sum(subcategory_weight_j)
+      where subcategory_score_j != null
+    normalization: >
+      Result is naturally in [0, 1] because subcategory scores
+      are in [0, 1] and weights sum to 1.0. No additional
+      normalization needed.
+
+  # ---------------------------------------------------------------
+  # Subcategory weights within each category
+  # ---------------------------------------------------------------
+
+  host_subcategory_weights:
+    description: "Weights for subcategories within Host composite"
+    weights:
+      host.identity:
+        weight: 0.25
+        weight_source: "Cornerstone Research: market cap is top settlement predictor; sector determines claim type distribution"
+        rationale: >
+          Market cap directly determines class action damages quantum.
+          Cornerstone annual reports consistently show market cap at
+          filing as the strongest predictor of settlement amount.
+          Sector drives regulatory exposure profile.
+
+      host.structure:
+        weight: 0.15
+        weight_source: "D&O underwriting practice: complexity correlates with opacity and fraud opportunity"
+        rationale: >
+          Complex organizational structures (subsidiaries, VIEs, SPEs)
+          create opportunities for hidden losses. Enron, Wirecard
+          cases demonstrate structure-enabled fraud. Weight reflects
+          practical underwriting experience with structural complexity.
+
+      host.financials:
+        weight: 0.20
+        weight_source: "Altman Z-Score research; Cornerstone: financial distress cases have highest median settlements"
+        rationale: >
+          Financial position determines zone-of-insolvency risk and
+          ability to absorb losses. Altman Z < 1.1 is a well-
+          established distress predictor. Cornerstone data shows
+          financial distress SCA settlements are 3-5x median.
+
+      host.governance_structure:
+        weight: 0.15
+        weight_source: "ISS governance data: board independence and audit committee quality correlate with fewer derivative claims"
+        rationale: >
+          ISS QualityScore data shows companies in the bottom
+          governance quartile face 2.5x higher derivative suit
+          filing rates. Board independence, audit committee
+          expertise, and oversight structure are key predictors.
+
+      host.dependencies:
+        weight: 0.10
+        weight_source: "D&O underwriting practice: concentration risk amplifies earnings surprise severity"
+        rationale: >
+          Customer/supplier concentration creates binary event risk.
+          When a concentrated revenue source is lost, the stock
+          impact is typically 2-3x larger than diversified companies
+          experiencing similar revenue headwinds.
+
+      host.environment_exposure:
+        weight: 0.10
+        weight_source: "D&O underwriting practice: regulatory intensity and macro sensitivity are structural amplifiers"
+        rationale: >
+          Companies in highly regulated industries (pharma, banking,
+          energy) face structurally higher enforcement action rates.
+          Macro sensitivity determines earnings volatility baseline.
+
+      host.data_foundation:
+        weight: 0.05
+        weight_source: "D&O underwriting practice: data gaps increase underwriting uncertainty"
+        rationale: >
+          Incomplete filing data or missing forensic inputs should
+          increase uncertainty loading but is less directly predictive
+          of claims than substantive risk attributes. Low weight
+          reflects informational value vs predictive value.
+
+  agent_subcategory_weights:
+    description: "Weights for subcategories within Agent composite"
+    weights:
+      agent.financial_conduct:
+        weight: 0.25
+        weight_source: "SCAC data: ~65% of SCAs involve financial misstatement; Beneish (1999) M-Score predictive validity"
+        rationale: >
+          SCAC annual reports consistently show financial
+          misstatement allegations in 60-70% of securities class
+          actions. Restatements trigger near-automatic filing
+          (65% filing rate per causal_chains.yaml). Beneish M-Score
+          and Dechow F-Score provide 12-24 month forward prediction.
+          Highest-weighted Agent subcategory because it drives the
+          plurality of actual claim filings.
+
+      agent.disclosure_conduct:
+        weight: 0.15
+        weight_source: "SCAC data: guidance misses are primary scienter evidence in 10b-5 claims"
+        rationale: >
+          Disclosure quality and guidance track record directly
+          determine plaintiff ability to prove scienter. Guidance
+          misses combined with insider selling is the classic
+          10b-5 complaint formula. NLP-detected disclosure changes
+          provide early warning of concealment patterns.
+
+      agent.executive_conduct:
+        weight: 0.15
+        weight_source: "NERA: insider trading present in ~15% of SCAs but increases settlement by 30-50%"
+        rationale: >
+          NERA settlement data shows insider trading dramatically
+          increases settlement amounts when present. Cluster selling
+          before negative announcements is the single most cited
+          scienter evidence in complaints. Despite appearing in only
+          ~15% of cases, the severity impact justifies substantial
+          weight.
+
+      agent.corporate_events:
+        weight: 0.10
+        weight_source: "SCAC data: M&A triggers merger objection suits at 85% filing rate; IPO Section 11 window"
+        rationale: >
+          Corporate events create discrete claim windows. M&A
+          activity has the highest filing rate of any trigger
+          category (85% per causal_chains.yaml). However, merger
+          objection suits typically settle at lower amounts than
+          financial fraud SCAs.
+
+      agent.compensation_decisions:
+        weight: 0.05
+        weight_source: "ISS: say-on-pay failures correlate with derivative suit filings at 3x base rate"
+        rationale: >
+          Pay-related claims are growing but historically lower
+          frequency and severity than financial conduct or insider
+          trading claims. Say-on-pay failures and excessive perks
+          primarily drive derivative (not securities) litigation.
+
+      agent.litigation_actions:
+        weight: 0.15
+        weight_source: "SCAC data: prior litigation history is strongest predictor of future filings (recidivism)"
+        rationale: >
+          Active litigation directly indicates crystallized risk.
+          Prior SCA history is the single strongest predictor of
+          future filing (SCAC recidivism data). Active SEC
+          investigation triggers parallel private litigation at
+          high rates. Weight reflects both frequency and severity.
+
+      agent.governance_events:
+        weight: 0.15
+        weight_source: "D&O underwriting practice: material weakness, auditor changes, and departures are leading indicators"
+        rationale: >
+          Governance events (material weakness findings, auditor
+          changes during audit, CFO departures before restatement)
+          are well-established leading indicators of imminent claims.
+          Auditor changes are particularly strong predictors of
+          upcoming restatements. Weight reflects leading indicator
+          value.
+
+  environment_subcategory_weights:
+    description: "Weights for subcategories within Environment composite"
+    weights:
+      environment.market_signals:
+        weight: 0.25
+        weight_source: "Cornerstone Research: stock decline is second-strongest settlement predictor; NERA LEAD model"
+        rationale: >
+          Stock price decline is both the primary SCA trigger
+          (>20% decline in ~70% of SCAs) and the second-strongest
+          settlement predictor after market cap. NERA's LEAD model
+          uses maximum stock decline as a core input.
+
+      environment.market_patterns:
+        weight: 0.15
+        weight_source: "SCAC data: short seller reports trigger SCA filing at 35% rate"
+        rationale: >
+          Short seller reports provide plaintiff firms with
+          pre-built fraud narratives. Short attack pattern is
+          an increasingly important claim trigger. Death spiral
+          patterns indicate catastrophic loss potential.
+
+      environment.ownership:
+        weight: 0.15
+        weight_source: "Cornerstone Research: institutional lead plaintiffs achieve 30-50% higher settlements"
+        rationale: >
+          Ownership composition affects claim probability (activist
+          campaigns) and settlement quantum (institutional lead
+          plaintiffs). 13D filings signal potential control contests.
+          Cornerstone data shows institutional leads consistently
+          achieve higher settlements.
+
+      environment.peer_context:
+        weight: 0.15
+        weight_source: "SCAC data: peer contagion documented in sector litigation waves (e.g., SPAC 2021-2023, crypto 2022)"
+        rationale: >
+          Peer contagion is empirically documented -- sector
+          litigation waves (subprime 2008, opioid 2018, SPAC 2021)
+          show 6-12 month elevated filing rates for peer companies.
+          Peer financial comparison establishes market expectations
+          for scienter analysis.
+
+      environment.external_warnings:
+        weight: 0.15
+        weight_source: "D&O underwriting practice: external intelligence provides 6-12 month leading indicators"
+        rationale: >
+          Glassdoor sentiment decline, journalist investigation
+          activity, and macro condition shifts provide forward-
+          looking context that structured data sources miss.
+          Blind spot detection signals capture information not
+          available through SEC filings alone.
+
+      environment.defense_posture:
+        weight: 0.15
+        weight_source: "SCAC data: forum selection in Delaware Federal Court reduces SCA survival by ~40%"
+        rationale: >
+          Defense posture directly affects claim outcome. Forum
+          selection provisions (particularly Delaware federal
+          forum) significantly reduce SCA survival rates. PSLRA
+          safe harbor strength affects forward-looking statement
+          claims. Defense quality is a direct severity mitigator.
+
+# ---------------------------------------------------------------
+# Section 2: Weighting Rationale Summary
+# ---------------------------------------------------------------
+
+weighting_rationale:
+  methodology: >
+    Weights are derived from a combination of empirical research
+    (SCAC filing data, Cornerstone settlement analysis, NERA LEAD
+    model), academic research (Beneish, Altman, Dechow, ISS), and
+    D&O underwriting practice. Where multiple sources agree, weights
+    reflect the consensus. Where sources conflict, the most recent
+    and largest-sample source is preferred. Where no empirical data
+    exists, weights are attributed to "D&O underwriting practice"
+    and marked for calibration.
+
+  key_empirical_anchors:
+    - source: "SCAC Annual Reports (Stanford)"
+      finding: "~65% of SCAs involve financial misstatement allegations"
+      weight_impact: "agent.financial_conduct = 0.25 (highest Agent weight)"
+
+    - source: "Cornerstone Research Annual Settlement Reports"
+      finding: "Market cap at filing and maximum stock decline are top 2 settlement predictors"
+      weight_impact: "host.identity = 0.25 (highest Host weight); environment.market_signals = 0.25 (highest Environment weight)"
+
+    - source: "NERA Economic Consulting Annual Trends"
+      finding: "Insider trading present in ~15% of SCAs but increases settlement 30-50%"
+      weight_impact: "agent.executive_conduct = 0.15 (high weight despite lower frequency due to severity amplification)"
+
+    - source: "ISS QualityScore Data"
+      finding: "Bottom governance quartile faces 2.5x derivative suit filing rate"
+      weight_impact: "host.governance_structure = 0.15"
+
+    - source: "Beneish (1999) The Accounting Review"
+      finding: "M-Score correctly identifies 76% of manipulators with 17% false positive rate"
+      weight_impact: "agent.financial_conduct weight includes forensic signal contribution from M-Score, F-Score"
+
+    - source: "Altman (1968) Z-Score"
+      finding: "Z < 1.1 indicates distress zone with high bankruptcy probability"
+      weight_impact: "host.financials = 0.20 includes zone-of-insolvency as CRF trigger"
+
+  calibration_note: >
+    All weights are initial estimates based on the research cited.
+    Phase 107 implementation includes shadow mode calibration
+    against historical ticker data to validate and adjust weights.
+    Weights should be reviewed annually against updated SCAC and
+    Cornerstone data.
+
+# ---------------------------------------------------------------
+# Section 3: Multiplicative Interaction Model
+# ---------------------------------------------------------------
+
+interaction_model:
+  formula:
+    expression: "P = H_composite x A_composite x E_composite"
+    domain: "[0, 1] x [0, 1] x [0, 1] -> [0, 1]"
+    description: >
+      The probability-analog score P is the product of the three
+      category composites. This is NOT a literal probability but
+      a risk score on a [0, 1] scale where higher = more risk.
+
+  normalization:
+    approach: "natural"
+    description: >
+      Each composite is in [0, 1] by construction (weighted average
+      of signal scores that are each in {0.0, 0.5, 1.0}). The
+      product of three [0, 1] values is naturally in [0, 1]. No
+      additional normalization is required.
+    output_range: "[0, 1]"
+
+  why_multiplicative:
+    description: >
+      Multiplicative interaction captures what additive scoring
+      misses: that risk dimensions INTERACT. The same Agent
+      misconduct (say, insider selling cluster) produces vastly
+      different outcomes depending on Host (large-cap with
+      thousands of shareholders vs micro-cap) and Environment
+      (broad market downturn vs idiosyncratic stock drop).
+    comparison:
+      additive:
+        formula: "S = w_H * H + w_A * A + w_E * E"
+        weakness: >
+          Treats dimensions as independent. A company with
+          H=0.8, A=0.8, E=0.2 scores the same as H=0.6,
+          A=0.6, E=0.6 if weights are equal. But the first
+          is MUCH riskier -- high structural exposure with
+          active misconduct, only saved by benign environment.
+      multiplicative:
+        formula: "P = H x A x E"
+        strength: >
+          H=0.8, A=0.8, E=0.2 -> P=0.128
+          H=0.6, A=0.6, E=0.6 -> P=0.216
+          The multiplicative model correctly assigns higher risk
+          to the uniformly elevated case while showing that a
+          single low dimension strongly attenuates overall risk.
+
+  edge_case_handling:
+    all_low:
+      scenario: "H=0.1, A=0.1, E=0.1"
+      result: "P = 0.001"
+      interpretation: >
+        Very low risk. The multiplicative model naturally pushes
+        this toward zero. This is correct -- a small, simple
+        company with clean management in a benign market has
+        near-zero D&O claim probability.
+      tier: "PREFERRED"
+
+    one_very_high:
+      scenario: "H=0.9, A=0.1, E=0.1"
+      result: "P = 0.009"
+      interpretation: >
+        Despite very high Host exposure, low Agent and Environment
+        scores attenuate. This is correct -- a large, complex
+        company with clean management in a benign market has
+        low near-term claim probability. However, CRF override
+        may elevate the tier independently of the composite.
+      tier: "STANDARD (unless CRF override applies)"
+
+    two_high_one_low:
+      scenario: "H=0.8, A=0.8, E=0.2"
+      result: "P = 0.128"
+      interpretation: >
+        Moderately elevated. The low Environment score provides
+        some protection, but the combination of high structural
+        exposure with active Agent misconduct is concerning.
+      tier: "CAUTIOUS to ELEVATED"
+
+    all_high:
+      scenario: "H=0.8, A=0.8, E=0.8"
+      result: "P = 0.512"
+      interpretation: >
+        High risk across all dimensions. Classic pre-claim
+        profile. Multiplicative model correctly amplifies to
+        well above what any single dimension would suggest.
+      tier: "ADVERSE to PROHIBITED"
+
+  floor_adjustment:
+    description: >
+      To prevent the multiplicative model from being excessively
+      dominated by a single low dimension, apply a floor to each
+      composite before multiplication.
+    floor_value: 0.05
+    calibration_required: true
+    formula: >
+      P = max(H, 0.05) x max(A, 0.05) x max(E, 0.05)
+    rationale: >
+      Without the floor, a single CLEAR dimension can reduce P
+      to near-zero even when two dimensions are very high. The
+      0.05 floor ensures that even a perfectly clean dimension
+      contributes at least a minimal risk factor. Initial value
+      of 0.05 is an estimate; calibrate in Phase 107 shadow mode.
+
+# ---------------------------------------------------------------
+# Section 4: CRF Discordance Formalization
+# ---------------------------------------------------------------
+
+crf_discordance:
+  framework: "ELECTRE III multi-criteria decision analysis"
+  description: >
+    Critical Red Flags (CRFs) create non-compensatory vetoes in the
+    tier assignment process. The ELECTRE discordance mechanism means
+    that no amount of favorable scores in other dimensions can offset
+    a CRF. This is analogous to the "veto threshold" in ELECTRE III
+    where a single criterion exceeding its discordance threshold
+    invalidates an outranking relationship regardless of concordance.
+
+  concordance_index:
+    description: >
+      The concordance index measures how well the composite score
+      agrees with a candidate tier assignment. High concordance =
+      the composite score is within the tier's entry criteria ranges.
+    formula: >
+      C(tier) = fraction of {H, A, E} composites that satisfy
+      the tier's entry criteria conditions.
+
+  discordance_threshold:
+    description: >
+      The discordance threshold is a CRF trigger. When any CRF
+      condition is met, discordance = 1.0, which vetoes any tier
+      assignment below the CRF's minimum tier regardless of
+      concordance.
+    formula: >
+      D(tier) = 1.0 if any CRF is present that requires a tier
+      at or above the candidate tier; 0.0 otherwise.
+
+  override_mechanism:
+    description: >
+      Final tier = max(concordance_tier, discordance_tier).
+      The CRF discordance override ALWAYS wins. This is the
+      fundamental non-compensatory property.
+    formula: >
+      tier_final = max(
+        tier_from_composite_scores(P),
+        max(crf_minimum_tiers for all active CRFs)
+      )
+
+  crf_veto_catalog:
+    - id: CRF-FRAUD
+      condition: "Active SEC enforcement action for fraud (LIT.REG.sec_active with severity >= FORMAL_ORDER)"
+      veto_target: PROHIBITED
+      signals:
+        - LIT.REG.sec_active
+        - LIT.REG.sec_investigation
+        - LIT.REG.wells_notice
+      rationale: "Active fraud investigation = uninsurable. No underwriting judgment can override."
+      source: "D&O underwriting practice: universal market standard"
+
+    - id: CRF-RESTATEMENT
+      condition: "Announced restatement of material magnitude (FIN.ACCT.restatement = RED)"
+      veto_target: ELEVATED
+      signals:
+        - FIN.ACCT.restatement
+        - FIN.ACCT.restatement_magnitude
+      rationale: "Material restatement triggers SCA filing at 65% rate. Minimum ELEVATED for referral."
+      source: "SCAC data: 65% SCA filing rate post-restatement"
+
+    - id: CRF-INSOLVENCY
+      condition: "Zone of insolvency (Altman Z < 1.1 OR current ratio < 0.5)"
+      veto_target: PROHIBITED
+      signals:
+        - FWRD.WARN.zone_of_insolvency
+        - FIN.LIQ.cash_burn
+        # NOTE: FIN.LIQ.position removed — its red threshold (<1.0 current ratio)
+        # is far more lenient than this CRF's condition (<0.5 current ratio).
+        # A current ratio of 0.89 (e.g. Apple) is tight liquidity, not insolvency.
+        # Only zone_of_insolvency (Altman Z < 1.1) and cash_burn should drive
+        # this catastrophic-severity CRF.
+      rationale: "Zone of insolvency shifts fiduciary duties to creditors. Catastrophic severity."
+      source: "Altman (1968); D&O underwriting practice"
+
+    - id: CRF-DOJ
+      condition: "Active DOJ criminal investigation"
+      veto_target: PROHIBITED
+      signals:
+        - LIT.REG.doj_investigation
+      rationale: "Criminal investigation = extreme tail risk. Individual officer criminal liability."
+      source: "D&O underwriting practice"
+
+    - id: CRF-MULTI
+      condition: "3+ CRFs of any type active simultaneously"
+      veto_target: ADVERSE
+      signals: []  # computed from count of other active CRFs
+      rationale: "Multiple simultaneous CRFs indicate systemic failure across risk dimensions."
+      source: "D&O underwriting practice"
+
+    - id: CRF-MATERIAL-WEAKNESS
+      condition: "Material weakness in internal controls (FIN.ACCT.material_weakness = RED)"
+      veto_target: CAUTIOUS
+      signals:
+        - FIN.ACCT.material_weakness
+        - FIN.ACCT.internal_controls
+        - GOV.EFFECT.material_weakness
+      rationale: "Material weakness indicates broken controls. Caremark exposure."
+      source: "SCAC data: material weakness companies face 3x derivative suit rate"
+
+  tier_hierarchy:
+    description: >
+      Tier ordering for max() operation in override mechanism.
+      Higher numeric value = more restrictive tier.
+    ordering:
+      PREFERRED: 1
+      STANDARD: 2
+      CAUTIOUS: 3
+      ELEVATED: 4
+      ADVERSE: 5
+      PROHIBITED: 6
+
+# ---------------------------------------------------------------
+# Section 5: Decision Tier Mapping
+# ---------------------------------------------------------------
+
+tier_mapping:
+  description: >
+    Maps composite score P to the 6 decision tiers from
+    decision_framework.yaml. Thresholds are conceptual initial
+    values to be calibrated in Phase 107 shadow mode. The mapping
+    uses the composite score P = H x A x E, with CRF override
+    applied after composite-based tier assignment.
+
+  composite_to_tier:
+    - tier: PREFERRED
+      p_range: "[0, 0.01)"
+      description: "Very low risk across all dimensions"
+      individual_criteria:
+        host_max: 0.25
+        agent_max: 0.20
+        environment_max: 0.30
+      calibration_required: true
+
+    - tier: STANDARD
+      p_range: "[0.01, 0.05)"
+      description: "Low to moderate risk, acceptable profile"
+      individual_criteria:
+        host_max: 0.45
+        agent_max: 0.40
+        environment_max: 0.50
+      calibration_required: true
+
+    - tier: CAUTIOUS
+      p_range: "[0.05, 0.15)"
+      description: "Moderate risk in one or more dimensions"
+      individual_criteria:
+        any_above: 0.50
+      calibration_required: true
+
+    - tier: ELEVATED
+      p_range: "[0.15, 0.30)"
+      description: "Significant risk requiring senior review"
+      individual_criteria:
+        any_above: 0.65
+      calibration_required: true
+
+    - tier: ADVERSE
+      p_range: "[0.30, 0.50)"
+      description: "Material risk across multiple dimensions"
+      individual_criteria:
+        host_above: 0.70
+        agent_above: 0.60
+      calibration_required: true
+
+    - tier: PROHIBITED
+      p_range: "[0.50, 1.0]"
+      description: "Maximum risk. Non-negotiable decline."
+      individual_criteria:
+        crf_veto: true
+      calibration_required: true
+
+  dual_path_assignment:
+    description: >
+      Tier assignment uses BOTH the composite P score AND individual
+      dimension criteria. The more restrictive result applies.
+      This ensures a company with one extremely elevated dimension
+      is flagged even if the multiplicative product is moderate.
+    formula: >
+      tier_composite = tier_from_p_range(P)
+      tier_individual = tier_from_individual_criteria(H, A, E)
+      tier_crf = max(crf_minimum_tiers)
+      tier_final = max(tier_composite, tier_individual, tier_crf)
+
+  liberty_calibration:
+    description: >
+      Liberty's excess-only position means the framework must
+      adjust for attachment point and product type. At high
+      attachment, Host risk (structural severity) matters more
+      because only catastrophic claims reach Liberty's layer.
+      For Side A, Agent conduct matters more because individual
+      defendant liability drives Side A claims.
+
+    attachment_weight_adjustments:
+      low_attachment:
+        description: "Liberty at $5-10M xs SIR (near-primary exposure)"
+        host_weight_multiplier: 1.0
+        agent_weight_multiplier: 1.0
+        environment_weight_multiplier: 1.0
+        rationale: "At low attachment, all dimensions equally relevant"
+
+      mid_attachment:
+        description: "Liberty at $10-50M xs"
+        host_weight_multiplier: 1.15
+        agent_weight_multiplier: 0.95
+        environment_weight_multiplier: 0.90
+        rationale: "Host (severity-determining) gains weight as attachment increases"
+        calibration_required: true
+
+      high_attachment:
+        description: "Liberty at $50M+ xs"
+        host_weight_multiplier: 1.30
+        agent_weight_multiplier: 0.80
+        environment_weight_multiplier: 0.90
+        rationale: >
+          At high attachment, only catastrophic claims reach
+          Liberty's layer. Host characteristics (market cap,
+          complexity) determine whether claim severity is large
+          enough to penetrate. Agent misconduct matters less
+          because many Agent-triggered claims settle below $50M.
+        calibration_required: true
+
+    product_weight_adjustments:
+      ABC:
+        description: "ABC coverage -- entity securities liability"
+        host_weight_multiplier: 1.0
+        agent_weight_multiplier: 1.0
+        environment_weight_multiplier: 1.0
+        rationale: "All dimensions relevant for entity coverage"
+
+      Side_A:
+        description: "Side A DIC -- individual director/officer coverage"
+        host_weight_multiplier: 0.85
+        agent_weight_multiplier: 1.25
+        environment_weight_multiplier: 0.90
+        rationale: >
+          Side A responds to individual liability. Agent conduct
+          (insider trading, personal misconduct, governance
+          failures) is more directly relevant than entity-level
+          structural factors.
+        calibration_required: true
+
+    combined_adjustment_formula: >
+      adjusted_H = H_composite * attachment_host_mult * product_host_mult
+      adjusted_A = A_composite * attachment_agent_mult * product_agent_mult
+      adjusted_E = E_composite * attachment_env_mult * product_env_mult
+      P_liberty = max(adjusted_H, floor) * max(adjusted_A, floor) * max(adjusted_E, floor)
+      Note: renormalize to [0, 1] if any multiplier pushes a composite above 1.0:
+        adjusted_X = min(adjusted_X, 1.0)
+
+# ---------------------------------------------------------------
+# Section 6: Shadow Calibration Specification
+# ---------------------------------------------------------------
+
+shadow_calibration:
+  description: >
+    Shadow mode runs BOTH the legacy additive 10-factor scoring
+    AND the new multiplicative H/A/E model on the same tickers,
+    producing a comparison table for calibration. The goal is to
+    validate that the new model produces sensible results relative
+    to the legacy model before switching.
+
+  mode: "parallel_execution"
+  implementation_phase: 107
+
+  legacy_model:
+    name: "10-Factor Additive Scoring"
+    location: "stages/score/"
+    output: "legacy_score (0-100), legacy_tier (5 tiers)"
+
+  new_model:
+    name: "H/A/E Multiplicative Scoring"
+    output: "hae_score (0-1), hae_tier (6 tiers)"
+
+  comparison_output:
+    columns:
+      - ticker
+      - sector
+      - market_cap_tier
+      - legacy_score
+      - legacy_tier
+      - host_composite
+      - agent_composite
+      - environment_composite
+      - hae_product
+      - hae_tier
+      - tier_delta
+      - interpretation
+
+  calibration_criteria:
+    rank_order_correlation:
+      metric: "Spearman rank correlation between legacy_score and hae_product"
+      target: ">= 0.70"
+      rationale: >
+        The new model should preserve the relative ranking of most
+        tickers. Perfect correlation is not expected (the models
+        have different structures), but strong directional agreement
+        validates that the new model captures the same risk signals.
+
+    tier_agreement:
+      metric: "Percentage of tickers where |legacy_tier - hae_tier| <= 1"
+      target: ">= 80%"
+      rationale: >
+        No more than 20% of tickers should have a tier disagreement
+        greater than 1 level. Large disagreements indicate a
+        systematic bias in the new model that needs weight adjustment.
+
+    systematic_bias:
+      metric: "Mean(hae_tier - legacy_tier) across all tickers"
+      target: "abs(mean) < 0.5"
+      rationale: >
+        The new model should not be systematically more lenient
+        or more harsh than the legacy model. A mean near zero
+        indicates no directional bias.
+
+    extremes_agreement:
+      metric: "Agreement on top-5 and bottom-5 risk tickers"
+      target: "Same tickers in top/bottom sets (order may differ)"
+      rationale: >
+        The models must agree on which companies are highest and
+        lowest risk. Disagreement on extremes would indicate
+        fundamental misalignment.
+
+  test_ticker_selection:
+    description: >
+      Select a diverse set of test tickers covering the full risk
+      spectrum. Include known good risks, known bad risks, and edge
+      cases for each dimension.
+    categories:
+      known_good:
+        count: 5
+        criteria: "Large-cap, stable, strong governance, no litigation history"
+        examples: "BRK.B, JNJ, MSFT-class companies"
+
+      known_bad:
+        count: 5
+        criteria: "Active litigation, enforcement actions, financial distress"
+        examples: "Companies with recent SCA filings or SEC investigations"
+
+      edge_cases:
+        count: 5
+        criteria: "Mixed signals -- high in one dimension, low in others"
+        examples: "Large-cap with insider selling, small-cap with perfect governance in bad sector"
+
+      recent_actuals:
+        count: 5
+        criteria: "Companies from recent deal list with known underwriting outcomes"
+        examples: "Liberty pipeline accounts where actual decisions are available for comparison"
+
+    minimum_total: 20
+
+  calibration_adjustment_process:
+    steps:
+      - step: 1
+        action: "Run shadow comparison on 20+ tickers"
+      - step: 2
+        action: "Compute calibration metrics (rank correlation, tier agreement, bias)"
+      - step: 3
+        action: "If rank correlation < 0.70: adjust subcategory weights"
+      - step: 4
+        action: "If systematic bias > 0.5: adjust composite floor or tier thresholds"
+      - step: 5
+        action: "If extremes disagree: investigate specific tickers for root cause"
+      - step: 6
+        action: "Re-run shadow comparison after adjustments"
+      - step: 7
+        action: "Repeat until all criteria met or document acceptable deviations"

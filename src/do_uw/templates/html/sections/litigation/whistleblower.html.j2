@@ -1,0 +1,29 @@
+{# Whistleblower Indicators — extracted from litigation.html.j2 #}
+
+  {# --- Whistleblower Indicators --- #}
+  {% set whistleblowers = lit.get('whistleblower_indicators', []) %}
+  <h3>Whistleblower Indicators</h3>
+  {% if whistleblowers %}
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Type</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Description</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Date</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Significance</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for wb in whistleblowers %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 align-top">{{ wb.type }}</td>
+        <td class="p-1 align-top">{{ wb.description }}</td>
+        <td class="p-1 align-top">{{ wb.date }}</td>
+        <td class="p-1 align-top">{{ wb.significance }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="text-sm text-gray-500 italic my-2">None found.</p>
+  {% endif %}

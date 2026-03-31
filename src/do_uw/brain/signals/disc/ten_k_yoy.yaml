@@ -1,0 +1,456 @@
+# Domain: disc/ten_k_yoy.yaml  |  Count: 6
+# 10-K year-over-year disclosure change signals for D&O underwriting.
+# Evaluates risk factor evolution, material weakness emergence,
+# disclosure changes, and legal proceedings delta across consecutive filings.
+- id: DISC.YOY.new_risk_factors
+  name: New Risk Factors (YoY)
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1a_risk_factors
+  threshold:
+    type: tiered
+    red: '>5 new risk factors added year-over-year'
+    yellow: 2-5 new risk factors added
+    clear: 0-1 new risk factors
+  claims_correlation: 0.6
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.4'
+  data_strategy:
+    field_key: yoy_new_risk_count
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_disc
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Companies adding multiple new risk factors signal emerging threats management has identified — 
+        plaintiff attorneys use risk factor additions to establish scienter (company knew of risk but allegedly failed 
+        to disclose impact)
+    render_target: ten_k_yoy
+    formula: count(risk_factor_changes[change_type=NEW])
+  display:
+    value_format: count
+    source_type: SEC_10K
+    threshold_context: Count of entirely new risk factors appearing in latest 10-K vs prior year
+  group: ten_k_yoy
+  signal_class: evaluative
+  field_path: yoy_new_risk_count
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC Regulation S-K Item 1A disclosure requirements + plaintiff scienter theory: additions to risk factors
+      used to establish ''company knew'' in SCA complaints'
+    threshold_basis: Companies adding multiple new risk factors signal emerging threats management has identified — 
+      plaintiff attorneys use risk factor additions to establish scienter (company knew of risk but allegedly failed to 
+      disclose impact)
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} New Risk Factors (YoY) at {value} (threshold: >5 new risk factors added year-over-year) signals
+        elevated Litigation History / Settlement Patterns risk (F1, F10). New risk factors in the annual filing signal management has identified emerging threats. If these risks subsequently materialize, plaintiffs allege the risk factor disclosure was inadequate relative to what management actually knew.'
+      TRIGGERED_YELLOW: '{company} New Risk Factors (YoY) at {value} (threshold: 2-5 new risk factors added) is in the caution
+        zone for Litigation History / Settlement Patterns (F1, F10). Monitor for deterioration — trend direction and peer
+        comparison inform the D&O risk assessment.'
+      CLEAR: '{company} New Risk Factors (YoY) at {value} is within acceptable range for Litigation History / Settlement Patterns
+        (F1, F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: DISC.YOY.removed_risk_factors
+  name: Removed Risk Factors (YoY)
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1a_risk_factors
+  threshold:
+    type: tiered
+    red: '>3 risk factors removed year-over-year (possible concealment)'
+    yellow: 1-3 risk factors removed
+    clear: No risk factors removed
+  claims_correlation: 0.5
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '1.4'
+  data_strategy:
+    field_key: yoy_removed_risk_count
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_disc
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Risk factor removal can indicate risk resolution OR concealment — removing a risk factor that later 
+        materializes is a primary scienter indicator in SCA complaints
+    render_target: ten_k_yoy
+    formula: count(risk_factor_changes[change_type=REMOVED])
+  display:
+    value_format: count
+    source_type: SEC_10K
+    threshold_context: Count of risk factors present in prior 10-K but absent from current filing
+  group: ten_k_yoy
+  signal_class: evaluative
+  field_path: yoy_removed_risk_count
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC Regulation S-K disclosure analysis + plaintiff concealment theory: removed risk factors examined for
+      evidence of concealing known risks'
+    threshold_basis: Risk factor removal can indicate risk resolution OR concealment — removing a risk factor that later
+      materializes is a primary scienter indicator in SCA complaints
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Removed Risk Factors (YoY) at {value} (threshold: >3 risk factors removed year-over-year (possible
+        concealment)) signals elevated Litigation History / Settlement Patterns risk (F1). Removed risk factors may signal premature de-risking. If the removed risk subsequently materializes, plaintiffs allege management deliberately removed the warning to inflate stock price.'
+      TRIGGERED_YELLOW: '{company} Removed Risk Factors (YoY) at {value} (threshold: 1-3 risk factors removed) is in the caution
+        zone for Litigation History / Settlement Patterns (F1). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Removed Risk Factors (YoY) at {value} is within acceptable range for Litigation History / Settlement
+        Patterns (F1) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: DISC.YOY.escalated_risk_factors
+  name: Escalated Risk Factors (YoY)
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1a_risk_factors
+  threshold:
+    type: tiered
+    red: '>3 risk factors escalated in severity'
+    yellow: 1-3 risk factors escalated
+    clear: No escalation detected
+  claims_correlation: 0.65
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.4'
+  data_strategy:
+    field_key: yoy_escalated_risk_count
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_disc
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Risk factor severity escalation demonstrates management awareness of worsening conditions — an 
+        escalated risk that later triggers a loss event strengthens plaintiff scienter arguments
+    render_target: ten_k_yoy
+    formula: count(risk_factor_changes[change_type=ESCALATED])
+  display:
+    value_format: count
+    source_type: SEC_10K
+    threshold_context: Count of risk factors whose severity increased (LOW→MEDIUM, MEDIUM→HIGH) vs prior year
+  group: ten_k_yoy
+  signal_class: evaluative
+  field_path: yoy_escalated_risk_count
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC Regulation S-K disclosure analysis + plaintiff scienter theory: escalated language demonstrates management
+      awareness of worsening conditions'
+    threshold_basis: Risk factor severity escalation demonstrates management awareness of worsening conditions — an 
+      escalated risk that later triggers a loss event strengthens plaintiff scienter arguments
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Escalated Risk Factors (YoY) at {value} (threshold: >3 risk factors escalated in severity)
+        signals elevated Litigation History / Settlement Patterns risk (F1, F10). Escalated risk factor language signals management acknowledges worsening conditions. Changes in risk factor severity become evidence in SCA complaints that management was aware of deteriorating conditions during the class period.'
+      TRIGGERED_YELLOW: '{company} Escalated Risk Factors (YoY) at {value} (threshold: 1-3 risk factors escalated) is in the
+        caution zone for Litigation History / Settlement Patterns (F1, F10). Monitor for deterioration — trend direction and
+        peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Escalated Risk Factors (YoY) at {value} is within acceptable range for Litigation History / Settlement
+        Patterns (F1, F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: DISC.YOY.material_weakness
+  name: Material Weakness Change
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  critical_red_flag: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_9a_controls
+  threshold:
+    type: boolean
+    red: Material weakness appeared in current year filing
+    clear: No material weakness change
+  claims_correlation: 0.85
+  tier: 1
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '1.4'
+  - '3.7'
+  data_strategy:
+    field_key: yoy_material_weakness_appeared
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_disc
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Material weakness disclosure is among the strongest SCA triggers — companies disclosing new MW face 
+        6.2x baseline SCA filing rate within 12 months. Critical for D&O pricing.
+    render_target: ten_k_yoy
+    formula: material_weakness_change == APPEARED
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: Whether a material weakness in internal controls appeared or was remediated YoY
+  group: ten_k_yoy
+  signal_class: evaluative
+  field_path: yoy_material_weakness_appeared
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SOX Section 302/404 internal controls requirements: material weakness disclosure is among the strongest
+      SCA triggers in SCAC data'
+    threshold_basis: Material weakness disclosure is among the strongest SCA triggers — companies disclosing new MW face
+      6.2x baseline SCA filing rate within 12 months. Critical for D&O pricing.
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} triggered Material Weakness Change (F1, F6) — this agent risk (executive/director actions
+        and decisions that create D&O exposure) indicates Litigation History / Settlement Patterns. Evidence: {evidence}.'
+      TRIGGERED_YELLOW: '{company} shows moderate signal on Material Weakness Change (F1, F6) at {value} — review recommended
+        for Litigation History / Settlement Patterns implications.'
+      CLEAR: '{company} clear on Material Weakness Change (F1, F6) — no Litigation History / Settlement Patterns concern identified
+        at this level.'
+- id: DISC.YOY.controls_changed
+  name: Internal Controls Disclosure Change
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_9a_controls
+  threshold:
+    type: boolean
+    red: Internal controls disclosures changed year-over-year
+    clear: No change in controls disclosures
+  claims_correlation: 0.4
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.4'
+  data_strategy:
+    field_key: yoy_controls_changed
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_disc
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Changes to controls disclosures (even without MW) may indicate remediation of unreported issues or 
+        evolving compliance gaps. Lower correlation than MW but contributes to overall controls risk picture.
+    render_target: ten_k_yoy
+    formula: controls_changed == true
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: Whether Item 9A controls and procedures disclosures changed substantively vs prior year
+  group: ten_k_yoy
+  signal_class: evaluative
+  field_path: yoy_controls_changed
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SOX Section 302/404 internal controls disclosure: changes to controls disclosures may indicate remediation
+      or emerging issues'
+    threshold_basis: Changes to controls disclosures (even without MW) may indicate remediation of unreported issues or 
+      evolving compliance gaps. Lower correlation than MW but contributes to overall controls risk picture.
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} triggered Internal Controls Disclosure Change (F6) — this agent risk (executive/director actions
+        and decisions that create D&O exposure) indicates Governance Failures / Breach of Fiduciary Duty. Evidence: {evidence}.'
+      TRIGGERED_YELLOW: '{company} shows moderate signal on Internal Controls Disclosure Change (F6) at {value} — review recommended
+        for Governance Failures / Breach of Fiduciary Duty implications.'
+      CLEAR: '{company} clear on Internal Controls Disclosure Change (F6) — no Governance Failures / Breach of Fiduciary Duty
+        concern identified at this level.'
+- id: DISC.YOY.legal_proceedings_delta
+  name: Legal Proceedings Change (YoY)
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  - F4
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_3_legal_proceedings
+  threshold:
+    type: tiered
+    red: '>2 net new legal proceedings added'
+    yellow: 1-2 net new legal proceedings
+    clear: No increase in legal proceedings
+  claims_correlation: 0.7
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '1.4'
+  - '4.1'
+  data_strategy:
+    field_key: yoy_legal_proceedings_delta
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_disc
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Net new legal proceedings in Item 3 reflect expanding litigation exposure — correlates with D&O claims 
+        as each proceeding represents potential indemnification obligation and defense cost
+    render_target: ten_k_yoy
+    formula: legal_proceedings_delta (current_year_count - prior_year_count)
+  display:
+    value_format: count
+    source_type: SEC_10K
+    threshold_context: Net change in number of legal proceedings disclosed in Item 3 vs prior year
+  group: ten_k_yoy
+  signal_class: evaluative
+  field_path: yoy_legal_proceedings_delta
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC Regulation S-K Item 3 legal proceedings disclosure: net new proceedings reflect expanding litigation
+      exposure'
+    threshold_basis: Net new legal proceedings in Item 3 reflect expanding litigation exposure — correlates with D&O 
+      claims as each proceeding represents potential indemnification obligation and defense cost
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Legal Proceedings Change (YoY) at {value} (threshold: >2 net new legal proceedings added)
+        signals elevated Litigation History / Settlement Patterns risk (F1, F4). Changes in legal proceedings disclosure signal evolving litigation exposure. Newly disclosed or escalated legal proceedings create the disclosure timeline that plaintiffs use to establish class period boundaries.'
+      TRIGGERED_YELLOW: '{company} Legal Proceedings Change (YoY) at {value} (threshold: 1-2 net new legal proceedings) is
+        in the caution zone for Litigation History / Settlement Patterns (F1, F4). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Legal Proceedings Change (YoY) at {value} is within acceptable range for Litigation History / Settlement
+        Patterns (F1, F4) — this level is a protective factor in D&O risk assessment, reducing claim probability.'

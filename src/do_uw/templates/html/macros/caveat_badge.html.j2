@@ -1,0 +1,111 @@
+{# Reusable inline caveat badge macro for section templates.
+   Phase 110-02: Renders small inline badges next to signals/findings
+   that have adversarial caveats. Badge color matches Devil's Advocate section.
+
+   Usage in section templates:
+     {% from "macros/caveat_badge.html.j2" import caveat_badge, render_signal_caveats %}
+     {{ render_signal_caveats("host.financial.revenue_growth", adversarial.caveat_index) }}
+#}
+
+{# CSS styles for inline caveat badges #}
+<style>
+  .caveat-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.72rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 4px;
+    font-weight: 600;
+    cursor: help;
+    position: relative;
+    vertical-align: middle;
+    line-height: 1.2;
+  }
+  .caveat-badge .cb-icon {
+    margin-right: 3px;
+    font-size: 0.68rem;
+  }
+  /* Type-specific colors */
+  .caveat-badge.cb-amber {
+    background: #fff8e1;
+    color: #e65100;
+    border: 1px solid #ffcc80;
+  }
+  .caveat-badge.cb-blue {
+    background: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #90caf9;
+  }
+  .caveat-badge.cb-purple {
+    background: #f3e5f5;
+    color: #6a1b9a;
+    border: 1px solid #ce93d8;
+  }
+  .caveat-badge.cb-gray {
+    background: #f5f5f5;
+    color: #616161;
+    border: 1px solid #bdbdbd;
+  }
+  /* Tooltip on hover */
+  .caveat-badge .cb-tooltip {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    margin-top: 4px;
+    background: #212529;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 400;
+    width: 280px;
+    z-index: 100;
+    line-height: 1.4;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  }
+  .caveat-badge:hover .cb-tooltip {
+    display: block;
+  }
+  .cb-tooltip-headline {
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .cb-tooltip-evidence {
+    font-size: 0.68rem;
+    color: #adb5bd;
+    margin-top: 4px;
+  }
+</style>
+
+{# Single caveat badge #}
+{% macro caveat_badge(caveat) %}
+<span class="caveat-badge cb-{{ caveat.type_color }}">
+  <span class="cb-icon">
+    {%- if caveat.caveat_type == "false_positive" -%}&#9888;{# warning triangle #}
+    {%- elif caveat.caveat_type == "false_negative" -%}&#128065;{# eye #}
+    {%- elif caveat.caveat_type == "contradiction" -%}&#8644;{# left right arrows #}
+    {%- else -%}&#9744;{# empty checkbox / gap #}
+    {%- endif -%}
+  </span>
+  {{ caveat.type_label }}
+  <span class="cb-tooltip">
+    <div class="cb-tooltip-headline">{{ caveat.headline }}</div>
+    {% if caveat.evidence %}
+      <div class="cb-tooltip-evidence">
+        {% for e in caveat.evidence[:2] %}{{ e }}{% if not loop.last %}<br>{% endif %}{% endfor %}
+      </div>
+    {% endif %}
+  </span>
+</span>
+{% endmacro %}
+
+{# Render all caveat badges for a given signal_id #}
+{% macro render_signal_caveats(signal_id, caveat_index) %}
+{%- if caveat_index and signal_id in caveat_index -%}
+  {%- for c in caveat_index[signal_id] -%}
+    {{ caveat_badge(c) }}
+  {%- endfor -%}
+{%- endif -%}
+{% endmacro %}

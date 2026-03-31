@@ -1,0 +1,411 @@
+# Domain: biz/sector.yaml  |  Count: 4
+# Phase 98: Sector risk classification signals for D&O underwriting
+# Classifies company's D&O risk position within its sector using static
+# reference data: hazard tier, claim patterns, regulatory overlay, peer comparison
+- id: SECT.hazard_tier
+  name: Sector D&O Hazard Tier
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - REFERENCE_DATA
+  data_locations:
+    REFERENCE_DATA:
+    - brain/config/sector_hazard_tiers.yaml
+  threshold:
+    type: tiered
+    red: Sector hazard tier is Highest (>15 SCA filings per 1,000 companies)
+    yellow: Sector hazard tier is High (8-15 SCA filings per 1,000 companies)
+    clear: Sector hazard tier is Moderate or Lower
+  claims_correlation: 0.8
+  tier: 1
+  depth: 1
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.2'
+  data_strategy:
+    field_key: sector_hazard_tier
+    primary_source: REFERENCE_DATA
+  worksheet_section: company_profile
+  display_when: always
+  provenance:
+    origin: v6_sect
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: REFERENCE_DATA
+    threshold_provenance:
+      source: sca_settlement_data
+      rationale: Sector-level SCA filing rates are the strongest predictor of D&O claim frequency; hazard tier directly 
+        maps to expected annual filing probability
+    render_target: sector_risk
+    formula: lookup_hazard_tier(gics_code, sic_code, sector_hazard_tiers.yaml)
+  display:
+    value_format: tier
+    source_type: REFERENCE_DATA
+    threshold_context: D&O hazard tier based on GICS sub-industry SCA filing rate per 1,000 companies
+  group: sector_risk
+  signal_class: evaluative
+  field_path: sector_hazard_tier
+  depends_on: []
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: REFERENCE_DATA
+      fields:
+      - brain/config/sector_hazard_tiers.yaml
+    - type: COMPANY_IDENTITY
+      fields:
+      - company.gics_code
+      - company.identity.sic_code
+  evaluation:
+    formula: sector_hazard_tier
+    thresholds:
+    - op: ==
+      value: Highest
+      label: RED
+    - op: ==
+      value: High
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: '{tier} Hazard'
+    - level: standard
+      template: 'Sector hazard tier: {tier} ({filing_rate} SCA filings per 1,000 companies)'
+    - level: deep
+      fields:
+      - sector_hazard_tier
+      - sector_hazard_tier_details
+    context_templates:
+      TRIGGERED: 'Sector D&O hazard: {tier} -- {context}'
+      CLEAR: 'Sector hazard tier: {tier} (below-average D&O filing rate)'
+    do_context:
+      TRIGGERED_RED: '{company} Sector D&O Hazard Tier at {value} (threshold: Sector hazard tier is Highest (>15 SCA filings
+        per 1,000 companies)) signals elevated Litigation History / Settlement Patterns risk (F1). This host risk (company-level
+        characteristics that attract or deter D&O claims) has historically correlated with increased D&O claim frequency and
+        severity.'
+      TRIGGERED_YELLOW: '{company} Sector D&O Hazard Tier at {value} (threshold: Sector hazard tier is High (8-15 SCA filings
+        per 1,000 companies)) is in the caution zone for Litigation History / Settlement Patterns (F1). Monitor for deterioration
+        — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Sector D&O Hazard Tier at {value} is within acceptable range for Litigation History / Settlement Patterns
+        (F1) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'Stanford SCAC database and Cornerstone settlement studies: sector-level D&O claim frequency and severity
+      patterns'
+    threshold_basis: Sector-level SCA filing rates are the strongest predictor of D&O claim frequency; hazard tier 
+      directly maps to expected annual filing probability
+  rap_class: host
+  rap_subcategory: host.identity
+- id: SECT.claim_patterns
+  name: Sector Claim Patterns
+  work_type: display
+  layer: signal
+  factors:
+  - F1
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - REFERENCE_DATA
+  data_locations:
+    REFERENCE_DATA:
+    - brain/config/sector_claim_patterns.yaml
+  threshold:
+    type: info
+  claims_correlation: 0.7
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '1.2'
+  data_strategy:
+    field_key: sector_claim_patterns
+    primary_source: REFERENCE_DATA
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_sect
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: REFERENCE_DATA
+    threshold_provenance:
+      source: sca_settlement_data
+      rationale: Top claim theories per sector help underwriters anticipate most likely allegation types and assess 
+        whether company-specific risk factors align with sector patterns
+    render_target: sector_risk
+    formula: lookup_claim_patterns(gics_code, sector_claim_patterns.yaml)
+  display:
+    value_format: list
+    source_type: REFERENCE_DATA
+    threshold_context: Top 3 SCA claim theories for this GICS industry group
+  group: sector_risk
+  signal_class: foundational
+  field_path: sector_claim_patterns
+  depends_on: []
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: REFERENCE_DATA
+      fields:
+      - brain/config/sector_claim_patterns.yaml
+    - type: COMPANY_IDENTITY
+      fields:
+      - company.gics_code
+  evaluation:
+    formula: sector_claim_patterns
+    thresholds: []
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: '{count} sector claim theories'
+    - level: standard
+      template: 'Top sector claim theories: {theories_summary}'
+    - level: deep
+      fields:
+      - sector_claim_patterns
+    context_templates:
+      TRIGGERED: 'Sector claim patterns: {theories_summary}'
+      CLEAR: No sector-specific claim pattern data available
+    do_context:
+      TRIGGERED_RED: '{company} sector claim patterns at {value} represents host risk (company-level characteristics that
+        attract or deter D&O claims) (scoring factor F1) — this level is associated with Litigation History / Settlement Patterns
+        exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} sector claim patterns at {value} is a moderate indicator for Litigation History / Settlement
+        Patterns (scoring factor F1), warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} sector claim patterns at {value} is within normal parameters for Litigation History / Settlement Patterns
+        (scoring factor F1) — no D&O concern at this level.'
+  epistemology:
+    rule_origin: 'Stanford SCAC database and Cornerstone settlement studies: sector-level D&O claim frequency and severity
+      patterns'
+    threshold_basis: Top claim theories per sector help underwriters anticipate most likely allegation types and assess 
+      whether company-specific risk factors align with sector patterns
+  rap_class: host
+  rap_subcategory: host.identity
+- id: SECT.regulatory_overlay
+  name: Sector Regulatory Baseline
+  work_type: display
+  layer: signal
+  factors:
+  - F1
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - REFERENCE_DATA
+  data_locations:
+    REFERENCE_DATA:
+    - brain/config/sector_regulatory_overlay.yaml
+  threshold:
+    type: tiered
+    red: N/A (sector baseline does not trigger RED -- use ENVR.regulatory_intensity for company-specific)
+    yellow: Sector regulatory intensity is High (5+ regulators with active enforcement)
+    clear: Sector regulatory intensity is Moderate or Low
+  claims_correlation: 0.65
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - REGULATORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.5'
+  data_strategy:
+    field_key: sector_regulatory_overlay
+    primary_source: REFERENCE_DATA
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_sect
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: REFERENCE_DATA
+    threshold_provenance:
+      source: underwriting_practice
+      rationale: Sector-level regulatory intensity establishes baseline enforcement risk; company-specific deviations 
+        assessed separately in ENVR.regulatory_intensity
+    render_target: sector_risk
+    formula: lookup_regulatory_overlay(gics_code, sector_regulatory_overlay.yaml)
+  display:
+    value_format: text
+    source_type: REFERENCE_DATA
+    threshold_context: Sector regulatory intensity baseline with named regulators
+  group: sector_risk
+  signal_class: foundational
+  field_path: sector_regulatory_overlay
+  depends_on: []
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: REFERENCE_DATA
+      fields:
+      - brain/config/sector_regulatory_overlay.yaml
+    - type: COMPANY_IDENTITY
+      fields:
+      - company.gics_code
+  evaluation:
+    formula: sector_regulatory_overlay
+    thresholds:
+    - op: ==
+      value: High
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: '{intensity} regulatory intensity'
+    - level: standard
+      template: 'Sector regulatory intensity: {intensity} ({regulator_count} regulators)'
+    - level: deep
+      fields:
+      - sector_regulatory_overlay
+    context_templates:
+      TRIGGERED: 'High sector regulatory intensity: {regulators} -- {trend}'
+      CLEAR: Moderate/Low sector regulatory intensity
+    do_context:
+      TRIGGERED_RED: '{company} Sector Regulatory Baseline at {value} (threshold: N/A (sector baseline does not trigger RED
+        -- use ENVR.regulatory_intensity for company-specific)) signals elevated Litigation History / Settlement Patterns
+        risk (F1, F10). This host risk (company-level characteristics that attract or deter D&O claims) has historically correlated
+        with increased D&O claim frequency and severity.'
+      TRIGGERED_YELLOW: '{company} Sector Regulatory Baseline at {value} (threshold: Sector regulatory intensity is High (5+
+        regulators with active enforcement)) is in the caution zone for Litigation History / Settlement Patterns (F1, F10).
+        Monitor for deterioration — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Sector Regulatory Baseline at {value} is within acceptable range for Litigation History / Settlement
+        Patterns (F1, F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'SCAC database and Cornerstone Research: sector-level claim frequency and severity analysis'
+    threshold_basis: Sector-level regulatory intensity establishes baseline enforcement risk; company-specific 
+      deviations assessed separately in ENVR.regulatory_intensity
+  rap_class: host
+  rap_subcategory: host.identity
+- id: SECT.peer_comparison
+  name: Sector Peer Comparison
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F1
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - REFERENCE_DATA
+  data_locations:
+    REFERENCE_DATA:
+    - brain/config/sector_peer_benchmarks.yaml
+  threshold:
+    type: tiered
+    red: Company is outlier on 2+ D&O risk dimensions vs sector median
+    yellow: Company is outlier on 1 D&O risk dimension vs sector median
+    clear: Company within normal range on all D&O risk dimensions vs sector
+  claims_correlation: 0.7
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.2'
+  data_strategy:
+    field_key: sector_peer_comparison
+    primary_source: REFERENCE_DATA
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_sect
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: REFERENCE_DATA
+    threshold_provenance:
+      source: sca_settlement_data
+      rationale: Companies significantly deviating from sector median on D&O risk dimensions face elevated exposure; 
+        multi-dimension outlier status strongly correlates with SCA filing probability
+    render_target: sector_risk
+    formula: compare_vs_sector_benchmarks(company_scores, sector_benchmarks, gics_sector)
+  display:
+    value_format: count
+    source_type: REFERENCE_DATA
+    threshold_context: Count of D&O risk dimensions where company exceeds 1 std_dev from sector median
+  group: sector_risk
+  signal_class: evaluative
+  field_path: sector_peer_comparison
+  depends_on: []
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: REFERENCE_DATA
+      fields:
+      - brain/config/sector_peer_benchmarks.yaml
+    - type: COMPANY_IDENTITY
+      fields:
+      - company.gics_code
+    - type: PIPELINE_STATE
+      fields:
+      - score_result.total_score
+      - extracted.governance_quality_score
+      - extracted.financials
+  evaluation:
+    formula: sector_peer_comparison
+    thresholds:
+    - op: '>='
+      value: 2
+      label: RED
+    - op: '>='
+      value: 1
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: '{outlier_count} outlier dimensions'
+    - level: standard
+      template: 'Peer comparison: {outlier_count} outlier dimension(s) vs sector median'
+    - level: deep
+      fields:
+      - sector_peer_comparison
+    context_templates:
+      TRIGGERED: 'Sector outlier on {outlier_count} dimension(s): {outlier_dimensions}'
+      CLEAR: Company within normal range on all D&O risk dimensions vs sector median
+    do_context:
+      TRIGGERED_RED: '{company} Sector Peer Comparison at {value} (threshold: Company is outlier on 2+ D&O risk dimensions
+        vs sector median) signals elevated Litigation History / Settlement Patterns risk (F1). This host risk (company-level
+        characteristics that attract or deter D&O claims) has historically correlated with increased D&O claim frequency and
+        severity.'
+      TRIGGERED_YELLOW: '{company} Sector Peer Comparison at {value} (threshold: Company is outlier on 1 D&O risk dimension
+        vs sector median) is in the caution zone for Litigation History / Settlement Patterns (F1). Monitor for deterioration
+        — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Sector Peer Comparison at {value} is within acceptable range for Litigation History / Settlement Patterns
+        (F1) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  epistemology:
+    rule_origin: 'Stanford SCAC database and Cornerstone settlement studies: sector-level D&O claim frequency and severity
+      patterns'
+    threshold_basis: Companies significantly deviating from sector median on D&O risk dimensions face elevated exposure;
+      multi-dimension outlier status strongly correlates with SCA filing probability
+  rap_class: host
+  rap_subcategory: host.identity

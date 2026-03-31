@@ -1,0 +1,32 @@
+# Narrative configuration for Market Activity section
+# 5-layer architecture: Verdict > Thesis > Evidence Grid > Implications > Deep Context
+
+id: market_activity
+name: Market & Trading
+
+verdict:
+  thresholds:
+    CRITICAL: CRITICAL
+    ELEVATED: CONCERNING
+    CLEAN: FAVORABLE
+
+thesis_template: >
+  Market activity {{ 'signals significant concerns' if density_level == 'CRITICAL' else 'shows elevated signals' if density_level == 'ELEVATED' else 'within normal parameters' }}.
+  {% if high_volatility %}Elevated stock volatility increases event-driven securities class action probability.{% endif %}
+  {% if short_interest_flag %}High short interest signals market skepticism — potential disclosure-related claim catalyst.{% endif %}
+
+evidence_keys:
+  - market.stock_performance
+  - market.short_interest
+  - market.analyst_consensus
+  - market.insider_trading
+  - market.stock_drops
+  - market.earnings_guidance
+
+implications_template: >
+  {% if density_level != 'CLEAN' %}Market signals inform timing risk for D&O claims — consider event-driven coverage sub-limits.{% endif %}
+  {% if density_level == 'CLEAN' %}Market activity supports standard pricing parameters.{% endif %}
+
+deep_context_keys:
+  - market.ownership_structure
+  - market.capital_markets

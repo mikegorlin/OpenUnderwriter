@@ -1,0 +1,46 @@
+- id: ABS.DISC.litigation_contingency
+  name: Missing Litigation Contingency Disclosure
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: 'Expected disclosure absent: has_active_litigation'
+  provenance:
+    origin: phase_110_absence
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Absence detection for LIT.CONTINGENT.provisions
+    threshold_provenance:
+      source: standard
+      rationale: Companies with active litigation must assess and disclose contingencies
+  signal_class: inference
+  group: transparency_disclosure
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  epistemology:
+    rule_origin: ASC 450 contingency disclosure requirements for probable and estimable losses
+    threshold_basis: Companies with active litigation must assess and disclose contingencies
+  evaluation:
+    mechanism: absence
+    absence_rules:
+      expectation_type: company_profile
+      expected_signals:
+      - LIT.CONTINGENT.provisions
+      condition: has_active_litigation
+      expected_status: TRIGGERED
+      absence_trigger: SKIPPED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} missing litigation contingency disclosure at {value} represents environment risk (external
+        market, regulatory, and industry conditions affecting D&O liability) — this level is associated with D&O risk assessment
+        exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} missing litigation contingency disclosure at {value} is a moderate indicator for D&O risk
+        assessment, warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} missing litigation contingency disclosure at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

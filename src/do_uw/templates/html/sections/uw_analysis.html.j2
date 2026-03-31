@@ -1,0 +1,184 @@
+{# UW Analysis — CR visual report layout, pixel-matched.
+   Wired to real state data via uw_analysis context builder.
+   Decomposed into per-section templates following output_manifest.yaml structure. #}
+
+{% set b = uw_analysis %}
+{% if b %}
+<section id="uw-analysis" style="page-break-before:always;">
+
+{# Spacer for fixed header+nav combo #}
+<div style="height:92px;"></div>
+
+{# ══════════════ HEADER BAR + NAV — single fixed unit ══════════════ #}
+<div class="no-print" style="position:fixed;top:0;left:0;right:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.25);">
+  {# Row 1: Company header #}
+  <div style="background:#111827;color:white;padding:0;display:flex;align-items:stretch;">
+
+    {# Logo placeholder — same height as score badge, left-aligned #}
+    {% if b.logo_url %}
+    <div style="min-width:80px;display:flex;align-items:center;justify-content:center;padding:6px 8px">
+      <img src="{{ b.logo_url }}" alt="{{ b.ticker }}" style="max-height:50px;max-width:50px;border-radius:6px;object-fit:contain;" onerror="this.style.display='none'"/>
+    </div>
+    {% else %}
+    <div style="min-width:60px;display:flex;align-items:center;justify-content:center;padding:6px 8px">
+      <div style="width:44px;height:44px;border-radius:8px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:14pt;font-weight:800;color:#D4A843;letter-spacing:1px">{{ b.ticker[:2] }}</div>
+    </div>
+    {% endif %}
+    {# Company name + sector #}
+    <div style="flex:1;padding:8px 4px 8px 0;display:flex;flex-direction:column;justify-content:center">
+      <div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:20pt;font-weight:800;line-height:1">{{ b.company_name }}</span><span style="font-size:12pt;font-weight:700;letter-spacing:3px;color:#D4A843">{{ b.ticker }}</span></div>
+      <div style="font-size:8pt;opacity:0.55;margin-top:3px">{{ b.industry }}{% if b.sector %} | {{ b.sector }}{% endif %}{% if b.sector_etf %} | {{ b.sector_etf }}{% endif %}</div>
+    </div>
+
+    {# Center: "D&O Underwriting Worksheet" label #}
+    <div style="position:absolute;left:50%;top:3px;transform:translateX(-50%);font-size:5.5pt;letter-spacing:2px;opacity:0.35;text-transform:uppercase;white-space:nowrap;color:white">D&O Underwriting Worksheet</div>
+
+    {# Stats + Score container #}
+    <div style="display:flex;gap:4px;padding:6px 6px 6px 0;align-items:stretch">
+      {# Stats block #}
+      <div style="background:rgba(255,255,255,0.07);padding:6px 10px;border-radius:4px;min-width:110px;display:flex;flex-direction:column;justify-content:center">
+        {% for label, val in [("MCap", b.market_cap), ("Revenue", b.revenue), ("Price", b.stock_price), ("Employees", b.employees)] %}
+        <div style="display:flex;justify-content:space-between;padding:1.5px 0;font-size:8pt"><span style="opacity:0.5">{{ label }}</span><span style="font-weight:700;font-size:9pt;">{{ val }}</span></div>
+        {% endfor %}
+      </div>
+
+      {# Score badge #}
+      <div style="background:{{ b.tier_color }};padding:8px 16px;border-radius:4px;text-align:center;min-width:100px;display:flex;flex-direction:column;justify-content:center">
+        <div style="font-size:28pt;font-weight:800;line-height:0.9">{{ b.quality_score }}</div><div style="font-size:5pt;opacity:0.5">/100</div>
+        <div style="font-size:11pt;font-weight:700;letter-spacing:2px;margin-top:1px">{{ b.tier_name }}</div>
+        {# Score position bar #}
+        <div style="margin-top:4px;padding:2px;background:rgba(255,255,255,0.25);border-radius:5px;border:1px solid rgba(255,255,255,0.4);"><svg width="100%" height="14" viewBox="0 0 200 14" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="4" width="200" height="6" rx="3" fill="rgba(255,255,255,0.2)"/>{% for seg in b.score_bar_segments %}<rect x="{{ seg.x }}" y="4" width="{{ seg.w }}" height="6" {% if loop.first %}rx="3"{% elif loop.last %}rx="3"{% endif %} fill="{{ seg.fill }}" opacity="0.8"/>{% endfor %}<circle cx="{{ b.score_bar_cx }}" cy="7" r="6" fill="white" stroke="rgba(0,0,0,0.3)" stroke-width="2"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  {# Row 2: Section nav buttons — manifest-ordered, full width #}
+  {% set nav_items = [
+    ('#scorecard', 'Decision Dashboard'),
+    ('#executive-brief', 'Exec Brief'),
+    ('#company-operations', 'Company'),
+    ('#stock-market', 'Stock & Market'),
+    ('#financial-health', 'Financial'),
+    ('#governance', 'Governance'),
+    ('#litigation', 'Litigation'),
+    ('#sector-industry', 'Industry'),
+    ('#scoring', 'Scoring'),
+    ('#uw-decision-framework', 'UW Framework'),
+    ('#meeting-prep', 'Meeting Prep'),
+    ('#audit-trail', 'Audit Trail'),
+  ] %}
+  <div id="beta-nav-bar" style="background:#1F2937;padding:4px 8px;display:flex;gap:2px;border-top:1px solid #374151;">
+    {% for href, label in nav_items %}
+    <a href="{{ href }}" class="beta-nav-btn" data-section="{{ href[1:] }}" style="flex:1;text-align:center;padding:4px 4px;border-radius:4px;font-size:8.5pt;font-weight:600;color:#E5E7EB;background:#374151;border:1px solid #4B5563;text-decoration:none;white-space:nowrap;">{{ label }}</a>
+    {% endfor %}
+  </div>
+</div>
+
+{# ═══ SECTION 1: Decision Dashboard ═══ #}
+{% include "sections/report/page0_dashboard.html.j2" %}
+
+{# ═══ SECTION 2: Executive Brief ═══ #}
+{% include "sections/report/exec_brief.html.j2" %}
+
+{# ═══ SECTION 3: Company & Operations ═══ #}
+{% include "sections/report/company.html.j2" %}
+
+{# ═══ SECTION 4: Stock & Market ═══ #}
+{% include "sections/report/stock_market.html.j2" %}
+
+{# ═══ SECTION 5: Financial Analysis ═══ #}
+{% include "sections/report/financial.html.j2" %}
+
+{# ═══ SECTION 6: People & Governance ═══ #}
+{% include "sections/report/governance.html.j2" %}
+
+{# ═══ SECTION 7: Litigation & Regulatory ═══ #}
+{% include "sections/report/litigation.html.j2" %}
+
+{# ═══ SECTION 8: Forward-Looking ═══ #}
+{% include "sections/report/forward_looking.html.j2" %}
+
+{# ═══ SECTION 9: Sector & Industry ═══ #}
+{% include "sections/report/sector_industry.html.j2" %}
+
+{# ═══ SECTION 10: Scoring & Underwriting ═══ #}
+{% include "sections/report/scoring.html.j2" %}
+
+{# ═══ SECTION 11: Underwriting Decision Framework ═══ #}
+{% include "sections/report/uw_questions.html.j2" %}
+
+{# ═══ SECTION 12: Meeting Preparation ═══ #}
+{% include "sections/report/meeting_prep.html.j2" %}
+
+{# ═══ SECTION 13: Audit Trail ═══ #}
+{% include "sections/report/audit_trail.html.j2" %}
+
+{# ══════════════ NAV: scroll offset + active button + smooth scroll ══════════════ #}
+<style>
+  /* Scroll offset: sections clear the fixed header (92px) when navigated to */
+  section[id], div[id^="beta-"] { scroll-margin-top: 100px; }
+  #scorecard, #executive-brief, #company-operations, #stock-market,
+  #financial-health, #governance, #litigation, #sector-industry,
+  #scoring, #uw-decision-framework, #meeting-prep, #audit-trail {
+    scroll-margin-top: 100px;
+  }
+  /* Active nav button */
+  .beta-nav-btn.active {
+    background: #D4A843 !important;
+    color: #111827 !important;
+    border-color: #D4A843 !important;
+  }
+  /* Smooth scrolling */
+  html { scroll-behavior: smooth; }
+</style>
+<script>
+(function() {
+  var navBtns = document.querySelectorAll('.beta-nav-btn');
+  if (!navBtns.length) return;
+
+  // Click handler: smooth scroll with offset
+  navBtns.forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      var targetId = btn.getAttribute('data-section');
+      var target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Set active immediately on click
+        navBtns.forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+      }
+    });
+  });
+
+  // Scroll spy: highlight button for visible section
+  var sectionIds = [];
+  navBtns.forEach(function(btn) { sectionIds.push(btn.getAttribute('data-section')); });
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var id = entry.target.getAttribute('id');
+        navBtns.forEach(function(btn) {
+          if (btn.getAttribute('data-section') === id) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+      }
+    });
+  }, {
+    rootMargin: '-100px 0px -70% 0px',
+    threshold: [0]
+  });
+
+  sectionIds.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+})();
+</script>
+
+</section>
+{% endif %}

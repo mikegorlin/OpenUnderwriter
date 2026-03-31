@@ -1,0 +1,375 @@
+- id: BASE.FORENSIC.balance_sheet
+  name: Balance Sheet Forensic Analysis
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: DERIVED
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - analysis.xbrl_forensics.balance_sheet.goodwill_to_assets
+      - analysis.xbrl_forensics.balance_sheet.intangible_concentration
+      - analysis.xbrl_forensics.balance_sheet.off_balance_sheet
+      - analysis.xbrl_forensics.balance_sheet.cash_conversion_cycle
+      - analysis.xbrl_forensics.balance_sheet.working_capital_volatility
+      fallback_to: null
+  description: 'Balance sheet forensic metrics: goodwill impairment risk, intangible concentration, off-balance-sheet exposure,
+    cash conversion cycle, working capital volatility. Computed by Phase 69 forensic engine.
+
+    '
+  group: forensic_dashboard
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: balance sheet forensic analysis requires structured XBRL data availability'
+    threshold_basis: Binary data availability -- forensic analysis input data either extractable from XBRL or not; no risk
+      threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} balance sheet forensic analysis at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} balance sheet forensic analysis at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} balance sheet forensic analysis at {value} is within normal parameters for D&O risk assessment — no
+        D&O concern at this level.'
+- id: BASE.FORENSIC.revenue
+  name: Revenue Quality Forensic Analysis
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: DERIVED
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - analysis.xbrl_forensics.revenue.deferred_revenue_divergence
+      - analysis.xbrl_forensics.revenue.channel_stuffing
+      - analysis.xbrl_forensics.revenue.margin_compression
+      - analysis.xbrl_forensics.revenue.ocf_revenue_ratio
+      fallback_to: null
+  description: 'Revenue forensic metrics: deferred revenue divergence, channel stuffing indicators, margin compression, OCF-to-revenue
+    ratio.
+
+    '
+  group: forensic_dashboard
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: revenue recognition forensic analysis requires structured XBRL data availability'
+    threshold_basis: Binary data availability -- forensic analysis input data either extractable from XBRL or not; no risk
+      threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} revenue quality forensic analysis at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} revenue quality forensic analysis at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} revenue quality forensic analysis at {value} is within normal parameters for D&O risk assessment —
+        no D&O concern at this level.'
+- id: BASE.FORENSIC.capital_alloc
+  name: Capital Allocation Forensic Analysis
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: DERIVED
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - analysis.xbrl_forensics.capital_allocation.roic_trend
+      - analysis.xbrl_forensics.capital_allocation.acquisition_effectiveness
+      - analysis.xbrl_forensics.capital_allocation.buyback_timing
+      - analysis.xbrl_forensics.capital_allocation.dividend_sustainability
+      fallback_to: null
+  description: 'Capital allocation forensic metrics: ROIC trend, acquisition effectiveness, buyback timing quality, dividend
+    sustainability.
+
+    '
+  group: forensic_dashboard
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: capital allocation forensic analysis requires structured XBRL data availability'
+    threshold_basis: Binary data availability -- forensic analysis input data either extractable from XBRL or not; no risk
+      threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} capital allocation forensic analysis at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} capital allocation forensic analysis at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} capital allocation forensic analysis at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'
+- id: BASE.FORENSIC.debt_tax
+  name: Debt and Tax Forensic Analysis
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: DERIVED
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - analysis.xbrl_forensics.debt_tax.interest_coverage_trend
+      - analysis.xbrl_forensics.debt_tax.debt_maturity_concentration
+      - analysis.xbrl_forensics.debt_tax.etr_anomaly
+      - analysis.xbrl_forensics.debt_tax.deferred_tax_growth
+      - analysis.xbrl_forensics.debt_tax.pension_underfunding
+      fallback_to: null
+  description: 'Debt and tax forensic metrics: interest coverage trend, debt maturity concentration, effective tax rate anomaly,
+    deferred tax growth, pension underfunding.
+
+    '
+  group: forensic_dashboard
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: debt and tax forensic analysis requires structured XBRL data availability'
+    threshold_basis: Binary data availability -- forensic analysis input data either extractable from XBRL or not; no risk
+      threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} debt and tax forensic analysis at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} debt and tax forensic analysis at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} debt and tax forensic analysis at {value} is within normal parameters for D&O risk assessment — no
+        D&O concern at this level.'
+- id: BASE.FORENSIC.beneish
+  name: Beneish M-Score Component Analysis
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: DERIVED
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - analysis.xbrl_forensics.beneish.dsri
+      - analysis.xbrl_forensics.beneish.gmi
+      - analysis.xbrl_forensics.beneish.aqi
+      - analysis.xbrl_forensics.beneish.sgi
+      - analysis.xbrl_forensics.beneish.depi
+      - analysis.xbrl_forensics.beneish.sgai
+      - analysis.xbrl_forensics.beneish.tata
+      - analysis.xbrl_forensics.beneish.lvgi
+      - analysis.xbrl_forensics.beneish.composite_score
+      fallback_to: null
+  description: 'Beneish M-Score individual components and composite score. DSRI, GMI, AQI, SGI, DEPI, SGAI, TATA, LVGI, and
+    overall M-Score.
+
+    '
+  group: forensic_dashboard
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: Beneish M-Score forensic analysis requires structured XBRL data availability'
+    threshold_basis: Binary data availability -- forensic analysis input data either extractable from XBRL or not; no risk
+      threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} beneish m-score component analysis at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} beneish m-score component analysis at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} beneish m-score component analysis at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'
+- id: BASE.FORENSIC.earnings
+  name: Earnings Quality Forensic Analysis
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: DERIVED
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - analysis.xbrl_forensics.earnings_quality.sloan_accruals
+      - analysis.xbrl_forensics.earnings_quality.cash_flow_manipulation
+      - analysis.xbrl_forensics.earnings_quality.sbc_dilution
+      - analysis.xbrl_forensics.earnings_quality.non_gaap_gap
+      fallback_to: null
+  description: 'Earnings quality forensic metrics: Sloan accruals ratio, cash flow manipulation indicators, SBC dilution rate,
+    non-GAAP divergence gap.
+
+    '
+  group: forensic_dashboard
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: earnings quality forensic analysis requires structured XBRL data availability'
+    threshold_basis: Binary data availability -- forensic analysis input data either extractable from XBRL or not; no risk
+      threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} earnings quality forensic analysis at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} earnings quality forensic analysis at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} earnings quality forensic analysis at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'
+- id: BASE.FORENSIC.ma
+  name: M&A Forensic Analysis
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: DERIVED
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - analysis.xbrl_forensics.ma_forensics.serial_acquirer
+      - analysis.xbrl_forensics.ma_forensics.goodwill_growth_rate
+      - analysis.xbrl_forensics.ma_forensics.acquisition_to_revenue
+      fallback_to: null
+  description: 'M&A forensic metrics: serial acquirer flag, goodwill growth rate, acquisition-to-revenue ratio.
+
+    '
+  group: forensic_dashboard
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: M&A forensic analysis requires structured XBRL data availability'
+    threshold_basis: Binary data availability -- forensic analysis input data either extractable from XBRL or not; no risk
+      threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} m&a forensic analysis at {value} represents host risk (company-level characteristics that
+        attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} m&a forensic analysis at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} m&a forensic analysis at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'

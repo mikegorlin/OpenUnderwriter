@@ -1,0 +1,289 @@
+{
+  "industry_theories": {
+    "2830-2836": {
+      "industry": "Pharmaceuticals",
+      "theories": [
+        {
+          "theory": "clinical_trial_disclosure",
+          "description": "Failure to disclose adverse clinical trial results",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "off_label_promotion",
+          "description": "Off-label marketing leading to DOJ/FTC enforcement",
+          "legal_basis": "FCPA"
+        },
+        {
+          "theory": "drug_pricing",
+          "description": "Drug pricing manipulation or anti-competitive behavior",
+          "legal_basis": "antitrust"
+        },
+        {
+          "theory": "fda_approval_fraud",
+          "description": "Misleading FDA approval likelihood statements",
+          "legal_basis": "10b-5"
+        }
+      ]
+    },
+    "3570-3579": {
+      "industry": "Technology Hardware",
+      "theories": [
+        {
+          "theory": "revenue_recognition",
+          "description": "Premature or fraudulent revenue recognition",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "supply_chain_disclosure",
+          "description": "Failure to disclose supply chain disruptions",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "ip_misrepresentation",
+          "description": "Overstating IP portfolio value or protection",
+          "legal_basis": "Section_11"
+        }
+      ]
+    },
+    "6020-6029": {
+      "industry": "Commercial Banking",
+      "theories": [
+        {
+          "theory": "loan_loss_reserves",
+          "description": "Understating loan loss reserves",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "bsa_aml",
+          "description": "BSA/AML compliance failures",
+          "legal_basis": "FCPA"
+        },
+        {
+          "theory": "consumer_lending",
+          "description": "Predatory or discriminatory lending practices",
+          "legal_basis": "employment_discrimination"
+        },
+        {
+          "theory": "interest_rate_manipulation",
+          "description": "LIBOR/benchmark rate manipulation",
+          "legal_basis": "antitrust"
+        }
+      ]
+    },
+    "7370-7379": {
+      "industry": "Software & SaaS",
+      "theories": [
+        {
+          "theory": "revenue_recognition",
+          "description": "Premature or fraudulent SaaS revenue recognition",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "subscriber_metrics",
+          "description": "Inflated user/subscriber metrics",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "data_privacy",
+          "description": "Data privacy violations (GDPR, CCPA)",
+          "legal_basis": "environmental"
+        },
+        {
+          "theory": "acquisition_writedown",
+          "description": "Goodwill impairment from overpaid acquisitions",
+          "legal_basis": "Section_14a"
+        }
+      ]
+    },
+    "4810-4813": {
+      "industry": "Telecommunications",
+      "theories": [
+        {
+          "theory": "subscriber_churn",
+          "description": "Misleading subscriber growth/churn metrics",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "spectrum_valuation",
+          "description": "Overstating spectrum asset values",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "antitrust_merger",
+          "description": "Anti-competitive merger effects",
+          "legal_basis": "antitrust"
+        }
+      ]
+    },
+    "5912-5912": {
+      "industry": "Retail Pharmacy",
+      "theories": [
+        {
+          "theory": "opioid_distribution",
+          "description": "Opioid distribution liability",
+          "legal_basis": "environmental"
+        },
+        {
+          "theory": "pharmacy_benefit_pricing",
+          "description": "PBM pricing manipulation",
+          "legal_basis": "antitrust"
+        },
+        {
+          "theory": "controlled_substance",
+          "description": "Controlled substance dispensing violations",
+          "legal_basis": "FCPA"
+        }
+      ]
+    },
+    "1311-1389": {
+      "industry": "Oil & Gas",
+      "theories": [
+        {
+          "theory": "reserves_overstatement",
+          "description": "Overstating proved reserves",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "environmental_liability",
+          "description": "Understating environmental remediation costs",
+          "legal_basis": "environmental"
+        },
+        {
+          "theory": "climate_disclosure",
+          "description": "Inadequate climate risk disclosure",
+          "legal_basis": "Section_14a"
+        },
+        {
+          "theory": "safety_violations",
+          "description": "Workplace safety and OSHA violations",
+          "legal_basis": "employment_discrimination"
+        }
+      ]
+    },
+    "2000-2099": {
+      "industry": "Food & Beverage",
+      "theories": [
+        {
+          "theory": "food_safety",
+          "description": "Food safety violations and recalls",
+          "legal_basis": "environmental"
+        },
+        {
+          "theory": "labeling_fraud",
+          "description": "Misleading product labeling or health claims",
+          "legal_basis": "antitrust"
+        },
+        {
+          "theory": "supply_chain_labor",
+          "description": "Supply chain labor violations",
+          "legal_basis": "employment_discrimination"
+        }
+      ]
+    },
+    "3700-3799": {
+      "industry": "Motor Vehicle Manufacturing",
+      "theories": [
+        {
+          "theory": "product_liability_recall",
+          "description": "Product liability from vehicle defects and NHTSA recalls",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "emissions_compliance",
+          "description": "Emissions testing fraud or non-compliance with EPA standards",
+          "legal_basis": "environmental"
+        },
+        {
+          "theory": "autonomous_driving_liability",
+          "description": "Misleading statements about autonomous driving capabilities and safety",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "supply_chain_disruption",
+          "description": "Failure to disclose material supply chain disruptions affecting production",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "safety_defect_concealment",
+          "description": "Concealing known safety defects from regulators and consumers",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "warranty_reserve_understatement",
+          "description": "Understating warranty and recall reserve obligations",
+          "legal_basis": "Section_11"
+        }
+      ]
+    },
+    "3600-3699": {
+      "industry": "Electronic & Electrical Equipment",
+      "theories": [
+        {
+          "theory": "revenue_recognition",
+          "description": "Premature or channel-stuffing revenue recognition",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "product_safety",
+          "description": "Product safety failures including fire or electrical hazards",
+          "legal_basis": "environmental"
+        },
+        {
+          "theory": "ip_infringement",
+          "description": "Patent infringement or IP misrepresentation exposure",
+          "legal_basis": "Section_11"
+        },
+        {
+          "theory": "export_control_violations",
+          "description": "Violations of export controls and sanctions regulations",
+          "legal_basis": "FCPA"
+        }
+      ]
+    },
+    "5000-5199": {
+      "industry": "Wholesale Durable Goods",
+      "theories": [
+        {
+          "theory": "inventory_overstatement",
+          "description": "Overstating inventory values or understating obsolescence",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "channel_stuffing",
+          "description": "Channel stuffing to inflate reported revenue",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "antitrust_distribution",
+          "description": "Anti-competitive distribution agreements or price fixing",
+          "legal_basis": "antitrust"
+        }
+      ]
+    },
+    "4900-4999": {
+      "industry": "Electric, Gas & Sanitary Services",
+      "theories": [
+        {
+          "theory": "rate_case_fraud",
+          "description": "Misleading rate case filings or cost recovery claims",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "environmental_remediation",
+          "description": "Understating environmental remediation and decommissioning costs",
+          "legal_basis": "environmental"
+        },
+        {
+          "theory": "grid_safety_failure",
+          "description": "Infrastructure safety failures causing wildfire or environmental damage",
+          "legal_basis": "10b-5"
+        },
+        {
+          "theory": "renewable_transition_disclosure",
+          "description": "Misleading investors about clean energy transition progress and costs",
+          "legal_basis": "Section_14a"
+        }
+      ]
+    }
+  }
+}

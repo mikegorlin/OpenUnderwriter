@@ -1,0 +1,35 @@
+{# Forward-Looking Indicators -- Event Catalysts facet template.
+   Renders FWRD.EVENT.* signals as a metric table.
+   Part of facet dispatch for forward_looking section (Phase 62-01). #}
+
+{% set fwrd_signals = signal_results_by_section.get('FWRD', []) %}
+{% set event_signals = [] %}
+{% for sig in fwrd_signals %}
+  {% if sig.signal_id.startswith('FWRD.EVENT.') %}
+    {% set _ = event_signals.append(sig) %}
+  {% endif %}
+{% endfor %}
+
+{% if event_signals %}
+<h3>Event Catalysts</h3>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Event</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Assessment</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Evidence</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for sig in event_signals %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }} {{ 'bg-red-50' if sig.status == 'FAIL' else '' }}">
+      <td class="p-1 font-semibold">{{ sig.signal_name | humanize }}</td>
+      <td class="p-1 {{ 'text-risk-red font-semibold' if sig.status == 'FAIL' else 'text-gray-600' }}">
+        {{ sig.formatted_value | default(sig.value | default('—'), true) }}
+      </td>
+      <td class="p-1 text-xs text-gray-500">{{ sig.evidence | default('', true) | humanize_evidence }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}

@@ -1,0 +1,49 @@
+{# Scenario analysis table + tornado chart (Phase 131-03, D-05/D-06) #}
+{% set sc_viz = scorecard if scorecard is defined else {} %}
+{% set scenarios = sc_viz.get('scenarios', []) %}
+{% if scenarios %}
+<div class="scenario-analysis" style="margin:16px 0;">
+  <h4 style="margin:0 0 8px;font-size:13px;color:#374151;">Score Impact Scenarios</h4>
+  <table class="compact-table" style="width:100%;font-size:12px;border-collapse:collapse;">
+    <thead>
+      <tr style="border-bottom:2px solid #E5E7EB;">
+        <th style="text-align:left;padding:4px 8px;">Scenario</th>
+        <th style="text-align:center;padding:4px 8px;">Current</th>
+        <th style="text-align:center;padding:4px 8px;">Scenario</th>
+        <th style="text-align:center;padding:4px 8px;">Delta</th>
+        <th style="text-align:center;padding:4px 8px;">Tier Change</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in scenarios %}
+      <tr style="border-bottom:1px solid #F3F4F6;">
+        <td style="padding:4px 8px;">
+          <strong>{{ s.name }}</strong>
+          <div style="font-size:10px;color:#6B7280;">{{ s.description }}</div>
+        </td>
+        <td style="text-align:center;padding:4px 8px;font-variant-numeric:tabular-nums;">{{ "%.0f"|format(s.current_score) }} {{ s.current_tier }}</td>
+        <td style="text-align:center;padding:4px 8px;font-variant-numeric:tabular-nums;">{{ "%.0f"|format(s.scenario_score) }} {{ s.scenario_tier }}</td>
+        <td style="text-align:center;padding:4px 8px;font-variant-numeric:tabular-nums;">
+          {% if s.score_delta < 0 %}<span style="color:#DC2626;">{{ "%.0f"|format(s.score_delta) }}</span>
+          {% elif s.score_delta > 0 %}<span style="color:#059669;">+{{ "%.0f"|format(s.score_delta) }}</span>
+          {% else %}0{% endif %}
+        </td>
+        <td style="text-align:center;padding:4px 8px;">
+          {% if s.current_tier != s.scenario_tier %}
+          <span style="color:#DC2626;">{{ s.current_tier }} &rarr; {{ s.scenario_tier }}</span>
+          {% else %}
+          <span style="color:#6B7280;">No change</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if sc_viz.get('tornado_svg') %}
+  <div style="margin-top:12px;">
+    <h4 style="margin:0 0 8px;font-size:13px;color:#374151;">Scenario Sensitivity (Tornado)</h4>
+    {{ sc_viz.tornado_svg | safe }}
+  </div>
+  {% endif %}
+</div>
+{% endif %}

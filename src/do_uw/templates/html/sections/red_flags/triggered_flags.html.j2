@@ -1,0 +1,76 @@
+{# Red Flags -- Triggered Critical Risk Flags facet template.
+   Priority-sorted table: Severity | Flag | Finding | Source.
+   Shows both risk findings (from scored factors) and CRF ceiling flags.
+   Part of facet dispatch for red_flags section. #}
+
+{% set sc = scoring or {} %}
+{% set all_flags = sc.get('red_flags', []) %}
+{% set risk_findings = sc.get('risk_findings', []) %}
+{% if all_flags or risk_findings %}
+<div class="facet-block" id="facet-triggered_flags">
+  {# --- Risk Findings from scored factors --- #}
+  {% if risk_findings %}
+  <p class="text-sm text-gray-600 mb-2">
+    <strong>{{ risk_findings | length }}</strong> risk finding{{ 's' if (risk_findings | length) != 1 else '' }} identified from scoring analysis.
+    Sorted by severity — highest impact first.
+  </p>
+  <table class="w-full border-collapse text-sm my-3">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="text-left p-1 w-24">Severity</th>
+        <th class="text-left p-1">Finding</th>
+        <th class="text-left p-1 w-40">Source</th>
+        <th class="text-left p-1 w-32">Impact</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for rf in risk_findings %}
+      <tr class="{{ 'bg-red-50' if rf.severity in ('CRITICAL', 'HIGH') else 'bg-yellow-50' if rf.severity == 'MODERATE' else 'bg-gray-50' }}">
+        <td class="p-1">{{ traffic_light(rf.severity, rf.severity) }}</td>
+        <td class="p-1 text-xs">{{ rf.description }}</td>
+        <td class="p-1 text-xs text-gray-500">{{ rf.source | humanize_source }}</td>
+        <td class="p-1 text-xs font-mono">{{ rf.scoring_impact }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {# --- CRF Ceiling Flags --- #}
+  {% if all_flags %}
+  {% if risk_findings %}<h4 class="mt-4">Score Ceiling Flags</h4>{% endif %}
+  <table class="w-full border-collapse text-sm my-3">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="text-left p-1 w-24">Severity</th>
+        <th class="text-left p-1 w-48">Flag</th>
+        <th class="text-left p-1">Finding</th>
+        <th class="text-left p-1 w-32">Ceiling</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for flag in all_flags %}
+      <tr class="bg-red-50">
+        <td class="p-1">{{ traffic_light("TRIGGERED", "TRIGGERED") }}</td>
+        <td class="p-1 font-semibold text-xs">{{ flag.get('name', flag.get('id', '—')) }}</td>
+        <td class="p-1 text-xs">
+          {{ flag.get('description', '—') }}
+          {% if flag.get('threshold_context') %}
+          <br><span class="text-gray-400 text-xs italic">{{ flag.get('threshold_context') }}</span>
+          {% endif %}
+        </td>
+        <td class="p-1 text-xs text-gray-500">
+          {% set ceil = flag.get('ceiling', '') %}
+          {{ ('Ceiling: ' ~ ceil) if ceil and ceil != 'N/A' else '—' }}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if not all_flags and not risk_findings %}
+  <p class="text-sm text-gray-500 my-3">No triggered or elevated risk signals identified.</p>
+  {% endif %}
+</div>
+{% endif %}

@@ -1,0 +1,56 @@
+{# Supply Chain Dependencies -- extracted from 10-K text #}
+{# Phase 134: COMP-05, D-10 #}
+{% if has_supply_chain %}
+<h3>Supply Chain Dependencies
+  <span style="font-size:8pt;font-weight:400;margin-left:8px" class="
+    {% if supply_chain_risk == 'HIGH' %}text-red-600
+    {% elif supply_chain_risk == 'MEDIUM' %}text-amber-600
+    {% else %}text-green-600{% endif %}">
+    Risk: {{ supply_chain_risk }}
+  </span>
+</h3>
+
+<table class="data-table w-full text-sm my-2">
+  <thead>
+    <tr>
+      <th class="text-left">Provider</th>
+      <th class="text-center">Type</th>
+      <th class="text-center">Concentration</th>
+      <th class="text-center">Switching Cost</th>
+      <th class="text-left" style="min-width:180px">D&O Exposure</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for dep in supply_chain_deps %}
+    <tr>
+      <td class="font-medium">{{ dep.provider }}</td>
+      <td class="text-center">
+        <span class="inline-block px-2 py-0.5 rounded text-xs font-semibold
+          {% if dep.dependency_type == 'sole-source' %}bg-red-100 text-red-800
+          {% elif dep.dependency_type == 'limited-source' %}bg-amber-100 text-amber-800
+          {% else %}bg-gray-100 text-gray-600{% endif %}">
+          {{ dep.dependency_type }}
+        </span>
+      </td>
+      <td class="text-center">
+        <span class="text-xs font-semibold
+          {% if dep.concentration == 'HIGH' %}text-red-600
+          {% elif dep.concentration == 'MEDIUM' %}text-amber-600
+          {% else %}text-green-600{% endif %}">
+          {{ dep.concentration }}
+        </span>
+      </td>
+      <td class="text-center">
+        <span class="text-xs font-semibold
+          {% if dep.switching_cost == 'HIGH' %}text-red-600
+          {% elif dep.switching_cost == 'MEDIUM' %}text-amber-600
+          {% else %}text-green-600{% endif %}">
+          {{ dep.switching_cost }}
+        </span>
+      </td>
+      <td class="text-xs text-gray-700">{{ dep.do_exposure }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}

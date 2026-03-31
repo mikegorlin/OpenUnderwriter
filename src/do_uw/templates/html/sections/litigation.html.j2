@@ -1,0 +1,92 @@
+{# Litigation & Regulatory section template.
+   Active matters, litigation timeline (VIS-03), SEC enforcement,
+   settlement history, SOL analysis, and CRITICAL deep dives.
+
+   Phase 56: Decomposed into 12 fragment templates in sections/litigation/.
+   Facets are dispatched from section_context when available; falls back to
+   legacy inline rendering if section_context is not populated. #}
+
+{% from "macros/dual_voice.html.j2" import dual_voice_block %}
+{% set density = densities.get('litigation', {}) %}
+{% set level = density.level|default('CLEAN') if density else 'CLEAN' %}
+{% set lit = litigation or {} %}
+
+<section id="litigation" class="page-break">
+  <h2>Litigation & Regulatory
+    {% if level == 'CRITICAL' %}<span class="section-risk-badge section-risk--critical">Critical</span>
+    {% elif level == 'ELEVATED' %}<span class="section-risk-badge section-risk--elevated">Elevated</span>
+    {% endif %}
+  </h2>
+
+  {{ dual_voice_block(commentary.get('litigation') if commentary else none, 'Litigation & Regulatory') }}
+
+  {# --- 5-Layer Narrative Architecture (NARR-01) --- #}
+  {% set sn = section_narratives.get('litigation', {}) if section_narratives is defined else {} %}
+  {% if sn %}
+    {{ narrative_5layer(sn.verdict, sn.thesis, sn.evidence_items, sn.implications, sn.deep_context) }}
+  {% else %}
+    {# Fallback: SCR + pre-computed narrative + D&O Implications #}
+    {% if scr_narratives is defined and scr_narratives.get('litigation') %}
+      {{ scr_narrative(scr_narratives.litigation) }}
+    {% endif %}
+    {% set narr = narratives.litigation if narratives else none %}
+    {{ section_narrative(narr) }}
+    {% if do_implications_data is defined and do_implications_data.get('litigation') %}
+      {{ do_implications(do_implications_data.litigation) }}
+    {% endif %}
+  {% endif %}
+
+  <div>
+    <div style="font-weight:600;margin-bottom:4px">Litigation Details</div>
+    <div class="collapsible-content">
+      {# --- Facet-driven dispatch (Phase 56) --- #}
+      {% if section_context is defined and section_context.get('litigation') %}
+        {% for facet in section_context.litigation.facets %}
+          {% include facet.template %}
+        {% endfor %}
+      {% else %}
+        {# Legacy fallback — inline fragment includes #}
+        {% include "sections/litigation/litigation_dashboard.html.j2" %}
+        {% include "sections/litigation/risk_card.html.j2" %}
+        {% include "sections/litigation/timeline_events.html.j2" %}
+        {% include "sections/litigation/active_matters.html.j2" %}
+        {% include "sections/litigation/regulatory_proceedings.html.j2" %}
+        {% include "sections/litigation/sec_enforcement.html.j2" %}
+        {% include "sections/litigation/settlement_history.html.j2" %}
+        {% include "sections/litigation/sol_analysis.html.j2" %}
+        {% include "sections/litigation/derivative_suits.html.j2" %}
+        {% include "sections/litigation/contingent_liabilities.html.j2" %}
+        {% include "sections/litigation/defense_strength.html.j2" %}
+        {% include "sections/litigation/industry_patterns.html.j2" %}
+        {% include "sections/litigation/workforce_product_env.html.j2" %}
+        {% include "sections/litigation/whistleblower.html.j2" %}
+        {% include "sections/litigation/litigation_checks.html.j2" %}
+        {# --- Unclassified Reserves (D-07) --- #}
+        {% set uc_reserves = lit.get('unclassified_reserves', []) %}
+        {% if uc_reserves %}
+        <h3>Unclassified Legal Reserves</h3>
+        <p class="text-xs text-gray-500 italic mb-2">Boilerplate or generic legal reserve disclosures that could not be classified to a specific legal theory. Shown separately per D-07.</p>
+        <table class="w-full border-collapse my-3 text-sm">
+          <thead>
+            <tr class="bg-navy text-white">
+              <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Description</th>
+              <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Filing Date</th>
+              <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for uc in uc_reserves %}
+            <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+              <td class="p-1">{{ uc.case_name }}</td>
+              <td class="p-1 tabular-nums">{{ uc.filing_date|default('—') }}</td>
+              <td class="p-1">{{ uc.status|default('—') }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+        {% include "sections/litigation/litigation_density_alerts.html.j2" %}
+      {% endif %}
+    </div>
+  </div>
+</section>

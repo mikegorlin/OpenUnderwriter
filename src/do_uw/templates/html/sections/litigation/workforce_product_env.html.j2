@@ -1,0 +1,33 @@
+{# Workforce, Product & Environmental Matters — extracted from litigation.html.j2 #}
+
+  {# --- Workforce, Product & Environmental --- #}
+  {% set wpe = lit.get('workforce_product_env', {}) %}
+  <h3>Workforce, Product & Environmental Matters</h3>
+  {% if wpe and (wpe.get('employment') or wpe.get('product') or wpe.get('environmental') or wpe.get('cybersecurity')) %}
+    {% if wpe.get('employment') %}
+    <h4 class="text-sm font-semibold text-navy mt-2 mb-1">Employment Matters</h4>
+    <ul class="list-disc ml-5 text-sm text-gray-700 space-y-0.5">
+      {% for item in wpe.employment %}<li>{{ item }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    {% if wpe.get('product') %}
+    <h4 class="text-sm font-semibold text-navy mt-2 mb-1">Product Liability</h4>
+    <ul class="list-disc ml-5 text-sm text-gray-700 space-y-0.5">
+      {% for item in wpe.product %}<li>{{ item }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    {% if wpe.get('environmental') %}
+    <h4 class="text-sm font-semibold text-navy mt-2 mb-1">Environmental Actions</h4>
+    <ul class="list-disc ml-5 text-sm text-gray-700 space-y-0.5">
+      {% for item in wpe.environmental %}<li>{{ item }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    {% if wpe.get('cybersecurity') %}
+    <h4 class="text-sm font-semibold text-navy mt-2 mb-1">Cybersecurity Incidents</h4>
+    <ul class="list-disc ml-5 text-sm text-gray-700 space-y-0.5">
+      {% for item in wpe.cybersecurity %}<li>{{ item | strip_cyber }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+  {% else %}
+  <p class="text-sm text-gray-500 italic my-2">None found.</p>
+  {% endif %}

@@ -1,0 +1,1300 @@
+- id: FWRD.WARN.cfpb_complaints
+  name: Cfpb Complaints
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: Complaint volume >2x industry average
+    yellow: Complaint volume rising >25% QoQ
+    clear: Complaint volume at or below industry average
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_early_warning
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+    deprecation_note: 'Requires forward-looking analyst consensus data (e.g., Bloomberg, FactSet) not available via SEC filings
+      or standard web search. Consider reformulating as a disclosure check: "Does management discuss regulatory complaint
+      trends in forward guidance or earnings call transcript?"
+
+      '
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: forward-looking warning indicators as early detection of potential claim triggers'
+    threshold_basis: Warning signal thresholds from D&O claims experience and SCAC class period analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Cfpb Complaints at {value} (threshold: Complaint volume >2x industry average) signals elevated
+        Emerging Risk / Forward-Looking Exposure risk (F10). CFPB complaint volume serves as a leading indicator of regulatory
+        enforcement. Rising complaint trends precede formal CFPB actions that force disclosure and frequently trigger parallel
+        securities fraud claims. Warning signal thresholds from D&O claims experience and SCAC class period analysis.'
+      TRIGGERED_YELLOW: '{company} Cfpb Complaints at {value} (threshold: Complaint volume rising >25% QoQ) is in the caution
+        zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Cfpb Complaints at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure
+        (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.WARN.fda_medwatch
+  name: Fda Medwatch
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: Adverse event spike >3x baseline OR safety signal identified
+    yellow: Elevated adverse event reporting
+    clear: Normal adverse event levels
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_early_warning
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+    deprecation_note: 'Requires FDA MedWatch adverse event database access not available via SEC filings or standard web search.
+      Consider reformulating as a disclosure check: "Does management discuss adverse event trends or FDA correspondence in
+      risk factors or MDA?"
+
+      '
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: forward-looking warning indicators as early detection of potential claim triggers'
+    threshold_basis: Warning signal thresholds from D&O claims experience and SCAC class period analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Fda Medwatch at {value} (threshold: Adverse event spike >3x baseline OR safety signal identified)
+        signals elevated Emerging Risk / Forward-Looking Exposure risk (F10). FDA MedWatch reports serve as leading indicators
+        of product safety actions. Rising adverse event reports precede FDA enforcement that triggers SCA filings alleging
+        concealment of product safety risks. Warning signal thresholds from D&O claims experience and SCAC class period analysis.'
+      TRIGGERED_YELLOW: '{company} Fda Medwatch at {value} (threshold: Elevated adverse event reporting) is in the caution
+        zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Fda Medwatch at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure (F10)
+        — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.WARN.nhtsa_complaints
+  name: Nhtsa Complaints
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: NHTSA investigation opened OR recall pending
+    yellow: Elevated complaint volume for specific issue
+    clear: Normal complaint levels
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_early_warning
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+    deprecation_note: 'Requires NHTSA complaints database access not available via SEC filings or standard web search. Consider
+      reformulating as a disclosure check: "Does management discuss NHTSA investigations or vehicle recall risks in risk factors
+      or MDA?"
+
+      '
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: forward-looking warning indicators as early detection of potential claim triggers'
+    threshold_basis: Warning signal thresholds from D&O claims experience and SCAC class period analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Nhtsa Complaints at {value} (threshold: NHTSA investigation opened OR recall pending) signals
+        elevated Emerging Risk / Forward-Looking Exposure risk (F10). NHTSA complaint volume serves as a leading indicator
+        of recall actions. Recall announcements trigger SCA filings alleging management knew about safety defects before public
+        disclosure. Warning signal thresholds from D&O claims experience and SCAC class period analysis.'
+      TRIGGERED_YELLOW: '{company} Nhtsa Complaints at {value} (threshold: Elevated complaint volume for specific issue) is
+        in the caution zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Nhtsa Complaints at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure
+        (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.WARN.whistleblower_exposure
+  name: Whistleblower Exposure
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: Active whistleblower complaint with regulatory engagement
+    yellow: Whistleblower complaint filed
+    clear: No whistleblower activity
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: early_warning
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: forward-looking warning indicators as early detection of potential claim triggers'
+    threshold_basis: Warning signal thresholds from D&O claims experience and SCAC class period analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Whistleblower Exposure at {value} (threshold: Active whistleblower complaint with regulatory
+        engagement) signals elevated Emerging Risk / Forward-Looking Exposure risk (F10). Whistleblower claims signal internal
+        allegations of misconduct. Under Dodd-Frank, whistleblower retaliation claims create personal D&O liability, and the
+        underlying allegations often trigger parallel SEC investigation. Warning signal thresholds from D&O claims experience
+        and SCAC class period analysis.'
+      TRIGGERED_YELLOW: '{company} Whistleblower Exposure at {value} (threshold: Whistleblower complaint filed) is in the
+        caution zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction and peer
+        comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Whistleblower Exposure at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure
+        (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.WARN.vendor_payment_delays
+  name: Vendor Payment Delays
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: DPO increasing >20 days YoY OR vendor complaints in news
+    yellow: DPO increasing >10 days YoY
+    clear: DPO stable
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_early_warning
+    formula: ''
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: forward-looking warning indicators as early detection of potential claim triggers'
+    threshold_basis: Warning signal thresholds from D&O claims experience and SCAC class period analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Vendor Payment Delays at {value} (threshold: DPO increasing >20 days YoY OR vendor complaints
+        in news) signals elevated Emerging Risk / Forward-Looking Exposure risk (F10). Vendor payment delays signal cash flow
+        stress visible to the supply chain before public markets. Trade credit deterioration is a leading indicator of liquidity
+        crisis that must eventually be disclosed. Warning signal thresholds from D&O claims experience and SCAC class period
+        analysis.'
+      TRIGGERED_YELLOW: '{company} Vendor Payment Delays at {value} (threshold: DPO increasing >10 days YoY) is in the caution
+        zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Vendor Payment Delays at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure
+        (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.WARN.compliance_hiring
+  name: Compliance Hiring
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: Significant compliance hiring surge (>5 positions, senior level)
+    yellow: Notable compliance hiring increase
+    clear: Normal hiring patterns
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_early_warning
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: forward-looking warning indicators as early detection of potential claim triggers'
+    threshold_basis: Warning signal thresholds from D&O claims experience and SCAC class period analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Compliance Hiring at {value} (threshold: Significant compliance hiring surge (>5 positions,
+        senior level)) signals elevated Emerging Risk / Forward-Looking Exposure risk (F10). Unusual compliance hiring signals
+        anticipated regulatory defense needs. Compliance department expansion before public disclosure suggests management
+        awareness of undisclosed regulatory exposure. Warning signal thresholds from D&O claims experience and SCAC class
+        period analysis.'
+      TRIGGERED_YELLOW: '{company} Compliance Hiring at {value} (threshold: Notable compliance hiring increase) is in the
+        caution zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction and peer
+        comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Compliance Hiring at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure
+        (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.WARN.legal_hiring
+  name: Legal Hiring
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: Significant legal/litigation hiring surge
+    yellow: Notable legal hiring increase
+    clear: Normal hiring patterns
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_early_warning
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: forward-looking warning indicators as early detection of potential claim triggers'
+    threshold_basis: Warning signal thresholds from D&O claims experience and SCAC class period analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Legal Hiring at {value} (threshold: Significant legal/litigation hiring surge) signals elevated
+        Emerging Risk / Forward-Looking Exposure risk (F10). Unusual legal hiring patterns signal anticipated litigation or
+        regulatory defense needs. Litigation department expansion before public disclosure suggests management awareness of
+        undisclosed legal exposure. Warning signal thresholds from D&O claims experience and SCAC class period analysis.'
+      TRIGGERED_YELLOW: '{company} Legal Hiring at {value} (threshold: Notable legal hiring increase) is in the caution zone
+        for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Legal Hiring at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure (F10)
+        — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.WARN.zone_of_insolvency
+  name: Zone Of Insolvency
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles:
+    distress_to_bankruptcy: trigger
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: Current ratio <1.0 AND negative working capital AND declining revenue
+    yellow: Current ratio <1.0 OR negative working capital
+    clear: Current ratio >1.5 and adequate liquidity
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  - '3.1'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: early_warning
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: forward-looking warning indicators as early detection of potential claim triggers'
+    threshold_basis: Warning signal thresholds from D&O claims experience and SCAC class period analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Zone Of Insolvency at {value} (threshold: Current ratio <1.0 AND negative working capital
+        AND declining revenue) signals elevated Emerging Risk / Forward-Looking Exposure risk (F10). Zone of Insolvency proximity
+        triggers fiduciary duty expansion to creditors. Directors face personal liability for decisions that favor shareholders
+        over creditors when the company approaches insolvency. Warning signal thresholds from D&O claims experience and SCAC
+        class period analysis.'
+      TRIGGERED_YELLOW: '{company} Zone Of Insolvency at {value} (threshold: Current ratio <1.0 OR negative working capital)
+        is in the caution zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Zone Of Insolvency at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure
+        (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.WARN.goodwill_risk
+  execution_mode: AUTO
+  name: Goodwill Risk
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles:
+    ma_to_claims: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: Goodwill >50% of total assets AND market cap < book value
+    yellow: Goodwill >30% of total assets OR recent acquisition
+    clear: Goodwill <30% of assets
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  - '1.6'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_early_warning
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: forward-looking warning indicators as early detection of potential claim triggers'
+    threshold_basis: Warning signal thresholds from D&O claims experience and SCAC class period analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Goodwill Risk at {value} (threshold: Goodwill >50% of total assets AND market cap < book value)
+        signals elevated Emerging Risk / Forward-Looking Exposure risk (F10). Forward-looking goodwill impairment risk signals
+        upcoming write-down exposure. Goodwill write-downs trigger SCA filings alleging management knew acquisitions were
+        overvalued at the time of the deal. Warning signal thresholds from D&O claims experience and SCAC class period analysis.'
+      TRIGGERED_YELLOW: '{company} Goodwill Risk at {value} (threshold: Goodwill >30% of total assets OR recent acquisition)
+        is in the caution zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Goodwill Risk at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure (F10)
+        — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.WARN.impairment_risk
+  name: Impairment Risk
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: Market cap < book value sustained >90 days
+    yellow: Market cap approaching book value
+    clear: Market cap well above book value
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  - '3.3'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_early_warning
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: forward-looking warning indicators as early detection of potential claim triggers'
+    threshold_basis: Warning signal thresholds from D&O claims experience and SCAC class period analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Impairment Risk at {value} (threshold: Market cap < book value sustained >90 days) signals
+        elevated Emerging Risk / Forward-Looking Exposure risk (F10). Forward-looking impairment risk indicates upcoming asset
+        write-down exposure. Impairment charges trigger SCA filings when plaintiffs allege management delayed recognition
+        of indicators they were required to monitor. Warning signal thresholds from D&O claims experience and SCAC class period
+        analysis.'
+      TRIGGERED_YELLOW: '{company} Impairment Risk at {value} (threshold: Market cap approaching book value) is in the caution
+        zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Impairment Risk at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure
+        (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.WARN.contract_disputes
+  name: Contract Disputes
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: '>3 active contract disputes OR material revenue at risk'
+    yellow: 1-3 active disputes
+    clear: No contract disputes
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_early_warning
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: forward-looking warning indicators as early detection of potential claim triggers'
+    threshold_basis: Warning signal thresholds from D&O claims experience and SCAC class period analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Contract Disputes at {value} (threshold: >3 active contract disputes OR material revenue at
+        risk) signals elevated Emerging Risk / Forward-Looking Exposure risk (F10). Active contract disputes signal revenue
+        and counterparty risk that must be disclosed. Material contract losses create earnings impact and potential SCA exposure
+        if the dispute was not adequately disclosed. Warning signal thresholds from D&O claims experience and SCAC class period
+        analysis.'
+      TRIGGERED_YELLOW: '{company} Contract Disputes at {value} (threshold: 1-3 active disputes) is in the caution zone for
+        Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Contract Disputes at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure
+        (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.WARN.customer_churn_signals
+  name: Customer Churn Signals
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: Key customer departure confirmed OR >10% churn rate disclosed
+    yellow: Elevated churn indicators
+    clear: Normal retention
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  - '1.9'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_early_warning
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: forward-looking warning indicators as early detection of potential claim triggers'
+    threshold_basis: Warning signal thresholds from D&O claims experience and SCAC class period analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Customer Churn Signals at {value} (threshold: Key customer departure confirmed OR >10% churn
+        rate disclosed) signals elevated Emerging Risk / Forward-Looking Exposure risk (F10). Customer churn signals serve
+        as leading indicators of revenue deterioration. Rising churn precedes earnings misses and supports SCA allegations
+        that management concealed customer relationship deterioration. Warning signal thresholds from D&O claims experience
+        and SCAC class period analysis.'
+      TRIGGERED_YELLOW: '{company} Customer Churn Signals at {value} (threshold: Elevated churn indicators) is in the caution
+        zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Customer Churn Signals at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure
+        (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.WARN.partner_stability
+  name: Partner Stability
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: Key partner termination or bankruptcy
+    yellow: Partner relationship strain disclosed
+    clear: Partnerships stable
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_early_warning
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: forward-looking warning indicators as early detection of potential claim triggers'
+    threshold_basis: Warning signal thresholds from D&O claims experience and SCAC class period analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Partner Stability at {value} (threshold: Key partner termination or bankruptcy) signals elevated
+        Emerging Risk / Forward-Looking Exposure risk (F10). Partnership instability signals business relationship deterioration.
+        Partner departures or disputes create revenue risk that must be disclosed and may indicate broader business model
+        vulnerability. Warning signal thresholds from D&O claims experience and SCAC class period analysis.'
+      TRIGGERED_YELLOW: '{company} Partner Stability at {value} (threshold: Partner relationship strain disclosed) is in the
+        caution zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction and peer
+        comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Partner Stability at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure
+        (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.WARN.revenue_quality
+  name: Revenue Quality
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: Revenue recognition changes OR restatement risk
+    yellow: Aggressive revenue recognition noted by auditor
+    clear: Standard revenue recognition
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  - '3.4'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: early_warning
+    formula: ''
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: forward-looking warning indicators as early detection of potential claim triggers'
+    threshold_basis: Warning signal thresholds from D&O claims experience and SCAC class period analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Revenue Quality at {value} (threshold: Revenue recognition changes OR restatement risk) signals
+        elevated Emerging Risk / Forward-Looking Exposure risk (F10). Revenue quality deterioration and AR divergence from
+        revenue are classic indicators of channel stuffing or premature recognition -- the forensic patterns most commonly
+        cited in restatement-driven securities fraud complaints. Warning signal thresholds from D&O claims experience and
+        SCAC class period analysis.'
+      TRIGGERED_YELLOW: '{company} Revenue Quality at {value} (threshold: Aggressive revenue recognition noted by auditor)
+        is in the caution zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Revenue Quality at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure
+        (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.WARN.margin_pressure
+  name: Margin Pressure
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: Gross margin declining >500bps AND operating leverage negative
+    yellow: Gross margin declining >300bps
+    clear: Margins stable or expanding
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  - '3.3'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: early_warning
+    formula: ''
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: M&A activity as D&O risk driver -- integration failures, goodwill impairment, and value
+      destruction claims'
+    threshold_basis: M&A risk assessment based on deal size relative to acquirer, serial acquirer patterns, and integration
+      complexity per D&O claims data
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Margin Pressure at {value} (threshold: Gross margin declining >500bps AND operating leverage
+        negative) signals elevated Emerging Risk / Forward-Looking Exposure risk (F10). Forward-looking margin pressure signals
+        upcoming earnings compression. When margins subsequently compress, plaintiffs allege management concealed cost pressures
+        while maintaining profitability guidance.'
+      TRIGGERED_YELLOW: '{company} Margin Pressure at {value} (threshold: Gross margin declining >300bps) is in the caution
+        zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Margin Pressure at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure
+        (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.WARN.capex_discipline
+  name: Capex Discipline
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: CapEx >2x depreciation AND declining ROIC
+    yellow: CapEx >1.5x depreciation
+    clear: CapEx aligned with depreciation
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  - '3.3'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_early_warning
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: forward-looking warning indicators as early detection of potential claim triggers'
+    threshold_basis: Warning signal thresholds from D&O claims experience and SCAC class period analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Capex Discipline at {value} (threshold: CapEx >2x depreciation AND declining ROIC) signals
+        elevated Emerging Risk / Forward-Looking Exposure risk (F10). Capex discipline concerns signal potential capital misallocation.
+        Undisciplined capital spending creates future impairment risk and supports waste claims in derivative actions against
+        the board. Warning signal thresholds from D&O claims experience and SCAC class period analysis.'
+      TRIGGERED_YELLOW: '{company} Capex Discipline at {value} (threshold: CapEx >1.5x depreciation) is in the caution zone
+        for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Capex Discipline at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure
+        (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.WARN.working_capital_trends
+  name: Working Capital Trends
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: Working capital negative AND deteriorating
+    yellow: Working capital declining >20% YoY
+    clear: Working capital stable or improving
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  - EMPLOYEES
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.6'
+  - '3.1'
+  worksheet_section: stock_activity
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_early_warning
+    formula: ''
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  group: forward_looking_early_warning
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: forward-looking warning indicators as early detection of potential claim triggers'
+    threshold_basis: Warning signal thresholds from D&O claims experience and SCAC class period analysis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  evaluation:
+    mechanism: trend
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Working Capital Trends at {value} (threshold: Working capital negative AND deteriorating)
+        signals elevated Emerging Risk / Forward-Looking Exposure risk (F10). Working capital deterioration signals approaching
+        liquidity stress. Sustained deterioration creates going-concern risk and forces the disclosure events that trigger
+        SCA filings. Warning signal thresholds from D&O claims experience and SCAC class period analysis.'
+      TRIGGERED_YELLOW: '{company} Working Capital Trends at {value} (threshold: Working capital declining >20% YoY) is in
+        the caution zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction and
+        peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Working Capital Trends at {value} is within acceptable range for Emerging Risk / Forward-Looking Exposure
+        (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'

@@ -1,0 +1,41 @@
+{# Earnings Miss Scenario — models downside if consensus estimates are missed.
+   Data: b.investigative.earnings_miss (dict) #}
+{% set em = b.investigative.earnings_miss if b.investigative else none %}
+{% if em %}
+<div style="margin:8px 0">
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:9pt;font-weight:700;color:#1F3A5C">Earnings Miss Scenario</span>
+    <span style="font-size:7pt;color:#6B7280">Consensus vs. downside impact</span>
+  </div>
+  <div style="display:flex;gap:3px;margin-bottom:4px">
+    {# Consensus card #}
+    <div style="flex:1;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px">
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px">Current Quarter Consensus</div>
+      <div style="font-size:14pt;font-weight:800;color:#111827;line-height:1">{{ em.cq_consensus }}</div>
+      <div style="font-size:7.5pt;color:#6B7280;margin-top:2px">{{ em.cq_analysts }} analysts | Growth {{ em.cq_growth }}</div>
+      <div style="display:flex;gap:8px;margin-top:3px;font-size:7pt;color:#6B7280">
+        <span>Low: {{ em.cq_low }}</span>
+        <span>High: {{ em.cq_high }}</span>
+      </div>
+    </div>
+    {# Beat streak card #}
+    <div style="flex:0.6;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px;text-align:center">
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px">Beat Streak</div>
+      <div style="font-size:14pt;font-weight:800;color:{% if em.beat_probability == 'HIGH' %}#16A34A{% elif em.beat_probability == 'MEDIUM' %}#D97706{% else %}#DC2626{% endif %};line-height:1">{{ em.beat_streak }}</div>
+      <div style="font-size:7.5pt;color:#6B7280;margin-top:2px">Miss probability: {{ 'LOW' if em.beat_probability == 'HIGH' else ('MEDIUM' if em.beat_probability == 'MEDIUM' else 'HIGH') }}</div>
+    </div>
+    {# Impact scenario card #}
+    <div style="flex:1;background:#FEF2F2;border:1px solid #FECACA;border-radius:5px;padding:6px 8px">
+      <div style="font-size:6pt;color:#DC2626;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px">If {{ em.miss_pct }} Miss</div>
+      <div style="font-size:7.5pt;color:#374151;line-height:1.5">
+        <div>Est. stock drop: <strong style="color:#DC2626">{{ em.stock_drop_range }}</strong></div>
+        <div>Dollar Damage Line: <strong style="color:#DC2626">{{ em.ddl_if_miss }}</strong></div>
+      </div>
+      <div style="font-size:7pt;color:#9CA3AF;margin-top:2px">Based on historical miss-to-drop ratios</div>
+    </div>
+  </div>
+  {% if em.fy_consensus and em.fy_consensus != 'N/A' %}
+  <div style="font-size:7.5pt;color:#6B7280;padding:2px 4px">Full Year: {{ em.fy_consensus }} consensus ({{ em.fy_growth }} growth)</div>
+  {% endif %}
+</div>
+{% endif %}

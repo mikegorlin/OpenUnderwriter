@@ -1,0 +1,29 @@
+target-version = "py312"
+line-length = 99
+src = ["src"]
+
+[lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "B",    # flake8-bugbear
+    "I",    # isort
+    "UP",   # pyupgrade
+    "S",    # flake8-bandit (security)
+    "C4",   # flake8-comprehensions
+    "RUF",  # ruff-specific rules
+]
+
+[lint.isort]
+known-first-party = ["do_uw"]
+
+[lint.per-file-ignores]
+"tests/**" = ["S101"]  # Allow assert in tests
+"src/do_uw/cli.py" = ["B008"]  # Typer requires function calls in arg defaults
+"src/do_uw/cli_pricing.py" = ["B008"]  # Typer requires function calls in arg defaults
+"src/do_uw/cli_dashboard.py" = ["B008"]  # Typer requires function calls in arg defaults
+"src/do_uw/cli_pricing_programs.py" = ["B008"]  # Typer requires function calls in arg defaults
+"src/do_uw/cli_knowledge.py" = ["B008"]  # Typer requires function calls in arg defaults
+"src/do_uw/cli_knowledge_governance.py" = ["B008"]  # Typer requires function calls in arg defaults
+"src/do_uw/cli_validate.py" = ["B008"]  # Typer requires function calls in arg defaults
+"src/do_uw/stages/render/design_system.py" = ["RUF009"]  # Frozen dataclass with immutable Pt/Inches/RGBColor defaults

@@ -1,0 +1,12 @@
+{# What the Company Does -- plain-language business description + core D&O exposure (Phase 118) #}
+{% set wcd = dossier_what | default({}) %}
+{% if wcd.get('what_company_does_available', false) %}
+<h3 id="dossier-what-company-does">What the Company Does</h3>
+<p class="text-sm leading-relaxed mb-3">{{ wcd.business_description }}</p>
+{% if wcd.core_do_exposure %}
+<div class="do-callout bg-bg-alt border-l-4 border-risk-red px-4 py-3 my-3 text-sm">
+  <p class="font-semibold text-xs uppercase tracking-wide text-gray-500 m-0 mb-1">Core D&amp;O Exposure</p>
+  <p class="m-0">{{ wcd.core_do_exposure | strip_jargon }}</p>
+</div>
+{% endif %}
+{% endif %}

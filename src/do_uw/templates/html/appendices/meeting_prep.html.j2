@@ -1,0 +1,79 @@
+{# Meeting Prep appendix template.
+   Pre-computed meeting prep questions tied to specific findings,
+   categorized by worksheet section. #}
+
+{% from "macros/dual_voice.html.j2" import dual_voice_block %}
+{% set density = densities.get('executive', {}) %}
+{% set level = density.level|default('CLEAN') if density else 'CLEAN' %}
+{% set questions = meeting_questions|default([]) %}
+{% if questions %}
+<section id="meeting-prep" class="page-break">
+  <h3>Meeting Preparation Questions</h3>
+
+  {{ dual_voice_block(commentary.get('meeting_prep') if commentary else none, 'Meeting Preparation') }}
+
+  {# --- Overview --- #}
+  {{ section_narrative("Questions below are generated from worksheet findings and tailored to the risk profile of this account. Prioritize CRITICAL-linked questions in broker discussions.", ) }}
+
+  {# --- Top Priority Questions (the 5 most important ones, highlighted) --- #}
+  {# Select top 5 priority questions: CREDIBILITY_TEST > GAP_FILLER > FORWARD_INDICATOR > AI-Generated #}
+  {% set critical_qs = [] %}
+  {% for cat in ['CREDIBILITY_TEST', 'GAP_FILLER', 'FORWARD_INDICATOR', 'AI-Generated'] %}
+    {% for q in questions %}
+      {% if q.get('category') == cat and critical_qs | length < 5 %}
+        {% set _ = critical_qs.append(q) %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+
+  {% if critical_qs %}
+  <div style="border:2px solid var(--do-navy, #0B1D3A); border-radius:8px; padding:0.625rem 0.75rem; margin-bottom:1rem; background:#fafbfd;">
+    <div style="font-size:0.6875rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:var(--do-navy, #0B1D3A); margin-bottom:0.5rem; display:flex; align-items:center; gap:0.375rem;">
+      <span style="font-size:0.875rem;">★</span> Priority Questions — Ask These First
+    </div>
+    {% for q in critical_qs %}
+    <div style="padding:0.25rem 0; border-bottom:1px solid #e2e8f0; font-size:0.8125rem; color:#1e293b;">
+      <span style="font-weight:700; color:var(--do-navy, #0B1D3A);">{{ loop.index }}.</span>
+      {{ q.get('question', '') }}
+      {% if q.get('context') %}
+      <span style="font-size:0.6875rem; color:#9ca3af; font-style:italic; display:block; margin-left:1rem;">{{ q.context }}</span>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# --- Remaining questions with category badges (exclude priority duplicates) --- #}
+  {% set remaining_qs = [] %}
+  {% for q in questions|default([]) %}
+    {% if q not in critical_qs %}
+      {% set _ = remaining_qs.append(q) %}
+    {% endif %}
+  {% endfor %}
+  {% if remaining_qs %}
+  {% for q in remaining_qs %}
+  <div class="my-2 page-break-inside-avoid">
+    <div class="flex items-baseline gap-2">
+      {% if q.get('category') == 'CREDIBILITY_TEST' %}
+        {{ traffic_light("TRIGGERED", "Credibility") }}
+      {% elif q.get('category') == 'GAP_FILLER' %}
+        {{ traffic_light("INFO", "Gap") }}
+      {% elif q.get('category') == 'FORWARD_INDICATOR' %}
+        {{ traffic_light("ELEVATED", "Forward") }}
+      {% elif q.get('category') == 'AI-Generated' %}
+        <span class="inline-block bg-navy text-white text-xs font-semibold px-2 py-0.5 rounded">AI</span>
+      {% else %}
+        {{ traffic_light("INFO", q.get('category', 'Question')|default('Question')) }}
+      {% endif %}
+      <span class="text-sm font-semibold text-navy">{{ q.get('question', '') }}</span>
+    </div>
+    {% if q.get('context') and q.get('category') != 'AI-Generated' %}
+    <p class="text-xs text-gray-500 ml-6 mt-0.5 m-0">{{ q.context }}</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+  {% elif not critical_qs %}
+  {{ gap_notice("Meeting Questions", "Run pipeline with LLM to generate meeting prep questions") }}
+  {% endif %}
+</section>
+{% endif %}

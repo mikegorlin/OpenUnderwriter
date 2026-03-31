@@ -1,0 +1,46 @@
+- id: ABS.DISC.tax_positions
+  name: Missing Uncertain Tax Position Disclosure
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: 'Expected disclosure absent: multinational_operations'
+  provenance:
+    origin: phase_110_absence
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Absence detection for FIN.TAX.uncertain_positions
+    threshold_provenance:
+      source: standard
+      rationale: Multinationals expected to have UTP disclosure; absence hides tax exposure
+  signal_class: inference
+  group: transparency_disclosure
+  rap_class: host
+  rap_subcategory: host.financials
+  epistemology:
+    rule_origin: ASC 740 uncertain tax position disclosure requirements; FIN 48 legacy
+    threshold_basis: Multinationals expected to have UTP disclosure; absence hides tax exposure
+  evaluation:
+    mechanism: absence
+    absence_rules:
+      expectation_type: peer_comparison
+      expected_signals:
+      - FIN.TAX.uncertain_positions
+      condition: multinational_operations
+      expected_status: TRIGGERED
+      absence_trigger: SKIPPED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} missing uncertain tax position disclosure at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} missing uncertain tax position disclosure at {value} is a moderate indicator for D&O risk
+        assessment, warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} missing uncertain tax position disclosure at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

@@ -1,0 +1,127 @@
+## Section 6: Litigation & Regulatory Exposure -- Current Cases, SOL Windows & Enforcement Risk
+{{ density_indicator("litigation") }}
+{% if litigation %}
+{% if litigation_narrative %}{{ litigation_narrative }}
+
+{% endif %}
+{{ litigation.active_summary or "*No active litigation.*" }}
+{% if litigation.cases %}
+
+| Case | Legal Theory | Coverage | Status | Allegations | Court | Class Period | Lead Counsel |
+|------|-------------|----------|--------|-------------|-------|-------------|-------------|
+{% for case in litigation.cases %}| {{ case.name }} | {{ case.legal_theories_display|default('—') }} | {{ case.coverage_display|default('—') }} | {{ case.status }} | {{ case.allegations }} | {{ case.court }} | {{ case.class_period_start }} to {{ case.class_period_end }} | {{ case.lead_counsel }} |
+{% if case.data_quality_flags %}> Data quality: {{ case.data_quality_flags }}
+{% endif %}{% endfor %}{% endif %}
+
+### SEC Enforcement & Regulatory
+
+| Highest Confirmed Stage | Comment Letters | Derivative Actions | Defense Strength | Litigation Reserve |
+|------------------------|----------------|--------------------|-----------------|-------------------|
+| **{{ litigation.sec_enforcement_stage or "NONE" }}** | {{ litigation.comment_letters or "0" }} | {{ litigation.derivative_count or "0" }} | {{ litigation.defense_strength or "N/A" }} | {{ litigation.litigation_reserve or "N/A" }} |
+
+{% if litigation.derivative_suits %}
+### Derivative Suits
+
+{% for suit in litigation.derivative_suits %}
+**{{ suit.case_name }}**
+
+| Field | Detail |
+|-------|--------|
+| Legal Theory | {{ suit.legal_theories_display|default('—') }} |
+| Coverage | {{ suit.coverage_display|default('—') }} |
+| Filing Date | {{ suit.filing_date }} |
+| Court | {{ suit.court }} |
+| Status | {{ suit.status }} |
+| Allegations | {{ suit.allegations }} |
+| Settlement | {{ suit.settlement }} |
+
+{% endfor %}{% else %}
+### Derivative Suits
+
+No derivative suits found.
+{% endif %}
+
+{% if litigation.contingent_liabilities %}
+### Contingent Liabilities (ASC 450)
+
+| Description | Classification | Amount Range | Source |
+|-------------|---------------|-------------|--------|
+{% for cl in litigation.contingent_liabilities %}| {{ cl.description }} | {{ cl.classification }} | {{ cl.amount_range }} | {{ cl.source }} |
+{% endfor %}{% else %}
+### Contingent Liabilities (ASC 450)
+
+No material contingent liabilities disclosed.
+{% endif %}
+
+{% if litigation.unclassified_reserves %}
+### Unclassified Legal Reserves
+
+Boilerplate or generic reserve disclosures not classifiable to a specific legal theory.
+
+| Description | Filing Date | Status |
+|-------------|------------|--------|
+{% for uc in litigation.unclassified_reserves %}| {{ uc.case_name }} | {{ uc.filing_date|default('—') }} | {{ uc.status|default('—') }} |
+{% endfor %}
+{% endif %}
+
+{% set wpe = litigation.workforce_product_env %}
+### Workforce, Product & Environmental Matters
+
+{% if wpe and (wpe.employment or wpe.product or wpe.environmental or wpe.cybersecurity) %}
+{% if wpe.employment %}**Employment Matters:**
+{% for item in wpe.employment %}- {{ item }}
+{% endfor %}{% endif %}
+{% if wpe.product %}**Product Liability:**
+{% for item in wpe.product %}- {{ item }}
+{% endfor %}{% endif %}
+{% if wpe.environmental %}**Environmental Actions:**
+{% for item in wpe.environmental %}- {{ item }}
+{% endfor %}{% endif %}
+{% if wpe.cybersecurity %}**Cybersecurity Incidents:**
+{% for item in wpe.cybersecurity %}- {{ item }}
+{% endfor %}{% endif %}
+{% else %}
+None found.
+{% endif %}
+
+{% if litigation.whistleblower_indicators %}
+### Whistleblower Indicators
+
+| Type | Description | Date | Significance |
+|------|-------------|------|-------------|
+{% for wb in litigation.whistleblower_indicators %}| {{ wb.type }} | {{ wb.description }} | {{ wb.date }} | {{ wb.significance }} |
+{% endfor %}{% else %}
+### Whistleblower Indicators
+
+None found.
+{% endif %}
+
+{% if litigation.industry_patterns %}
+### Industry Claim Patterns
+
+{% for pattern in litigation.industry_patterns %}- {{ pattern }}
+{% endfor %}{% endif %}
+{% if litigation.sol_windows %}
+### Statute of Limitations Exposure
+
+| Claim Type | Trigger Date | SOL Expiry | Window |
+|------------|-------------|------------|--------|
+{% for w in litigation.sol_windows %}| {{ w.claim_type }} | {{ w.trigger_date }} | {{ w.sol_expiry }} | **{{ w.status }}** |
+{% endfor %}
+{% if litigation.open_sol_count > 0 %}**Exposure:** {{ litigation.open_sol_count }} SOL window(s) open. Evaluate ERP tail coverage.
+{% endif %}{% endif %}
+
+{% if litigation.historical_cases %}
+### Historical Matters (Resolved)
+
+| Case | Legal Theory | Coverage | Status | Allegations | Settlement | Court | Class Period | Lead Counsel |
+|------|-------------|----------|--------|-------------|-----------|-------|-------------|-------------|
+{% for case in litigation.historical_cases %}| {{ case.name }} | {{ case.legal_theories_display|default('—') }} | {{ case.coverage_display|default('—') }} | {{ case.status }} | {{ case.allegations }} | {{ case.settlement }} | {{ case.court }} | {{ case.class_period_start }} to {{ case.class_period_end }} | {{ case.lead_counsel }} |
+{% endfor %}{% elif litigation.historical_summary %}{{ litigation.historical_summary }}
+{% endif %}
+{% if chart_dir %}![Litigation Timeline](images/timeline.png)
+{% endif %}
+{{ triggered_block(6) }}
+{% else %}
+*Litigation data not available.*
+{% endif %}

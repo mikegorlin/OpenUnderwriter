@@ -1,0 +1,90 @@
+{# Financial Health section template.
+   Financial summary tables with conditional formatting (VIS-04),
+   distress model indicators, debt analysis, and CRITICAL deep dives.
+
+   Phase 56-03: Decomposed into 11 fragment templates in sections/financial/.
+   Facets are dispatched from section_context when available; falls back to
+   legacy inline rendering if section_context is not populated. #}
+
+{% from "macros/dual_voice.html.j2" import dual_voice_block %}
+{% set density = densities.get('financial', {}) %}
+{% set level = density.level|default('CLEAN') if density else 'CLEAN' %}
+{% set fin = financials or {} %}
+
+<section id="financial-health" class="page-break">
+  <h2>Financial Health
+    {% if level == 'CRITICAL' %}<span class="section-risk-badge section-risk--critical">Critical</span>
+    {% elif level == 'ELEVATED' %}<span class="section-risk-badge section-risk--elevated">Elevated</span>
+    {% endif %}
+  </h2>
+
+  {{ dual_voice_block(commentary.get('financial') if commentary else none, 'Financial Analysis') }}
+
+  {# Financial Health Narrative — summary card at top of section #}
+  {% include "sections/financial/health_narrative.html.j2" %}
+
+  {# KPI Summary Cards (INFO-06) — key financial metrics at a glance #}
+  {% from "components/kpi_cards.html.j2" import kpi_strip %}
+  {% if fin.get('has_income') %}
+  {% set fin_cards = [] %}
+  {% set _rev_prov = (fin.revenue_as_of ~ " · " ~ fin.revenue_source ~ " · " ~ fin.revenue_confidence) if fin.get('revenue_source') and fin.revenue_source != 'N/A' else fin.get('latest_period', '') %}
+  {% if fin.get('revenue') %}{% set _ = fin_cards.append({"value": fin.revenue, "label": "Revenue", "sub_label": _rev_prov, "severity": ""}) %}{% endif %}
+  {% if fin.get('net_income') %}{% set _ = fin_cards.append({"value": fin.net_income, "label": "Net Income", "sub_label": fin.get('net_income_yoy', '') ~ " YoY" if fin.get('net_income_yoy') else '', "severity": "", "trend_svg": ""}) %}{% endif %}
+  {% if fin.get('current_ratio') %}{% set _ = fin_cards.append({"value": fin.current_ratio, "label": "Current Ratio", "sub_label": "", "severity": "critical" if fin.current_ratio is string and fin.current_ratio < "1.0" else "", "trend_svg": ""}) %}{% endif %}
+  {% if fin.get('debt_to_equity') %}{% set _ = fin_cards.append({"value": fin.debt_to_equity, "label": "Debt / Equity", "sub_label": "", "severity": "", "trend_svg": ""}) %}{% endif %}
+  {% if fin_cards %}
+  {{ kpi_strip({"cards": fin_cards, "count": fin_cards | length}) }}
+  {% endif %}
+  {% endif %}
+
+  {# --- 5-Layer Narrative Architecture (NARR-01) --- #}
+  {% set sn = section_narratives.get('financial', {}) if section_narratives is defined else {} %}
+  {% if sn %}
+    {{ narrative_5layer(sn.verdict, sn.thesis, sn.evidence_items, sn.implications, sn.deep_context) }}
+  {% else %}
+    {# Fallback: SCR + pre-computed narrative + D&O Implications #}
+    {% if scr_narratives is defined and scr_narratives.get('financial') %}
+      {{ scr_narrative(scr_narratives.financial) }}
+    {% endif %}
+    {% set narr = narratives.financial if narratives else none %}
+    {{ section_narrative(narr) }}
+    {% if do_implications_data is defined and do_implications_data.get('financial') %}
+      {{ do_implications(do_implications_data.financial) }}
+    {% endif %}
+  {% endif %}
+
+  <div>
+    <div style="font-weight:600;margin-bottom:4px">Financial Health Details</div>
+    <div class="collapsible-content">
+      {# --- Facet-driven dispatch (Phase 56-03) --- #}
+      {% if section_context is defined and section_context.get('financial_health') %}
+        {% for facet in section_context.financial_health.facets %}
+          {% include facet.template %}
+        {% endfor %}
+      {% else %}
+        {# Legacy fallback — inline fragment includes #}
+        {% include "sections/financial/annual_comparison.html.j2" %}
+        {% include "sections/financial/key_metrics.html.j2" %}
+        {% include "sections/financial/liquidity_solvency.html.j2" %}
+        {% include "sections/financial/statement_tables.html.j2" %}
+        {% include "sections/financial/quarterly_trend.html.j2" %}
+        {% include "sections/financial/quarterly_updates.html.j2" %}
+        {% include "sections/financial/distress_indicators.html.j2" %}
+        {% include "sections/financial/tax_risk.html.j2" %}
+        {% include "sections/financial/earnings_quality.html.j2" %}
+        {% include "sections/financial/goodwill_equity.html.j2" %}
+        {% include "sections/financial/capital_allocation.html.j2" %}
+        {% include "sections/financial/debt_service_coverage.html.j2" %}
+        {% include "sections/financial/refinancing_risk.html.j2" %}
+        {% include "sections/financial/bankruptcy_composite.html.j2" %}
+        {% include "sections/financial/audit_disclosure_alerts.html.j2" %}
+        {% include "sections/financial/audit_profile.html.j2" %}
+        {% include "sections/financial/debt_structure.html.j2" %}
+        {% include "sections/financial/peer_group.html.j2" %}
+        {% include "sections/financial/peer_matrix.html.j2" %}
+        {% include "sections/financial/financial_checks.html.j2" %}
+        {% include "sections/financial/density_alerts.html.j2" %}
+      {% endif %}
+    </div>
+  </div>
+</section>

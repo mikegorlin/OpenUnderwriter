@@ -1,0 +1,95 @@
+{# Transparency & Disclosure — extracted from governance.html.j2 #}
+
+  {# --- 4.3 Transparency & Disclosure --- #}
+  <h3>Transparency & Disclosure</h3>
+
+  {% set compensation = gov.get('compensation', {}) %}
+  {% set coherence = gov.get('narrative_coherence', {}) %}
+
+  {# Two-column grid: Compensation | Narrative Coherence #}
+  {% if compensation or coherence %}
+  <div class="kv-grid-2">
+    {% if compensation %}
+    <div>
+      {% set comp_items = [
+        {'key': 'CEO Compensation', 'value': compensation.get('ceo_total', 'N/A')},
+        {'key': 'Pay Ratio', 'value': compensation.get('pay_ratio', 'N/A')},
+        {'key': 'Say-on-Pay Approval', 'value': compensation.get('say_on_pay', 'N/A')},
+      ] %}
+      {% if compensation.get('clawback') %}{% set _ = comp_items.append({'key': 'Clawback Policy', 'value': compensation.clawback}) %}{% endif %}
+      {% if compensation.get('clawback_scope') %}{% set _ = comp_items.append({'key': 'Clawback Scope', 'value': compensation.clawback_scope}) %}{% endif %}
+      {{ kv_table(comp_items, title="Compensation") }}
+    </div>
+    {% endif %}
+    {% if coherence %}
+    <div>
+      {% set coh_items = [] %}
+      {% if coherence.get('overall') %}{% set _ = coh_items.append({'key': 'Overall Assessment', 'value': coherence.overall}) %}{% endif %}
+      {% if coherence.get('strategy_alignment') %}{% set _ = coh_items.append({'key': 'Strategy vs Results', 'value': coherence.strategy_alignment}) %}{% endif %}
+      {% if coherence.get('tone_alignment') %}{% set _ = coh_items.append({'key': 'Tone vs Financials', 'value': coherence.tone_alignment}) %}{% endif %}
+      {% if coherence.get('insider_alignment') %}{% set _ = coh_items.append({'key': 'Insider Behavior vs Confidence', 'value': coherence.insider_alignment}) %}{% endif %}
+      {% if coh_items %}
+      {{ kv_table(coh_items, title="Narrative Coherence") }}
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {# Compensation interpretation #}
+  {% if compensation %}
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    {% if compensation.get('say_on_pay') and compensation.get('say_on_pay') != 'N/A' %}
+    {% set sop_str = compensation.get('say_on_pay', '')|string|replace('%', '') %}
+    {% if sop_str|float(default=100) < 70 %}
+    <li>Say-on-Pay approval below 70% is a significant governance risk factor&mdash;low shareholder support frequently precedes activist campaigns and derivative suits</li>
+    {% elif sop_str|float(default=100) >= 90 %}
+    <li>Strong Say-on-Pay approval indicates shareholder confidence in the compensation structure</li>
+    {% endif %}
+    {% endif %}
+    {% if compensation.get('clawback') and 'Yes' in compensation.get('clawback', '') %}
+    <li>Clawback policy presence is a positive governance factor that can mitigate D&amp;O exposure from executive misconduct</li>
+    {% endif %}
+  </ul>
+  {% endif %}
+
+  {# --- Related-Party Transactions --- #}
+  {% set rpt = gov.get('related_party_transactions', []) %}
+  {% if rpt %}
+  <h4>Related-Party Transactions</h4>
+  <ul class="list-disc ml-5 text-sm text-gray-700 space-y-0.5">
+    {% for txn in rpt %}
+    <li>{{ txn }}</li>
+    {% endfor %}
+  </ul>
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>Related-party transactions are a key governance risk factor&mdash;self-dealing by directors or officers can trigger derivative suits and SEC enforcement actions</li>
+  </ul>
+  {% endif %}
+
+  {# --- Notable Perquisites --- #}
+  {% set perks = gov.get('notable_perquisites', []) %}
+  {% if perks %}
+  <h4>Notable Perquisites</h4>
+  <ul class="list-disc ml-5 text-sm text-gray-700 space-y-0.5">
+    {% for perk in perks %}
+    <li>{{ perk }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% set coh_flags = gov.get('coherence_flags', []) %}
+  {% if coh_flags %}
+  <ul class="list-disc ml-5 text-sm text-risk-red space-y-1 mt-2">
+    {% for flag in coh_flags %}
+    <li>{{ flag }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% set audit_fees = gov.get('audit_fees', {}) %}
+  {% if audit_fees %}
+  {{ kv_table([
+    {'key': 'Audit Fees', 'value': audit_fees.get('total', 'N/A')},
+    {'key': 'Non-Audit Ratio', 'value': audit_fees.get('non_audit_ratio', 'N/A')},
+  ]) }}
+  {% endif %}

@@ -1,0 +1,144 @@
+{# Decision Record — Underwriting Posture Documentation (Phase 114-03).
+   Official record of the underwriter's independent assessment.
+   Shows tier distribution as industry reference (NOT recommendation).
+   Provides posture fields for print/handwriting documentation. #}
+
+{% set dec = decision|default({}) %}
+{% if dec.get('decision_available', false) %}
+{% set current_tier = dec.get('current_tier', 'N/A') %}
+{% set tiers = dec.get('tier_distribution', {}) %}
+
+<section id="decision-record" class="page-break decision-record">
+  <h2>Underwriting Decision Record</h2>
+  <p class="text-sm text-gray-600 mb-2">
+    Official underwriting posture and rationale for {{ company_name|default('Company') }}
+    ({{ ticker|default('') }}).
+  </p>
+  <p class="text-xs text-gray-400 italic mb-4">
+    No system recommendation provided &mdash; this section documents the underwriter&rsquo;s
+    independent assessment based on the evidence presented in this worksheet.
+  </p>
+
+  {# --- Industry Reference: Tier Distribution Bar --- #}
+  <h3>Industry Reference &mdash; D&amp;O Tier Distribution</h3>
+  <p class="text-xs text-gray-500 mb-2">
+    Based on SCAC/Cornerstone historical data. For context only &mdash; not a recommendation.
+  </p>
+
+  {% set tier_order = ['PREFERRED', 'STANDARD', 'ELEVATED', 'HIGH_RISK', 'PROHIBITED'] %}
+  {% set tier_labels = {
+    'PREFERRED': 'Preferred',
+    'STANDARD': 'Standard',
+    'ELEVATED': 'Elevated',
+    'HIGH_RISK': 'High Risk',
+    'PROHIBITED': 'Prohibited'
+  } %}
+
+  <div class="tier-distribution-bar">
+    {% for tier_key in tier_order %}
+      {% set pct = tiers.get(tier_key, 0) %}
+      {% if pct > 0 %}
+      <div class="tier-segment tier-segment--{{ tier_key|lower }}{{ ' tier-highlight' if current_tier == tier_key else '' }}"
+           style="width: {{ pct }}%;"
+           title="{{ tier_labels.get(tier_key, tier_key) }}: {{ pct }}%">
+        {{ pct|int }}%
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  {# Tier labels beneath bar #}
+  <div class="tier-label-row">
+    {% for tier_key in tier_order %}
+      {% set pct = tiers.get(tier_key, 0) %}
+      {% if pct > 0 %}
+      <div class="tier-label-cell" style="width: {{ pct }}%;">
+        {{ tier_labels.get(tier_key, tier_key) }}
+        {% if current_tier == tier_key %}<br><strong>(Current)</strong>{% endif %}
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  {# --- Current Assessment Context --- #}
+  <div style="margin: var(--space-lg) 0; padding: var(--space-sm) var(--space-md); border: 1px solid #e2e8f0; border-radius: 6px; background: var(--do-bg-alt);">
+    <span class="text-xs text-gray-500 uppercase tracking-wide font-semibold">System Assessment Tier:</span>
+    <span style="font-size: 1rem; font-weight: 700; color: var(--do-navy); margin-left: 0.5rem;">{{ current_tier|replace('_', ' ') }}</span>
+    <span class="text-xs text-gray-400 ml-2">(for reference only &mdash; underwriter determines final posture)</span>
+  </div>
+
+  {# --- Posture Fields --- #}
+  <h3>Underwriting Posture</h3>
+  <p class="text-xs text-gray-500 mb-3">Select the appropriate posture for this risk.</p>
+
+  <div class="posture-grid">
+    <div class="posture-option">
+      <span class="posture-option-check"></span>
+      <span class="posture-option-label">Bind</span>
+      <p class="posture-option-desc">Accept risk at standard or modified terms</p>
+    </div>
+    <div class="posture-option">
+      <span class="posture-option-check"></span>
+      <span class="posture-option-label">Decline</span>
+      <p class="posture-option-desc">Risk outside appetite or unacceptable exposure</p>
+    </div>
+    <div class="posture-option">
+      <span class="posture-option-check"></span>
+      <span class="posture-option-label">Refer</span>
+      <p class="posture-option-desc">Escalate to senior underwriter or committee</p>
+    </div>
+    <div class="posture-option">
+      <span class="posture-option-check"></span>
+      <span class="posture-option-label">Terms &amp; Conditions</span>
+      <p class="posture-option-desc">Bind subject to specific exclusions or sublimits</p>
+    </div>
+  </div>
+
+  {# --- Rationale --- #}
+  <div class="rationale-box">
+    <div class="field-label">Rationale</div>
+    <p class="ghost-text">Record rationale for underwriting decision here. Reference specific
+    worksheet findings, signal evaluations, or external factors that informed your assessment.</p>
+  </div>
+
+  {# --- Conditions --- #}
+  <div class="conditions-box">
+    <div class="field-label">Conditions &amp; Terms</div>
+    <p class="ghost-text">Document any special conditions, exclusions, sublimits, or endorsements
+    required if binding.</p>
+    <ul style="list-style: none; padding: 0; margin: 0.5rem 0 0 0;">
+      <li style="border-bottom: 1px solid #e5e7eb; padding: 0.375rem 0; color: #d1d5db;">1. ________________________________________</li>
+      <li style="border-bottom: 1px solid #e5e7eb; padding: 0.375rem 0; color: #d1d5db;">2. ________________________________________</li>
+      <li style="border-bottom: 1px solid #e5e7eb; padding: 0.375rem 0; color: #d1d5db;">3. ________________________________________</li>
+    </ul>
+  </div>
+
+  {# --- Overrides --- #}
+  <div class="overrides-box">
+    <div class="field-label">System Override Documentation</div>
+    <p class="ghost-text">If your posture differs from the system assessment tier, document
+    the rationale for the override here.</p>
+  </div>
+
+  {# --- Signature Block --- #}
+  <div style="margin-top: var(--space-2xl); display: flex; justify-content: space-between; gap: var(--space-xl);">
+    <div style="flex: 1; border-top: 1px solid #9CA3AF; padding-top: 0.5rem;">
+      <span class="field-label">Underwriter Name</span>
+    </div>
+    <div style="flex: 1; border-top: 1px solid #9CA3AF; padding-top: 0.5rem;">
+      <span class="field-label">Date</span>
+    </div>
+    <div style="flex: 1; border-top: 1px solid #9CA3AF; padding-top: 0.5rem;">
+      <span class="field-label">Signature</span>
+    </div>
+  </div>
+
+</section>
+
+{% else %}
+{# Graceful degradation: no scoring data #}
+<section id="decision-record" class="page-break decision-record">
+  <h2>Underwriting Decision Record</h2>
+  <p class="text-sm text-gray-500 italic">Scoring data unavailable &mdash; decision record requires completed analysis.</p>
+</section>
+{% endif %}

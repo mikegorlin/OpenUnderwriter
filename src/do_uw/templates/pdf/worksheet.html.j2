@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>D&amp;O Underwriting Worksheet: {{ ticker }}</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>D&amp;O Liability Underwriting Worksheet</h1>
+    <p class="subtitle">{{ company_name }} ({{ ticker }})</p>
+    <p class="meta">Generated: {{ gen_date }} | Confidential -- For Internal Underwriting Use Only</p>
+  </header>
+
+  <section id="executive-summary">
+    <h2>Section 1: Executive Summary -- Underwriting Thesis &amp; Key Findings</h2>
+    {% if executive_summary %}
+    <table class="data-table kv-table"><tbody>
+      <tr><th>Risk Tier</th><td><strong>{{ executive_summary.tier_label or "N/A" }}</strong></td></tr>
+      <tr><th>Quality Score</th><td>{{ executive_summary.quality_score or "N/A" }}/100{% if executive_summary.composite_score %} (Composite: {{ executive_summary.composite_score }}){% endif %}</td></tr>
+    </tbody></table>
+    {% if executive_summary.thesis %}
+    <h3>Underwriting Thesis</h3>
+    <div class="callout callout-thesis">{{ executive_summary.thesis }}</div>
+    {% endif %}
+    {% if executive_summary.snapshot %}
+    <h3>Company Snapshot</h3>
+    <table class="data-table kv-table"><tbody>
+      <tr><th>Company</th><td>{{ executive_summary.snapshot.company_name }}</td></tr>
+      <tr><th>Ticker / Exchange</th><td>{{ executive_summary.snapshot.ticker }} / {{ executive_summary.snapshot.exchange }}</td></tr>
+      <tr><th>Industry</th><td>{{ executive_summary.snapshot.industry }}</td></tr>
+      <tr><th>Market Cap</th><td>{{ executive_summary.snapshot.market_cap }}</td></tr>
+      <tr><th>Revenue</th><td>{{ executive_summary.snapshot.revenue }}</td></tr>
+      <tr><th>Employees</th><td>{{ executive_summary.snapshot.employees }}</td></tr>
+    </tbody></table>
+    {% endif %}
+    {% if executive_summary.inherent_risk %}
+    <h3>Inherent Risk Baseline</h3>
+    <table class="data-table kv-table"><tbody>
+      <tr><th>Sector</th><td>{{ executive_summary.inherent_risk.sector }}</td></tr>
+      <tr><th>Market Cap Tier</th><td>{{ executive_summary.inherent_risk.market_cap_tier }}</td></tr>
+      <tr><th>Sector Base Rate</th><td>{{ executive_summary.inherent_risk.sector_base_rate }}</td></tr>
+      <tr><th>Adjusted Rate</th><td>{{ executive_summary.inherent_risk.adjusted_rate }}</td></tr>
+    </tbody></table>
+    {% endif %}
+    {% if executive_summary.key_findings %}
+    <h3>Underwriting Headwinds</h3>
+    <ul class="findings negative">{% for finding in executive_summary.key_findings %}<li>{{ finding }}</li>{% endfor %}</ul>
+    {% endif %}
+    {% if executive_summary.positive_indicators %}
+    <h3>Risk Mitigants</h3>
+    <ul class="findings positive">{% for indicator in executive_summary.positive_indicators %}<li>{{ indicator }}</li>{% endfor %}</ul>
+    {% endif %}
+    {% if executive_summary.claim_probability %}
+    <h3>Claim Probability</h3>
+    <table class="data-table">
+      <thead><tr><th>Probability Band</th><th>Company Rate</th><th>Industry Base Rate</th></tr></thead>
+      <tbody><tr><td><strong>{{ executive_summary.claim_probability.band }}</strong></td><td>{{ executive_summary.claim_probability.range }}</td><td>{{ executive_summary.claim_probability.industry_base }}</td></tr></tbody>
+    </table>
+    {% endif %}
+    {% if executive_summary.tower_recommendation %}
+    <h3>Tower Recommendation</h3>
+    <table class="data-table">
+      <thead><tr><th>Position</th><th>Min Attachment</th><th>Side A/DIC</th></tr></thead>
+      <tbody><tr><td>{{ executive_summary.tower_recommendation.position }}</td><td>{{ executive_summary.tower_recommendation.min_attachment }}</td><td>{{ executive_summary.tower_recommendation.side_a }}</td></tr></tbody>
+    </table>
+    {% endif %}
+    {% else %}<p class="na">Executive summary data not available.</p>{% endif %}
+  </section>
+
+  <section id="company-profile" class="page-break">
+    <h2>Section 2: Company Profile -- Business Lines &amp; Market Position</h2>
+    {% if company %}
+    {% if company_narrative %}<div class="narrative">{{ company_narrative }}</div>{% endif %}
+    <table class="data-table kv-table"><tbody>
+      <tr><th>Legal Name</th><td>{{ company.legal_name or "N/A" }}</td></tr>
+      <tr><th>Ticker / CIK</th><td>{{ ticker }} / {{ company.cik or "N/A" }}</td></tr>
+      <tr><th>SIC Code</th><td>{{ company.sic_code or "N/A" }}{% if company.sic_description and company.sic_description != "N/A" %} -- {{ company.sic_description }}{% endif %}</td></tr>
+      <tr><th>Exchange</th><td>{{ company.exchange or "N/A" }}</td></tr>
+      <tr><th>State of Inc. / FPI</th><td>{{ company.state_of_inc or "N/A" }} / {{ company.fpi or "N/A" }}</td></tr>
+      <tr><th>Market Cap</th><td>{{ company.market_cap_fmt or "N/A" }}</td></tr>
+      <tr><th>Employees</th><td>{{ company.employee_count_fmt or "N/A" }}</td></tr>
+      {% if company.subsidiary_count %}<tr><th>Subsidiaries</th><td>{{ company.subsidiary_count }}</td></tr>{% endif %}
+    </tbody></table>
+    {% if company.business_description %}
+    <h3>Business Overview</h3>
+    <p>{{ company.business_description }}</p>
+    {% endif %}
+    {% if company.revenue_segments %}
+    <h3>Revenue Segments</h3>
+    <table class="data-table">
+      <thead><tr><th>Segment</th><th>% of Total</th></tr></thead>
+      <tbody>{% for seg in company.revenue_segments %}<tr><td>{{ seg.name }}</td><td>{{ seg.pct }}</td></tr>{% endfor %}</tbody>
+    </table>
+    {% endif %}
+    {% if company.geographic_footprint %}
+    <h3>Geographic Footprint</h3>
+    <table class="data-table">
+      <thead><tr><th>Region</th><th>% of Total</th></tr></thead>
+      <tbody>{% for geo in company.geographic_footprint %}<tr><td>{{ geo.region }}</td><td>{{ geo.pct }}</td></tr>{% endfor %}</tbody>
+    </table>
+    {% endif %}
+    {% if company.exposure_factors %}
+    <h3>D&amp;O Exposure Factors</h3>
+    <table class="data-table">
+      <thead><tr><th>Factor</th><th>Level</th><th>Rationale</th></tr></thead>
+      <tbody>{% for f in company.exposure_factors %}<tr><td>{{ f.name }}</td><td><span class="risk-badge risk-{{ f.level|lower }}">{{ f.level }}</span></td><td>{{ f.rationale }}</td></tr>{% endfor %}</tbody>
+    </table>
+    {% endif %}
+    {% else %}<p class="na">Company profile data not available.</p>{% endif %}
+  </section>
+
+  <section id="financial-health" class="page-break">
+    <h2>Section 3: Financial Health -- Capitalization, Cash Generation &amp; Distress Indicators</h2>
+    {% if financials %}
+    {% if financial_narrative %}<div class="narrative">{{ financial_narrative }}</div>{% endif %}
+    <h3>Key Financial Metrics{% if financials.latest_period %} ({{ financials.latest_period }}{% if financials.prior_period %} vs {{ financials.prior_period }}{% endif %}){% endif %}</h3>
+    {% if financials.has_income %}
+    <table class="data-table">
+      {% if financials.prior_period %}
+      <thead><tr><th>Metric</th><th>{{ financials.latest_period or "Latest" }}</th><th>{{ financials.prior_period }}</th></tr></thead>
+      <tbody>
+        <tr><td>Revenue</td><td>{{ financials.revenue or "N/A" }}</td><td>{{ financials.prior_revenue or "N/A" }}</td></tr>
+        <tr><td>Net Income</td><td>{{ financials.net_income or "N/A" }}</td><td>{{ financials.prior_net_income or "N/A" }}</td></tr>
+      </tbody>
+      {% else %}
+      <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Revenue</td><td>{{ financials.revenue or "N/A" }}</td></tr>
+        <tr><td>Net Income</td><td>{{ financials.net_income or "N/A" }}</td></tr>
+      </tbody>
+      {% endif %}
+    </table>
+    {% if financials.filing_source %}<p class="citation">Source: {{ financials.filing_source }}</p>{% endif %}
+    {% endif %}
+    <h3>Distress Indicators</h3>
+    <table class="data-table">
+      <thead><tr><th>Model</th><th>Score</th><th>Zone</th><th>Benchmark</th></tr></thead>
+      <tbody>
+        <tr class="risk-{{ financials.z_zone|lower|risk_class }}"><td>Altman Z-Score</td><td>{{ financials.z_score or "N/A" }}</td><td>{{ financials.z_zone or "N/A" }}</td><td>&gt;2.99 = safe</td></tr>
+        <tr class="risk-{{ financials.o_zone|lower|risk_class }}"><td>Ohlson O-Score</td><td>{{ financials.o_score or "N/A" }}</td><td>{{ financials.o_zone or "N/A" }}</td><td>&lt;0.50 = safe</td></tr>
+        <tr class="risk-{{ financials.beneish_zone|lower|risk_class }}"><td>Beneish M-Score</td><td>{{ financials.beneish_score or "N/A" }}</td><td>{{ financials.beneish_zone or "N/A" }}</td><td>&lt;-1.78 = normal</td></tr>
+        <tr class="risk-{{ financials.piotroski_zone|lower|risk_class }}"><td>Piotroski F-Score</td><td>{{ financials.piotroski_score or "N/A" }}</td><td>{{ financials.piotroski_zone or "N/A" }}</td><td>7-9 = strong</td></tr>
+      </tbody>
+    </table>
+    {% if financials.debt_summary %}<h3>Capital Structure</h3><p>{{ financials.debt_summary }}</p>{% endif %}
+    {% if financials.liquidity %}<h3>Liquidity Position</h3><p>{{ financials.liquidity }}</p>{% endif %}
+    {% if financials.earnings_quality %}<h3>Earnings Quality</h3><p>{{ financials.earnings_quality }}</p>{% endif %}
+    {% if financials.tax_etr %}<p><strong>Effective Tax Rate:</strong> {{ financials.tax_etr }}</p>{% endif %}
+    <h3>Audit Risk Assessment</h3>
+    <table class="data-table">
+      <thead><tr><th>Auditor</th><th>Big 4</th><th>Tenure</th><th>Material Weaknesses</th><th>Going Concern</th></tr></thead>
+      <tbody><tr>
+        <td>{{ financials.auditor_name or "N/A" }}</td><td>{{ financials.is_big4 or "N/A" }}</td>
+        <td>{{ financials.auditor_tenure or "N/A" }}</td><td>{{ financials.material_weaknesses or 0 }}</td>
+        <td class="{{ 'risk-critical' if financials.going_concern == 'Yes' else '' }}">{{ financials.going_concern or "No" }}</td>
+      </tr></tbody>
+    </table>
+    {% if financials.peers %}
+    <h3>Peer Group Comparison</h3>
+    <table class="data-table">
+      <thead><tr><th>Ticker</th><th>Name</th><th>Market Cap</th><th>Score</th></tr></thead>
+      <tbody>{% for peer in financials.peers %}<tr><td>{{ peer.ticker }}</td><td>{{ peer.name }}</td><td>{{ peer.market_cap }}</td><td>{{ peer.score }}</td></tr>{% endfor %}</tbody>
+    </table>
+    {% endif %}
+    {% else %}<p class="na">Financial data not available.</p>{% endif %}
+  </section>
+
+  <section id="market-trading" class="page-break">
+    <h2>Section 4: Market &amp; Trading Signals -- Stock Volatility, Insider Activity &amp; Sentiment</h2>
+    {% if market %}
+    {% if market_narrative %}<div class="narrative">{{ market_narrative }}</div>{% endif %}
+    <h3>Stock Performance</h3>
+    <table class="data-table kv-table"><tbody>
+      <tr><th>Current Price</th><td>{{ market.current_price or "N/A" }}</td></tr>
+      <tr><th>52-Week High / Low</th><td>{{ market.high_52w or "N/A" }} / {{ market.low_52w or "N/A" }}</td></tr>
+      <tr><th>Decline from High</th><td>{{ market.pct_off_high or "N/A" }}</td></tr>
+      {% if market.return_1y is defined %}<tr><th>1-Year Return</th><td>{{ market.return_1y }}</td></tr>{% endif %}
+      {% if market.max_drawdown_1y is defined %}<tr><th>Max Drawdown (1Y)</th><td>{{ market.max_drawdown_1y }}</td></tr>{% endif %}
+      {% if market.volatility_90d is defined %}<tr><th>90-Day Volatility</th><td>{{ market.volatility_90d }}</td></tr>{% endif %}
+      {% if market.beta is defined %}<tr><th>Beta (vs S&amp;P 500)</th><td>{{ market.beta }}</td></tr>{% endif %}
+      <tr><th>Short % of Float</th><td>{{ market.short_pct or "N/A" }}</td></tr>
+      <tr><th>Days to Cover</th><td>{{ market.days_to_cover or "N/A" }}</td></tr>
+      {% if market.short_trend_6m is defined %}<tr><th>Short Trend (6M)</th><td>{{ market.short_trend_6m }}</td></tr>{% endif %}
+    </tbody></table>
+    {% if chart_images and chart_images.stock_1y %}
+    <figure><img src="data:image/png;base64,{{ chart_images.stock_1y }}" alt="Stock Performance (1Y)"><figcaption>Stock performance -- trailing 12 months</figcaption></figure>
+    {% endif %}
+    {% if market.worst_drop_pct is defined %}
+    <h3>Significant Stock Drop Events</h3>
+    <div class="callout callout-warning">Worst single-day decline: <strong>{{ market.worst_drop_pct }}</strong> on {{ market.worst_drop_date }}{{ market.worst_drop_trigger }}.</div>
+    {% endif %}
+    {% if market.earnings_guidance is defined %}
+    <h3>Earnings Guidance Track Record</h3>
+    <table class="data-table kv-table"><tbody>
+      {% if market.earnings_guidance.beat_rate is defined %}<tr><th>Beat Rate</th><td>{{ market.earnings_guidance.beat_rate }}</td></tr>{% endif %}
+      <tr><th>Consecutive Misses</th><td>{{ market.earnings_guidance.consecutive_misses }}</td></tr>
+      <tr><th>Guidance Withdrawals</th><td>{{ market.earnings_guidance.withdrawals }}</td></tr>
+      <tr><th>Philosophy</th><td>{{ market.earnings_guidance.philosophy }}</td></tr>
+    </tbody></table>
+    {% endif %}
+    {% if market.analyst_consensus is defined %}
+    <h3>Analyst Consensus</h3>
+    <table class="data-table">
+      <thead><tr><th>Consensus</th><th>Upgrades (90d)</th><th>Downgrades (90d)</th></tr></thead>
+      <tbody><tr><td>{{ market.analyst_consensus }}</td><td>{{ market.analyst_upgrades }}</td><td>{{ market.analyst_downgrades }}</td></tr></tbody>
+    </table>
+    {% endif %}
+    <h3>Insider Trading Activity</h3>
+    <div class="narrative">{{ market.insider_summary or "No insider trading data available." }}</div>
+    {% if insider_narrative %}<div class="narrative">{{ insider_narrative }}</div>{% endif %}
+    {% if market.pct_off_high and market.pct_off_high != "N/A" %}
+    <div class="callout callout-do-context"><strong>Claims-Made Context:</strong> A {{ market.pct_off_high }} decline from 52-week high defines measurable severity exposure. The critical question is <em>when</em> a resulting claim is reported relative to the policy period and retro date.</div>
+    {% endif %}
+    {% else %}<p class="na">Market data not available.</p>{% endif %}
+  </section>
+
+  <section id="governance" class="page-break">
+    <h2>Section 5: Governance &amp; Leadership Quality -- Board, Compensation &amp; Control Structure</h2>
+    {% if governance %}
+    {% if governance_narrative %}<div class="narrative">{{ governance_narrative }}</div>{% endif %}
+    {% if governance.governance_score %}<p><strong>Governance Quality Score:</strong> {{ governance.governance_score }}</p>{% endif %}
+    {% if governance.executives %}
+    <h3>Leadership Stability</h3>
+    <table class="data-table">
+      <thead><tr><th>Name</th><th>Title</th><th>Tenure (Yrs)</th><th>Status</th><th>Prior Lit.</th></tr></thead>
+      <tbody>{% for exec in governance.executives %}<tr><td>{{ exec.name }}</td><td>{{ exec.title }}</td><td>{{ exec.tenure }}</td><td>{{ exec.status }}</td><td>{{ exec.prior_litigation }}</td></tr>{% endfor %}</tbody>
+    </table>
+    {% endif %}
+    <h3>Board Composition &amp; Quality</h3>
+    <table class="data-table kv-table"><tbody>
+      <tr><th>Board Size</th><td>{{ governance.board_size or "N/A" }}</td></tr>
+      <tr><th>Independence Ratio</th><td>{{ governance.independence_ratio or "N/A" }}</td></tr>
+      <tr><th>CEO/Chair Duality</th><td>{{ governance.ceo_duality or "N/A" }}</td></tr>
+      <tr><th>Average Tenure</th><td>{{ governance.avg_tenure or "N/A" }}</td></tr>
+      <tr><th>Classified Board</th><td>{{ governance.classified_board or "N/A" }}</td></tr>
+      <tr><th>Dual-Class Structure</th><td>{{ governance.dual_class or "N/A" }}</td></tr>
+      <tr><th>Overboarded Directors</th><td>{{ governance.overboarded_count or "N/A" }}</td></tr>
+    </tbody></table>
+    <h3>Compensation &amp; Ownership</h3>
+    <table class="data-table">
+      <thead><tr><th>CEO Comp</th><th>Say-on-Pay</th><th>Institutional</th><th>Insider</th></tr></thead>
+      <tbody><tr><td>{{ governance.ceo_comp or "N/A" }}</td><td>{{ governance.say_on_pay or "N/A" }}</td><td>{{ governance.institutional_pct or "N/A" }}</td><td>{{ governance.insider_pct or "N/A" }}</td></tr></tbody>
+    </table>
+    {% if governance.top_holders %}<p><strong>Top Holders:</strong></p><ul>{% for h in governance.top_holders %}<li>{{ h.name }}: {{ h.pct }}</li>{% endfor %}</ul>{% endif %}
+    {% if governance.known_activists %}<p><strong>Known Activist Positions:</strong> {{ governance.known_activists|join(", ") }}</p>{% endif %}
+    {% if governance.anti_takeover %}
+    <h3>Anti-Takeover Provisions</h3>
+    <table class="data-table">
+      <thead><tr><th>Provision</th><th>Status</th><th>D&amp;O Implication</th></tr></thead>
+      <tbody>{% for at in governance.anti_takeover %}<tr><td>{{ at.provision }}</td><td>{{ at.status }}</td><td>{{ at.implication }}</td></tr>{% endfor %}</tbody>
+    </table>
+    {% endif %}
+    {% if governance.has_sentiment_data %}
+    <h3>Sentiment &amp; Narrative Coherence</h3>
+    <table class="data-table">
+      <thead><tr><th>Management Tone</th><th>Hedging Language</th><th>Q&amp;A Evasion</th></tr></thead>
+      <tbody><tr><td>{{ governance.management_tone or "N/A" }}</td><td>{{ governance.hedging_language or "N/A" }}</td><td>{{ governance.qa_evasion or "N/A" }}</td></tr></tbody>
+    </table>
+    {% endif %}
+    {% if governance.departures_18mo %}
+    <h3>Recent Executive Departures (18 months)</h3>
+    <table class="data-table">
+      <thead><tr><th>Name</th><th>Title</th><th>Type</th></tr></thead>
+      <tbody>{% for dep in governance.departures_18mo %}<tr><td>{{ dep.name }}</td><td>{{ dep.title }}</td><td>{{ dep.type }}</td></tr>{% endfor %}</tbody>
+    </table>
+    {% endif %}
+    {% if chart_images and chart_images.ownership %}
+    <figure><img src="data:image/png;base64,{{ chart_images.ownership }}" alt="Ownership Structure"><figcaption>Ownership breakdown</figcaption></figure>
+    {% endif %}
+    {% else %}<p class="na">Governance data not available.</p>{% endif %}
+  </section>
+
+  <section id="litigation" class="page-break">
+    <h2>Section 6: Litigation &amp; Regulatory Exposure -- Current Cases, SOL Windows &amp; Enforcement Risk</h2>
+    {% if litigation %}
+    {% if litigation_narrative %}<div class="narrative">{{ litigation_narrative }}</div>{% endif %}
+    <p>{{ litigation.active_summary or "No active litigation." }}</p>
+    {% if litigation.cases %}
+    <table class="data-table compact">
+      <thead><tr><th>Case</th><th>Status</th><th>Coverage</th><th>Court</th><th>Class Period</th><th>Duration</th><th>Lead Counsel</th></tr></thead>
+      <tbody>{% for case in litigation.cases %}<tr><td>{{ case.name }}</td><td>{{ case.status }}</td><td>{{ case.coverage }}</td><td>{{ case.court }}</td><td>{{ case.class_period_start }} to {{ case.class_period_end }}</td><td>{{ case.class_period_days }}</td><td>{{ case.lead_counsel }}</td></tr>{% endfor %}</tbody>
+    </table>
+    {% endif %}
+    <h3>SEC Enforcement &amp; Regulatory</h3>
+    <table class="data-table">
+      <thead><tr><th>Highest Stage</th><th>Comment Letters</th><th>Derivative Actions</th><th>Defense Strength</th><th>Litigation Reserve</th></tr></thead>
+      <tbody><tr><td><strong>{{ litigation.sec_enforcement_stage or "NONE" }}</strong></td><td>{{ litigation.comment_letters or "0" }}</td><td>{{ litigation.derivative_count or "0" }}</td><td>{{ litigation.defense_strength or "N/A" }}</td><td>{{ litigation.litigation_reserve or "N/A" }}</td></tr></tbody>
+    </table>
+    {% if litigation.industry_patterns %}
+    <h3>Industry Claim Patterns</h3>
+    <ul>{% for pattern in litigation.industry_patterns %}<li>{{ pattern }}</li>{% endfor %}</ul>
+    {% endif %}
+    {% if litigation.sol_windows %}
+    {# Split into actual vs proxy (theoretical) windows #}
+    {% set actual_sol = [] %}
+    {% set proxy_sol = [] %}
+    {% for w in litigation.sol_windows %}
+      {% if w.get('confidence', 'LOW') != 'LOW' and 'proxy' not in w.get('trigger_desc', '')|lower %}
+        {% set _ = actual_sol.append(w) %}
+      {% else %}
+        {% set _ = proxy_sol.append(w) %}
+      {% endif %}
+    {% endfor %}
+    {% if actual_sol %}
+    <h3>Statute of Limitations Exposure</h3>
+    <table class="data-table">
+      <thead><tr><th>Claim Type</th><th>Trigger Date</th><th>SOL Expiry</th><th>Window</th></tr></thead>
+      <tbody>{% for w in actual_sol %}<tr class="{{ 'risk-critical' if w.status == 'OPEN' else '' }}"><td>{{ w.claim_type }}</td><td>{{ w.trigger_date }}</td><td>{{ w.sol_expiry }}</td><td><strong>{{ w.status }}</strong></td></tr>{% endfor %}</tbody>
+    </table>
+    {% if litigation.open_sol_count > 0 %}<div class="callout callout-warning"><strong>Exposure:</strong> {{ litigation.open_sol_count }} SOL window(s) open. Evaluate ERP tail coverage.</div>{% endif %}
+    {% elif proxy_sol %}
+    <h3>Statute of Limitations</h3>
+    <p>No triggering events identified during the analysis period. Standard statute of limitations windows apply.</p>
+    {% endif %}
+    {% endif %}
+    {% if litigation.historical_cases %}
+    <h3>Historical Matters (Resolved)</h3>
+    <table class="data-table">
+      <thead><tr><th>Case</th><th>Status</th><th>Allegations</th><th>Settlement</th><th>Court</th><th>Class Period</th><th>Lead Counsel</th></tr></thead>
+      <tbody>{% for case in litigation.historical_cases %}<tr><td>{{ case.name }}</td><td>{{ case.status }}</td><td>{{ case.allegations }}</td><td>{{ case.settlement }}</td><td>{{ case.court }}</td><td>{{ case.class_period_start }} to {{ case.class_period_end }}</td><td>{{ case.lead_counsel }}</td></tr>{% endfor %}</tbody>
+    </table>
+    {% elif litigation.historical_summary %}<p>{{ litigation.historical_summary }}</p>{% endif %}
+    {% if chart_images and chart_images.timeline %}
+    <figure><img src="data:image/png;base64,{{ chart_images.timeline }}" alt="Litigation Timeline"><figcaption>Litigation timeline</figcaption></figure>
+    {% endif %}
+    {% else %}<p class="na">Litigation data not available.</p>{% endif %}
+  </section>
+
+  <section id="scoring" class="page-break">
+    <h2>Section 7: D&amp;O Risk Scoring &amp; Composite Assessment -- 10-Factor Model &amp; Red Flags</h2>
+    {% if scoring %}
+    {% if scoring_narrative %}<div class="narrative">{{ scoring_narrative }}</div>{% endif %}
+    <h3>Tier Classification</h3>
+    <table class="data-table">
+      <thead><tr><th>Quality Score</th><th>Composite</th><th>Risk Tier</th><th>Total Risk Pts</th></tr></thead>
+      <tbody><tr><td><strong>{{ scoring.quality_score }}/100</strong></td><td>{{ scoring.composite_score }}</td><td><strong>{{ scoring.tier }}</strong></td><td>{{ scoring.total_risk_points }}</td></tr></tbody>
+    </table>
+    {% if scoring.tier_score_range is defined %}<p><strong>Tier Range:</strong> {{ scoring.tier_score_range }}{% if scoring.tier_action is defined %} | <strong>Action:</strong> {{ scoring.tier_action }}{% endif %}{% if scoring.binding_ceiling is defined and scoring.binding_ceiling != "None" %} | <strong>Binding Ceiling:</strong> {{ scoring.binding_ceiling }}{% endif %}</p>{% endif %}
+    <h3>10-Factor Composite Score Breakdown</h3>
+    <table class="data-table">
+      <thead><tr><th>Factor</th><th>Name</th><th>Deducted</th><th>Max</th><th>% Used</th><th>Top Contributor</th></tr></thead>
+      <tbody>{% for factor in scoring.factors %}<tr><td>{{ factor.id }}</td><td>{{ factor.name }}</td><td>{{ factor.score }}</td><td>{{ factor.weight }}</td><td>{{ factor.pct_used }}</td><td class="evidence-cell">{{ factor.top_evidence }}</td></tr>{% endfor %}</tbody>
+    </table>
+    {% if chart_images and chart_images.radar %}
+    <figure><img src="data:image/png;base64,{{ chart_images.radar }}" alt="Risk Radar"><figcaption>10-factor risk radar</figcaption></figure>
+    {% endif %}
+    <h3>Red Flag Gates</h3>
+    {% if scoring.red_flags %}
+    <table class="data-table">
+      <thead><tr><th>Flag</th><th>Name</th><th>Ceiling</th><th>Max Tier</th><th>Evidence</th></tr></thead>
+      <tbody>{% for flag in scoring.red_flags %}<tr class="risk-critical"><td>{{ flag.id }}</td><td>{{ flag.name }}</td><td>{{ flag.ceiling }}</td><td>{{ flag.max_tier }}</td><td class="evidence-cell">{{ flag.description }}</td></tr>{% endfor %}</tbody>
+    </table>
+    {% else %}<p class="na">No red flags triggered.</p>{% endif %}
+    {% if scoring.patterns %}
+    <h3>Composite Risk Patterns</h3>
+    <ul>{% for pattern in scoring.patterns %}<li><strong>{{ pattern.name }}:</strong> {{ pattern.description }}</li>{% endfor %}</ul>
+    {% endif %}
+    {% if scoring.claim_probability is defined %}
+    <h3>Claim Probability</h3>
+    <table class="data-table">
+      <thead><tr><th>Band</th><th>Range</th><th>Industry Base Rate</th></tr></thead>
+      <tbody><tr><td><strong>{{ scoring.claim_probability.band }}</strong></td><td>{{ scoring.claim_probability.range }}</td><td>{{ scoring.claim_probability.industry_base }}</td></tr></tbody>
+    </table>
+    {% endif %}
+    {% if scoring.severity_scenarios is defined %}
+    <h3>Severity Scenarios</h3>
+    <table class="data-table">
+      <thead><tr><th>Percentile</th><th>Label</th><th>Settlement</th><th>Defense Costs</th><th>Total Exposure</th></tr></thead>
+      <tbody>{% for s in scoring.severity_scenarios %}<tr><td>{{ s.percentile }}</td><td>{{ s.label }}</td><td>{{ s.settlement }}</td><td>{{ s.defense_costs }}</td><td><strong>{{ s.total }}</strong></td></tr>{% endfor %}</tbody>
+    </table>
+    {% endif %}
+    {% if scoring.allegation_map is defined %}
+    <h3>Allegation Theory Mapping</h3>
+    <table class="data-table">
+      <thead><tr><th>Theory</th><th>Exposure Level</th><th>Evidence</th></tr></thead>
+      <tbody>{% for a in scoring.allegation_map %}<tr><td>{{ a.theory }}</td><td><span class="risk-badge risk-{{ a.exposure_level|lower }}">{{ a.exposure_level }}</span></td><td class="evidence-cell">{{ a.evidence }}</td></tr>{% endfor %}</tbody>
+    </table>
+    {% endif %}
+    {% if scoring.risk_type_primary is defined %}<p><strong>Risk Type:</strong> {{ scoring.risk_type_primary }}{% if scoring.risk_type_secondary is defined and scoring.risk_type_secondary %} | Secondary: {{ scoring.risk_type_secondary }}{% endif %}</p>{% endif %}
+    {% if scoring.calibration_notes is defined %}
+    <h3>Calibration Notes</h3>
+    <ul>{% for note in scoring.calibration_notes %}<li>{{ note }}</li>{% endfor %}</ul>
+    {% endif %}
+    {% else %}<p class="na">Scoring data not available.</p>{% endif %}
+  </section>
+
+  <section id="ai-risk" class="page-break">
+    <h2>Section 8: AI Transformation Risk -- Business Model Disruption &amp; Competitive Threats</h2>
+    {% if ai_risk %}
+    <p><strong>Overall AI Risk Score: {{ ai_risk.overall_score | round(0) }}/100</strong> ({{ ai_risk.industry_model_id }}) | <strong>Disclosure Trend:</strong> {{ ai_risk.disclosure_trend }}</p>
+    <h3>Risk Sub-Dimensions</h3>
+    <table class="data-table">
+      <thead><tr><th>Dimension</th><th>Score (/10)</th><th>Weight</th><th>Threat Level</th></tr></thead>
+      <tbody>{% for dim in ai_risk.sub_dimensions %}<tr><td>{{ dim.dimension | dim_display_name }}</td><td>{{ dim.score | round(1) }}</td><td>{{ (dim.weight * 100) | round(0) }}%</td><td><span class="risk-badge risk-{{ dim.threat_level|lower }}">{{ dim.threat_level }}</span></td></tr>{% endfor %}</tbody>
+    </table>
+    <h3>Peer AI Comparison</h3>
+    {% if ai_risk.peer_comparison_available %}
+    <p><strong>Company AI Mentions:</strong> {{ ai_risk.competitive_position.company_ai_mentions }} | <strong>Peer Average:</strong> {{ ai_risk.competitive_position.peer_avg_mentions | round(1) }} | <strong>Stance:</strong> {{ ai_risk.competitive_position.adoption_stance }}</p>
+    {% else %}<p class="na">Peer comparison unavailable.</p>{% endif %}
+    <h3>Industry-Specific Assessment</h3>
+    <div class="narrative">{{ ai_risk.narrative }}</div>
+    <h3>Forward-Looking Indicators</h3>
+    {% if ai_risk.forward_indicators %}<ul>{% for indicator in ai_risk.forward_indicators %}<li>{{ indicator }}</li>{% endfor %}</ul>
+    {% else %}<p class="na">No forward indicators identified.</p>{% endif %}
+    {% else %}<p class="na">AI risk assessment unavailable.</p>{% endif %}
+  </section>
+
+  <section id="meeting-prep" class="page-break">
+    <h2>Appendix: Meeting Prep Companion -- Diligence Questions &amp; Expected Responses</h2>
+    {% if meeting_questions %}
+    <p>Questions generated from gaps, red flags, and forward indicators. Prioritized by scoring impact.</p>
+    {% for q in meeting_questions %}
+    <div class="question">
+      <h3>Q{{ loop.index }}. <span class="tag tag-{{ q.category | lower }}">{{ q.category }}</span></h3>
+      <p class="q-text"><strong>{{ q.question }}</strong></p>
+      <p class="context"><strong>D&amp;O Context:</strong> {{ q.context }}</p>
+      <div class="answers">
+        <p class="good"><strong>Reassuring:</strong> {{ q.good_answer }}</p>
+        <p class="bad"><strong>Concerning:</strong> {{ q.bad_answer }}</p>
+      </div>
+      <p class="follow-up"><strong>If Concerning:</strong> {{ q.follow_up }}</p>
+    </div>
+    {% endfor %}
+    {% else %}<p class="na">No meeting prep questions generated. All data points have sufficient confidence and coverage.</p>{% endif %}
+  </section>
+
+  <footer>
+    {% if footer_meta and footer_meta.data_freshness_date is defined %}
+    <p style="font-size:0.8em; color:#999;">Data as of: {{ footer_meta.data_freshness_date }} | Estimated API cost: {{ footer_meta.cost_line }}</p>
+    {% endif %}
+    <p>D&amp;O Underwriting Worksheet | Angry Dolphin Underwriting | Confidential | Generated {{ gen_date }}</p>
+  </footer>
+</body>
+</html>

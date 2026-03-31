@@ -1,0 +1,17 @@
+{# Executive Summary Density Alerts — extracted from executive.html.j2 #}
+
+  {# --- Deal Context (CRITICAL deep dive) --- #}
+  {% if level == "CRITICAL" %}
+  <h3>Deal Context -- Deep Dive</h3>
+  <div class="border-l-4 border-red-700 bg-red-50 pl-4 py-3 my-3">
+    <p class="text-sm text-red-800 leading-relaxed">
+      This account has been assessed as <strong>CRITICAL</strong> risk.
+      Review key findings above and cross-reference with litigation (Section 6)
+      and financial health (Section 3) for full risk picture.
+    </p>
+    {% set evidence = density.critical_evidence|default([]) if density else [] %}
+    {% if evidence %}
+    {{ evidence_chain(evidence) }}
+    {% endif %}
+  </div>
+  {% endif %}

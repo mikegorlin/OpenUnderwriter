@@ -1,0 +1,279 @@
+{# Table macros for Bloomberg-quality D&O worksheet HTML output.
+   Data tables, key-value tables, multi-column grids, and conditional formatting. #}
+
+
+{# Full data table with navy header, alternating row shading.
+   Borderless design: global CSS handles navy thead, row dividers, alt rows.
+   headers: list of column header strings.
+   rows: list of lists (each inner list = one row of cell values).
+   id: optional HTML id attribute. #}
+{% macro data_table(headers, rows, id="") %}
+<table{% if id %} id="{{ id }}"{% endif %} class="w-full border-collapse my-3 text-sm sticky-header">
+  <thead>
+    <tr class="bg-navy text-white">
+      {% for header in headers %}
+      <th class="text-left p-1">
+        {{ header }}
+      </th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody class="tabular-nums">
+    {% for row in rows %}
+    <tr>
+      {% for cell in row %}
+      <td class="p-1 align-top">
+        {{ cell }}
+      </td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+    {% if not rows %}
+    <tr>
+      <td colspan="{{ headers | length }}" class="p-1 text-center text-gray-400 italic text-sm">
+        No data available
+      </td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>
+{% endmacro %}
+
+
+{# Key-value table with 35% label width and lighter header.
+   pairs: list of (key, value) tuples or list of dicts with 'key' and 'value'.
+   title: optional table title shown as a header row. #}
+{% macro kv_table(pairs, title="") %}
+{% if pairs %}
+<table class="w-full border-collapse my-3 text-sm kv-table">
+  {% if title %}
+  <thead>
+    <tr>
+      <th colspan="2" class="bg-slate-100 text-navy font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">
+        {{ title }}
+      </th>
+    </tr>
+  </thead>
+  {% endif %}
+  <tbody>
+    {% for pair in pairs %}
+    {%- set k = pair.key if pair is mapping else pair[0] -%}
+    {%- set v = pair.value if pair is mapping else pair[1] -%}
+    <tr>
+      <th class="kv-key p-1 align-top">
+        {{ k }}
+      </th>
+      <td class="kv-value p-1 align-top">
+        {{ v | format_na }}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endmacro %}
+
+
+{# Paired-column KV table: 4 cols/row (Label|Value|Label|Value) for CIQ density.
+   pairs: list of (key, value) tuples or dicts with 'key' and 'value'.
+   Renders pairs in 2x2 grid: items 0,1 on row 1; items 2,3 on row 2; etc.
+   title: optional table title shown as a header row. #}
+{% macro paired_kv_table(pairs, title="") %}
+<table class="w-full border-collapse my-3 text-sm kv-table kv-paired">
+  {% if title %}
+  <thead>
+    <tr>
+      <th colspan="4" class="bg-slate-100 text-navy font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">
+        {{ title }}
+      </th>
+    </tr>
+  </thead>
+  {% endif %}
+  <tbody>
+    {% for i in range(0, pairs|length, 2) %}
+    {%- set p1 = pairs[i] -%}
+    {%- set k1 = p1.key if p1 is mapping else p1[0] -%}
+    {%- set v1 = p1.value if p1 is mapping else p1[1] -%}
+    <tr>
+      <th class="w-[18%] kv-key p-1 align-top">{{ k1 }}</th>
+      <td class="w-[32%] kv-value p-1 align-top">{{ v1 | format_na }}</td>
+      {% if i + 1 < pairs|length %}
+        {%- set p2 = pairs[i + 1] -%}
+        {%- set k2 = p2.key if p2 is mapping else p2[0] -%}
+        {%- set v2 = p2.value if p2 is mapping else p2[1] -%}
+        <th class="w-[18%] kv-key p-1 border-l border-gray-100 align-top">{{ k2 }}</th>
+        <td class="w-[32%] kv-value p-1 align-top">{{ v2 | format_na }}</td>
+      {% else %}
+        <th class="w-[18%]"></th>
+        <td class="w-[32%]"></td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endmacro %}
+
+
+{# CSS Grid wrapper for multi-column layouts.
+   cols: number of columns (2, 3, or 4).
+   items: list of HTML content strings to place in grid cells. #}
+{% macro multi_column_grid(cols=2, items=[]) %}
+<div class="grid grid-cols-{{ cols }} gap-4 my-3">
+  {% for item in items %}
+  <div class="min-w-0">
+    {{ item }}
+  </div>
+  {% endfor %}
+</div>
+{% endmacro %}
+
+
+{# Multi-column KV grid: renders N KV tables side-by-side.
+   cols: number of columns (2 or 3).
+   Use as a block macro with caller().
+   Each child KV table sits in a grid cell. #}
+{% macro kv_grid(cols=2) %}
+<div class="kv-grid-{{ cols }}">
+  {{ caller() }}
+</div>
+{% endmacro %}
+
+
+{# Conditional cell formatting for financial values.
+   Applies risk coloring based on value direction and threshold.
+   direction: "higher_is_worse", "lower_is_worse", or "neutral".
+   threshold_pct: percentage threshold for color application (default 10).
+   value: the displayed cell content.
+   change_pct: optional YoY change percentage for coloring logic. #}
+{% macro conditional_cell(value, change_pct=0, direction="neutral", threshold_pct=10) %}
+{%- set change = change_pct | float -%}
+{%- set threshold = threshold_pct | float -%}
+{%- if direction == "neutral" or change == 0 -%}
+  <td class="p-1 align-top tabular-nums">{{ value }}</td>
+{%- elif direction == "higher_is_worse" -%}
+  {%- if change >= threshold -%}
+    <td class="p-1 align-top tabular-nums risk-critical-cell text-risk-red font-semibold">{{ value }}</td>
+  {%- elif change <= -threshold -%}
+    <td class="p-1 align-top tabular-nums risk-positive-cell text-risk-blue">{{ value }}</td>
+  {%- else -%}
+    <td class="p-1 align-top tabular-nums">{{ value }}</td>
+  {%- endif -%}
+{%- elif direction == "lower_is_worse" -%}
+  {%- if change <= -threshold -%}
+    <td class="p-1 align-top tabular-nums risk-critical-cell text-risk-red font-semibold">{{ value }}</td>
+  {%- elif change >= threshold -%}
+    <td class="p-1 align-top tabular-nums risk-positive-cell text-risk-blue">{{ value }}</td>
+  {%- else -%}
+    <td class="p-1 align-top tabular-nums">{{ value }}</td>
+  {%- endif -%}
+{%- else -%}
+  <td class="p-1 align-top tabular-nums">{{ value }}</td>
+{%- endif -%}
+{% endmacro %}
+
+
+{# Size tier indicator — shows value + tier classification.
+   No percentile claims (uncalibrated). Tier labels based on
+   standard market cap definitions (Nano < $50M ... Mega > $200B).
+   value: formatted display value (e.g. "$6.2B").
+   label: metric label (e.g. "Market Cap").
+   tier: tier name (e.g. "Mid").
+   percentile: position hint 0-100 (used only for marker placement). #}
+{% macro spectrum_bar(value, label, tier, percentile) %}
+<div style="display:flex;align-items:center;gap:6px;height:20px;">
+  <span style="width:72px;font-size:11px;font-weight:600;color:#1e3a5f;flex-shrink:0;">{{ label }}</span>
+  <span style="width:56px;font-size:11px;font-weight:600;text-align:right;flex-shrink:0;font-variant-numeric:tabular-nums;">{{ value }}</span>
+  {# Tier track — 3 qualitative bands #}
+  <div style="flex:1;position:relative;height:12px;">
+    <div style="position:absolute;inset:0;display:flex;border-radius:2px;overflow:hidden;">
+      <div style="flex:1;background:#94a3b8;"></div>
+      <div style="flex:1;background:#cbd5e1;"></div>
+      <div style="flex:1;background:#e2e8f0;"></div>
+    </div>
+    {# Position marker #}
+    <div style="position:absolute;top:-2px;bottom:-2px;left:{{ percentile }}%;width:3px;background:#1e3a5f;transform:translateX(-50%);border-radius:1px;"></div>
+  </div>
+  <span style="width:48px;font-size:10px;font-weight:600;color:#334155;flex-shrink:0;text-align:right;">{{ tier }}</span>
+</div>
+{% endmacro %}
+
+
+{# ============================================================
+   3-column data grid macros — CapIQ-grade density display.
+   Label | Value | Context/Benchmark
+
+   data_row: renders a single 3-column row.
+     label:        metric name (string)
+     value:        formatted value; if falsy, em dash is shown
+     context_text: peer benchmark, threshold, or context string.
+                   Empty string if no context — column shows blank (not "N/A")
+     footnote_num: integer footnote number, or 0/none for no footnote
+     confidence:   "HIGH" (silent), "MEDIUM" -> (est.), "LOW" -> (web)
+
+   data_grid: wraps data_row calls in a structured table.
+     title:        optional bold header row spanning all 3 columns
+     Use with {% call(row) data_grid("Title") %}...{% endcall %}
+============================================================ #}
+
+{% macro data_row(label, value="", context_text="", footnote_num=0, confidence="HIGH") %}
+<tr class="dr-row">
+  <td class="dr-label">{{ label }}</td>
+  <td class="dr-value">
+    {%- if value is not none and value != "" -%}
+      {{ value }}
+    {%- else -%}
+      <span class="dr-missing">&mdash;</span>
+    {%- endif -%}
+    {%- if footnote_num %}<sup class="fn-ref"><a href="#fn-{{ footnote_num }}">{{ footnote_num }}</a></sup>{% endif -%}
+    {%- if confidence == "MEDIUM" %}<span class="conf-marker"> (est.)</span>{% endif -%}
+    {%- if confidence == "LOW" %}<span class="conf-marker"> (web)</span>{% endif -%}
+  </td>
+  <td class="dr-context">{{ context_text }}</td>
+</tr>
+{% endmacro %}
+
+{% macro data_grid(title="") %}
+<table class="w-full border-collapse text-sm data-grid-table">
+  {% if title %}
+  <thead>
+    <tr><th colspan="3" class="data-grid-title text-left">{{ title }}</th></tr>
+  </thead>
+  {% endif %}
+  <tbody>
+    {{ caller() }}
+  </tbody>
+</table>
+{% endmacro %}
+
+
+{# Single financial row with label, current value, prior value, and YoY change.
+   label: metric name.
+   value: current period value (use format_acct filter for currency).
+   prior_value: prior period value (optional).
+   yoy_change: YoY change percentage as number (e.g., 12.3 or -5.2) or string.
+   yoy_change_pct: explicit numeric YoY change for yoy_arrow filter.
+   direction: "higher_is_worse", "lower_is_worse", or "neutral". #}
+{% macro financial_row(label, value, prior_value="", yoy_change="", yoy_change_pct=none, direction="neutral") %}
+{# Determine if this row has a significant negative change for highlighting #}
+{%- set yoy_str = yoy_change | string -%}
+{%- set is_negative = yoy_str.startswith('-') or yoy_str.startswith('(') -%}
+{%- set is_positive = yoy_str.startswith('+') or (yoy_str and yoy_str[0].isdigit() and '%' in yoy_str) -%}
+{%- set yoy_class = 'text-risk-red font-semibold' if is_negative else 'text-risk-green' if is_positive else '' -%}
+{%- set yoy_prefix = '▼ ' if is_negative else '▲ ' if is_positive else '' -%}
+<tr>
+  <td class="p-1 font-heading text-xs font-semibold text-navy">{{ label }}</td>
+  <td class="p-1 tabular-nums text-right">{{ value }}</td>
+  {%- if prior_value -%}
+    <td class="p-1 tabular-nums text-right text-gray-500">{{ prior_value }}</td>
+  {%- else -%}
+    <td class="p-1 tabular-nums text-right text-gray-400">--</td>
+  {%- endif -%}
+  {%- if yoy_change_pct is not none -%}
+    <td class="p-1 tabular-nums text-right">{{ yoy_change_pct | yoy_arrow }}</td>
+  {%- elif yoy_change -%}
+    <td class="p-1 tabular-nums text-right {{ yoy_class }}">{{ yoy_prefix }}{{ yoy_change }}</td>
+  {%- else -%}
+    <td class="p-1 tabular-nums text-right text-gray-400">--</td>
+  {%- endif -%}
+</tr>
+{% endmacro %}

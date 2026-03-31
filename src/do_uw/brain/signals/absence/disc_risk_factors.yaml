@@ -1,0 +1,46 @@
+- id: ABS.DISC.risk_factors
+  name: Missing Risk Factor Disclosure
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: 'Expected disclosure absent: All SEC registrants must disclose risk factors (Item 1A)'
+  provenance:
+    origin: phase_110_absence
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Absence detection for NLP.MDA.risk_factors
+    threshold_provenance:
+      source: standard
+      rationale: Universal SEC requirement; absence indicates filing deficiency or extraction gap
+  signal_class: inference
+  group: transparency_disclosure
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  epistemology:
+    rule_origin: 'SEC Regulation S-K Item 105: all registrants must disclose material risk factors'
+    threshold_basis: Universal SEC requirement; absence indicates filing deficiency or extraction gap
+  evaluation:
+    mechanism: absence
+    absence_rules:
+      expectation_type: always_expected
+      expected_signals:
+      - NLP.MDA.risk_factors
+      condition: All SEC registrants must disclose risk factors (Item 1A)
+      expected_status: TRIGGERED
+      absence_trigger: SKIPPED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} missing risk factor disclosure at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} missing risk factor disclosure at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} missing risk factor disclosure at {value} is within normal parameters for D&O risk assessment — no
+        D&O concern at this level.'

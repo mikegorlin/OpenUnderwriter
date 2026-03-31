@@ -1,0 +1,30 @@
+{# SEC Enforcement Pipeline — extracted from litigation.html.j2 #}
+
+  {# --- SEC Enforcement Pipeline --- #}
+  {% set enforcement = lit.get('sec_enforcement', {}) %}
+  {% if enforcement %}
+  <h3>SEC Enforcement Pipeline</h3>
+  {{ kv_table([
+    {'key': 'Highest Stage', 'value': enforcement.get('highest_stage', '—')},
+    {'key': 'Wells Notice', 'value': enforcement.get('wells_notice', 'No')},
+    {'key': 'Comment Letters', 'value': enforcement.get('comment_letters', '0')},
+    {'key': 'Investigation', 'value': enforcement.get('investigation', '—')},
+  ]) }}
+  {# SEC Comment Letter Topics — info alert #}
+  {% set cl_topics = lit.get('comment_letter_topics', []) %}
+  {% if cl_topics %}
+  <div style="display:flex; align-items:flex-start; gap:6px; padding:6px 10px; border-radius:5px; background:#EFF6FF; border:1px solid #BFDBFE; margin:0.5rem 0;">
+    <span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:#2563EB; color:white; font-size:7pt; font-weight:700; flex-shrink:0; margin-top:1px;">i</span>
+    <div style="font-size:8pt; color:#1E40AF; line-height:1.4;">
+      <strong>SEC Comment Letters:</strong> {{ cl_topics | join(', ') }}
+    </div>
+  </div>
+  {% endif %}
+  {# D&O Risk context for SEC enforcement #}
+  {% set sec_do = lit.get('signal_sec_do_context', '') %}
+  {% if sec_do %}
+  <div class="bg-bg-alt border border-gray-200 rounded p-1 mb-3 text-xs text-gray-600 leading-relaxed do-context-cell">
+    <strong>D&amp;O Risk:</strong> {{ sec_do | strip_jargon }}
+  </div>
+  {% endif %}
+  {% endif %}

@@ -1,0 +1,29 @@
+# Narrative configuration for Filing Analysis section
+# 5-layer architecture: Verdict > Thesis > Evidence Grid > Implications > Deep Context
+
+id: filing_analysis
+name: Filing Analysis
+
+verdict:
+  thresholds:
+    CRITICAL: CRITICAL
+    ELEVATED: CONCERNING
+    CLEAN: FAVORABLE
+
+thesis_template: >
+  Filing analysis {{ 'identifies critical disclosure issues' if density_level == 'CRITICAL' else 'reveals areas of disclosure concern' if density_level == 'ELEVATED' else 'shows standard disclosure quality' }}.
+  {% if mda_concerns %}MD&A analysis flags potential misrepresentation risk.{% endif %}
+  {% if risk_factor_changes %}Material risk factor changes detected between filing periods.{% endif %}
+
+evidence_keys:
+  - filing_analysis.mda_analysis
+  - filing_analysis.risk_factor_analysis
+  - filing_analysis.filing_patterns
+
+implications_template: >
+  {% if density_level != 'CLEAN' %}Filing disclosure concerns may support Section 11/12 or 10b-5 claims — evaluate D&O coverage triggers.{% endif %}
+  {% if density_level == 'CLEAN' %}Standard filing quality supports routine D&O underwriting assessment.{% endif %}
+
+deep_context_keys:
+  - filing_analysis.mda_detail
+  - filing_analysis.risk_factor_evolution

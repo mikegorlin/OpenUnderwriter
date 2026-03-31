@@ -1,0 +1,42 @@
+{# Executive Risk -- Insider Trading Activity facet template.
+   Renders EXEC.INSIDER.* signals as a metric table with red highlighting.
+   Part of facet dispatch for executive_risk section (Phase 62-01). #}
+
+{% set exec_signals = signal_results_by_section.get('EXEC', []) %}
+{% if exec_signals %}
+{% set insider_signals = [] %}
+{% for sig in exec_signals %}
+  {% if sig.signal_id.startswith('EXEC.INSIDER.') %}
+    {% set _ = insider_signals.append(sig) %}
+  {% endif %}
+{% endfor %}
+
+{% if insider_signals %}
+<h3>Insider Trading Activity</h3>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Indicator</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Assessment</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Evidence</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for sig in insider_signals %}
+    {% set is_concern = sig.status == 'FAIL' or (sig.value is defined and sig.value is not none and 'sell' in (sig.value | string | lower)) %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }} {{ 'bg-red-50' if is_concern else '' }}">
+      <td class="p-1 font-semibold">{{ sig.signal_name | humanize }}</td>
+      <td class="p-1 {{ 'text-risk-red font-semibold' if is_concern else 'text-gray-600' }}">
+        {{ sig.formatted_value | default(sig.value | default('—'), true) }}
+      </td>
+      <td class="p-1 text-xs text-gray-500">{{ sig.evidence | default('', true) | humanize_evidence }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+  <li>Insider selling clusters preceding stock price declines are frequently cited as evidence of scienter in Section 10(b) complaints</li>
+  <li>Trades outside 10b5-1 plans are more probative of insider knowledge and increase D&amp;O liability exposure</li>
+</ul>
+{% endif %}
+{% endif %}

@@ -1,0 +1,23 @@
+{# Waterfall + Radar side-by-side row (Phase 131-03, D-02 dashboard density) #}
+{% set sc_viz = scorecard if scorecard is defined else {} %}
+{% if sc_viz.get('waterfall_svg') or sc_viz.get('radar_svg') %}
+<div class="chart-row" style="display:flex;gap:24px;margin:16px 0;">
+  {% if sc_viz.get('waterfall_svg') %}
+  <div class="chart-cell" style="flex:1;min-width:0;">
+    <h4 style="margin:0 0 8px;font-size:13px;color:#374151;">Score Buildup (Waterfall)</h4>
+    {{ sc_viz.waterfall_svg | safe }}
+  </div>
+  {% endif %}
+  {% if sc_viz.get('radar_svg') %}
+  <div class="chart-cell" style="flex:1;min-width:0;">
+    <h4 style="margin:0 0 8px;font-size:13px;color:#374151;">Risk Concentration (Radar)</h4>
+    {{ sc_viz.radar_svg | safe }}
+  </div>
+  {% endif %}
+</div>
+{% if sc_viz.get('dominant_cluster') %}
+<p style="font-size:12px;color:#6B7280;margin:4px 0 16px;">
+  <strong>Dominant Risk Cluster:</strong> {{ sc_viz.dominant_cluster }}
+</p>
+{% endif %}
+{% endif %}

@@ -1,0 +1,65 @@
+{# Capital Markets Activity — extracted from market.html.j2 #}
+  {# --- Capital Markets Activity (Section 11 Windows) --- #}
+  {% set cap_mkt = mkt.get('capital_markets', {}) %}
+  {% if cap_mkt %}
+  <h3>Capital Markets Activity</h3>
+  {{ kv_table([
+    {'key': 'Active Section 11 Windows', 'value': cap_mkt.get('active_s11_windows', '0')},
+    {'key': 'ATM Program', 'value': cap_mkt.get('has_atm', 'No')},
+  ]) }}
+  {% set cap_offerings = cap_mkt.get('offerings', []) %}
+  {% if cap_offerings %}
+  <h4>Recent Offerings (3-Year)</h4>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Type</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Filing</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Date</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Amount</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Sec. 11 Window End</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for off in cap_offerings %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 font-semibold">{{ off.type | humanize }}</td>
+        <td class="p-1">{{ off.filing }}</td>
+        <td class="p-1 tabular-nums">{{ off.date }}</td>
+        <td class="p-1 text-right tabular-nums">{{ off.amount }}</td>
+        <td class="p-1 tabular-nums {{ 'text-risk-red font-semibold' if off.s11_window_end != 'N/A' else '' }}">{{ off.s11_window_end }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {% set cap_shelves = cap_mkt.get('shelf_registrations', []) %}
+  {% if cap_shelves %}
+  <h4>Active Shelf Registrations</h4>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Filing Type</th>
+        <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Date</th>
+        <th class="text-right p-1 border-b font-heading text-xs font-semibold uppercase">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for shelf in cap_shelves %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1">{{ shelf.filing }}</td>
+        <td class="p-1 tabular-nums">{{ shelf.date }}</td>
+        <td class="p-1 text-right tabular-nums">{{ shelf.amount }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>Capital markets activity creates Section 11 liability exposure for directors who sign registration statements</li>
+    <li>Section 11 has a 1-year SOL from discovery and 3-year statute of repose from offering date</li>
+    {% if cap_mkt.get('active_s11_windows', '0') != '0' %}
+    <li>Active Section 11 windows indicate current statutory exposure for signing directors</li>
+    {% endif %}
+  </ul>
+  {% endif %}

@@ -1,0 +1,33 @@
+{# Emerging Risk Radar -- forward-looking risk table with D&O factor mapping (Phase 118) #}
+{% set er = dossier_risks | default({}) %}
+{% if er.get('emerging_risks_available', false) %}
+<h3 id="dossier-emerging-risk-radar">Emerging Risk Radar</h3>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Risk</th>
+      <th class="text-center p-1 border-b font-heading text-xs font-semibold uppercase">Probability</th>
+      <th class="text-center p-1 border-b font-heading text-xs font-semibold uppercase">Impact</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Timeframe</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">D&amp;O Factor</th>
+      <th class="text-center p-1 border-b font-heading text-xs font-semibold uppercase">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for risk in er.risks %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ risk.risk }}</td>
+      <td class="p-1 text-center font-semibold {{ risk.probability_class | default('', true) }}">{{ risk.probability }}</td>
+      <td class="p-1 text-center font-semibold">
+        {% if risk.impact == 'Very High' or risk.impact == 'HIGH' %}<span class="text-risk-red">{{ risk.impact }}</span>
+        {% elif risk.impact == 'High' or risk.impact == 'MEDIUM' %}<span class="text-amber-600">{{ risk.impact }}</span>
+        {% else %}<span class="text-gray-600">{{ risk.impact }}</span>{% endif %}
+      </td>
+      <td class="p-1 text-xs">{{ risk.timeframe | default('--', true) }}</td>
+      <td class="p-1 text-xs font-mono">{{ risk.do_factor | default('--', true) }}</td>
+      <td class="p-1 text-center text-xs">{{ risk.status | default('--', true) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}

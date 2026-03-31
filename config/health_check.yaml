@@ -1,0 +1,40 @@
+# Health check heuristics for post-pipeline output quality validation.
+# All health issues are warnings (never block pipeline).
+
+llm_markers:
+  # Phrases that indicate raw LLM text leaking into rendered output
+  - "Based on the filing"
+  - "Based on the company"
+  - "According to the"
+  - "I cannot determine"
+  - "I was unable to"
+  - "The filing indicates"
+  - "The company's filing"
+  # Markdown formatting that shouldn't appear in HTML
+  - "## "
+  - "**"
+  - "```"
+  # JSON/dict literals
+  - "'{'"
+  - '{"'
+
+zero_valid_fields:
+  # Fields where 0.0 is a legitimate value (not a placeholder)
+  - dividends
+  - dividend_yield
+  - short_interest
+  - insider_shares_sold
+  - options_exercised
+  - stock_repurchase
+  - goodwill_impairment
+  - restructuring_charges
+  - discontinued_operations
+  - extraordinary_items
+  - preferred_dividends
+
+empty_value_patterns:
+  # Patterns indicating missing data in numeric contexts
+  - "N/A"
+  - "Not Available"
+  - "n/a"
+  - "TBD"

@@ -1,0 +1,28 @@
+{# Revenue Recognition (ASC 606) -- recognition elements + billings narrative (Phase 118) #}
+{% set asc = dossier_asc | default({}) %}
+{% if asc.get('asc_606_available', false) %}
+<h3 id="dossier-asc-606">Revenue Recognition (ASC 606)</h3>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Element</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Approach</th>
+      <th class="text-center p-1 border-b font-heading text-xs font-semibold uppercase">Complexity</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">D&amp;O Risk</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for element in asc.elements %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ element.element }}</td>
+      <td class="p-1">{{ element.approach }}</td>
+      <td class="p-1 text-center font-semibold {{ element.complexity_class | default('', true) }}">{{ element.complexity }}</td>
+      <td class="p-1 text-xs">{{ element.do_risk }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% if asc.billings_narrative %}
+<p class="text-sm leading-relaxed mb-3">{{ asc.billings_narrative }}</p>
+{% endif %}
+{% endif %}

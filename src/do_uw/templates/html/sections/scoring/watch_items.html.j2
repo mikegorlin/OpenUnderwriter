@@ -1,0 +1,25 @@
+{# Watch Items -- items requiring ongoing attention (Phase 117 -- SCORE-05) #}
+{% set post = posture_data | default({}) %}
+{% if post.get('has_watch_items', false) %}
+<h3 id="watch-items">Watch Items ({{ post.watch_item_count }})</h3>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Item</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Current State</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Re-evaluation Threshold</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Review Frequency</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for wi in post.watch_items %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ wi.item }}</td>
+      <td class="p-1 text-xs">{{ wi.current_state | default('--', true) }}</td>
+      <td class="p-1 font-mono text-xs">{{ wi.threshold | default('--', true) }}</td>
+      <td class="p-1 text-xs">{{ wi.re_evaluation | default('--', true) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}

@@ -1,0 +1,2185 @@
+{
+  "revenue": {
+    "canonical_name": "revenue",
+    "xbrl_tags": [
+      "Revenues",
+      "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "SalesRevenueNet",
+      "RevenueFromContractWithCustomerIncludingAssessedTax",
+      "SalesRevenueGoodsNet"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Total revenue / net sales",
+    "expected_sign": "positive"
+  },
+  "cost_of_revenue": {
+    "canonical_name": "cost_of_revenue",
+    "xbrl_tags": [
+      "CostOfRevenue",
+      "CostOfGoodsAndServicesSold",
+      "CostOfGoodsSold",
+      "CostOfGoodsAndServiceExcludingDepreciationDepletionAndAmortization"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Cost of revenue / COGS",
+    "expected_sign": "positive"
+  },
+  "gross_profit": {
+    "canonical_name": "gross_profit",
+    "xbrl_tags": [
+      "GrossProfit",
+      "GrossMargin"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Gross profit",
+    "expected_sign": "positive"
+  },
+  "operating_income": {
+    "canonical_name": "operating_income",
+    "xbrl_tags": [
+      "OperatingIncomeLoss",
+      "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+      "IncomeLossFromContinuingOperations"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Operating income / loss",
+    "expected_sign": "any"
+  },
+  "net_income": {
+    "canonical_name": "net_income",
+    "xbrl_tags": [
+      "NetIncomeLoss",
+      "ProfitLoss",
+      "NetIncomeLossAvailableToCommonStockholdersBasic",
+      "NetIncomeLossAvailableToCommonStockholdersDiluted"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Net income / net loss",
+    "expected_sign": "any"
+  },
+  "eps_basic": {
+    "canonical_name": "eps_basic",
+    "xbrl_tags": [
+      "EarningsPerShareBasic",
+      "IncomeLossFromContinuingOperationsPerBasicShare"
+    ],
+    "unit": "USD/shares",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Basic earnings per share",
+    "expected_sign": "any"
+  },
+  "eps_diluted": {
+    "canonical_name": "eps_diluted",
+    "xbrl_tags": [
+      "EarningsPerShareDiluted",
+      "IncomeLossFromContinuingOperationsPerDilutedShare"
+    ],
+    "unit": "USD/shares",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Diluted earnings per share",
+    "expected_sign": "any"
+  },
+  "total_assets": {
+    "canonical_name": "total_assets",
+    "xbrl_tags": [
+      "Assets"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Total assets",
+    "expected_sign": "positive"
+  },
+  "total_liabilities": {
+    "canonical_name": "total_liabilities",
+    "xbrl_tags": [
+      "Liabilities"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Total liabilities",
+    "expected_sign": "positive"
+  },
+  "stockholders_equity": {
+    "canonical_name": "stockholders_equity",
+    "xbrl_tags": [
+      "StockholdersEquity",
+      "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+      "CommonStockholdersEquity"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Total stockholders' equity",
+    "expected_sign": "any"
+  },
+  "current_assets": {
+    "canonical_name": "current_assets",
+    "xbrl_tags": [
+      "AssetsCurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Total current assets",
+    "expected_sign": "positive"
+  },
+  "current_liabilities": {
+    "canonical_name": "current_liabilities",
+    "xbrl_tags": [
+      "LiabilitiesCurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Total current liabilities",
+    "expected_sign": "positive"
+  },
+  "cash_and_equivalents": {
+    "canonical_name": "cash_and_equivalents",
+    "xbrl_tags": [
+      "CashAndCashEquivalentsAtCarryingValue",
+      "CashCashEquivalentsAndShortTermInvestments",
+      "Cash",
+      "CashAndCashEquivalentsPeriodIncreaseDecrease"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Cash and cash equivalents",
+    "expected_sign": "positive"
+  },
+  "accounts_receivable": {
+    "canonical_name": "accounts_receivable",
+    "xbrl_tags": [
+      "AccountsReceivableNetCurrent",
+      "AccountsReceivableNet",
+      "ReceivablesNetCurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Accounts receivable, net",
+    "expected_sign": "positive"
+  },
+  "inventory": {
+    "canonical_name": "inventory",
+    "xbrl_tags": [
+      "InventoryNet",
+      "InventoryFinishedGoodsAndWorkInProcessNetOfReserves",
+      "InventoryRawMaterialsAndSuppliesNetOfReserves"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Inventory, net",
+    "expected_sign": "positive"
+  },
+  "property_plant_equipment": {
+    "canonical_name": "property_plant_equipment",
+    "xbrl_tags": [
+      "PropertyPlantAndEquipmentNet",
+      "PropertyPlantAndEquipmentGross",
+      "PropertyPlantAndEquipmentAndFinanceLeaseRightOfUseAssetAfterAccumulatedDepreciationAndAmortization"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Property, plant and equipment, net",
+    "expected_sign": "positive"
+  },
+  "goodwill": {
+    "canonical_name": "goodwill",
+    "xbrl_tags": [
+      "Goodwill"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Goodwill",
+    "expected_sign": "positive"
+  },
+  "intangible_assets": {
+    "canonical_name": "intangible_assets",
+    "xbrl_tags": [
+      "IntangibleAssetsNetExcludingGoodwill",
+      "FiniteLivedIntangibleAssetsNet",
+      "IntangibleAssetsNetIncludingGoodwill"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Intangible assets, net (excluding goodwill)",
+    "expected_sign": "positive"
+  },
+  "long_term_debt": {
+    "canonical_name": "long_term_debt",
+    "xbrl_tags": [
+      "LongTermDebtNoncurrent",
+      "LongTermDebt",
+      "LongTermDebtAndCapitalLeaseObligations"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Long-term debt, non-current",
+    "expected_sign": "positive"
+  },
+  "short_term_debt": {
+    "canonical_name": "short_term_debt",
+    "xbrl_tags": [
+      "ShortTermBorrowings",
+      "DebtCurrent",
+      "LongTermDebtCurrent",
+      "CommercialPaper"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Short-term debt / current portion of long-term debt",
+    "expected_sign": "positive"
+  },
+  "retained_earnings": {
+    "canonical_name": "retained_earnings",
+    "xbrl_tags": [
+      "RetainedEarningsAccumulatedDeficit",
+      "RetainedEarningsUnappropriated"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Retained earnings / accumulated deficit",
+    "expected_sign": "any"
+  },
+  "total_debt": {
+    "canonical_name": "total_debt",
+    "xbrl_tags": [
+      "LongTermDebtAndCapitalLeaseObligationsIncludingCurrentMaturities",
+      "DebtLongtermAndShorttermCombinedAmount",
+      "LongTermDebt"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Total debt (short-term + long-term)",
+    "expected_sign": "positive"
+  },
+  "operating_cash_flow": {
+    "canonical_name": "operating_cash_flow",
+    "xbrl_tags": [
+      "NetCashProvidedByUsedInOperatingActivities",
+      "NetCashProvidedByUsedInOperatingActivitiesContinuingOperations"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Net cash from operating activities",
+    "expected_sign": "any"
+  },
+  "investing_cash_flow": {
+    "canonical_name": "investing_cash_flow",
+    "xbrl_tags": [
+      "NetCashProvidedByUsedInInvestingActivities",
+      "NetCashProvidedByUsedInInvestingActivitiesContinuingOperations"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Net cash from investing activities",
+    "expected_sign": "any"
+  },
+  "financing_cash_flow": {
+    "canonical_name": "financing_cash_flow",
+    "xbrl_tags": [
+      "NetCashProvidedByUsedInFinancingActivities",
+      "NetCashProvidedByUsedInFinancingActivitiesContinuingOperations"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Net cash from financing activities",
+    "expected_sign": "any"
+  },
+  "capital_expenditures": {
+    "canonical_name": "capital_expenditures",
+    "xbrl_tags": [
+      "PaymentsToAcquirePropertyPlantAndEquipment",
+      "CapitalExpenditureDiscontinuedOperations",
+      "PaymentsToAcquireProductiveAssets"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Capital expenditures",
+    "expected_sign": "positive"
+  },
+  "depreciation_amortization": {
+    "canonical_name": "depreciation_amortization",
+    "xbrl_tags": [
+      "DepreciationDepletionAndAmortization",
+      "DepreciationAndAmortization",
+      "Depreciation"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Depreciation and amortization",
+    "expected_sign": "positive"
+  },
+  "interest_expense": {
+    "canonical_name": "interest_expense",
+    "xbrl_tags": [
+      "InterestExpense",
+      "InterestExpenseDebt",
+      "InterestIncomeExpenseNet",
+      "InterestPaidNet"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Interest expense",
+    "expected_sign": "positive"
+  },
+  "income_tax_expense": {
+    "canonical_name": "income_tax_expense",
+    "xbrl_tags": [
+      "IncomeTaxExpenseBenefit",
+      "IncomeTaxesPaid",
+      "CurrentIncomeTaxExpenseBenefit"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Income tax expense / benefit",
+    "expected_sign": "positive"
+  },
+  "research_development": {
+    "canonical_name": "research_development",
+    "xbrl_tags": [
+      "ResearchAndDevelopmentExpense",
+      "ResearchAndDevelopmentExpenseExcludingAcquiredInProcessCost",
+      "ResearchAndDevelopmentExpenseSoftwareExcludingAcquiredInProcessCost"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Research and development expense",
+    "expected_sign": "positive"
+  },
+  "sga_expense": {
+    "canonical_name": "sga_expense",
+    "xbrl_tags": [
+      "SellingGeneralAndAdministrativeExpense",
+      "GeneralAndAdministrativeExpense",
+      "SellingAndMarketingExpense"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Selling, general and administrative expense",
+    "expected_sign": "positive"
+  },
+  "ebit": {
+    "canonical_name": "ebit",
+    "xbrl_tags": [
+      "OperatingIncomeLoss",
+      "IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Earnings before interest and taxes (EBIT)",
+    "expected_sign": "any"
+  },
+  "shares_outstanding": {
+    "canonical_name": "shares_outstanding",
+    "xbrl_tags": [
+      "CommonStockSharesOutstanding",
+      "CommonStockSharesIssued",
+      "EntityCommonStockSharesOutstanding"
+    ],
+    "unit": "shares",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Common shares outstanding",
+    "expected_sign": "positive"
+  },
+  "dividends_paid": {
+    "canonical_name": "dividends_paid",
+    "xbrl_tags": [
+      "PaymentsOfDividendsCommonStock",
+      "PaymentsOfDividends",
+      "PaymentsOfOrdinaryDividends"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Dividends paid",
+    "expected_sign": "positive"
+  },
+  "share_repurchases": {
+    "canonical_name": "share_repurchases",
+    "xbrl_tags": [
+      "PaymentsForRepurchaseOfCommonStock",
+      "PaymentsForRepurchaseOfEquity",
+      "StockRepurchasedDuringPeriodValue"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Share repurchases / buybacks",
+    "expected_sign": "positive"
+  },
+  "accounts_payable": {
+    "canonical_name": "accounts_payable",
+    "xbrl_tags": [
+      "AccountsPayableCurrent",
+      "AccountsPayableAndAccruedLiabilitiesCurrent",
+      "AccountsPayableTradeCurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Accounts payable",
+    "expected_sign": "positive"
+  },
+  "deferred_revenue": {
+    "canonical_name": "deferred_revenue",
+    "xbrl_tags": [
+      "DeferredRevenueCurrent",
+      "ContractWithCustomerLiabilityCurrent",
+      "DeferredRevenueNoncurrent",
+      "DeferredRevenue"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Deferred revenue / contract liabilities",
+    "expected_sign": "positive"
+  },
+  "operating_lease_liabilities": {
+    "canonical_name": "operating_lease_liabilities",
+    "xbrl_tags": [
+      "OperatingLeaseLiability",
+      "OperatingLeaseLiabilityCurrent",
+      "OperatingLeaseLiabilityNoncurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Operating lease liabilities",
+    "expected_sign": "positive"
+  },
+  "weighted_avg_shares_basic": {
+    "canonical_name": "weighted_avg_shares_basic",
+    "xbrl_tags": [
+      "WeightedAverageNumberOfSharesOutstandingBasic",
+      "WeightedAverageNumberOfShareOutstandingBasicAndDiluted"
+    ],
+    "unit": "shares",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Weighted average shares outstanding (basic)",
+    "expected_sign": "positive"
+  },
+  "weighted_avg_shares_diluted": {
+    "canonical_name": "weighted_avg_shares_diluted",
+    "xbrl_tags": [
+      "WeightedAverageNumberOfDilutedSharesOutstanding",
+      "WeightedAverageNumberOfShareOutstandingBasicAndDiluted"
+    ],
+    "unit": "shares",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Weighted average shares outstanding (diluted)",
+    "expected_sign": "positive"
+  },
+  "comprehensive_income": {
+    "canonical_name": "comprehensive_income",
+    "xbrl_tags": [
+      "ComprehensiveIncomeNetOfTax",
+      "ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest",
+      "ComprehensiveIncomeNetOfTaxAttributableToNoncontrollingInterest"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Total comprehensive income / loss",
+    "expected_sign": "any"
+  },
+  "other_income": {
+    "canonical_name": "other_income",
+    "xbrl_tags": [
+      "NonoperatingIncomeExpense",
+      "OtherNonoperatingIncomeExpense",
+      "OtherIncome"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Other income / non-operating income",
+    "expected_sign": "any"
+  },
+  "restructuring_charges": {
+    "canonical_name": "restructuring_charges",
+    "xbrl_tags": [
+      "RestructuringCharges",
+      "RestructuringSettlementAndImpairmentProvisions",
+      "RestructuringCostsAndAssetImpairmentCharges"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Restructuring charges",
+    "expected_sign": "positive"
+  },
+  "impairment_charges": {
+    "canonical_name": "impairment_charges",
+    "xbrl_tags": [
+      "GoodwillImpairmentLoss",
+      "AssetImpairmentCharges",
+      "ImpairmentOfLongLivedAssetsHeldForUse",
+      "ImpairmentOfIntangibleAssetsExcludingGoodwill"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Impairment charges (goodwill, intangibles, long-lived assets)",
+    "expected_sign": "positive"
+  },
+  "income_from_operations": {
+    "canonical_name": "income_from_operations",
+    "xbrl_tags": [
+      "OperatingIncomeLoss",
+      "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Income from operations",
+    "expected_sign": "any"
+  },
+  "pretax_income": {
+    "canonical_name": "pretax_income",
+    "xbrl_tags": [
+      "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+      "IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments",
+      "IncomeLossFromContinuingOperationsBeforeIncomeTaxesDomestic"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Pre-tax income",
+    "expected_sign": "any"
+  },
+  "minority_interest": {
+    "canonical_name": "minority_interest",
+    "xbrl_tags": [
+      "MinorityInterest",
+      "NoncontrollingInterestInNetIncomeLossOtherMinoritiesShareOfUnconsolidatedSubsidiaries",
+      "NetIncomeLossAttributableToNoncontrollingInterest"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Minority / noncontrolling interest",
+    "expected_sign": "any"
+  },
+  "preferred_dividends": {
+    "canonical_name": "preferred_dividends",
+    "xbrl_tags": [
+      "PreferredStockDividendsIncomeStatementImpact",
+      "DividendsPreferredStock",
+      "PreferredStockDividendsAndOtherAdjustments"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Preferred stock dividends",
+    "expected_sign": "positive"
+  },
+  "working_capital": {
+    "canonical_name": "working_capital",
+    "xbrl_tags": [],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "derived",
+    "description": "Working capital (derived: current_assets - current_liabilities)",
+    "expected_sign": "any"
+  },
+  "ebitda": {
+    "canonical_name": "ebitda",
+    "xbrl_tags": [],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "EBITDA (derived: operating_income + depreciation_amortization)",
+    "expected_sign": "any"
+  },
+
+  "stock_based_compensation": {
+    "canonical_name": "stock_based_compensation",
+    "xbrl_tags": [
+      "ShareBasedCompensation",
+      "AllocatedShareBasedCompensationExpense",
+      "ShareBasedCompensationIncludingDiscontinuedOperations"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Stock-based compensation expense",
+    "expected_sign": "positive"
+  },
+  "income_before_tax": {
+    "canonical_name": "income_before_tax",
+    "xbrl_tags": [
+      "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+      "IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments",
+      "IncomeLossFromContinuingOperationsBeforeIncomeTaxesDomestic"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Income before income taxes",
+    "expected_sign": "any"
+  },
+  "discontinued_operations": {
+    "canonical_name": "discontinued_operations",
+    "xbrl_tags": [
+      "IncomeLossFromDiscontinuedOperationsNetOfTax",
+      "IncomeLossFromDiscontinuedOperationsNetOfTaxAttributableToReportingEntity",
+      "DiscontinuedOperationGainLossOnDisposalOfDiscontinuedOperationNetOfTax"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Income/loss from discontinued operations, net of tax",
+    "expected_sign": "any"
+  },
+  "gain_loss_investments": {
+    "canonical_name": "gain_loss_investments",
+    "xbrl_tags": [
+      "GainLossOnInvestments",
+      "GainLossOnInvestmentsExcludingOtherThanTemporaryImpairments",
+      "UnrealizedGainLossOnInvestments"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Gain/loss on investments",
+    "expected_sign": "any"
+  },
+  "gain_loss_sale_assets": {
+    "canonical_name": "gain_loss_sale_assets",
+    "xbrl_tags": [
+      "GainLossOnSaleOfPropertyPlantEquipment",
+      "GainLossOnDispositionOfAssets1",
+      "GainLossOnSaleOfBusiness"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Gain/loss on sale of assets",
+    "expected_sign": "any"
+  },
+  "other_comprehensive_income": {
+    "canonical_name": "other_comprehensive_income",
+    "xbrl_tags": [
+      "OtherComprehensiveIncomeLossNetOfTax",
+      "OtherComprehensiveIncomeLossNetOfTaxPortionAttributableToParent",
+      "OtherComprehensiveIncomeLossAvailableForSaleSecuritiesAdjustmentNetOfTax"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Other comprehensive income/loss, net of tax",
+    "expected_sign": "any"
+  },
+  "operating_expenses_total": {
+    "canonical_name": "operating_expenses_total",
+    "xbrl_tags": [
+      "OperatingExpenses",
+      "CostsAndExpenses",
+      "OperatingCostsAndExpenses"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Total operating expenses",
+    "expected_sign": "positive"
+  },
+  "total_operating_expenses": {
+    "canonical_name": "total_operating_expenses",
+    "xbrl_tags": [
+      "CostsAndExpenses",
+      "OperatingCostsAndExpenses",
+      "OperatingExpenses"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Total costs and expenses",
+    "expected_sign": "positive"
+  },
+
+  "short_term_investments": {
+    "canonical_name": "short_term_investments",
+    "xbrl_tags": [
+      "ShortTermInvestments",
+      "MarketableSecuritiesCurrent",
+      "AvailableForSaleSecuritiesDebtSecuritiesCurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Short-term investments / marketable securities",
+    "expected_sign": "positive"
+  },
+  "prepaid_expenses": {
+    "canonical_name": "prepaid_expenses",
+    "xbrl_tags": [
+      "PrepaidExpenseAndOtherAssetsCurrent",
+      "PrepaidExpense",
+      "PrepaidExpenseAndOtherAssetsNoncurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Prepaid expenses and other current assets",
+    "expected_sign": "positive"
+  },
+  "other_current_assets": {
+    "canonical_name": "other_current_assets",
+    "xbrl_tags": [
+      "OtherAssetsCurrent",
+      "OtherAssetsCurrentAndNoncurrent",
+      "OtherReceivables"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Other current assets",
+    "expected_sign": "positive"
+  },
+  "long_term_investments": {
+    "canonical_name": "long_term_investments",
+    "xbrl_tags": [
+      "LongTermInvestments",
+      "InvestmentsInAffiliatesSubsidiariesAssociatesAndJointVentures",
+      "MarketableSecuritiesNoncurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Long-term investments",
+    "expected_sign": "positive"
+  },
+  "accrued_liabilities": {
+    "canonical_name": "accrued_liabilities",
+    "xbrl_tags": [
+      "AccruedLiabilitiesCurrent",
+      "AccruedLiabilitiesAndOtherLiabilities",
+      "AccruedIncomeTaxesCurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Accrued liabilities",
+    "expected_sign": "positive"
+  },
+  "deferred_tax_asset": {
+    "canonical_name": "deferred_tax_asset",
+    "xbrl_tags": [
+      "DeferredIncomeTaxAssetsNet",
+      "DeferredTaxAssetsLiabilitiesNetNoncurrent",
+      "DeferredTaxAssetsNetNoncurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Deferred income tax assets, net",
+    "expected_sign": "positive"
+  },
+  "deferred_tax_liability": {
+    "canonical_name": "deferred_tax_liability",
+    "xbrl_tags": [
+      "DeferredIncomeTaxLiabilitiesNet",
+      "DeferredTaxLiabilitiesNoncurrent",
+      "DeferredTaxLiabilitiesGrossNoncurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Deferred income tax liabilities, net",
+    "expected_sign": "positive"
+  },
+  "pension_liability": {
+    "canonical_name": "pension_liability",
+    "xbrl_tags": [
+      "DefinedBenefitPlanAmountsRecognizedInBalanceSheet",
+      "PensionAndOtherPostretirementDefinedBenefitPlansLiabilitiesNoncurrent",
+      "PensionAndOtherPostretirementDefinedBenefitPlansCurrentLiabilities"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Pension and post-retirement benefit liabilities",
+    "expected_sign": "positive"
+  },
+  "accumulated_other_comprehensive_income": {
+    "canonical_name": "accumulated_other_comprehensive_income",
+    "xbrl_tags": [
+      "AccumulatedOtherComprehensiveIncomeLossNetOfTax",
+      "AccumulatedOtherComprehensiveIncomeMember",
+      "AccumulatedOtherComprehensiveIncomeLossForeignCurrencyTranslationAdjustmentNetOfTax"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Accumulated other comprehensive income/loss",
+    "expected_sign": "any"
+  },
+  "treasury_stock": {
+    "canonical_name": "treasury_stock",
+    "xbrl_tags": [
+      "TreasuryStockValue",
+      "TreasuryStockValueAcquiredCostMethod",
+      "TreasuryStockCommonValue"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Treasury stock, at cost",
+    "expected_sign": "positive"
+  },
+  "common_stock_value": {
+    "canonical_name": "common_stock_value",
+    "xbrl_tags": [
+      "CommonStockValue",
+      "CommonStockValueOutstanding",
+      "CommonStocksIncludingAdditionalPaidInCapital"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Common stock par value",
+    "expected_sign": "positive"
+  },
+  "additional_paid_in_capital": {
+    "canonical_name": "additional_paid_in_capital",
+    "xbrl_tags": [
+      "AdditionalPaidInCapital",
+      "AdditionalPaidInCapitalCommonStock",
+      "AdditionalPaidInCapitalPreferredStock"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Additional paid-in capital",
+    "expected_sign": "positive"
+  },
+  "liabilities_and_stockholders_equity": {
+    "canonical_name": "liabilities_and_stockholders_equity",
+    "xbrl_tags": [
+      "LiabilitiesAndStockholdersEquity",
+      "LiabilitiesAndStockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Total liabilities and stockholders' equity",
+    "expected_sign": "positive"
+  },
+  "preferred_stock_value": {
+    "canonical_name": "preferred_stock_value",
+    "xbrl_tags": [
+      "PreferredStockValue",
+      "PreferredStockValueOutstanding",
+      "PreferredStockLiquidationPreference"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Preferred stock value",
+    "expected_sign": "positive"
+  },
+  "right_of_use_asset": {
+    "canonical_name": "right_of_use_asset",
+    "xbrl_tags": [
+      "OperatingLeaseRightOfUseAsset",
+      "FinanceLeaseRightOfUseAsset",
+      "RightOfUseAssetObtainedInExchangeForOperatingLeaseLiability"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Right-of-use assets (operating and finance leases)",
+    "expected_sign": "positive"
+  },
+  "other_noncurrent_assets": {
+    "canonical_name": "other_noncurrent_assets",
+    "xbrl_tags": [
+      "OtherAssetsNoncurrent",
+      "OtherAssets",
+      "OtherAssetsCurrentAndNoncurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Other non-current assets",
+    "expected_sign": "positive"
+  },
+  "other_noncurrent_liabilities": {
+    "canonical_name": "other_noncurrent_liabilities",
+    "xbrl_tags": [
+      "OtherLiabilitiesNoncurrent",
+      "OtherLiabilities",
+      "OtherLiabilitiesCurrentAndNoncurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Other non-current liabilities",
+    "expected_sign": "positive"
+  },
+
+  "acquisitions_net": {
+    "canonical_name": "acquisitions_net",
+    "xbrl_tags": [
+      "PaymentsToAcquireBusinessesNetOfCashAcquired",
+      "PaymentsToAcquireBusinessesGross",
+      "PaymentsToAcquireBusinessTwoNetOfCashAcquired"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Acquisitions, net of cash acquired",
+    "expected_sign": "positive"
+  },
+  "debt_issuance": {
+    "canonical_name": "debt_issuance",
+    "xbrl_tags": [
+      "ProceedsFromIssuanceOfLongTermDebt",
+      "ProceedsFromIssuanceOfDebt",
+      "ProceedsFromLongTermLinesOfCredit"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Proceeds from issuance of debt",
+    "expected_sign": "positive"
+  },
+  "debt_repayment": {
+    "canonical_name": "debt_repayment",
+    "xbrl_tags": [
+      "RepaymentsOfLongTermDebt",
+      "RepaymentsOfDebt",
+      "RepaymentsOfLongTermCapitalLeaseObligations"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Repayments of debt",
+    "expected_sign": "positive"
+  },
+  "stock_issuance": {
+    "canonical_name": "stock_issuance",
+    "xbrl_tags": [
+      "ProceedsFromIssuanceOfCommonStock",
+      "ProceedsFromStockPlans",
+      "ProceedsFromIssuanceOrSaleOfEquity"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Proceeds from stock issuance",
+    "expected_sign": "positive"
+  },
+  "interest_paid": {
+    "canonical_name": "interest_paid",
+    "xbrl_tags": [
+      "InterestPaidNet",
+      "InterestPaid",
+      "InterestPaidCapitalized"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Interest paid (supplemental)",
+    "expected_sign": "positive"
+  },
+  "taxes_paid": {
+    "canonical_name": "taxes_paid",
+    "xbrl_tags": [
+      "IncomeTaxesPaid",
+      "IncomeTaxesPaidNet",
+      "IncomeTaxesPaidNetOfRefundsReceived"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Income taxes paid (supplemental)",
+    "expected_sign": "positive"
+  },
+  "stock_based_comp_cf": {
+    "canonical_name": "stock_based_comp_cf",
+    "xbrl_tags": [
+      "ShareBasedCompensation",
+      "StockBasedCompensationExpenseIncludingDiscontinuedOperations",
+      "ShareBasedCompensationIncludingDiscontinuedOperations"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Stock-based compensation (cash flow adjustment)",
+    "expected_sign": "positive"
+  },
+  "change_in_working_capital": {
+    "canonical_name": "change_in_working_capital",
+    "xbrl_tags": [
+      "IncreaseDecreaseInOperatingCapital",
+      "IncreaseDecreaseInOperatingLiabilities",
+      "IncreaseDecreaseInAccountsPayableAndAccruedLiabilities"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Changes in operating working capital",
+    "expected_sign": "any"
+  },
+  "net_change_in_cash": {
+    "canonical_name": "net_change_in_cash",
+    "xbrl_tags": [
+      "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect",
+      "CashAndCashEquivalentsPeriodIncreaseDecrease",
+      "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseExcludingExchangeRateEffect"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Net increase/decrease in cash and equivalents",
+    "expected_sign": "any"
+  },
+  "purchase_of_investments": {
+    "canonical_name": "purchase_of_investments",
+    "xbrl_tags": [
+      "PaymentsToAcquireInvestments",
+      "PaymentsToAcquireAvailableForSaleSecuritiesDebt",
+      "PaymentsToAcquireShortTermInvestments"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Purchases of investments",
+    "expected_sign": "positive"
+  },
+  "sale_of_investments": {
+    "canonical_name": "sale_of_investments",
+    "xbrl_tags": [
+      "ProceedsFromSaleAndMaturityOfMarketableSecurities",
+      "ProceedsFromSaleOfAvailableForSaleSecuritiesDebt",
+      "ProceedsFromMaturitiesPrepaymentsAndCallsOfAvailableForSaleSecurities"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Proceeds from sale/maturity of investments",
+    "expected_sign": "positive"
+  },
+  "deferred_income_taxes_cf": {
+    "canonical_name": "deferred_income_taxes_cf",
+    "xbrl_tags": [
+      "DeferredIncomeTaxExpenseBenefit",
+      "DeferredIncomeTaxesAndTaxCredits",
+      "IncreaseDecreaseInDeferredIncomeTaxes"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Deferred income taxes (cash flow adjustment)",
+    "expected_sign": "any"
+  },
+  "change_in_receivables": {
+    "canonical_name": "change_in_receivables",
+    "xbrl_tags": [
+      "IncreaseDecreaseInAccountsReceivable",
+      "IncreaseDecreaseInReceivables",
+      "IncreaseDecreaseInAccountsAndOtherReceivables"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Change in accounts receivable",
+    "expected_sign": "any"
+  },
+  "change_in_inventory": {
+    "canonical_name": "change_in_inventory",
+    "xbrl_tags": [
+      "IncreaseDecreaseInInventories",
+      "IncreaseDecreaseInRetailRelatedInventories",
+      "IncreaseDecreaseInOtherInventories"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Change in inventory",
+    "expected_sign": "any"
+  },
+  "change_in_payables": {
+    "canonical_name": "change_in_payables",
+    "xbrl_tags": [
+      "IncreaseDecreaseInAccountsPayable",
+      "IncreaseDecreaseInAccountsPayableTrade",
+      "IncreaseDecreaseInAccountsPayableAndAccruedLiabilities"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Change in accounts payable",
+    "expected_sign": "any"
+  },
+
+  "gross_margin_pct": {
+    "canonical_name": "gross_margin_pct",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "Gross margin percentage (derived: (revenue - COGS) / revenue * 100)",
+    "expected_sign": "any"
+  },
+  "operating_margin_pct": {
+    "canonical_name": "operating_margin_pct",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "Operating margin percentage (derived: operating_income / revenue * 100)",
+    "expected_sign": "any"
+  },
+  "net_margin_pct": {
+    "canonical_name": "net_margin_pct",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "Net margin percentage (derived: net_income / revenue * 100)",
+    "expected_sign": "any"
+  },
+  "ebitda_margin_pct": {
+    "canonical_name": "ebitda_margin_pct",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "EBITDA margin percentage (derived: ebitda / revenue * 100)",
+    "expected_sign": "any"
+  },
+  "effective_tax_rate": {
+    "canonical_name": "effective_tax_rate",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "Effective tax rate (derived: income_tax_expense / pretax_income * 100)",
+    "expected_sign": "any"
+  },
+  "interest_coverage_ratio": {
+    "canonical_name": "interest_coverage_ratio",
+    "xbrl_tags": [],
+    "unit": "ratio",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "Interest coverage ratio (derived: ebit / interest_expense)",
+    "expected_sign": "any"
+  },
+  "current_ratio": {
+    "canonical_name": "current_ratio",
+    "xbrl_tags": [],
+    "unit": "ratio",
+    "period_type": "instant",
+    "statement": "derived",
+    "description": "Current ratio (derived: current_assets / current_liabilities)",
+    "expected_sign": "positive"
+  },
+  "quick_ratio": {
+    "canonical_name": "quick_ratio",
+    "xbrl_tags": [],
+    "unit": "ratio",
+    "period_type": "instant",
+    "statement": "derived",
+    "description": "Quick ratio (derived: (current_assets - inventory) / current_liabilities)",
+    "expected_sign": "positive"
+  },
+  "debt_to_equity": {
+    "canonical_name": "debt_to_equity",
+    "xbrl_tags": [],
+    "unit": "ratio",
+    "period_type": "instant",
+    "statement": "derived",
+    "description": "Debt-to-equity ratio (derived: total_debt / stockholders_equity)",
+    "expected_sign": "any"
+  },
+  "debt_to_ebitda": {
+    "canonical_name": "debt_to_ebitda",
+    "xbrl_tags": [],
+    "unit": "ratio",
+    "period_type": "instant",
+    "statement": "derived",
+    "description": "Debt-to-EBITDA ratio (derived: total_debt / ebitda)",
+    "expected_sign": "any"
+  },
+  "tangible_book_value": {
+    "canonical_name": "tangible_book_value",
+    "xbrl_tags": [],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "derived",
+    "description": "Tangible book value (derived: equity - goodwill - intangibles)",
+    "expected_sign": "any"
+  },
+  "net_debt": {
+    "canonical_name": "net_debt",
+    "xbrl_tags": [],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "derived",
+    "description": "Net debt (derived: total_debt - cash_and_equivalents)",
+    "expected_sign": "any"
+  },
+  "book_value_per_share": {
+    "canonical_name": "book_value_per_share",
+    "xbrl_tags": [],
+    "unit": "USD/shares",
+    "period_type": "instant",
+    "statement": "derived",
+    "description": "Book value per share (derived: equity / shares_outstanding)",
+    "expected_sign": "any"
+  },
+  "free_cash_flow": {
+    "canonical_name": "free_cash_flow",
+    "xbrl_tags": [],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "Free cash flow (derived: operating_cash_flow - capital_expenditures)",
+    "expected_sign": "any"
+  },
+  "fcf_to_revenue": {
+    "canonical_name": "fcf_to_revenue",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "FCF-to-revenue ratio (derived: free_cash_flow / revenue * 100)",
+    "expected_sign": "any"
+  },
+  "capex_to_revenue": {
+    "canonical_name": "capex_to_revenue",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "Capex-to-revenue ratio (derived: capital_expenditures / revenue * 100)",
+    "expected_sign": "positive"
+  },
+  "capex_to_depreciation": {
+    "canonical_name": "capex_to_depreciation",
+    "xbrl_tags": [],
+    "unit": "ratio",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "Capex-to-depreciation ratio (derived: capex / depreciation_amortization)",
+    "expected_sign": "positive"
+  },
+  "dividend_payout_ratio": {
+    "canonical_name": "dividend_payout_ratio",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "Dividend payout ratio (derived: dividends_paid / net_income * 100)",
+    "expected_sign": "any"
+  },
+  "fcf_per_share": {
+    "canonical_name": "fcf_per_share",
+    "xbrl_tags": [],
+    "unit": "USD/shares",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "Free cash flow per share (derived: FCF / shares_outstanding)",
+    "expected_sign": "any"
+  },
+  "revenue_growth_yoy": {
+    "canonical_name": "revenue_growth_yoy",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "Revenue growth year-over-year (derived: (rev_t - rev_t1) / |rev_t1| * 100)",
+    "expected_sign": "any"
+  },
+  "return_on_assets": {
+    "canonical_name": "return_on_assets",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "Return on assets (derived: net_income / total_assets * 100)",
+    "expected_sign": "any"
+  },
+  "return_on_equity": {
+    "canonical_name": "return_on_equity",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "Return on equity (derived: net_income / stockholders_equity * 100)",
+    "expected_sign": "any"
+  },
+  "asset_turnover": {
+    "canonical_name": "asset_turnover",
+    "xbrl_tags": [],
+    "unit": "ratio",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "Asset turnover ratio (derived: revenue / total_assets)",
+    "expected_sign": "positive"
+  },
+  "asset_impairment_pct": {
+    "canonical_name": "asset_impairment_pct",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "Asset impairment charges as % of total assets (derived: asset_impairment_charges / total_assets * 100)",
+    "expected_sign": "positive"
+  },
+  "goodwill_to_assets_pct": {
+    "canonical_name": "goodwill_to_assets_pct",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "instant",
+    "statement": "derived",
+    "description": "Goodwill as % of total assets (derived: goodwill / total_assets * 100)",
+    "expected_sign": "positive"
+  },
+  "rou_asset_pct": {
+    "canonical_name": "rou_asset_pct",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "instant",
+    "statement": "derived",
+    "description": "ROU asset as % of total assets (derived: right_of_use_asset / total_assets * 100)",
+    "expected_sign": "positive"
+  },
+  "operating_lease_burden": {
+    "canonical_name": "operating_lease_burden",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "instant",
+    "statement": "derived",
+    "description": "Operating lease liabilities as % of total assets (derived: operating_lease_liabilities / total_assets * 100)",
+    "expected_sign": "positive"
+  },
+  "sbc_dilution_pct": {
+    "canonical_name": "sbc_dilution_pct",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "duration",
+    "statement": "derived",
+    "description": "Stock-based compensation as % of revenue (derived: stock_based_compensation / revenue * 100)",
+    "expected_sign": "positive"
+  },
+  "contract_liability_pct": {
+    "canonical_name": "contract_liability_pct",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "instant",
+    "statement": "derived",
+    "description": "Contract liability as % of revenue (derived: contract_with_customer_liability / revenue * 100)",
+    "expected_sign": "positive"
+  },
+  "derivative_fair_value_pct": {
+    "canonical_name": "derivative_fair_value_pct",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "instant",
+    "statement": "derived",
+    "description": "Net derivative fair value as % of total assets (derived: (derivative_assets - derivative_liabilities) / total_assets * 100)",
+    "expected_sign": "any"
+  },
+  "derivative_notional_pct": {
+    "canonical_name": "derivative_notional_pct",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "instant",
+    "statement": "derived",
+    "description": "Derivative notional amount as % of total assets (derived: derivative_notional_amount / total_assets * 100)",
+    "expected_sign": "positive"
+  },
+  "warranty_reserve_pct": {
+    "canonical_name": "warranty_reserve_pct",
+    "xbrl_tags": [],
+    "unit": "percent",
+    "period_type": "instant",
+    "statement": "derived",
+    "description": "Product warranty reserve as % of revenue (derived: product_warranty_accrual / revenue * 100)",
+    "expected_sign": "positive"
+  },
+  "total_noncurrent_assets": {
+    "canonical_name": "total_noncurrent_assets",
+    "xbrl_tags": [
+      "AssetsNoncurrent",
+      "NoncurrentAssets"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Total non-current / long-term assets",
+    "expected_sign": "positive"
+  },
+  "total_noncurrent_liabilities": {
+    "canonical_name": "total_noncurrent_liabilities",
+    "xbrl_tags": [
+      "LiabilitiesNoncurrent",
+      "NoncurrentLiabilities"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Total non-current / long-term liabilities",
+    "expected_sign": "positive"
+  },
+  "finance_lease_liabilities": {
+    "canonical_name": "finance_lease_liabilities",
+    "xbrl_tags": [
+      "FinanceLeaseLiability",
+      "FinanceLeaseLiabilityCurrent",
+      "CapitalLeaseObligations"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Finance / capital lease obligations",
+    "expected_sign": "positive"
+  },
+  "contract_assets": {
+    "canonical_name": "contract_assets",
+    "xbrl_tags": [
+      "ContractWithCustomerAssetNetCurrent",
+      "ContractWithCustomerAssetNet",
+      "ContractWithCustomerAssetNetNoncurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Contract assets (ASC 606 unbilled revenue)",
+    "expected_sign": "positive"
+  },
+  "contract_liabilities": {
+    "canonical_name": "contract_liabilities",
+    "xbrl_tags": [
+      "ContractWithCustomerLiabilityCurrent",
+      "ContractWithCustomerLiability",
+      "ContractWithCustomerLiabilityNoncurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Contract liabilities (ASC 606 deferred revenue)",
+    "expected_sign": "positive"
+  },
+  "convertible_debt": {
+    "canonical_name": "convertible_debt",
+    "xbrl_tags": [
+      "ConvertibleDebt",
+      "ConvertibleNotesPayable",
+      "ConvertibleLongTermNotesPayable"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Convertible debt outstanding",
+    "expected_sign": "positive"
+  },
+  "nonoperating_income": {
+    "canonical_name": "nonoperating_income",
+    "xbrl_tags": [
+      "NonoperatingIncomeExpense",
+      "OtherNonoperatingIncomeExpense",
+      "NonoperatingGainsLosses"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Non-operating income / expense",
+    "expected_sign": "any"
+  },
+  "amortization_of_intangibles": {
+    "canonical_name": "amortization_of_intangibles",
+    "xbrl_tags": [
+      "AmortizationOfIntangibleAssets",
+      "Amortization"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Amortization of intangible assets",
+    "expected_sign": "positive"
+  },
+  "proceeds_from_sale_of_business": {
+    "canonical_name": "proceeds_from_sale_of_business",
+    "xbrl_tags": [
+      "ProceedsFromDivestitureOfBusinesses",
+      "ProceedsFromDivestitureOfBusinessesNetOfCashDivested",
+      "ProceedsFromSaleOfBusinesses"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Proceeds from sale / divestiture of businesses",
+    "expected_sign": "positive"
+  },
+  "effect_of_exchange_rate": {
+    "canonical_name": "effect_of_exchange_rate",
+    "xbrl_tags": [
+      "EffectOfExchangeRateOnCashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",
+      "EffectOfExchangeRateOnCashAndCashEquivalents",
+      "EffectOfExchangeRateOnCash"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "cash_flow",
+    "description": "Effect of exchange rate changes on cash",
+    "expected_sign": "any"
+  },
+  "loss_contingency_accrual": {
+    "canonical_name": "loss_contingency_accrual",
+    "xbrl_tags": [
+      "LossContingencyAccrualAtCarryingValue",
+      "LossContingencyAccrualProvision"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Accrued loss contingency liability",
+    "expected_sign": "positive"
+  },
+  "loss_contingency_estimate": {
+    "canonical_name": "loss_contingency_estimate",
+    "xbrl_tags": [
+      "LossContingencyEstimateOfPossibleLoss"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "supplemental",
+    "description": "Estimated possible loss from contingencies",
+    "expected_sign": "positive"
+  },
+  "litigation_settlement_paid": {
+    "canonical_name": "litigation_settlement_paid",
+    "xbrl_tags": [
+      "LitigationSettlementAmountAwardedToOtherParty",
+      "LitigationSettlementExpense"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Litigation settlement amounts paid",
+    "expected_sign": "positive"
+  },
+  "asset_impairment_charges": {
+    "canonical_name": "asset_impairment_charges",
+    "xbrl_tags": [
+      "AssetImpairmentCharges",
+      "ImpairmentOfLongLivedAssetsToBeDisposedOf",
+      "ImpairmentOfLongLivedAssetsHeldForUse"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Asset impairment charges (long-lived assets)",
+    "expected_sign": "positive"
+  },
+  "intangible_impairment": {
+    "canonical_name": "intangible_impairment",
+    "xbrl_tags": [
+      "ImpairmentOfIntangibleAssetsExcludingGoodwill",
+      "ImpairmentOfIntangibleAssetsFinitelived"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Impairment of intangible assets (excluding goodwill)",
+    "expected_sign": "positive"
+  },
+  "severance_costs": {
+    "canonical_name": "severance_costs",
+    "xbrl_tags": [
+      "SeveranceCosts1",
+      "EmployeeSeveranceMember"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Severance and employee termination costs",
+    "expected_sign": "positive"
+  },
+  "federal_tax_current": {
+    "canonical_name": "federal_tax_current",
+    "xbrl_tags": [
+      "CurrentFederalTaxExpenseBenefit"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Current federal income tax expense / benefit",
+    "expected_sign": "any"
+  },
+  "state_tax_current": {
+    "canonical_name": "state_tax_current",
+    "xbrl_tags": [
+      "CurrentStateAndLocalTaxExpenseBenefit"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Current state and local income tax expense / benefit",
+    "expected_sign": "any"
+  },
+  "foreign_tax_current": {
+    "canonical_name": "foreign_tax_current",
+    "xbrl_tags": [
+      "CurrentForeignTaxExpenseBenefit"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Current foreign income tax expense / benefit",
+    "expected_sign": "any"
+  },
+  "federal_tax_deferred": {
+    "canonical_name": "federal_tax_deferred",
+    "xbrl_tags": [
+      "DeferredFederalIncomeTaxExpenseBenefit"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Deferred federal income tax expense / benefit",
+    "expected_sign": "any"
+  },
+  "state_tax_deferred": {
+    "canonical_name": "state_tax_deferred",
+    "xbrl_tags": [
+      "DeferredStateAndLocalIncomeTaxExpenseBenefit"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Deferred state and local income tax expense / benefit",
+    "expected_sign": "any"
+  },
+  "foreign_tax_deferred": {
+    "canonical_name": "foreign_tax_deferred",
+    "xbrl_tags": [
+      "DeferredForeignIncomeTaxExpenseBenefit"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Deferred foreign income tax expense / benefit",
+    "expected_sign": "any"
+  },
+  "unrecognized_tax_benefits": {
+    "canonical_name": "unrecognized_tax_benefits",
+    "xbrl_tags": [
+      "UnrecognizedTaxBenefits",
+      "UnrecognizedTaxBenefitsThatWouldImpactEffectiveTaxRate"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Unrecognized tax benefits (UTB) liability",
+    "expected_sign": "positive"
+  },
+  "utb_penalties_interest": {
+    "canonical_name": "utb_penalties_interest",
+    "xbrl_tags": [
+      "UnrecognizedTaxBenefitsIncomeTaxPenaltiesAndInterestAccrued",
+      "UnrecognizedTaxBenefitsIncomeTaxPenaltiesAndInterestExpense"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "supplemental",
+    "description": "UTB accrued penalties and interest",
+    "expected_sign": "positive"
+  },
+  "statutory_tax_rate": {
+    "canonical_name": "statutory_tax_rate",
+    "xbrl_tags": [
+      "EffectiveIncomeTaxRateReconciliationAtFederalStatutoryIncomeTaxRate"
+    ],
+    "unit": "pure",
+    "period_type": "duration",
+    "statement": "supplemental",
+    "description": "Federal statutory income tax rate",
+    "expected_sign": "positive"
+  },
+  "commercial_paper": {
+    "canonical_name": "commercial_paper",
+    "xbrl_tags": [
+      "CommercialPaper"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Commercial paper outstanding",
+    "expected_sign": "positive"
+  },
+  "debt_carrying_amount": {
+    "canonical_name": "debt_carrying_amount",
+    "xbrl_tags": [
+      "DebtInstrumentCarryingAmount"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Debt instrument carrying amount (face value)",
+    "expected_sign": "positive"
+  },
+  "credit_facility_max": {
+    "canonical_name": "credit_facility_max",
+    "xbrl_tags": [
+      "LineOfCreditFacilityMaximumBorrowingCapacity"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "supplemental",
+    "description": "Maximum borrowing capacity under credit facility",
+    "expected_sign": "positive"
+  },
+  "credit_facility_available": {
+    "canonical_name": "credit_facility_available",
+    "xbrl_tags": [
+      "LineOfCreditFacilityRemainingBorrowingCapacity"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "supplemental",
+    "description": "Remaining available borrowing capacity",
+    "expected_sign": "positive"
+  },
+  "derivative_notional": {
+    "canonical_name": "derivative_notional",
+    "xbrl_tags": [
+      "DerivativeNotionalAmount"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "supplemental",
+    "description": "Notional amount of derivative instruments",
+    "expected_sign": "positive"
+  },
+  "derivative_fair_value": {
+    "canonical_name": "derivative_fair_value",
+    "xbrl_tags": [
+      "DerivativeFairValueOfDerivativeNet",
+      "DerivativeFairValueOfDerivativeAsset"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Fair value of derivative instruments",
+    "expected_sign": "any"
+  },
+  "rsu_grants": {
+    "canonical_name": "rsu_grants",
+    "xbrl_tags": [
+      "ShareBasedCompensationArrangementByShareBasedPaymentAwardEquityInstrumentsOtherThanOptionsGrantsInPeriod"
+    ],
+    "unit": "shares",
+    "period_type": "duration",
+    "statement": "supplemental",
+    "description": "RSU / restricted stock units granted in period",
+    "expected_sign": "positive"
+  },
+  "unvested_sbc_cost": {
+    "canonical_name": "unvested_sbc_cost",
+    "xbrl_tags": [
+      "EmployeeServiceShareBasedCompensationNonvestedAwardsTotalCompensationCostNotYetRecognized"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "supplemental",
+    "description": "Unrecognized stock-based compensation cost for unvested awards",
+    "expected_sign": "positive"
+  },
+  "product_warranty_accrual": {
+    "canonical_name": "product_warranty_accrual",
+    "xbrl_tags": [
+      "StandardProductWarrantyAccrual",
+      "ProductWarrantyAccrualClassifiedCurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Product warranty accrual liability",
+    "expected_sign": "positive"
+  },
+  "shares_authorized": {
+    "canonical_name": "shares_authorized",
+    "xbrl_tags": [
+      "CommonStockSharesAuthorized"
+    ],
+    "unit": "shares",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Common stock shares authorized",
+    "expected_sign": "positive"
+  },
+  "dividend_per_share": {
+    "canonical_name": "dividend_per_share",
+    "xbrl_tags": [
+      "CommonStockDividendsPerShareDeclared",
+      "CommonStockDividendsPerShareCashPaid"
+    ],
+    "unit": "USD/shares",
+    "period_type": "duration",
+    "statement": "supplemental",
+    "description": "Dividends declared per common share",
+    "expected_sign": "positive"
+  },
+  "buyback_remaining_auth": {
+    "canonical_name": "buyback_remaining_auth",
+    "xbrl_tags": [
+      "StockRepurchaseProgramRemainingAuthorizedRepurchaseAmount1",
+      "StockRepurchaseProgramAuthorizedAmount1"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "supplemental",
+    "description": "Remaining authorized stock repurchase amount",
+    "expected_sign": "positive"
+  },
+  "advertising_expense": {
+    "canonical_name": "advertising_expense",
+    "xbrl_tags": [
+      "AdvertisingExpense",
+      "AdvertisingCostsPolicyTextBlock"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Advertising expense",
+    "expected_sign": "positive"
+  },
+  "ecd_ceo_total_comp": {
+    "canonical_name": "ecd_ceo_total_comp",
+    "xbrl_tags": [
+      "ecd:PeoTotalCompAmt"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "proxy",
+    "description": "CEO (PEO) total compensation from Pay-vs-Performance table",
+    "expected_sign": "positive"
+  },
+  "ecd_ceo_actually_paid": {
+    "canonical_name": "ecd_ceo_actually_paid",
+    "xbrl_tags": [
+      "ecd:PeoActuallyPaidCompAmt"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "proxy",
+    "description": "CEO (PEO) compensation actually paid (realizable)",
+    "expected_sign": "any"
+  },
+  "ecd_neo_avg_total_comp": {
+    "canonical_name": "ecd_neo_avg_total_comp",
+    "xbrl_tags": [
+      "ecd:NonPeoNeoAvgTotalCompAmt"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "proxy",
+    "description": "Average NEO total compensation",
+    "expected_sign": "positive"
+  },
+  "ecd_neo_avg_actually_paid": {
+    "canonical_name": "ecd_neo_avg_actually_paid",
+    "xbrl_tags": [
+      "ecd:NonPeoNeoAvgCompActuallyPaidAmt"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "proxy",
+    "description": "Average NEO compensation actually paid (realizable)",
+    "expected_sign": "any"
+  },
+  "ecd_company_tsr": {
+    "canonical_name": "ecd_company_tsr",
+    "xbrl_tags": [
+      "ecd:TotalShareholderRtnAmt"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "proxy",
+    "description": "Company total shareholder return (indexed to $100)",
+    "expected_sign": "positive"
+  },
+  "ecd_peer_group_tsr": {
+    "canonical_name": "ecd_peer_group_tsr",
+    "xbrl_tags": [
+      "ecd:PeerGroupTotalShareholderRtnAmt"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "proxy",
+    "description": "Peer group total shareholder return (indexed to $100)",
+    "expected_sign": "positive"
+  },
+  "ecd_insider_trading_policy": {
+    "canonical_name": "ecd_insider_trading_policy",
+    "xbrl_tags": [
+      "ecd:InsiderTrdPoliciesProcAdoptedFlag"
+    ],
+    "unit": "boolean",
+    "period_type": "instant",
+    "statement": "proxy",
+    "description": "Whether insider trading policies and procedures have been adopted",
+    "expected_sign": "any"
+  },
+  "ecd_award_timing_mnpi": {
+    "canonical_name": "ecd_award_timing_mnpi",
+    "xbrl_tags": [
+      "ecd:AwardTmgMnpiCnsdrdFlag"
+    ],
+    "unit": "boolean",
+    "period_type": "instant",
+    "statement": "proxy",
+    "description": "Whether award timing considers material non-public information",
+    "expected_sign": "any"
+  },
+  "ecd_award_timing_predetermined": {
+    "canonical_name": "ecd_award_timing_predetermined",
+    "xbrl_tags": [
+      "ecd:AwardTmgPredtrmndFlag"
+    ],
+    "unit": "boolean",
+    "period_type": "instant",
+    "statement": "proxy",
+    "description": "Whether equity awards follow a predetermined schedule",
+    "expected_sign": "any"
+  },
+  "ecd_company_selected_measure": {
+    "canonical_name": "ecd_company_selected_measure",
+    "xbrl_tags": [
+      "ecd:CoSelectedMeasureAmt"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "proxy",
+    "description": "Company-selected financial performance measure amount",
+    "expected_sign": "any"
+  },
+  "ecd_ceo_name": {
+    "canonical_name": "ecd_ceo_name",
+    "xbrl_tags": [
+      "ecd:PeoName"
+    ],
+    "unit": "text",
+    "period_type": "instant",
+    "statement": "proxy",
+    "description": "Principal Executive Officer (CEO) name from ECD disclosure",
+    "expected_sign": "any"
+  },
+
+  "asset_impairment_charges": {
+    "canonical_name": "asset_impairment_charges",
+    "xbrl_tags": [
+      "AssetImpairmentCharges",
+      "ImpairmentOfLongLivedAssetsToBeDisposedOf",
+      "ImpairmentOfLongLivedAssetsHeldForUse"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Asset impairment charges (long-lived assets)",
+    "expected_sign": "positive"
+  },
+  "goodwill_impairment_loss": {
+    "canonical_name": "goodwill_impairment_loss",
+    "xbrl_tags": [
+      "GoodwillImpairmentLoss"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Goodwill impairment loss",
+    "expected_sign": "positive"
+  },
+  "intangible_asset_impairment": {
+    "canonical_name": "intangible_asset_impairment",
+    "xbrl_tags": [
+      "ImpairmentOfIntangibleAssetsFinitelived",
+      "ImpairmentOfIntangibleAssetsIndefinitelived",
+      "ImpairmentOfIntangibleAssetsExcludingGoodwill"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Impairment of intangible assets (finite-lived and indefinite-lived)",
+    "expected_sign": "positive"
+  },
+  "severance_costs": {
+    "canonical_name": "severance_costs",
+    "xbrl_tags": [
+      "SeveranceCosts1",
+      "EmployeeSeveranceMember"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Severance costs from restructuring or workforce reductions",
+    "expected_sign": "positive"
+  },
+  "loss_contingency_accrual": {
+    "canonical_name": "loss_contingency_accrual",
+    "xbrl_tags": [
+      "LossContingencyAccrualAtCarryingAmount",
+      "LossContingencyAccrualProvision"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Loss contingency accrual at carrying amount",
+    "expected_sign": "positive"
+  },
+  "loss_contingency_estimate": {
+    "canonical_name": "loss_contingency_estimate",
+    "xbrl_tags": [
+      "LossContingencyEstimateOfPossibleLoss",
+      "LossContingencyRangeOfPossibleLossPortionNotAccrued"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Loss contingency estimated possible loss",
+    "expected_sign": "positive"
+  },
+  "litigation_settlement": {
+    "canonical_name": "litigation_settlement",
+    "xbrl_tags": [
+      "LitigationSettlementAmountAwardedToOtherParty",
+      "LitigationSettlementExpense",
+      "LossFromLegalSettlements"
+    ],
+    "unit": "USD",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "Litigation settlement amounts paid or awarded",
+    "expected_sign": "positive"
+  },
+  "product_warranty_accrual": {
+    "canonical_name": "product_warranty_accrual",
+    "xbrl_tags": [
+      "ProductWarrantyAccrual",
+      "ProductWarrantyAccrualClassifiedCurrent",
+      "StandardProductWarrantyAccrual"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Product warranty accrual / reserve",
+    "expected_sign": "positive"
+  },
+  "rsu_grants_in_period": {
+    "canonical_name": "rsu_grants_in_period",
+    "xbrl_tags": [
+      "ShareBasedCompensationArrangementByShareBasedPaymentAwardEquityInstrumentsOtherThanOptionsGrantsInPeriod",
+      "ShareBasedCompensationArrangementByShareBasedPaymentAwardEquityInstrumentsOtherThanOptionsGrantsInPeriodWeightedAverageGrantDateFairValue"
+    ],
+    "unit": "shares",
+    "period_type": "duration",
+    "statement": "income",
+    "description": "RSU/restricted stock units granted in period",
+    "expected_sign": "positive"
+  },
+  "unvested_sbc_cost": {
+    "canonical_name": "unvested_sbc_cost",
+    "xbrl_tags": [
+      "EmployeeServiceShareBasedCompensationNonvestedAwardsTotalCompensationCostNotYetRecognized",
+      "ShareBasedCompensationArrangementByShareBasedPaymentAwardEquityInstrumentsOtherThanOptionsNonvestedNumber"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Unvested stock-based compensation cost not yet recognized",
+    "expected_sign": "positive"
+  },
+  "contract_with_customer_liability": {
+    "canonical_name": "contract_with_customer_liability",
+    "xbrl_tags": [
+      "ContractWithCustomerLiability",
+      "ContractWithCustomerLiabilityCurrent",
+      "ContractWithCustomerLiabilityNoncurrent"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Contract with customer liability (total deferred revenue under ASC 606)",
+    "expected_sign": "positive"
+  },
+  "derivative_assets": {
+    "canonical_name": "derivative_assets",
+    "xbrl_tags": [
+      "DerivativeAssets",
+      "DerivativeFairValueOfDerivativeAsset"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Derivative assets at fair value",
+    "expected_sign": "positive"
+  },
+  "derivative_liabilities": {
+    "canonical_name": "derivative_liabilities",
+    "xbrl_tags": [
+      "DerivativeLiabilities",
+      "DerivativeFairValueOfDerivativeLiability"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Derivative liabilities at fair value",
+    "expected_sign": "positive"
+  },
+  "derivative_notional_amount": {
+    "canonical_name": "derivative_notional_amount",
+    "xbrl_tags": [
+      "DerivativeNotionalAmount",
+      "DerivativeNonmonetaryNotionalAmount"
+    ],
+    "unit": "USD",
+    "period_type": "instant",
+    "statement": "balance_sheet",
+    "description": "Derivative notional amount (off-balance-sheet exposure)",
+    "expected_sign": "positive"
+  }
+}

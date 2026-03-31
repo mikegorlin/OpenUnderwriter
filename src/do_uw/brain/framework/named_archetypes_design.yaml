@@ -1,0 +1,450 @@
+# Named D&O Risk Archetypes Design
+# Design artifact for Phase 109 implementation.
+# Defines 6 named archetypes using REAL signal IDs from brain/signals/,
+# plus the engine firing panel visualization specification.
+#
+# Created: Phase 106-02 (v7.0 Signal-Render Integrity)
+# Dependencies:
+#   - brain/signals/*.yaml: actual signal IDs referenced by archetypes
+#   - brain_schema.py: PatternDefinition Pydantic schema
+#   - pattern_engine_design.yaml: engine firing panel integration
+#   - rap_taxonomy.yaml: H/A/E dimension references
+#
+# Signal IDs verified against brain/signals/ YAML files.
+# Any signal not found in the current 514-signal corpus is marked
+# as future_signal.* placeholder.
+
+version: 1
+name: "Named D&O Risk Archetypes"
+status: design_artifact
+implementation_phase: 109
+
+# ---------------------------------------------------------------
+# Archetype Definitions
+# ---------------------------------------------------------------
+# Each archetype conforms to the PatternDefinition Pydantic schema:
+#   id, name, description, required_signals, minimum_matches,
+#   recommendation_floor, rap_dimensions, historical_cases, epistemology
+
+archetypes:
+  - id: desperate_growth_trap
+    name: "Desperate Growth Trap"
+    description: >
+      Company masks declining organic growth with aggressive M&A,
+      revenue recognition manipulation, and/or channel stuffing.
+      The desperation to maintain a growth narrative drives
+      increasingly aggressive accounting and disclosure practices
+      that eventually collapse under scrutiny.
+    rap_dimensions: [agent, host]
+    required_signals:
+      # Revenue quality deterioration (agent.financial_conduct)
+      - FIN.QUALITY.revenue_recognition_risk
+      - FIN.QUALITY.revenue_quality_score
+      - FIN.QUALITY.q4_revenue_concentration
+      - FIN.QUALITY.deferred_revenue_trend
+      # Forensic accounting anomalies (agent.financial_conduct)
+      - FIN.FORENSIC.m_score_composite
+      - FIN.FORENSIC.dsri_elevated
+      - FIN.FORENSIC.channel_stuffing
+      - FIN.FORENSIC.dechow_f_score
+      # M&A driven growth (agent.corporate_events)
+      - FIN.FORENSIC.serial_acquirer
+      - FIN.FORENSIC.acquisition_to_revenue
+      - FIN.FORENSIC.acquisition_effectiveness
+      - FIN.FORENSIC.goodwill_growth_rate
+      # Revenue and margin trends (agent.financial_conduct)
+      - FIN.TEMPORAL.revenue_deceleration
+      - FIN.TEMPORAL.margin_compression
+      - FIN.TEMPORAL.earnings_quality_divergence
+      # Goodwill impairment risk (host.financials)
+      - FWRD.WARN.goodwill_risk
+      - FWRD.WARN.impairment_risk
+      # Guidance credibility (agent.disclosure_conduct)
+      - FIN.GUIDE.track_record
+    minimum_matches: 5
+    recommendation_floor: ELEVATED
+    historical_cases:
+      - "Valeant 2015: channel stuffing via Philidor, aggressive M&A, restatement"
+      - "Luckin Coffee 2020: fabricated revenue transactions, explosive growth narrative"
+      - "Under Armour 2019: revenue acceleration, SEC investigation into pull-forward sales"
+      - "Kraft Heinz 2019: procurement fraud and goodwill impairment masking organic decline"
+    epistemology:
+      rule_origin: >
+        SCAC data on growth-related fraud: ~30% of SCAs involve
+        revenue-related allegations. Beneish (1999) M-Score developed
+        specifically to detect earnings manipulation in growth
+        companies. Cornerstone settlement data shows revenue fraud
+        cases have above-median severity.
+      threshold_basis: >
+        Minimum 5 of 18 signals captures the multi-signal nature
+        of the pattern. Historical cases typically show 6-10 fired
+        signals from this list. 5 balances sensitivity (catching
+        real patterns) with specificity (avoiding false positives).
+
+  - id: governance_vacuum
+    name: "Governance Vacuum"
+    description: >
+      Weak board oversight combined with concentrated executive
+      power and inadequate internal controls. The governance
+      architecture lacks sufficient checks and balances, creating
+      conditions where misconduct can occur without detection
+      or correction.
+    rap_dimensions: [host, agent]
+    required_signals:
+      # Board structure weaknesses (host.governance_structure)
+      - GOV.BOARD.independence
+      - GOV.BOARD.ceo_chair
+      - GOV.BOARD.overboarding
+      - GOV.BOARD.tenure
+      - GOV.BOARD.diversity
+      - GOV.BOARD.expertise
+      - GOV.BOARD.attendance
+      # Governance effectiveness issues (agent.governance_events)
+      - GOV.EFFECT.material_weakness
+      - GOV.EFFECT.auditor_change
+      - GOV.EFFECT.sox_404
+      - GOV.EFFECT.audit_committee
+      # Executive concentration (host.governance_structure)
+      - GOV.EXEC.founder
+      - GOV.EXEC.key_person
+      # Executive turnover patterns (agent.governance_events)
+      - GOV.EXEC.turnover_analysis
+      - GOV.EXEC.departure_context
+      # Pay governance (agent.compensation_decisions)
+      - GOV.PAY.say_on_pay
+      - GOV.PAY.related_party
+      - GOV.PAY.clawback
+    minimum_matches: 5
+    recommendation_floor: CAUTIOUS
+    historical_cases:
+      - "WeWork 2019: founder CEO with unilateral control, board captured by insiders, related-party transactions"
+      - "Theranos 2018: celebrity board with no domain expertise, CEO-dominated governance"
+      - "Nikola 2020: founder CEO misrepresentation, inadequate board oversight of technology claims"
+      - "FTX 2022: no independent board, no audit committee, one-person treasury"
+    epistemology:
+      rule_origin: >
+        ISS governance data: companies in the bottom governance
+        quartile (low independence, CEO/chair duality, weak
+        committee structure) face 2.5x higher derivative suit
+        filing rate. Caremark duty of oversight claims have
+        increased 300% since 2019 (Delaware Court of Chancery).
+      threshold_basis: >
+        Minimum 5 of 18 signals. Governance vacuum is a structural
+        pattern requiring multiple concurrent weaknesses. Single
+        governance gaps are addressed by standard signals; the
+        archetype captures systemic governance failure.
+
+  - id: post_spac_hangover
+    name: "Post-SPAC Hangover"
+    description: >
+      Former SPAC with projection misses, insider lockup expiration
+      pressure, and merger-related disclosure issues. The transition
+      from SPAC target to public company reveals gaps between
+      pre-merger projections and post-merger reality.
+    rap_dimensions: [host, agent, environment]
+    required_signals:
+      # SPAC/IPO identification (host.identity)
+      - BIZ.SIZE.public_tenure
+      - BIZ.EVENT.ipo_exposure
+      # Forward-looking event triggers (agent.corporate_events)
+      - FWRD.EVENT.lockup_expiry
+      - FWRD.EVENT.warrant_expiry
+      # Guidance misses (agent.disclosure_conduct)
+      - FIN.GUIDE.track_record
+      - FIN.GUIDE.earnings_reaction
+      - FIN.GUIDE.current
+      # Stock price pressure (environment.market_signals)
+      - STOCK.PRICE.recent_drop_alert
+      - STOCK.PRICE.returns_multi_horizon
+      # Insider selling pressure (agent.executive_conduct)
+      - GOV.INSIDER.net_selling
+      - GOV.INSIDER.executive_sales
+      - EXEC.INSIDER.cluster_selling
+      # Valuation disconnect (environment.market_signals)
+      - STOCK.VALUATION.premium_discount
+      - STOCK.VALUATION.pe_ratio
+    minimum_matches: 4
+    recommendation_floor: CAUTIOUS
+    historical_cases:
+      - "Clover Health 2021: SPAC, Hindenburg report exposed undisclosed DOJ investigation"
+      - "Lordstown Motors 2021: SPAC, fake pre-orders inflated projections, SEC investigation"
+      - "Nikola 2020: SPAC, staged truck demo video, founder criminal conviction"
+      - "DraftKings 2021: SPAC, Hindenburg short report on revenue quality"
+    epistemology:
+      rule_origin: >
+        SCAC data: SPAC-related SCA filings surged from 3 in 2019
+        to 32 in 2021 and 28 in 2022. De-SPAC companies face 3-5x
+        the SCA filing rate of traditional IPOs in the first 2
+        years post-merger. The SPAC litigation wave of 2021-2023
+        is one of the most documented sector-specific claim patterns.
+      threshold_basis: >
+        Minimum 4 of 15 signals. SPAC hangover pattern is relatively
+        focused -- public tenure + lockup + guidance miss + stock
+        decline is the core combination. Lower minimum than other
+        archetypes because the SPAC context itself is a strong
+        prior.
+
+  - id: accounting_time_bomb
+    name: "Accounting Time Bomb"
+    description: >
+      Forensic accounting indicators converge -- Beneish M-Score
+      elevated, earnings quality declining, accrual anomalies
+      mounting, and auditor concerns emerging. The accounting
+      numbers are increasingly disconnected from economic reality.
+    rap_dimensions: [agent]
+    required_signals:
+      # Beneish M-Score components (agent.financial_conduct)
+      - FIN.FORENSIC.m_score_composite
+      - FIN.FORENSIC.dsri_elevated
+      - FIN.FORENSIC.aqi_elevated
+      - FIN.FORENSIC.tata_elevated
+      - FIN.FORENSIC.fis_composite
+      # Dechow F-Score (agent.financial_conduct)
+      - FIN.FORENSIC.dechow_f_score
+      - FIN.FORENSIC.beneish_dechow_convergence
+      # Earnings quality (agent.financial_conduct)
+      - FIN.FORENSIC.sloan_accruals
+      - FIN.FORENSIC.enhanced_sloan
+      - FIN.FORENSIC.accrual_intensity
+      - FIN.FORENSIC.cash_flow_manipulation
+      - FIN.QUALITY.quality_of_earnings
+      - FIN.QUALITY.cash_flow_quality
+      # Non-GAAP divergence (agent.disclosure_conduct)
+      - FIN.QUALITY.non_gaap_divergence
+      - FIN.FORENSIC.non_gaap_gap
+      # Auditor concerns (agent.governance_events)
+      - GOV.EFFECT.auditor_change
+      - GOV.EFFECT.material_weakness
+      - FIN.ACCT.restatement
+      - FIN.ACCT.internal_controls
+    minimum_matches: 4
+    recommendation_floor: ELEVATED
+    historical_cases:
+      - "Enron 2001: SPE manipulation, mark-to-market abuse, massive accrual anomalies"
+      - "WorldCom 2002: capitalized operating expenses, $11B restatement"
+      - "Wirecard 2020: fabricated bank confirmations, non-existent revenue, auditor failure"
+      - "Satyam 2009: fabricated cash balances, inflated revenue, auditor collusion"
+    epistemology:
+      rule_origin: >
+        Beneish (1999, The Accounting Review): M-Score correctly
+        identifies 76% of manipulators with 17% false positive
+        rate. Dechow et al. (2011, Contemporary Accounting
+        Research): F-Score improves on M-Score with additional
+        financial statement variables. Convergence of both
+        models dramatically increases predictive power.
+      threshold_basis: >
+        Minimum 4 of 19 signals. The accounting time bomb pattern
+        requires convergence of multiple forensic indicators.
+        Individual M-Score components can be elevated for benign
+        reasons; the archetype fires when multiple independent
+        forensic signals align simultaneously.
+
+  - id: regulatory_reckoning
+    name: "Regulatory Reckoning"
+    description: >
+      Regulatory enforcement action approaching or active, with
+      company-level compliance failures. The regulatory
+      investigation has either been announced or is highly likely
+      based on public signals (comment letters, whistleblower
+      activity, industry-wide enforcement patterns).
+    rap_dimensions: [agent, environment]
+    required_signals:
+      # SEC enforcement (agent.litigation_actions)
+      - LIT.REG.sec_investigation
+      - LIT.REG.sec_active
+      - LIT.REG.wells_notice
+      - LIT.REG.sec_severity
+      - LIT.REG.comment_letters
+      - LIT.REG.subpoena
+      # DOJ investigation (agent.litigation_actions)
+      - LIT.REG.doj_investigation
+      # Industry regulators (agent.litigation_actions)
+      - LIT.REG.industry_reg
+      - LIT.REG.ftc_investigation
+      - LIT.REG.cfpb_action
+      - LIT.REG.fda_warning
+      # State enforcement (agent.litigation_actions)
+      - LIT.REG.state_ag
+      - LIT.REG.state_action
+      # Whistleblower indicators (environment.external_warnings)
+      - NLP.WHISTLE.language_detected
+      - NLP.WHISTLE.internal_investigation
+      - LIT.OTHER.whistleblower
+      # Governance effectiveness failures (agent.governance_events)
+      - GOV.EFFECT.material_weakness
+      - FIN.ACCT.sec_correspondence
+    minimum_matches: 3
+    recommendation_floor: ELEVATED
+    historical_cases:
+      - "Wells Fargo 2016: fake accounts, CFPB/OCC enforcement, CEO departure, $3B+ total penalties"
+      - "Volkswagen 2015: emissions fraud, EPA/DOJ investigation, $30B+ total cost"
+      - "Purdue Pharma 2019: opioid marketing, coordinated state AG action, DOJ criminal plea, bankruptcy"
+      - "Facebook/Meta 2018: Cambridge Analytica, FTC $5B fine, SEC settlement"
+    epistemology:
+      rule_origin: >
+        SEC enforcement action data: formal SEC investigations
+        result in enforcement action ~40% of the time. Wells
+        notices convert to action ~85% of the time. Follow-on
+        private SCA filing occurs in ~60% of major enforcement
+        actions. State AG coordination multiplies exposure
+        across jurisdictions.
+      threshold_basis: >
+        Minimum 3 of 18 signals. Regulatory reckoning has a lower
+        threshold because individual regulatory signals are already
+        high-severity. A single SEC investigation + whistleblower
+        + material weakness is sufficient to fire this archetype.
+
+  - id: ai_mirage
+    name: "AI Mirage"
+    description: >
+      AI capability claims exceed demonstrable reality, creating
+      disclosure risk as the gap between promises and deliverables
+      becomes apparent. The company's revenue narrative depends on
+      AI themes that may not be substantiated by actual technology
+      or customer adoption.
+    rap_dimensions: [agent, environment]
+    required_signals:
+      # AI-specific risk signals (agent.corporate_events)
+      - BIZ.UNI.ai_claims
+      # AI concentration risk (environment.external_warnings)
+      - FWRD.WARN.ai_revenue_concentration
+      - FWRD.WARN.hyperscaler_dependency
+      - FWRD.WARN.gpu_allocation
+      - FWRD.WARN.data_center_risk
+      # Revenue quality concerns (agent.financial_conduct)
+      - FIN.QUALITY.revenue_recognition_risk
+      - FIN.QUALITY.deferred_revenue_trend
+      # Guidance credibility (agent.disclosure_conduct)
+      - FIN.GUIDE.track_record
+      - FIN.GUIDE.current
+      # Valuation disconnect (environment.market_signals)
+      - STOCK.VALUATION.premium_discount
+      - STOCK.VALUATION.pe_ratio
+      - STOCK.VALUATION.peg_ratio
+      # Narrative coherence (environment.external_warnings)
+      - FWRD.NARRATIVE.analyst_skepticism
+      - FWRD.NARRATIVE.10k_vs_earnings
+      # Technology dependency (host.dependencies)
+      - BIZ.DEPEND.tech_dep
+      # Future signals (not yet in the 514-signal corpus)
+      # These would need to be created for full archetype coverage:
+      # - future_signal.AI_CAPABILITY_GAP: gap between AI claims and demonstrated capability
+      # - future_signal.AI_REVENUE_ATTRIBUTION: fraction of revenue genuinely attributable to AI
+      # - future_signal.AI_WASHING_RISK: SEC AI-washing enforcement risk assessment
+    minimum_matches: 3
+    recommendation_floor: CAUTIOUS
+    historical_cases:
+      - "Bolt Financial 2022: alleged AI-washing in fintech lending (SEC scrutiny)"
+      - "Stability AI 2023: AI capability claims vs financial reality, funding concerns"
+      - "C3.ai 2023: revenue recognition questions, AI revenue attribution scrutiny"
+    epistemology:
+      rule_origin: >
+        Emerging AI-washing enforcement trend: SEC Chair Gensler
+        warned about AI-washing in 2023. SEC has begun scrutiny
+        of companies making material AI claims without substantive
+        AI capabilities. Limited actuarial data given the emerging
+        nature of this risk category, but the analogy to crypto
+        (2021-2022) and dot-com (1999-2000) capability-gap patterns
+        suggests this will be a significant SCA driver.
+      threshold_basis: >
+        Minimum 3 of 16 signals. Lower threshold acknowledges that
+        the AI mirage pattern is still emerging and the signal
+        corpus is incomplete for this risk category. As AI-specific
+        signals are added, the minimum should increase to 4-5.
+        Three future signals are noted as gaps for Phase 110.
+    future_signal_gaps:
+      - id: "future_signal.AI_CAPABILITY_GAP"
+        description: "Gap between AI claims in investor presentations and demonstrated capability"
+        implementation_note: "Requires NLP analysis of earnings calls vs product demos"
+      - id: "future_signal.AI_REVENUE_ATTRIBUTION"
+        description: "Fraction of revenue genuinely attributable to AI products vs traditional business"
+        implementation_note: "Requires segment analysis cross-referencing AI claims with revenue reporting"
+      - id: "future_signal.AI_WASHING_RISK"
+        description: "SEC AI-washing enforcement risk assessment based on regulatory signals"
+        implementation_note: "Requires monitoring SEC statements and enforcement priorities"
+
+# ---------------------------------------------------------------
+# Firing Panel Specification
+# ---------------------------------------------------------------
+
+firing_panel:
+  description: >
+    The firing panel is the unified visualization showing results
+    from all 4 pattern engines and all 6 named archetypes. It
+    provides a compact dashboard for the underwriter to see which
+    pattern-level risks have been detected.
+
+  layout:
+    type: "horizontal_card_grid"
+    sections:
+      - section: "Pattern Engines"
+        items: 4
+        description: "One card per engine (Conjunction, Peer Outlier, Migration Drift, Precedent Match)"
+      - section: "Named Archetypes"
+        items: 6
+        description: "One card per archetype"
+
+  engine_card_spec:
+    fields:
+      - field: "engine_name"
+        display: "Card header"
+      - field: "status"
+        display: "FIRED / NOT FIRED badge"
+        colors:
+          FIRED: "color based on confidence"
+          NOT_FIRED: "#6c757d (gray)"
+      - field: "confidence"
+        display: "Confidence bar (0-1)"
+        color_thresholds:
+          low: 0.3     # gray
+          medium: 0.6   # yellow/orange
+          high: 1.0     # red
+      - field: "headline"
+        display: "One-sentence key finding"
+      - field: "detail"
+        display: "Expandable detail section (click to reveal)"
+
+  archetype_card_spec:
+    fields:
+      - field: "archetype_name"
+        display: "Card header with icon"
+      - field: "match_status"
+        display: "MATCH / NO MATCH badge"
+        colors:
+          MATCH: "color based on match percentage"
+          NO_MATCH: "#6c757d (gray)"
+      - field: "signals_matched"
+        display: "X of Y signals matched"
+      - field: "match_percentage"
+        display: "Percentage bar"
+        color_thresholds:
+          below_minimum: "#6c757d (gray, below minimum_matches)"
+          at_minimum: "#e67700 (orange, at or just above minimum)"
+          strong_match: "#c92a2a (red, well above minimum)"
+      - field: "recommendation_floor"
+        display: "Minimum tier badge if pattern fires"
+      - field: "matched_signals_list"
+        display: "Expandable list of which specific signals matched"
+      - field: "historical_cases"
+        display: "Expandable precedent cases"
+
+  color_coding:
+    not_fired: "#6c757d"      # gray
+    low_confidence: "#e67700"  # orange
+    high_confidence: "#c92a2a" # red
+    match_below_min: "#6c757d" # gray (pattern not activated)
+    match_at_min: "#e67700"    # orange (pattern activated at minimum)
+    match_strong: "#c92a2a"    # red (strong pattern match)
+
+  chart_registry_integration:
+    chart_id: "pattern_firing_panel"
+    section: "risk_patterns"
+    position: 1
+    formats: ["html", "pdf"]
+    call_style: "standard"
+    note: "Phase 105 chart_registry.yaml will reference this spec"
+
+  interaction:
+    click_to_expand: true
+    hover_tooltip: "Brief summary of finding"
+    link_to_detail: "Click engine/archetype card to scroll to detailed analysis section"

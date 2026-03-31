@@ -1,0 +1,173 @@
+{# Signal Disposition Audit appendix (Phase 78-02 — AUDIT-02).
+   Shows disposition counts (triggered/clean/skipped/inactive),
+   per-section drill-down, and lists every SKIPPED signal with its reason.
+   Every signal's outcome is visible — nothing silently omitted. #}
+
+<section id="signal-audit" class="page-break">
+  <h2>Appendix: Signal Disposition Audit</h2>
+
+  {# --- Summary Headline --- #}
+  <p class="text-sm text-gray-600 mb-4">
+    {{ audit_total|default(0) }} signals checked:
+    {{ audit_triggered|default(0) }} triggered,
+    {{ audit_clean|default(0) }} clean;
+    {{ audit_skipped|default(0) }} skipped;
+    {{ audit_deferred|default(0) }} deferred;
+    {{ audit_inactive|default(0) }} inactive
+  </p>
+
+  {# --- Summary Cards --- #}
+  <div class="grid grid-cols-5 gap-4 my-4">
+    <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+      <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Checked</p>
+      <p class="text-2xl font-bold text-risk-blue m-0 tabular-nums">{{ audit_checked|default(0) }}</p>
+      <p class="text-xs text-gray-400 m-0">triggered + clean</p>
+    </div>
+    <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+      <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Triggered</p>
+      <p class="text-2xl font-bold text-risk-red m-0 tabular-nums">{{ audit_triggered|default(0) }}</p>
+    </div>
+    <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+      <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Skipped</p>
+      <p class="text-2xl font-bold text-risk-amber m-0 tabular-nums">{{ audit_skipped|default(0) }}</p>
+    </div>
+    <div class="bg-bg-alt border border-amber-300 rounded p-3 text-center page-break-inside-avoid">
+      <p class="font-heading text-xs uppercase tracking-wide text-amber-600 m-0">Data Pending</p>
+      <p class="text-2xl font-bold text-amber-500 m-0 tabular-nums">{{ audit_deferred|default(0) }}</p>
+    </div>
+    <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+      <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Inactive</p>
+      <p class="text-2xl font-bold text-gray-400 m-0 tabular-nums">{{ audit_inactive|default(0) }}</p>
+    </div>
+  </div>
+
+  {# --- Per-Section Breakdown Table --- #}
+  {% set breakdown = audit_section_breakdown|default([]) %}
+  {% if breakdown %}
+  <h3>Per-Section Breakdown</h3>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Section</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Total</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Triggered</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Clean</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Skipped</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Inactive</th>
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for row in breakdown %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }} hover:bg-slate-100 transition-colors page-break-inside-avoid">
+        <td class="p-1 font-heading text-xs font-semibold text-navy">{{ row.section }}</td>
+        <td class="p-1 text-right">{{ row.total }}</td>
+        <td class="p-1 text-right{% if row.triggered > 0 %} text-risk-red font-semibold{% endif %}">{{ row.triggered }}</td>
+        <td class="p-1 text-right">{{ row.clean }}</td>
+        <td class="p-1 text-right{% if row.skipped > 0 %} text-risk-amber{% endif %}">{{ row.skipped }}</td>
+        <td class="p-1 text-right text-gray-400">{{ row.inactive }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {# --- Triggered Signals Detail --- #}
+  {% set triggered_list = audit_triggered_signals|default([]) %}
+  {% if triggered_list %}
+  <div>
+    <div style="font-weight:600;margin-bottom:4px">
+      Triggered Signals ({{ triggered_list|length }})
+    </div>
+    <table class="w-full border-collapse my-2 text-sm">
+      <thead>
+        <tr class="bg-bg-alt">
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Signal ID</th>
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Signal Name</th>
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sig in triggered_list %}
+        <tr class="page-break-inside-avoid hover:bg-slate-50 transition-colors">
+          <td class="px-3 py-1.5 text-xs font-mono text-gray-600">{{ sig.signal_id }}</td>
+          <td class="px-3 py-1.5 text-xs font-semibold text-risk-red">{{ sig.signal_name }}</td>
+          <td class="px-3 py-1.5 text-xs text-gray-700">{{ sig.evidence | humanize_evidence }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  {# --- Deferred Signals Detail --- #}
+  {% set deferred_list = audit_deferred_signals|default([]) %}
+  {% if deferred_list %}
+  <div>
+    <div style="font-weight:600;margin-bottom:4px">
+      Deferred Signals &mdash; Data Pending ({{ deferred_list|length }})
+    </div>
+    <p class="text-xs text-gray-500 mb-2">
+      These signals require data sources not yet wired in the pipeline. They will evaluate once data becomes available.
+    </p>
+    <table class="w-full border-collapse my-2 text-sm">
+      <thead>
+        <tr class="bg-bg-alt">
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Signal ID</th>
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Signal Name</th>
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sig in deferred_list %}
+        <tr class="page-break-inside-avoid hover:bg-amber-50 transition-colors">
+          <td class="px-3 py-1.5 text-xs font-mono text-gray-600">{{ sig.signal_id }}</td>
+          <td class="px-3 py-1.5 text-xs">{{ sig.signal_name }}</td>
+          <td class="px-3 py-1.5 text-xs text-amber-600">
+            <span class="badge-pill bg-amber-400 text-white text-[10px] mr-1">Data pending</span>
+            {{ sig.reason }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  {# --- Skipped Signals Detail --- #}
+  {% set skipped_list = audit_skipped_signals|default([]) %}
+  {% if skipped_list %}
+  <div>
+    <div style="font-weight:600;margin-bottom:4px">
+      Skipped Signals ({{ skipped_list|length }})
+    </div>
+    <table class="w-full border-collapse my-2 text-sm">
+      <thead>
+        <tr class="bg-bg-alt">
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Signal ID</th>
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Signal Name</th>
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Reason</th>
+          <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Detail</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sig in skipped_list %}
+        <tr class="page-break-inside-avoid hover:bg-slate-50 transition-colors">
+          <td class="px-3 py-1.5 text-xs font-mono text-gray-600">{{ sig.signal_id }}</td>
+          <td class="px-3 py-1.5 text-xs">{{ sig.signal_name }}</td>
+          <td class="px-3 py-1.5 text-xs font-semibold text-risk-amber">{{ sig.reason | humanize_source }}</td>
+          <td class="px-3 py-1.5 text-xs text-gray-600">{{ sig.detail }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  {# --- Inactive Signals Note --- #}
+  {% if audit_inactive|default(0) > 0 %}
+  <p class="text-xs text-gray-400 mt-4 italic">
+    {{ audit_inactive }} signals are marked inactive (deprecated or lifecycle-retired) and were excluded from evaluation.
+  </p>
+  {% endif %}
+
+</section>

@@ -1,0 +1,35 @@
+{# Growth Estimates -- EPS/revenue forward estimates (Phase 117 -- FORWARD-05) #}
+{% set fwd = forward_risk_map | default({}) %}
+{% if fwd.get('has_growth_estimates', false) %}
+{# Check if Trend and Source columns have real data #}
+{% set ns_ge = namespace(show_trend=false, show_source=false) %}
+{% for est in fwd.growth_estimates %}
+  {% if est.trend or est.trend_icon %}{% set ns_ge.show_trend = true %}{% endif %}
+  {% if est.source %}{% set ns_ge.show_source = true %}{% endif %}
+{% endfor %}
+<h3 id="growth-estimates">Growth Estimates</h3>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Period</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Metric</th>
+      <th class="text-right p-1 border-b font-heading text-xs font-semibold uppercase">Estimate</th>
+      {% if ns_ge.show_trend %}<th class="text-center p-1 border-b font-heading text-xs font-semibold uppercase">Trend</th>{% endif %}
+      {% if ns_ge.show_source %}<th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase text-gray-400">Source</th>{% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for est in fwd.growth_estimates %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ est.period }}</td>
+      <td class="p-1">{{ est.metric }}</td>
+      <td class="p-1 text-right font-mono">{{ est.estimate | default('--', true) }}</td>
+      {% if ns_ge.show_trend %}<td class="p-1 text-center">
+        {{ est.trend_icon | default('', true) }} {{ est.trend | default('', true) }}
+      </td>{% endif %}
+      {% if ns_ge.show_source %}<td class="p-1 text-xs text-gray-400">{{ est.source | default('', true) }}</td>{% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}

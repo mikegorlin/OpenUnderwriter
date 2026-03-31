@@ -1,0 +1,147 @@
+{# People Risk — extracted from governance.html.j2 #}
+
+  {# --- 5.1 People Risk (leadership forensics, turnover) --- #}
+  <h3>People Risk</h3>
+
+  {% if gov.get('stability_score') %}
+  <p class="text-sm my-2"><strong>Leadership Stability Score:</strong> {{ gov.stability_score }}</p>
+  {% endif %}
+
+  {# --- Leadership Stability Red Flags --- #}
+  {% set red_flags = gov.get('leadership_red_flags', []) %}
+  {% if red_flags %}
+  <div class="bg-red-50 border border-red-200 rounded p-2 mb-3">
+    <strong class="text-risk-red text-sm">Leadership Stability Red Flags</strong>
+    <ul class="list-disc ml-5 text-sm text-gray-700 space-y-0.5 mt-1">
+      {% for flag in red_flags %}
+      <li>{{ flag }}</li>
+      {% endfor %}
+    </ul>
+    <p class="text-xs text-gray-500 mt-2 mb-0">Mass departures, interim appointments, and rapid C-suite turnover are among the strongest predictive indicators for D&amp;O claims&mdash;they signal internal stress that frequently precedes restatements, regulatory actions, or securities litigation.</p>
+  </div>
+  {% endif %}
+
+  {% set leaders = gov.get('leaders', []) %}
+  {% if leaders %}
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Name</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Title</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2">Tenure</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2">Prior Lit.</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Character / Flags</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ldr in leaders %}
+      {% set lit_count = ldr.prior_litigation|default('0')|int %}
+      {% set shade_list = ldr.shade_factors|default([]) %}
+      {% set has_flags = lit_count > 0 or shade_list|length > 0 or (ldr.flags and ldr.flags != 'None') %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }} {{ 'bg-red-50' if has_flags else '' }}">
+        <td class="p-1 font-semibold">{{ ldr.name }}</td>
+        <td class="p-1">{{ ldr.title }}</td>
+        <td class="px-2 py-2 text-center tabular-nums">{{ ldr.tenure }}</td>
+        <td class="px-2 py-2 text-center {{ 'text-risk-red font-semibold' if lit_count > 0 else 'text-gray-400' }}">
+          {% if lit_count > 0 %}{{ lit_count }}{% else %}&mdash;{% endif %}
+        </td>
+        <td class="p-1 text-xs">
+          {% if shade_list %}
+            <span class="text-risk-red font-semibold">{{ shade_list | join('; ') }}</span>
+          {% elif ldr.flags and ldr.flags != 'None' %}
+            <span class="text-risk-amber">{{ ldr.flags }}</span>
+          {% else %}
+            <span class="text-gray-400">&mdash;</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {# --- Expandable Executive Forensic Detail Cards (SURF-06) --- #}
+  {% for leader in leaders %}
+  {% set shade_detail = leader.get('shade_factors_detail', []) %}
+  {% set dep_ctx = leader.get('departure_context', '') %}
+  {% set lit_details = leader.get('prior_litigation_details', []) %}
+  {% set prior_enf = leader.get('prior_enforcement', []) %}
+  {% set prior_rest = leader.get('prior_restatements', []) %}
+  {% set has_detail = shade_detail or dep_ctx or lit_details or prior_enf or prior_rest or leader.bio %}
+  <div class="exec-card page-break-inside-avoid my-2">
+    <div class="exec-card-header p-1 bg-bg-alt">
+      <strong>{{ leader.name }}</strong>
+      <span class="text-gray-500 text-sm">{{ leader.title }}</span>
+      <span class="text-xs text-gray-400">{{ leader.tenure }}</span>
+      {% if leader.get('has_forensic_flags') %}
+      <span class="badge-pill badge-tier-warning">{{ leader.forensic_flag_count }} flag{{ 's' if leader.forensic_flag_count != 1 }}</span>
+      {% endif %}
+    </div>
+    {% if has_detail %}
+    <div>
+      <div style="font-weight:600;margin-bottom:4px">Forensic Detail</div>
+      <div class="p-1" style="display: flex; flex-direction: column; gap: 0.5rem;">
+        {% if shade_detail %}
+        <div>
+          <span class="text-xs font-semibold text-amber-600">Shade Factors:</span>
+          <ul class="text-xs list-disc pl-4 mt-1">
+            {% for sf in shade_detail %}
+            <li title="Source: {{ sf.source | humanize_source }}">
+              {{ sf.factor }}
+              <span class="confidence-dot confidence-{{ sf.confidence|lower }}"></span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+        {% if dep_ctx %}
+        <div>
+          <span class="text-xs font-semibold">Departure Context:</span>
+          <p class="text-xs text-gray-600 mt-1 m-0">{{ dep_ctx }}</p>
+          {% if leader.get('departure_date') %}
+          <span class="text-xs text-gray-400">Date: {{ leader.departure_date }}</span>
+          {% endif %}
+        </div>
+        {% endif %}
+        {% if lit_details %}
+        <div>
+          <span class="text-xs font-semibold text-red-600">Prior Litigation:</span>
+          <ul class="text-xs list-disc pl-4 mt-1">
+            {% for lit in lit_details %}
+            <li>{{ lit }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+        {% if prior_enf %}
+        <div>
+          <span class="text-xs font-semibold text-red-600">Prior SEC Enforcement:</span>
+          <ul class="text-xs list-disc pl-4 mt-1">
+            {% for e in prior_enf %}
+            <li>{{ e }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+        {% if prior_rest %}
+        <div>
+          <span class="text-xs font-semibold text-amber-600">Prior Restatements:</span>
+          <ul class="text-xs list-disc pl-4 mt-1">
+            {% for r in prior_rest %}
+            <li>{{ r }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+        {% if leader.bio %}
+        <div>
+          <span class="text-xs text-gray-500 italic">{{ leader.bio }}</span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
+  {% else %}
+  {{ gap_notice("Leadership Profiles", "Executive data not fully extracted from filings") }}
+  {% endif %}

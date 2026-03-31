@@ -1,0 +1,189 @@
+{# Insider Trading Analysis — extracted from market.html.j2 #}
+  {# --- Insider Trading --- #}
+  <h3>Insider Trading Analysis</h3>
+  {# D&O Risk context for insider trading #}
+  {% set insider_do = mkt.get('insider_do_context', '') %}
+  {% if insider_do %}
+  <div class="bg-bg-alt border border-gray-200 rounded p-1 mb-3 text-xs text-gray-600 leading-relaxed do-context-cell">
+    <strong>D&amp;O Risk:</strong> {{ insider_do | strip_jargon }}
+  </div>
+  {% endif %}
+  {% set ins = mkt.get('insider_data', {}) %}
+  {% if ins %}
+  {% set ins_kv_items = [] %}
+  {% if ins.get('net_activity') and ins.get('net_activity') != 'N/A' %}{% set _ = ins_kv_items.append({'key': 'Net Activity', 'value': ins.net_activity}) %}{% endif %}
+  {% if ins.get('plan_coverage') and ins.get('plan_coverage') != 'N/A' %}{% set _ = ins_kv_items.append({'key': '10b5-1 Plan Coverage', 'value': ins.plan_coverage}) %}{% endif %}
+  {% if ins.get('cluster_events') and ins.get('cluster_events') != '0' %}{% set _ = ins_kv_items.append({'key': 'Cluster Events', 'value': ins.cluster_events}) %}{% endif %}
+  {% if ins.get('recent_cluster') and ins.get('recent_cluster') != 'N/A' %}{% set _ = ins_kv_items.append({'key': 'Most Recent Cluster', 'value': ins.recent_cluster}) %}{% endif %}
+  {% if ins_kv_items %}{{ kv_table(ins_kv_items) }}{% endif %}
+
+  {# Ownership concentration alerts #}
+  {% set alerts = ins.get('ownership_alerts', []) %}
+  {% if alerts %}
+  <h4>Ownership Concentration Alerts</h4>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Insider</th>
+        <th class="text-left px-2 py-2 border-b font-heading text-xs font-semibold uppercase">Role</th>
+        <th class="text-center px-2 py-2 border-b font-heading text-xs font-semibold uppercase">Severity</th>
+        <th class="text-right px-2 py-2 border-b font-heading text-xs font-semibold uppercase">% Sold</th>
+        <th class="text-right px-2 py-2 border-b font-heading text-xs font-semibold uppercase">% Outstanding</th>
+        <th class="text-right p-1 border-b font-heading text-xs font-semibold uppercase">Shares Left</th>
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for a in alerts %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}{% if a.severity == 'RED_FLAG' %} border-l-3{% endif %}" {% if a.severity == 'RED_FLAG' %}style="border-left: 3px solid var(--do-risk-red);"{% elif a.severity == 'WARNING' %}style="border-left: 3px solid var(--do-risk-amber);"{% endif %}>
+        <td class="p-1 font-medium">
+          {{ a.name }}
+          {% if a.is_c_suite %}<span class="badge-pill" style="font-size:0.6rem;background:var(--do-navy);color:#fff;padding:1px 5px;border-radius:8px;margin-left:4px;">C-Suite</span>{% endif %}
+        </td>
+        <td class="px-2 py-2 text-xs">{{ a.role }}</td>
+        <td class="px-2 py-2 text-center">
+          {% if a.severity == 'RED_FLAG' %}<span style="color:var(--do-risk-red);font-weight:600;">Red Flag</span>
+          {% elif a.severity == 'WARNING' %}<span style="color:var(--do-risk-amber);font-weight:600;">Warning</span>
+          {% elif a.severity == 'POSITIVE' %}<span style="color:var(--do-risk-green);font-weight:600;">Positive</span>
+          {% else %}<span class="text-gray-500">Info</span>{% endif %}
+        </td>
+        <td class="px-2 py-2 text-right font-semibold">{{ a.pct_sold }}</td>
+        <td class="px-2 py-2 text-right">{{ a.outstanding_pct if a.outstanding_pct and a.outstanding_pct != 'N/A' else '—' }}</td>
+        <td class="p-1 text-right">{{ a.shares_remaining if a.shares_remaining and a.shares_remaining != 'N/A' else '—' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {# Insider SALES — the D&O-relevant transactions #}
+  {% set sale_txns = ins.get('transactions', []) %}
+  {% set other_txns = ins.get('other_transactions', []) %}
+  {% set sale_count = ins.get('sale_count', sale_txns|length) %}
+  {% set other_count = ins.get('other_count', other_txns|length) %}
+  {% if sale_txns or other_txns %}
+  <h4>Insider Sales Activity{% if sale_count %} ({{ sale_count }} sale{{ 's' if sale_count != 1 else '' }}){% endif %}</h4>
+  {# Cluster event callout #}
+  {% if ins.get('cluster_events') and ins.get('cluster_events') != 'None' and ins.get('cluster_events') != '0' %}
+  <div style="background: rgba(245,158,11,0.08); border-left: 3px solid var(--do-risk-amber); padding: 6px 12px; margin: 8px 0; font-size: 0.8rem;">
+    {{ ins.get('cluster_events') }} cluster events detected (3+ insiders transacting within 5 days)
+  </div>
+  {% endif %}
+  {% if sale_txns %}
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Insider</th>
+        <th class="text-left px-2 py-2 border-b font-heading text-xs font-semibold uppercase">Date</th>
+        <th class="text-center px-2 py-2 border-b font-heading text-xs font-semibold uppercase">Type</th>
+        <th class="text-right px-2 py-2 border-b font-heading text-xs font-semibold uppercase">Shares</th>
+        <th class="text-right px-2 py-2 border-b font-heading text-xs font-semibold uppercase">Value</th>
+        <th class="text-right px-2 py-2 border-b font-heading text-xs font-semibold uppercase">Ownership Post</th>
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for t in sale_txns %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1">
+          <span class="font-medium">{{ t.name }}</span>
+          <span class="text-gray-400 text-xs ml-1">{{ t.title }}</span>
+        </td>
+        <td class="px-2 py-2 text-xs">{{ t.date }}</td>
+        <td class="px-2 py-2 text-center">
+          SELL
+          {% if t.is_10b5_1 %}<span class="badge-pill" style="font-size:0.55rem;background:#3b82f6;color:#fff;padding:1px 4px;border-radius:6px;margin-left:3px;" title="Transaction under Rule 10b5-1 trading plan">10b5-1</span>{% else %}<span class="badge-pill" style="font-size:0.55rem;background:var(--do-risk-amber);color:#fff;padding:1px 4px;border-radius:6px;margin-left:3px;" title="Discretionary sale — no 10b5-1 plan">Discr.</span>{% endif %}
+        </td>
+        <td class="px-2 py-2 text-right">{{ t.shares }}</td>
+        <td class="px-2 py-2 text-right font-semibold">{{ t.value }}</td>
+        <td class="px-2 py-2 text-right">{{ t.ownership_post if t.ownership_post and t.ownership_post != 'N/A' else '—' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% set overflow_sales = ins.get('transactions_overflow', []) %}
+  {% if overflow_sales %}
+  <p class="text-xs text-gray-400 mt-1">Showing top 10 of {{ ins.get('sale_count', 0) }} sales. <a href="#audit-market-overflow" class="text-blue-600 hover:underline">See all {{ ins.get('sale_count', 0) }} in Audit Trail</a>.</p>
+  {% endif %}
+  {% elif sale_count == 0 %}
+  <p class="text-sm text-gray-500 italic my-2">No insider sales in the trailing 12 months&mdash;positive signal.</p>
+  {% endif %}
+  {# Grants, exercises, purchases — collapsed (less D&O relevant) #}
+  {% if other_txns %}
+  <div>
+    <div style="font-weight:600;margin-bottom:4px">
+      Grants, Exercises &amp; Purchases ({{ other_count }} transaction{{ 's' if other_count != 1 else '' }})
+    </div>
+    <table class="w-full border-collapse my-2 text-xs">
+      <thead>
+        <tr class="bg-gray-50">
+          <th class="text-left px-3 py-1 border-b">Insider</th>
+          <th class="text-left px-2 py-1 border-b">Date</th>
+          <th class="text-center px-2 py-1 border-b">Type</th>
+          <th class="text-right px-2 py-1 border-b">Shares</th>
+          <th class="text-right px-2 py-1 border-b">Value</th>
+        </tr>
+      </thead>
+      <tbody class="tabular-nums text-gray-600">
+        {% for t in other_txns %}
+        <tr class="{{ 'bg-gray-50' if loop.index is odd else 'bg-white' }}">
+          <td class="px-3 py-1 border-b border-gray-100">{{ t.name }} <span class="text-gray-400">{{ t.title }}</span></td>
+          <td class="px-2 py-1 border-b border-gray-100">{{ t.date }}</td>
+          <td class="px-2 py-1 border-b border-gray-100 text-center">{{ t.type }}</td>
+          <td class="px-2 py-1 border-b border-gray-100 text-right">{{ t.shares }}</td>
+          <td class="px-2 py-1 border-b border-gray-100 text-right">{{ t.value }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% set overflow_other = ins.get('other_transactions_overflow', []) %}
+  {% if overflow_other %}
+  <p class="text-xs text-gray-400 mt-1">Showing top 5 of {{ ins.get('other_count', 0) }} other transactions. <a href="#audit-market-overflow" class="text-blue-600 hover:underline">See all in Audit Trail</a>.</p>
+  {% endif %}
+  {% endif %}
+  {% endif %}
+
+  {# Insider cluster detail table (legacy) #}
+  {% set cluster_details = ins.get('cluster_details', []) %}
+  {% if cluster_details %}
+  <h4>Insider Selling Cluster Events</h4>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Period</th>
+        <th class="text-center px-2 py-2 border-b font-heading text-xs font-semibold uppercase"># Insiders</th>
+        <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Participants</th>
+        <th class="text-right p-1 border-b font-heading text-xs font-semibold uppercase">Total Value</th>
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for cl in cluster_details %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1">{{ cl.period }}</td>
+        <td class="px-2 py-2 text-center font-semibold">{{ cl.insiders }}</td>
+        <td class="p-1 text-xs">{{ cl.names }}</td>
+        <td class="p-1 text-right font-semibold">{{ cl.total_value }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {# Fix 4: Insider transaction type context — option exercises vs open market sales #}
+  <div style="font-size:0.6875rem;color:#6B7280;font-style:italic;margin:6px 0;padding:4px 8px;background:#F9FAFB;border-left:3px solid #E5E7EB;line-height:1.5">
+    Note: Insider transactions include 10b5-1 plan sales and option exercises. Planned sales under 10b5-1 carry less scienter weight than discretionary open market sales. "100% net seller" status should be evaluated in context of transaction type &mdash; exercise-and-sell patterns for equity compensation are routine and carry minimal D&amp;O risk.
+  </div>
+  {# Insider trading interpretation #}
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    {% if ins.get('cluster_events') and ins.get('cluster_events') != 'None' and ins.get('cluster_events') != '0' %}
+    <li>Insider selling clusters are a key D&amp;O risk indicator&mdash;coordinated sales preceding stock declines are frequently cited in securities fraud complaints as evidence of scienter (intent to defraud)</li>
+    {% elif ins.get('net_activity') and 'sell' in (ins.get('net_activity', '')|lower) %}
+    <li>Net insider selling activity warrants monitoring; transactions covered by 10b5-1 plans provide a defense against scienter allegations</li>
+    {% endif %}
+    {% if ins.get('plan_coverage') and ins.get('plan_coverage') != 'N/A' %}
+    {% if 'high' in (ins.get('plan_coverage', '')|lower) or ins.get('plan_coverage', '')|replace('%', '')|float(default=0) >= 80 %}
+    <li>High 10b5-1 plan coverage reduces insider trading litigation risk</li>
+    {% endif %}
+    {% endif %}
+  </ul>
+  {% else %}
+  <p class="text-sm text-gray-500 italic my-2">No insider trading data available.</p>
+  {% endif %}

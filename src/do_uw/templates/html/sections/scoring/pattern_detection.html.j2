@@ -1,0 +1,18 @@
+{# Composite Pattern Detection — extracted from scoring.html.j2 #}
+{% set patterns = sc.get('patterns', []) %}
+{% if patterns %}
+<h3>Composite Pattern Detection</h3>
+<div class="space-y-2 my-2">
+  {% for p in patterns %}
+  <div class="border-l-3 border-amber-500 bg-amber-50 pl-3 py-2 page-break-inside-avoid">
+    <p class="text-sm font-semibold text-amber-800 m-0">{{ p.name | humanize }}</p>
+    <p class="text-xs text-amber-700 m-0 mt-1">{{ p.description | humanize_evidence }}</p>
+    {# do_context removed — generic brain YAML boilerplate. Evidence in description above. #}
+  </div>
+  {% endfor %}
+</div>
+<p class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed">
+  Composite patterns identify multi-factor risk combinations that are more predictive of D&amp;O claims than individual factors.
+  Each pattern represents a historically significant cluster of risk indicators with demonstrated correlation to securities litigation.
+</p>
+{% endif %}

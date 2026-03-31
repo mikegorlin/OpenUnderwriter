@@ -1,0 +1,9 @@
+{# Inline SVG sparkline macro for trend indicators (CHART-03).
+   Renders pre-generated SVG strings inline with |safe filter.
+   Usage: {{ sparkline(svg_str, "12-month price trend") }} #}
+
+{% macro sparkline(svg_str, label="") %}
+{%- if svg_str -%}
+<span class="sparkline-inline" title="{{ label }}">{{ svg_str | safe }}</span>
+{%- endif -%}
+{% endmacro %}

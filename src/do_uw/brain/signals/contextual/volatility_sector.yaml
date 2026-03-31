@@ -1,0 +1,58 @@
+- id: CTX.MKT.volatility_sector
+  name: Stock Volatility in Sector Context
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of STOCK.VOL.historical through sector lens
+    threshold_provenance:
+      source: calibrated
+      rationale: Sector volatility norms from CBOE data; adjustments ensure comparable risk assessment
+  signal_class: inference
+  group: stock_performance
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  epistemology:
+    rule_origin: 'CBOE volatility data by sector: baseline volatility varies significantly across industries'
+    threshold_basis: Sector volatility norms from CBOE data; adjustments ensure comparable risk assessment
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: STOCK.VOL.historical
+      context_dimensions:
+      - sector
+      context_adjustments:
+        tech:
+          threshold_adjustment: 1.3
+          rationale: 'Tech: higher baseline volatility expected'
+        healthcare:
+          threshold_adjustment: 1.4
+          rationale: 'Healthcare/biotech: high volatility is structural'
+        utilities:
+          threshold_adjustment: 0.5
+          rationale: 'Utilities: low volatility expected; spikes are more concerning'
+        financial:
+          threshold_adjustment: 1.1
+          rationale: 'Financial: moderate volatility expected'
+        consumer:
+          threshold_adjustment: 0.8
+          rationale: 'Consumer: lower volatility expected'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} stock volatility in sector context at {value} represents environment risk (external market,
+        regulatory, and industry conditions affecting D&O liability) — this level is associated with D&O risk assessment exposure
+        based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} stock volatility in sector context at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} stock volatility in sector context at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

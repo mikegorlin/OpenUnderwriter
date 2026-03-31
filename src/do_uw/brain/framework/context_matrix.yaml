@@ -1,0 +1,140 @@
+# Context Matrix: Company classification rules for contextual signal evaluation.
+# Phase 110-01: Defines lifecycle, size, sector, product, and tower dimensions
+# used by contextual mechanism evaluators to adjust thresholds.
+
+lifecycle_stages:
+  pre_revenue:
+    description: "Pre-revenue company, typically pre-IPO or early post-IPO"
+    criteria:
+      years_public: "< 1"
+      revenue: "< $10M"
+    d_and_o_context: "Higher frequency of Section 11/12 claims, IPO-related exposure"
+
+  post_ipo:
+    description: "Recently public company, 1-3 years post-IPO"
+    criteria:
+      years_public: "1-3"
+    d_and_o_context: "Elevated IPO claim window, Lock-up expiration risk"
+
+  growth:
+    description: "High-growth company, revenue growth >15%"
+    criteria:
+      revenue_growth: "> 15%"
+    d_and_o_context: "Growth expectations create guidance miss exposure"
+
+  mature:
+    description: "Established company, 10+ years public or F500/revenue >$5B"
+    criteria:
+      years_public: "> 10"
+      revenue: "> $5B"
+      or: "Fortune 500"
+    d_and_o_context: "Stable exposure, M&A and strategic risk primary drivers"
+
+  distressed:
+    description: "Company showing financial distress signals"
+    criteria:
+      altman_z: "< 1.8"
+      or: "going_concern opinion"
+    d_and_o_context: "DIC/bankruptcy claims, creditor actions, duty of loyalty"
+
+size_tiers:
+  small_cap:
+    market_cap_range: "< $2B"
+    description: "Small-cap company"
+    d_and_o_context: "Less regulatory scrutiny, fewer plaintiffs, but less D&O capacity"
+
+  mid_cap:
+    market_cap_range: "$2B - $10B"
+    description: "Mid-cap company"
+    d_and_o_context: "Growing institutional attention, standard D&O market"
+
+  large_cap:
+    market_cap_range: "$10B - $200B"
+    description: "Large-cap company"
+    d_and_o_context: "High institutional ownership, active plaintiff bar attention"
+
+  mega_cap:
+    market_cap_range: "> $200B"
+    description: "Mega-cap company"
+    d_and_o_context: "Maximum litigation target, regulatory spotlight, global operations"
+
+sector_groups:
+  financial:
+    sic_ranges: ["6000-6799"]
+    description: "Banking, insurance, financial services"
+    d_and_o_context: "Regulatory density, fiduciary duties, systemic risk"
+
+  tech:
+    sic_ranges: ["3570-3579", "3670-3679", "7370-7379"]
+    description: "Technology, software, hardware"
+    d_and_o_context: "IP litigation, rapid growth expectations, cybersecurity"
+
+  healthcare:
+    sic_ranges: ["2830-2836", "3841-3851", "8000-8099"]
+    description: "Pharma, biotech, medical devices, health services"
+    d_and_o_context: "FDA pipeline, clinical trials, pricing pressure"
+
+  industrial:
+    sic_ranges: ["2000-3999"]
+    description: "Manufacturing, construction, industrials"
+    d_and_o_context: "Environmental liability, product liability, safety"
+
+  consumer:
+    sic_ranges: ["5000-5999", "5200-5999"]
+    description: "Retail, consumer goods, services"
+    d_and_o_context: "Consumer class actions, product safety, data privacy"
+
+  energy:
+    sic_ranges: ["1000-1499", "4900-4999"]
+    description: "Oil & gas, mining, utilities"
+    d_and_o_context: "Environmental, regulatory, commodity price exposure"
+
+  materials:
+    sic_ranges: ["2800-2899"]
+    description: "Chemicals, basic materials"
+    d_and_o_context: "Environmental remediation, product liability"
+
+  utilities:
+    sic_ranges: ["4900-4949"]
+    description: "Electric, gas, water utilities"
+    d_and_o_context: "Rate case litigation, infrastructure liability"
+
+  real_estate:
+    sic_ranges: ["6500-6599"]
+    description: "REITs, real estate development"
+    d_and_o_context: "Valuation disputes, related-party transactions"
+
+  communication:
+    sic_ranges: ["4800-4899"]
+    description: "Telecom, media, broadcasting"
+    d_and_o_context: "Regulatory, content liability, M&A"
+
+product_types:
+  side_a:
+    description: "Side A only (non-indemnifiable loss)"
+    d_and_o_context: "Personal liability focus, agent risk weight increased"
+
+  abc:
+    description: "Full ABC coverage (Side A + B + C)"
+    d_and_o_context: "Entity and securities coverage, broader exposure"
+
+tower_positions:
+  primary:
+    attachment: 0
+    description: "Primary layer"
+    d_and_o_context: "First dollar exposure, highest claim frequency"
+
+  low_excess:
+    attachment_range: "$0 - $10M"
+    description: "Low excess layer"
+    d_and_o_context: "Moderate frequency, severity begins to matter"
+
+  mid_excess:
+    attachment_range: "$10M - $50M"
+    description: "Mid-tower excess"
+    d_and_o_context: "Severity-driven, large loss events"
+
+  high_excess:
+    attachment_range: "> $50M"
+    description: "High excess layer"
+    d_and_o_context: "Catastrophic loss only, host risk dominates"

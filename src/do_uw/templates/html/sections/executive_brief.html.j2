@@ -1,0 +1,246 @@
+{# Executive Brief — risk narrative first, findings second, recommendation third.
+   Flow: Narrative → Findings (Negatives/Positives with SCA theories) →
+         Recommendation → Exposure/Tower → Claim Scenario → Coverage
+   Restructured per D-10, D-11, D-12, D-14 (Phase 130-02). #}
+
+{% from "macros/dual_voice.html.j2" import dual_voice_block %}
+{% set es = executive_summary or {} %}
+{% set sc = scorecard if scorecard is defined else {} %}
+{% set dl = ddl if ddl is defined else {} %}
+
+<section id="executive-brief" class="executive-brief">
+  <h2>Executive Brief</h2>
+
+  {{ dual_voice_block(commentary.get('executive_brief') if commentary else none, 'Executive Brief') }}
+
+  {# ─── RISK NARRATIVE (first — tell the story) ─── #}
+  {% set narr = narratives.executive_summary if narratives else none %}
+  {% if narr %}
+  <div class="eb-risk-narrative">
+    {{ section_narrative(narr) }}
+  </div>
+  {% elif es.get('thesis') %}
+  <div class="eb-risk-narrative">
+    <div class="ai-assessment-box">
+      <div class="ai-assessment-text">{{ es.thesis }}</div>
+    </div>
+  </div>
+  {% endif %}
+
+  {# ─── KEY NEGATIVES + KEY POSITIVES with SCA theories (numbered) ─── #}
+  {% set neg = es.get('negatives_enriched', es.get('key_findings', [])) %}
+  {% set pos = es.get('positives_enriched', es.get('positive_indicators', [])) %}
+  {% if neg or pos %}
+  <div class="eb-findings-grid">
+    {% if neg %}
+    <div class="eb-findings-col">
+      <div class="eb-section-header eb-section-header--negative">Key Negatives</div>
+      <ol class="eb-findings-list">
+        {% for item in neg %}
+        <li class="eb-finding eb-finding--negative">
+          {% if item is mapping %}
+          <div class="eb-finding-title">{{ item.get('title', '') }}</div>
+          <div class="eb-finding-body">{{ item.get('body', '') | linkify_sections | safe }}</div>
+          {% if item.get('sca_theory') %}
+          <span class="text-xs text-gray-500 italic">{{ item.sca_theory }}</span>
+          {% endif %}
+          {% else %}
+          <div class="eb-finding-body">{{ item }}</div>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
+    {% endif %}
+    {% if pos %}
+    <div class="eb-findings-col">
+      <div class="eb-section-header eb-section-header--positive">Key Positives</div>
+      <ol class="eb-findings-list">
+        {% for item in pos %}
+        <li class="eb-finding eb-finding--positive">
+          {% if item is mapping %}
+          <div class="eb-finding-title">{{ item.get('title', '') }}</div>
+          <div class="eb-finding-body">{{ item.get('body', '') | linkify_sections | safe }}</div>
+          {% if item.get('sca_defense') %}
+          <span class="text-xs text-gray-500 italic">{{ item.sca_defense }}</span>
+          {% endif %}
+          {% else %}
+          <div class="eb-finding-body">{{ item }}</div>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {# ─── UNDERWRITING RECOMMENDATION (after narrative and findings) ─── #}
+  {% if es.get('tier_label') or es.get('thesis') %}
+  {% set recs = sc.get('recommendations', {}) if sc else {} %}
+  {% set cp = es.get('claim_probability', {}) %}
+  {% set ir = es.get('inherent_risk', {}) %}
+  <div class="eb-recommendation">
+    <div class="eb-rec-header">
+      <h3 style="margin:0; font-size:0.875rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--do-navy, #0B1D3A);">
+        Underwriting Recommendation
+      </h3>
+      <span class="sc-uncalibrated">Scoring v2.0</span>
+    </div>
+
+    {% if es.get('tier_label') %}
+    <div class="eb-rec-verdict">
+      <div class="scorecard-tier scorecard-tier--{{ es.tier_label | lower | replace(' ', '_') }}">
+        {{ es.tier_label }}
+      </div>
+      {% if es.get('tier_action') %}
+      <span class="eb-rec-action">{{ es.tier_action }}</span>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="eb-metrics-row">
+      {% if es.get('quality_score') %}
+      <div class="eb-metric">
+        <span class="eb-metric-val">{{ es.quality_score }}</span>
+        <span class="eb-metric-lbl">Quality Score</span>
+      </div>
+      {% endif %}
+      {% if cp %}
+      <div class="eb-metric">
+        <span class="eb-metric-val">{{ cp.get('band', 'N/A') }}</span>
+        <span class="eb-metric-lbl">Claim Prob ({{ cp.get('range', '') }})</span>
+      </div>
+      {% endif %}
+      {% if ir %}
+      <div class="eb-metric">
+        <span class="eb-metric-val">{{ ir.get('adjusted_rate', 'N/A') }}</span>
+        <span class="eb-metric-lbl">Company-Adj Rate (base: {{ ir.get('sector_base_rate', '') }})</span>
+      </div>
+      {% endif %}
+    </div>
+
+    {# Recommendation narrative #}
+    <div class="eb-rec-narrative">
+      <p>
+        We recommend {{ company_name | default("this company") }} as a <strong>{{ es.tier_label | default("preferred") }}</strong> account
+        with a quality score of <strong>{{ es.quality_score | default("N/A") }}/100</strong>.
+        {% if es.get('claim_probability') %}
+        The company-adjusted claim probability of <strong>{{ cp.get('range', 'N/A') }}</strong> is
+        {{ 'below' if ir.get('adjusted_rate', '0') < ir.get('sector_base_rate', '0') else 'in line with' }}
+        the industry base rate of {{ cp.get('industry_base', 'N/A') }},
+        {% endif %}
+        reflecting the risk profile in the {{ sector | default("industrial") }} sector.
+        {% if sc.get('risk_type', {}).get('available') %}
+        The primary risk classification is <strong>{{ sc.risk_type.primary_label }}</strong>.
+        {% endif %}
+      </p>
+
+      {# Pricing and terms guidance #}
+      {% if recs.get('available') %}
+      <p>
+        {% if recs.pricing %}<strong>Pricing guidance:</strong> {{ recs.pricing }} {% endif %}
+        {% if recs.layer_comfort %}{{ recs.layer_comfort }} {% endif %}
+        {% if recs.terms %}{{ recs.terms }} {% endif %}
+        {% if recs.tone %}Broker communication: {{ recs.tone }}{% endif %}
+      </p>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# ─── DAMAGE EXPOSURE + TOWER ─── #}
+  <div class="eb-bottom-row">
+    {% if dl.get('has_exposure', false) %}
+    {% set dd = dl.primary %}
+    <div class="eb-bottom-panel">
+      <div class="eb-bottom-title">Damage Exposure</div>
+      <div class="eb-bottom-stats">
+        <span><strong>DDL:</strong> {{ dd.ddl_fmt }}</span>
+        <span><strong>Drawdown:</strong> -{{ dd.drop_pct }}% over {{ dd.duration_days }}d</span>
+        <span><strong>Settlement (2-5%):</strong> {{ dd.settlement_low }} – {{ dd.settlement_high }}</span>
+        <span><strong>Prior SCAs:</strong> {% if dl.has_sca_exclusions %}Clock reset{% else %}None — full window{% endif %}</span>
+      </div>
+    </div>
+    {% endif %}
+    {% if es.get('tower_recommendation') %}
+    {% set tr = es.tower_recommendation %}
+    <div class="eb-bottom-panel">
+      <div class="eb-bottom-title">Tower Recommendation</div>
+      <div class="eb-bottom-stats">
+        <span><strong>Position:</strong> {{ tr.get('position', 'N/A') }}</span>
+        {% if tr.get('min_attachment') and tr.min_attachment != 'N/A' %}
+        <span><strong>Attachment:</strong> {{ tr.min_attachment }}</span>
+        {% endif %}
+        {% if tr.get('side_a') and tr.side_a != 'N/A' %}
+        <span><strong>Side A:</strong> {{ tr.side_a }}</span>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  {# ─── MOST LIKELY CLAIM SCENARIO ─── #}
+  {% set sc_data = scorecard if scorecard is defined else {} %}
+  {% if sc_data.get('risk_type', {}).get('available') and sc_data.get('allegations', {}).get('available') %}
+  <div class="eb-scenario">
+    <div class="eb-scenario-title">Most Likely Claim Scenario</div>
+    <p class="eb-scenario-text">
+      {% set primary_theory = sc_data.allegations.theories | selectattr('is_primary') | first | default(sc_data.allegations.theories | first) %}
+      {% if primary_theory %}
+      If a D&O claim were filed against {{ company_name | default("this company") }},
+      the most probable theory is <strong>{{ primary_theory.label }}</strong>
+      ({{ primary_theory.exposure }} exposure).
+      {% endif %}
+      {% if sc_data.risk_type.primary_label %}
+      The company's <strong>{{ sc_data.risk_type.primary_label }}</strong> risk classification means
+      {% if 'guidance' in sc_data.risk_type.primary_label | lower %}
+      plaintiffs would likely allege management knew or should have known that forward guidance was unachievable,
+      with the stock drop following a miss serving as the corrective disclosure.
+      {% elif 'accounting' in sc_data.risk_type.primary_label | lower %}
+      plaintiffs would likely allege material misstatements in financial reports,
+      with a restatement or audit qualification as the corrective disclosure.
+      {% elif 'governance' in sc_data.risk_type.primary_label | lower %}
+      plaintiffs would likely bring derivative claims alleging failure of board oversight,
+      particularly under Caremark duty-of-loyalty theories.
+      {% else %}
+      the primary claim vector would be through securities fraud allegations under Section 10(b).
+      {% endif %}
+      {% endif %}
+      {% if dl is defined and dl.get('has_exposure') %}
+      Current maximum exposure: <strong>{{ dl.primary.ddl_fmt }}</strong> DDL.
+      {% endif %}
+    </p>
+  </div>
+  {% endif %}
+
+  {# ─── DATA CONFIDENCE (how complete is this analysis?) ─── #}
+  {% if coverage_by_section is defined and coverage_by_section %}
+  <div class="eb-confidence">
+    <div class="eb-confidence-title">Analysis Coverage</div>
+    <div class="eb-confidence-bars">
+      {% for section_name, stats in coverage_by_section.items() %}
+      {% set pct = stats.get('coverage_pct', 0) %}
+      <div class="eb-conf-row">
+        <span class="eb-conf-label">{{ section_name | replace(' Assessment', '') | replace(' & Risk', '') }}</span>
+        <div class="eb-conf-track">
+          <div class="eb-conf-fill {{ 'eb-conf--high' if pct >= 80 else 'eb-conf--medium' if pct >= 50 else 'eb-conf--low' }}" style="width:{{ pct }}%"></div>
+        </div>
+        <span class="eb-conf-pct">{{ pct }}%</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% if coverage_stats is defined %}
+    <div class="eb-conf-summary">
+      {{ coverage_stats.total }} signals | {{ coverage_stats.evaluated }} evaluated | {{ coverage_stats.skipped }} skipped | {{ coverage_stats.deferred }} deferred
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <div class="brief-footer">
+    <p class="brief-disclaimer">
+      Auto-generated from full D&amp;O analysis. Refer to domain sections for detailed evidence.
+    </p>
+  </div>
+</section>

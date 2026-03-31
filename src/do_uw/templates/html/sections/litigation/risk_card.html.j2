@@ -1,0 +1,231 @@
+{# SCA Risk Card — empirical scenario benchmarks, screening questions, repeat filer detail.
+   Data from Supabase get_risk_card() RPC. Only renders when risk card data is present. #}
+
+{% set rc_score = lit.get('risk_card_score') %}
+{% set rc_components = lit.get('risk_card_score_components', {}) %}
+{% set rc_repeat = lit.get('risk_card_repeat_filer', {}) %}
+{% set rc_benchmarks = lit.get('risk_card_scenario_benchmarks', []) %}
+{% set rc_questions = lit.get('risk_card_screening_questions', []) %}
+{% set rc_filings = lit.get('risk_card_filing_history', []) %}
+{% set rc_note = lit.get('risk_card_data_note', '') %}
+
+{% if rc_score is not none or rc_benchmarks or rc_repeat %}
+
+<h3>SCA Risk Profile</h3>
+
+{# --- Row 1: Composite score + repeat filer + score components --- #}
+<div style="display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 12px; margin: 12px 0;">
+  {# Composite Score #}
+  {% if rc_score is not none %}
+  {% set score_color = '#dc2626' if rc_score >= 60 else '#d97706' if rc_score >= 35 else '#16a34a' %}
+  {% set score_bg = '#fef2f2' if rc_score >= 60 else '#fffbeb' if rc_score >= 35 else '#f0fdf4' %}
+  {% set score_border = '#fecaca' if rc_score >= 60 else '#fde68a' if rc_score >= 35 else '#bbf7d0' %}
+  <div style="background: {{ score_bg }}; border: 1px solid {{ score_border }}; border-radius: 6px; padding: 12px; text-align: center;">
+    <div style="font-size: 32px; font-weight: 800; color: {{ score_color }}; font-variant-numeric: tabular-nums; line-height: 1;">{{ rc_score }}</div>
+    <div style="font-size: 10px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px;">SCA Risk Score</div>
+    <div style="font-size: 8px; color: #94a3b8; margin-top: 2px;">0 = low &bull; 100 = high</div>
+  </div>
+  {% endif %}
+
+  {# Repeat Filer Status #}
+  {% if rc_repeat %}
+  {% set filer_cat = rc_repeat.get('filer_category', 'NONE') %}
+  {% set filer_color = '#dc2626' if filer_cat == 'CHRONIC' else '#d97706' if filer_cat in ('REPEAT', 'PRIOR', 'ACTIVE_LITIGATION') else '#16a34a' %}
+  {% set filer_bg = '#fef2f2' if filer_cat == 'CHRONIC' else '#fffbeb' if filer_cat in ('REPEAT', 'PRIOR', 'ACTIVE_LITIGATION') else '#f0fdf4' %}
+  {% set filer_border = '#fecaca' if filer_cat == 'CHRONIC' else '#fde68a' if filer_cat in ('REPEAT', 'PRIOR', 'ACTIVE_LITIGATION') else '#bbf7d0' %}
+  <div style="background: {{ filer_bg }}; border: 1px solid {{ filer_border }}; border-radius: 6px; padding: 12px; text-align: center;">
+    <div style="font-size: 16px; font-weight: 700; color: {{ filer_color }}; line-height: 1.2;">{{ filer_cat | humanize }}</div>
+    <div style="font-size: 10px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px;">Repeat Filer</div>
+    {% if rc_repeat.get('company_settlement_rate_pct') is not none %}
+    <div style="font-size: 8px; color: #94a3b8; margin-top: 2px;">{{ rc_repeat.company_settlement_rate_pct }}% settlement rate &bull; ${{ rc_repeat.get('total_settlement_exposure_m', 0) }}M total</div>
+    {% endif %}
+  </div>
+  {% else %}
+  <div></div>
+  {% endif %}
+
+  {# Score Components Breakdown #}
+  {% if rc_components %}
+  <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px;">
+    <div style="font-size: 10px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Risk Score Components</div>
+    {% for comp_name, comp_val in rc_components.items() %}
+    <div style="display: flex; align-items: center; margin-bottom: 4px;">
+      <div style="flex: 0 0 120px; font-size: 9px; color: #475569; text-transform: capitalize;">{{ comp_name | replace('_', ' ') }}</div>
+      <div style="flex: 1; background: #e2e8f0; border-radius: 3px; height: 8px; margin: 0 8px;">
+        {% set bar_color = '#dc2626' if comp_val >= 25 else '#d97706' if comp_val >= 10 else '#16a34a' if comp_val > 0 else '#cbd5e1' %}
+        <div style="width: {{ [comp_val, 100] | min }}%; height: 100%; background: {{ bar_color }}; border-radius: 3px;"></div>
+      </div>
+      <div style="flex: 0 0 24px; font-size: 9px; font-weight: 600; color: #374151; text-align: right; font-variant-numeric: tabular-nums;">{{ comp_val }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+{# --- Scenario Benchmarks --- #}
+{% if rc_benchmarks %}
+<h4 style="font-size: 11px; font-weight: 700; color: #1e3a5f; margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.05em;">Scenario Benchmarks</h4>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Scenario</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Filings</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Dismissal %</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Median Settle</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">P90 Settle</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Avg Drop</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1">Outcome Tier</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for b in rc_benchmarks %}
+    {% set tier = b.get('litigation_outcome_tier', '') %}
+    {% set tier_color = '#dc2626' if 'HIGH_PLAINTIFF' in tier else '#d97706' if 'COIN_FLIP' in tier else '#16a34a' %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ b.get('scenario', '—') | replace('_', ' ') | title }}</td>
+      <td class="p-1 text-right tabular-nums">{{ '{:,}'.format(b.get('total_filings', 0)) }}</td>
+      <td class="p-1 text-right tabular-nums">{{ b.get('dismissal_rate_pct', '—') }}%</td>
+      <td class="p-1 text-right tabular-nums">${{ b.get('settle_median_m', '—') }}M</td>
+      <td class="p-1 text-right tabular-nums font-semibold">${{ b.get('settle_p90_m', '—') }}M</td>
+      <td class="p-1 text-right tabular-nums">{{ b.get('avg_stock_drop_pct', '—') }}%</td>
+      <td class="p-1 text-center">
+        <span style="padding: 1px 6px; border-radius: 8px; font-size: 7pt; font-weight: 700; color: white; background: {{ tier_color }};">{{ tier | replace('_', ' ') | title }}</span>
+      </td>
+    </tr>
+    {# Severity multipliers row #}
+    {% if b.get('restatement_severity_multiplier') or b.get('sec_inv_severity_multiplier') %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td colspan="7" class="px-3 py-1 text-xs text-gray-500">
+        {% if b.get('restatement_severity_multiplier') %}<strong>Restatement multiplier:</strong> {{ b.restatement_severity_multiplier }}x{% endif %}
+        {% if b.get('restatement_severity_multiplier') and b.get('sec_inv_severity_multiplier') %} &bull; {% endif %}
+        {% if b.get('sec_inv_severity_multiplier') %}<strong>SEC investigation multiplier:</strong> {{ b.sec_inv_severity_multiplier }}x{% endif %}
+        {% if b.get('avg_settle_with_restatement_m') %} &bull; <strong>Avg w/ restatement:</strong> ${{ b.avg_settle_with_restatement_m }}M{% endif %}
+      </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+{# --- Screening Questions with Auto-Answers --- #}
+{% if rc_questions %}
+{% set answered = rc_questions | selectattr('data_found', 'defined') | selectattr('data_found') | list %}
+{% set unanswered = rc_questions | rejectattr('data_found', 'defined') | list %}
+{% set unanswered = unanswered + (rc_questions | selectattr('data_found', 'defined') | rejectattr('data_found') | list) %}
+{% set n_answered = answered | length %}
+{% set n_total = rc_questions | length %}
+
+<h4 style="font-size: 11px; font-weight: 700; color: #1e3a5f; margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.05em;">Underwriting Screening Questions</h4>
+<div style="font-size: 8px; color: #94a3b8; margin-bottom: 8px;">
+  {{ n_answered }} of {{ n_total }} auto-answered from pipeline data. Questions matched to company's scenario history + universal risk factors.
+</div>
+
+{# Verdict summary bar #}
+{% set upgrades = rc_questions | selectattr('verdict', 'defined') | selectattr('verdict', 'equalto', 'UPGRADE') | list | length %}
+{% set downgrades = rc_questions | selectattr('verdict', 'defined') | selectattr('verdict', 'equalto', 'DOWNGRADE') | list | length %}
+{% set neutrals = rc_questions | selectattr('verdict', 'defined') | selectattr('verdict', 'equalto', 'NEUTRAL') | list | length %}
+{% set no_data = n_total - upgrades - downgrades - neutrals %}
+<div style="display: flex; gap: 8px; margin-bottom: 12px;">
+  {% if upgrades %}<span style="padding: 2px 8px; border-radius: 8px; font-size: 8pt; font-weight: 700; background: #F0FDF4; color: #16a34a; border: 1px solid #BBF7D0;">▲ {{ upgrades }} Favorable</span>{% endif %}
+  {% if downgrades %}<span style="padding: 2px 8px; border-radius: 8px; font-size: 8pt; font-weight: 700; background: #FEF2F2; color: #dc2626; border: 1px solid #FECACA;">▼ {{ downgrades }} Concern{{ 's' if downgrades > 1 }}</span>{% endif %}
+  {% if neutrals %}<span style="padding: 2px 8px; border-radius: 8px; font-size: 8pt; font-weight: 600; background: #F8FAFC; color: #64748b; border: 1px solid #E2E8F0;">— {{ neutrals }} Neutral</span>{% endif %}
+  {% if no_data %}<span style="padding: 2px 8px; border-radius: 8px; font-size: 8pt; font-weight: 600; background: #FFFBEB; color: #D97706; border: 1px solid #FDE68A;">? {{ no_data }} Needs Review</span>{% endif %}
+</div>
+
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1" style="width: 28px;">Wt</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1" style="width: 28px;"></th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Question & Auto-Answer</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1" style="width: 80px;">Category</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for q in rc_questions | sort(attribute='weight', reverse=true) %}
+    {% set verdict = q.get('verdict', '') %}
+    {% set verdict_icon = '▲' if verdict == 'UPGRADE' else '▼' if verdict == 'DOWNGRADE' else '—' if verdict == 'NEUTRAL' else '?' %}
+    {% set verdict_color = '#16a34a' if verdict == 'UPGRADE' else '#dc2626' if verdict == 'DOWNGRADE' else '#64748b' if verdict == 'NEUTRAL' else '#d97706' %}
+    {% set row_bg = '#f0fdf4' if verdict == 'UPGRADE' else '#fef2f2' if verdict == 'DOWNGRADE' else '#fffbeb' if verdict == 'NO_DATA' else '' %}
+    <tr style="{{ 'background:' + row_bg + ';' if row_bg else '' }}">
+      <td class="p-1 text-center tabular-nums font-semibold" style="color: {{ '#dc2626' if q.get('weight', 0) >= 9 else '#d97706' if q.get('weight', 0) >= 7 else '#374151' }};">{{ q.get('weight', '—') }}</td>
+      <td class="p-1 text-center" style="font-size: 12pt; color: {{ verdict_color }};">{{ verdict_icon }}</td>
+      <td class="p-1">
+        <div style="font-size: 9pt; color: #111827; font-weight: 600;">{{ q.get('question', '') }}</div>
+        {# Auto-answer #}
+        {% if q.get('answer') %}
+        <div style="font-size: 8.5pt; color: {{ verdict_color }}; margin-top: 3px; padding: 4px 8px; background: {{ row_bg or '#f8fafc' }}; border-radius: 4px; border-left: 3px solid {{ verdict_color }};">
+          {{ q.answer }}
+        </div>
+        {% endif %}
+        {# Evidence bullets #}
+        {% if q.get('evidence') %}
+        <ul style="margin: 3px 0 0; padding: 0 0 0 16px; font-size: 7.5pt; color: #6b7280; line-height: 1.4;">
+          {% for ev in q.evidence[:4] %}
+          <li>{{ ev }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {# Why it matters (collapsed for answered questions) #}
+        {% if q.get('why_it_matters') and not q.get('answer') %}
+        <div style="font-size: 7.5pt; color: #94a3b8; margin-top: 2px; line-height: 1.3;">{{ q.why_it_matters }}</div>
+        {% endif %}
+      </td>
+      <td class="p-1 text-xs" style="text-transform: capitalize;">{{ q.get('category', '—') }}</td>
+    </tr>
+    {# Upgrade/Downgrade criteria for unanswered questions #}
+    {% if not q.get('answer') and (q.get('upgrade_criteria') or q.get('downgrade_criteria')) %}
+    <tr>
+      <td colspan="2"></td>
+      <td colspan="2" class="px-2 py-1 text-xs" style="border-top: 1px dashed #e5e7eb;">
+        {% if q.get('upgrade_criteria') %}<span style="color: #16a34a;">▲</span> <span style="color: #475569;">{{ q.upgrade_criteria }}</span>{% endif %}
+        {% if q.get('upgrade_criteria') and q.get('downgrade_criteria') %}<br>{% endif %}
+        {% if q.get('downgrade_criteria') %}<span style="color: #dc2626;">▼</span> <span style="color: #475569;">{{ q.downgrade_criteria }}</span>{% endif %}
+      </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+{# --- Filing History from Risk Card --- #}
+{% if rc_filings %}
+<h4 style="font-size: 11px; font-weight: 700; color: #1e3a5f; margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.05em;">SCA Filing History (Database)</h4>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Filed</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Status</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Scenario</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Drop %</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Settlement</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1">Restatement</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1">SEC Inv.</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for f in rc_filings %}
+    {% set f_status = f.get('case_status', '—') | upper %}
+    {% set status_color = '#dc2626' if f_status in ('FILED', 'ONGOING') else '#d97706' if f_status == 'SETTLED' else '#16a34a' if f_status == 'DISMISSED' else '#374151' %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 tabular-nums">{{ f.get('filing_date', '—') }}</td>
+      <td class="p-1"><span style="color: {{ status_color }}; font-weight: 600;">{{ f.get('case_status', '—') | title }}</span></td>
+      <td class="p-1">{{ (f.get('business_scenario', '') or '—') | replace('_', ' ') | title }}</td>
+      <td class="p-1 text-right tabular-nums">{% if f.get('stock_drop_pct') is not none %}{{ f.stock_drop_pct }}%{% else %}—{% endif %}</td>
+      <td class="p-1 text-right tabular-nums font-semibold">{% if f.get('settlement_amount_m') is not none %}${{ f.settlement_amount_m }}M{% else %}—{% endif %}</td>
+      <td class="p-1 text-center">{% if f.get('has_restatement') %}⚠{% else %}—{% endif %}</td>
+      <td class="p-1 text-center">{% if f.get('has_sec_investigation') %}⚠{% else %}—{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+{# Data coverage caveat #}
+{% if rc_note %}
+<div style="font-size: 7pt; color: #94a3b8; font-style: italic; margin-top: 4px;">{{ rc_note }}</div>
+{% endif %}
+
+{% endif %}

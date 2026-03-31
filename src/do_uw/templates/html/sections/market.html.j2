@@ -1,0 +1,74 @@
+{# Market & Trading section template.
+   Stock performance, charts (VIS-01/02), short interest,
+   earnings guidance, insider trading, and analyst consensus.
+
+   Phase 56-03: Decomposed into 11 fragment templates in sections/market/.
+   Facets are dispatched from section_context when available; falls back to
+   legacy inline rendering if section_context is not populated. #}
+
+{% from "macros/dual_voice.html.j2" import dual_voice_block %}
+{% set density = densities.get('market', {}) %}
+{% set level = density.level|default('CLEAN') if density else 'CLEAN' %}
+{% set mkt = market or {} %}
+
+<section id="market" class="page-break">
+  <h2>Market & Trading
+    {% if level == 'CRITICAL' %}<span class="section-risk-badge section-risk--critical">Critical</span>
+    {% elif level == 'ELEVATED' %}<span class="section-risk-badge section-risk--elevated">Elevated</span>
+    {% endif %}
+  </h2>
+
+  {{ dual_voice_block(commentary.get('market') if commentary else none, 'Market & Trading') }}
+
+  {# --- 5-Layer Narrative Architecture (NARR-01) --- #}
+  {% set sn = section_narratives.get('market', {}) if section_narratives is defined else {} %}
+  {% if sn %}
+    {{ narrative_5layer(sn.verdict, sn.thesis, sn.evidence_items, sn.implications, sn.deep_context) }}
+  {% else %}
+    {# Fallback: SCR + pre-computed narrative + D&O Implications #}
+    {% if scr_narratives is defined and scr_narratives.get('market') %}
+      {{ scr_narrative(scr_narratives.market) }}
+    {% endif %}
+    {% set narr = narratives.market if narratives else none %}
+    {{ section_narrative(narr) }}
+    {% if do_implications_data is defined and do_implications_data.get('market') %}
+      {{ do_implications(do_implications_data.market) }}
+    {% endif %}
+  {% endif %}
+
+  <div>
+    <div style="font-weight:600;margin-bottom:4px">Market &amp; Trading Details</div>
+    <div class="collapsible-content">
+      {# --- Facet-driven dispatch (Phase 56-03) --- #}
+      {% if section_context is defined and section_context.get('market_activity') %}
+        {% for facet in section_context.market_activity.facets %}
+          {% include facet.template %}
+        {% endfor %}
+      {% else %}
+        {# Legacy fallback — inline fragment includes #}
+        {% include "sections/market/stock_charts.html.j2" %}
+        {% include "sections/market/stock_performance.html.j2" %}
+        {% include "sections/market/stock_drops.html.j2" %}
+        {% include "sections/market/stock_drop_catalyst.html.j2" %}
+        {% include "sections/market/short_interest.html.j2" %}
+        {% include "sections/market/earnings_guidance.html.j2" %}
+        {% include "sections/market/earnings_reaction.html.j2" %}
+        {% include "sections/market/earnings_history.html.j2" %}
+        {% include "sections/market/analyst_consensus.html.j2" %}
+        {% include "sections/market/analyst_revisions.html.j2" %}
+        {% include "sections/market/upgrades_downgrades.html.j2" %}
+        {% include "sections/market/insider_trading.html.j2" %}
+        {% include "sections/market/ownership_chart.html.j2" %}
+        {% include "sections/market/capital_markets.html.j2" %}
+        {% include "sections/market/capital_returns.html.j2" %}
+        {% include "sections/market/eight_k_events.html.j2" %}
+        {% include "sections/market/volume_anomalies.html.j2" %}
+        {% include "sections/market/correlation_metrics.html.j2" %}
+        {% include "sections/market/forward_estimates.html.j2" %}
+        {% include "sections/market/news_articles.html.j2" %}
+        {% include "sections/market/market_checks.html.j2" %}
+        {% include "sections/market/market_density_alerts.html.j2" %}
+      {% endif %}
+    </div>
+  </div>
+</section>

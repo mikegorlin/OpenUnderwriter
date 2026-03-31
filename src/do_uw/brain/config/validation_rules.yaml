@@ -1,0 +1,67 @@
+# Contextual Signal Validation Rules (Phase 139)
+#
+# These rules annotate TRIGGERED signals that may be false positives
+# given the company's actual state. Annotations are INFORMATIONAL --
+# they NEVER suppress or change signal status.
+#
+# Rule classes:
+#   lifecycle_mismatch     - Signal inappropriate for company lifecycle stage
+#   contradicting_indicator - Other metrics contradict the signal's thesis
+#   negation               - Evidence text contains negation language
+#   temporal_staleness     - Signal references departed executives
+#
+# Adding new rules: Add a new entry to this file. No Python changes needed.
+# The validator engine reads this file at runtime and applies all rules.
+
+rules:
+  - id: VAL.IPO.mature_company
+    name: IPO signal on mature company
+    rule_class: lifecycle_mismatch
+    applies_to: "BIZ.EVENT.ipo*"
+    condition:
+      type: state_check
+      path: company.years_public
+      op: ">"
+      value: 5
+    annotation: "Company has been public {years_public} years -- IPO exposure window is historical context only"
+
+  - id: VAL.FIN.distress_safe_zone
+    name: Distress signal contradicted by safe scores
+    rule_class: contradicting_indicator
+    applies_to: "FIN.DISTRESS.*|FIN.LIQ.*|FIN.SOLV.*"
+    condition:
+      type: compound
+      all:
+        - path: extracted.financials.distress.altman_z_score.score
+          op: ">"
+          value: 3.0
+          label: z_score
+        - path: extracted.financials.distress.ohlson_o_score.score
+          op: "<"
+          value: 0.5
+          label: o_score
+    annotation: "Note: Altman Z-Score ({z_score}) and O-Score ({o_score}) both in safe zone"
+
+  - id: VAL.NLP.negation_detection
+    name: Negation language in evidence
+    rule_class: negation
+    applies_to: "*"
+    condition:
+      type: evidence_regex
+      patterns:
+        - '\bdo not have\b'
+        - '\bno (?:material |significant )?holdings?\b'
+        - '\bnot (?:a |an )?party\b'
+        - '\bno (?:pending |known )?litigation\b'
+        - '\bdoes not (?:currently )?(?:have|maintain|hold)\b'
+        - '\bno (?:material )?exposure\b'
+    annotation: "Evidence contains negation language -- signal may be triggered from negative finding"
+
+  - id: VAL.EXEC.departed
+    name: Reference to departed executive
+    rule_class: temporal_staleness
+    applies_to: "EXEC.*|GOV.*"
+    condition:
+      type: executive_temporal
+      departure_source: extracted.governance.leadership.departures_18mo
+    annotation: "References {exec_name} who departed on {departure_date}"

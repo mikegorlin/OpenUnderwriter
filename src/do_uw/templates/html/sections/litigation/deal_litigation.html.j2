@@ -1,0 +1,46 @@
+{# Deal/M&A Litigation — SECT6-03 #}
+
+  {# --- Deal Litigation --- #}
+  {% set deals = lit.get('deal_litigation', []) %}
+  <h3>Deal / M&amp;A Litigation</h3>
+  {% if deals %}
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Deal</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Type</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Status</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Court</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Filed</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Settlement</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for deal in deals %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 font-semibold">{{ deal.deal_name | default('—') }}</td>
+        <td class="p-1">{{ deal.litigation_type | default('—') }}</td>
+        <td class="p-1">{{ deal.status | default('—') }}</td>
+        <td class="p-1 text-xs">{{ deal.court | default('—') }}</td>
+        <td class="p-1 text-xs tabular-nums">{{ deal.filing_date | default('—') }}</td>
+        <td class="p-1 text-right tabular-nums font-semibold">{{ deal.settlement | default('—') }}</td>
+      </tr>
+      {% if deal.description and deal.description != 'N/A' %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td colspan="6" class="px-3 py-0.5 text-xs text-gray-500">{{ deal.description }}</td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>{{ deals|length }} deal-related litigation matter{{ 's' if deals|length != 1 }}&mdash;M&amp;A litigation (merger objections, appraisal rights, Revlon claims) often triggers Side A/B D&amp;O coverage for director fiduciary duty breaches</li>
+  </ul>
+  {% else %}
+  {% set ma_notes = lit.get('ma_activity_notes', []) %}
+  {% if ma_notes %}
+  <p class="text-sm text-gray-500 italic my-2">No deal-related litigation identified. Note: {{ company_name }} has recent M&amp;A activity ({{ ma_notes | join('; ') | truncate(300) }}) &mdash; deal litigation typically emerges 6&ndash;18 months post-closing.</p>
+  {% else %}
+  <p class="text-sm text-gray-500 italic my-2">No deal-related litigation identified.</p>
+  {% endif %}
+  {% endif %}

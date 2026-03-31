@@ -1,0 +1,46 @@
+- id: ABS.DISC.audit_fees
+  name: Missing Audit Fee Disclosure
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: 'Expected disclosure absent: SEC rules require disclosure of audit and non-audit fees paid to auditor'
+  provenance:
+    origin: phase_110_absence
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Absence detection for FIN.ACCT.audit_fees
+    threshold_provenance:
+      source: standard
+      rationale: Mandatory proxy disclosure; absence may indicate independence concern
+  signal_class: inference
+  group: audit_profile
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  epistemology:
+    rule_origin: SEC rules on auditor fee disclosure in proxy statements
+    threshold_basis: Mandatory proxy disclosure; absence may indicate independence concern
+  evaluation:
+    mechanism: absence
+    absence_rules:
+      expectation_type: always_expected
+      expected_signals:
+      - FIN.ACCT.audit_fees
+      condition: SEC rules require disclosure of audit and non-audit fees paid to auditor
+      expected_status: TRIGGERED
+      absence_trigger: SKIPPED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} missing audit fee disclosure at {value} represents agent risk (executive/director actions
+        and decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based on D&O
+        claims experience.'
+      TRIGGERED_YELLOW: '{company} missing audit fee disclosure at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} missing audit fee disclosure at {value} is within normal parameters for D&O risk assessment — no D&O
+        concern at this level.'

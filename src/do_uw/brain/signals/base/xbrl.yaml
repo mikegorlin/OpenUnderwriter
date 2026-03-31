@@ -1,0 +1,248 @@
+- id: BASE.XBRL.balance_sheet
+  name: XBRL Balance Sheet Data
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: XBRL
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: statement_tables
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - extracted.financials.statements.balance_sheet
+      fallback_to: null
+  description: 'Annual balance sheet line items from XBRL filing. Includes assets, liabilities, equity, and all sub-components.
+    State path: extracted.financials.statements[type=balance_sheet]
+
+    '
+  group: statement_tables
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: XBRL balance sheet data extraction per SEC inline XBRL mandate (2019+)'
+    threshold_basis: Binary data availability -- XBRL data either parseable from SEC filings or not; no risk threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} xbrl balance sheet data at {value} represents host risk (company-level characteristics that
+        attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} xbrl balance sheet data at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} xbrl balance sheet data at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'
+- id: BASE.XBRL.income_statement
+  name: XBRL Income Statement Data
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: XBRL
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: statement_tables
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - extracted.financials.statements.income_statement
+      fallback_to: null
+  description: 'Annual income statement line items from XBRL filing. Includes revenue, COGS, operating income, net income,
+    EPS. State path: extracted.financials.statements[type=income_statement]
+
+    '
+  group: statement_tables
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: XBRL income statement data extraction per SEC inline XBRL mandate (2019+)'
+    threshold_basis: Binary data availability -- XBRL data either parseable from SEC filings or not; no risk threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} xbrl income statement data at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} xbrl income statement data at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} xbrl income statement data at {value} is within normal parameters for D&O risk assessment — no D&O
+        concern at this level.'
+- id: BASE.XBRL.cash_flow
+  name: XBRL Cash Flow Statement Data
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: XBRL
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: statement_tables
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - extracted.financials.statements.cash_flow
+      fallback_to: null
+  description: 'Annual cash flow statement from XBRL filing. Includes operating, investing, and financing cash flows. State
+    path: extracted.financials.statements[type=cash_flow]
+
+    '
+  group: statement_tables
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: XBRL cash flow statement data extraction per SEC inline XBRL mandate (2019+)'
+    threshold_basis: Binary data availability -- XBRL data either parseable from SEC filings or not; no risk threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} xbrl cash flow statement data at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} xbrl cash flow statement data at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} xbrl cash flow statement data at {value} is within normal parameters for D&O risk assessment — no
+        D&O concern at this level.'
+- id: BASE.XBRL.quarterly
+  name: XBRL Quarterly Financial Data
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: XBRL
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: statement_tables
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_10Q
+      fields:
+      - extracted.financials.quarterly_periods
+      fallback_to: null
+  description: '8-quarter XBRL data from 10-Q filings. Used for QoQ/YoY trend analysis and seasonal pattern detection. State
+    path: extracted.financials.quarterly_periods
+
+    '
+  group: statement_tables
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: XBRL quarterly data extraction per SEC inline XBRL mandate (2019+)'
+    threshold_basis: Binary data availability -- XBRL data either parseable from SEC filings or not; no risk threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} xbrl quarterly financial data at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} xbrl quarterly financial data at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} xbrl quarterly financial data at {value} is within normal parameters for D&O risk assessment — no
+        D&O concern at this level.'
+- id: BASE.XBRL.derived
+  name: XBRL Derived Financial Metrics
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: XBRL
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: statement_tables
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - extracted.financials.liquidity
+      - extracted.financials.leverage
+      - extracted.financials.profitability
+      - extracted.financials.distress
+      - extracted.financials.earnings_quality
+      fallback_to: null
+  description: 'Standard derived metrics computed from XBRL primitives. Includes ratios (current, quick, debt-to-equity),
+    Altman Z, Beneish M-Score, Piotroski F-Score, earnings quality. State paths: extracted.financials.{liquidity,leverage,profitability,distress,earnings_quality}
+
+    '
+  group: statement_tables
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: XBRL derived ratio data extraction per SEC inline XBRL mandate (2019+)'
+    threshold_basis: Binary data availability -- XBRL data either parseable from SEC filings or not; no risk threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} xbrl derived financial metrics at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} xbrl derived financial metrics at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} xbrl derived financial metrics at {value} is within normal parameters for D&O risk assessment — no
+        D&O concern at this level.'

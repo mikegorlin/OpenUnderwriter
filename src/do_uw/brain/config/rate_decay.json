@@ -1,0 +1,15 @@
+{
+  "description": "Rate decay factors for D&O tower inference. Factor = layer rate as percentage of primary rate.",
+  "excess_1": 0.5,
+  "excess_2": 0.35,
+  "excess_3": 0.25,
+  "excess_4": 0.2,
+  "excess_5": 0.17,
+  "excess_6": 0.15,
+  "excess_7": 0.13,
+  "excess_8": 0.12,
+  "excess_9": 0.11,
+  "excess_10": 0.1,
+  "side_a_factor": 0.25,
+  "notes": "Conservative defaults. Real-world factors vary by market conditions, company risk, and layer size."
+}

@@ -1,0 +1,222 @@
+{# Key Stats Overview — McKinsey-style exhibit.
+   Left: Business Profile (revenue model, geographic, customers, segments)
+   Right: Stock Charts + Scale & Complexity + Identity
+   Bottom: Risk indicators row + business description #}
+
+{% set ks = key_stats if key_stats is defined else {} %}
+{% if ks.get('available', false) %}
+<section id="key-stats" class="key-stats">
+
+  {# --- Header: Company Name + Tier Badge --- #}
+  <div class="ks-header">
+    <div class="ks-company">
+      <h1 class="ks-company-name">{{ ks.legal_name }}
+        <span class="ks-ticker">({{ ks.ticker }})</span>
+        <span class="ks-exchange">{{ ks.exchange }}</span>
+      </h1>
+      <p class="ks-governing">{{ ks.governing_insight }}</p>
+    </div>
+    <div class="ks-tier-badge">
+      <div class="scorecard-tier scorecard-tier--{{ ks.tier | lower }}">{{ ks.tier }}</div>
+      <div class="ks-score">Score: {{ "%.1f" | format(ks.quality_score) }}</div>
+    </div>
+  </div>
+
+  {# --- Main Grid: Business Profile (left) | Stock + Scale + Identity (right) --- #}
+  <div class="ks-row-top">
+
+    {# LEFT: Business Profile + Litigation #}
+    <div class="ks-col-main">
+      <div class="ks-panel ks-panel--tinted">
+        <div class="ks-panel-title">Business Profile</div>
+
+        {# Business Description first #}
+        {% if ks.business_description %}
+        <p class="ks-desc-first">{{ ks.business_description }}</p>
+        {% endif %}
+
+        {# Revenue Model #}
+        <div class="ks-list-section">
+          <div class="ks-subsection-label">Revenue Model</div>
+          <p class="ks-subsection-text">{{ ks.revenue_model }}</p>
+        </div>
+
+        {# Comparison Sector #}
+        {% if ks.comparison_sector %}
+        <div class="ks-list-section">
+          <div class="ks-subsection-label">Comparison Sector</div>
+          <p class="ks-subsection-text">{{ ks.comparison_sector }}</p>
+        </div>
+        {% endif %}
+
+        {# Key Competitors #}
+        {% if ks.competitors %}
+        <div class="ks-list-section">
+          <div class="ks-subsection-label">Key Competitors</div>
+          <div class="ks-competitor-tags">
+            {% for comp in ks.competitors %}
+            <span class="ks-competitor-tag">{{ comp }}</span>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        {# Geographic Mix as list #}
+        {% if ks.geo_breakdown %}
+        <div class="ks-list-section">
+          <div class="ks-subsection-label">Geographic Revenue</div>
+          <ul class="ks-detail-list">
+            {% for item in ks.geo_breakdown %}
+            <li><strong>{{ item.region }}</strong>{% if item.pct %} — {{ item.pct }}{% endif %}{% if item.revenue %} ({{ item.revenue }}){% endif %}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+
+        {# Key Customers as list #}
+        {% if ks.customer_list %}
+        <div class="ks-list-section">
+          <div class="ks-subsection-label">Key Customers</div>
+          <ul class="ks-detail-list">
+            {% for cust in ks.customer_list %}
+            <li><strong>{{ cust.name }}</strong>{% if cust.detail %} — {{ cust.detail }}{% endif %}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+
+        {# Business Segments #}
+        {% if ks.segment_list %}
+        <div class="ks-segment-section">
+          <div class="ks-subsection-label">Business Segments</div>
+          <table class="ks-segment-table">
+            <thead><tr><th>Segment</th><th>Stage</th><th>Growth</th></tr></thead>
+            <tbody>
+              {% for seg in ks.segment_list %}
+              <tr>
+                <td>{{ seg.name }}</td>
+                <td>{{ seg.stage }}</td>
+                <td class="ks-segment-growth">{{ seg.growth }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
+      </div>
+
+      {# Litigation & Enforcement — own box #}
+      {% set ls = ks.litigation_summary %}
+      {% if ls %}
+      <div class="ks-panel ks-panel--tinted">
+        <div class="ks-panel-title">Litigation & Enforcement History</div>
+        <div class="ks-lit-box">
+          <div class="ks-lit-row"><span class="ks-lit-category">Securities Class Actions</span><span class="ks-lit-value">{{ ls.sca_status }}</span></div>
+          <div class="ks-lit-row"><span class="ks-lit-category">Derivative Suits</span><span class="ks-lit-value">{{ ls.derivative_status }}{% if ls.derivative_note %} <span class="ks-confidence-badge ks-confidence--low">LOW CONF</span>{% endif %}</span></div>
+          <div class="ks-lit-row"><span class="ks-lit-category">SEC Enforcement</span><span class="ks-lit-value">{{ ls.sec_enforcement }}</span></div>
+          {% if ls.regulatory_items %}<div class="ks-lit-row"><span class="ks-lit-category">Regulatory</span><span class="ks-lit-value">{{ ls.regulatory_items | join(', ') }}</span></div>{% endif %}
+          {% if ls.contingent_total > 0 %}<div class="ks-lit-row"><span class="ks-lit-category">Contingent Reserves</span><span class="ks-lit-value">{{ ls.contingent_fmt }}</span></div>{% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      {# Regulatory Oversight #}
+      {% if ks.regulatory_oversight %}
+      <div class="ks-panel ks-panel--tinted">
+        <div class="ks-panel-title">Regulatory Oversight</div>
+        <table class="ks-table">
+          {% for reg in ks.regulatory_oversight %}
+          <tr class="{{ 'ks-reg-active' if reg.active else '' }}">
+            <td class="ks-label ks-reg-agency">{{ reg.agency }}</td>
+            <td class="ks-reg-scope">{{ reg.scope }}{% if reg.active %} <span class="ks-confidence-badge ks-confidence--active">ACTIVE</span>{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      {% endif %}
+    </div>
+
+    {# RIGHT: Scale + Identity (all same width) #}
+    <div class="ks-col-side">
+      {# Stock price panel removed — home section is Stock & Market (DEDUP-04) #}
+
+      {# Scale & Complexity (compact) #}
+      <div class="ks-panel ks-panel--tinted">
+        <div class="ks-panel-title">Scale & Complexity</div>
+        {% for item in ks.scale_metrics %}
+        <div class="ks-scale-row">
+          <span class="ks-scale-label">{{ item.label }}</span>
+          <span class="ks-scale-value">{{ item.value }}</span>
+          <div class="ks-spectrum {{ 'ks-spectrum--inverted' if item.get('inverted') else '' }}">
+            <div class="ks-spectrum-track">
+              <div class="ks-spectrum-fill" style="width: {{ item.pct }}%"></div>
+              <div class="ks-spectrum-marker" style="left: {{ item.pct }}%"></div>
+            </div>
+            <span class="ks-spectrum-tier">{{ item.tier }}</span>
+          </div>
+        </div>
+        {% endfor %}
+        <div class="ks-scale-row ks-scale-row--plain">
+          <span class="ks-scale-label">Subsidiaries</span>
+          <span class="ks-scale-value">{{ ks.subsidiary_count }}</span>
+          <span>{% if ks.subsidiary_count is number and ks.subsidiary_count > 100 %}<span class="ks-flag">Complex</span>{% endif %}</span>
+        </div>
+      </div>
+
+      {# Identity & Classification #}
+      <div class="ks-panel ks-panel--tinted">
+        <div class="ks-panel-title">Identity & Classification</div>
+        <table class="ks-table">
+          <tr><td class="ks-label">SIC</td><td>{{ ks.sic_code }} — {{ ks.sic_description }}</td></tr>
+          <tr><td class="ks-label">NAICS</td><td>{{ ks.naics_code }}</td></tr>
+          <tr><td class="ks-label">Sector</td><td>{{ ks.sector }} — {{ ks.industry }}</td></tr>
+          <tr><td class="ks-label">State</td><td>{{ ks.state_of_inc }}{% if ks.state_of_inc == 'DE' %} <span class="inline-block px-1.5 py-0.5 text-xs rounded bg-blue-100 border border-blue-200 font-semibold text-blue-800" title="Delaware incorporation: favorable derivative suit jurisdiction (Chancery Court)">DE — Chancery Court</span>{% elif ks.state_of_inc and ks.state_of_inc not in ('N/A', '—') %} <span class="inline-block px-1.5 py-0.5 text-xs rounded bg-gray-100 border border-gray-200 text-gray-600" title="Non-Delaware: derivative suits in state court">{{ ks.state_of_inc_full }}</span>{% endif %}</td></tr>
+          <tr><td class="ks-label">CIK</td><td>{{ ks.cik }}</td></tr>
+          <tr><td class="ks-label">FY End</td><td>{{ ks.fy_end }}</td></tr>
+          <tr><td class="ks-label">FPI</td><td>{{ "Yes" if ks.is_fpi else "No" }}</td></tr>
+          <tr><td class="ks-label">Filer</td><td>{{ ks.filer_category }}</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  {# Strengths & Vulnerabilities — compact D&O SWOT #}
+  {% if ks.sv and (ks.sv.strengths or ks.sv.vulnerabilities) %}
+  <div class="ks-sv-grid">
+    {% if ks.sv.strengths %}
+    <div class="ks-sv-col ks-sv--strength">
+      <div class="ks-sv-header">Strengths</div>
+      {% for s in ks.sv.strengths %}
+      <div class="ks-sv-item">{{ s }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% if ks.sv.vulnerabilities %}
+    <div class="ks-sv-col ks-sv--vuln">
+      <div class="ks-sv-header">Vulnerabilities</div>
+      {% for v in ks.sv.vulnerabilities %}
+      <div class="ks-sv-item">{{ v }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {# Risk Pulse — compact at-a-glance risk strip #}
+  {% if ks.risk_pulse %}
+  <div class="ks-risk-pulse">
+    <div class="ks-panel-title">Risk Pulse</div>
+    <div class="ks-pulse-strip">
+      {% for rp in ks.risk_pulse %}
+      <div class="ks-pulse-item ks-pulse--{{ rp.status }}">
+        <span class="ks-pulse-dot"></span>
+        <span class="ks-pulse-label">{{ rp.label }}</span>
+        <span class="ks-pulse-detail">{{ rp.detail }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</section>
+{% endif %}

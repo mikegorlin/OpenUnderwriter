@@ -1,0 +1,30 @@
+{# Revenue Waterfall -- growth decomposition table + narrative (Phase 118) #}
+{% set wf = dossier_waterfall | default({}) %}
+{% if wf.get('waterfall_available', false) %}
+<h3 id="dossier-revenue-waterfall">Revenue Waterfall (Growth Decomposition)</h3>
+{% if wf.components %}
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Component</th>
+      <th class="text-right p-1 border-b font-heading text-xs font-semibold uppercase">Value</th>
+      <th class="text-right p-1 border-b font-heading text-xs font-semibold uppercase">Delta</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Insight</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in wf.components %}
+    <tr class="{{ c.row_class | default('', true) }} {{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ c.component }}</td>
+      <td class="p-1 text-right font-mono">{{ c.value | default('--', true) }}</td>
+      <td class="p-1 text-right font-mono">{{ c.delta | default('--', true) }}</td>
+      <td class="p-1 text-xs">{{ c.insight | default('--', true) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% if wf.narrative %}
+<p class="text-sm leading-relaxed mb-3">{{ wf.narrative }}</p>
+{% endif %}
+{% endif %}

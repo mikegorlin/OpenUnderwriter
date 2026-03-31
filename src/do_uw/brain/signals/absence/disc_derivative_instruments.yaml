@@ -1,0 +1,46 @@
+- id: ABS.DISC.derivative_instruments
+  name: Missing Derivative Instruments Disclosure
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: 'Expected disclosure absent: has_derivatives_or_hedging_program'
+  provenance:
+    origin: phase_110_absence
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Absence detection for FIN.BAL.derivatives
+    threshold_provenance:
+      source: standard
+      rationale: Companies with derivatives must disclose notional amounts, fair values, and risk
+  signal_class: inference
+  group: transparency_disclosure
+  rap_class: host
+  rap_subcategory: host.financials
+  epistemology:
+    rule_origin: ASC 815 derivative instruments and hedging disclosure requirements
+    threshold_basis: Companies with derivatives must disclose notional amounts, fair values, and risk
+  evaluation:
+    mechanism: absence
+    absence_rules:
+      expectation_type: company_profile
+      expected_signals:
+      - FIN.BAL.derivatives
+      condition: has_derivatives_or_hedging_program
+      expected_status: TRIGGERED
+      absence_trigger: SKIPPED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} missing derivative instruments disclosure at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} missing derivative instruments disclosure at {value} is a moderate indicator for D&O risk
+        assessment, warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} missing derivative instruments disclosure at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

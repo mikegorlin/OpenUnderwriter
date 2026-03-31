@@ -1,0 +1,108 @@
+{# Sector & Industry Analysis section template.
+   Competitive position, strategic assessment, AI/tech risk dimensions,
+   macro risk factors, and placeholders for future sector-specific modules.
+
+   Phase 133: New section carved from Pattern Detection + Forward-Looking +
+   AI Risk subsections that belong in industry context rather than scoring. #}
+
+{% from "macros/dual_voice.html.j2" import dual_voice_block %}
+{% set density = densities.get('sector_industry', densities.get('ai_risk', {})) %}
+{% set level = density.level|default('CLEAN') if density else 'CLEAN' %}
+
+<section id="sector-industry" class="page-break">
+  <h2>Sector &amp; Industry Analysis
+    {% if level == 'CRITICAL' %}<span class="section-risk-badge section-risk--critical">Critical</span>
+    {% elif level == 'ELEVATED' %}<span class="section-risk-badge section-risk--elevated">Elevated</span>
+    {% endif %}
+  </h2>
+
+  {{ dual_voice_block(commentary.get('sector_industry') if commentary else none, 'Sector & Industry Analysis') }}
+
+  {# --- 5-Layer Narrative Architecture (NARR-01) --- #}
+  {% set sn = section_narratives.get('sector_industry', {}) if section_narratives is defined else {} %}
+  {% if sn %}
+    {{ narrative_5layer(sn.verdict, sn.thesis, sn.evidence_items, sn.implications, sn.deep_context) }}
+  {% else %}
+    {# Fallback: SCR + pre-computed narrative + D&O Implications #}
+    {% if scr_narratives is defined and scr_narratives.get('sector_industry') %}
+      {{ scr_narrative(scr_narratives.sector_industry) }}
+    {% elif scr_narratives is defined and scr_narratives.get('ai_risk') %}
+      {{ scr_narrative(scr_narratives.ai_risk) }}
+    {% endif %}
+    {% set narr = narratives.sector_industry if narratives is defined and narratives.sector_industry is defined else (narratives.ai_risk if narratives else none) %}
+    {% if narr and narr is string and 'cannot write this narrative' not in narr and 'data field is empty' not in narr %}
+      {{ section_narrative(narr) }}
+    {% endif %}
+    {% if do_implications_data is defined and do_implications_data.get('sector_industry') %}
+      {{ do_implications(do_implications_data.sector_industry) }}
+    {% elif do_implications_data is defined and do_implications_data.get('ai_risk') %}
+      {{ do_implications(do_implications_data.ai_risk) }}
+    {% endif %}
+  {% endif %}
+
+  {# --- Bull/Bear Case Framing (NARR-02) --- #}
+  {% if bull_bear_data is defined and bull_bear_data.get('sector_industry') %}
+    {{ bull_bear_framing(bull_bear_data.sector_industry) }}
+  {% elif bull_bear_data is defined and bull_bear_data.get('ai_risk') %}
+    {{ bull_bear_framing(bull_bear_data.ai_risk) }}
+  {% endif %}
+
+  <div>
+    <div style="font-weight:600;margin-bottom:4px">Sector &amp; Industry Details</div>
+    <div class="collapsible-content">
+      {# --- Facet-driven dispatch --- #}
+      {% if section_context is defined and section_context.get('sector_industry') %}
+        {% for facet in section_context.sector_industry.facets %}
+          {% include facet.template %}
+        {% endfor %}
+      {% else %}
+        {# Legacy fallback — inline fragment includes #}
+        {% include "sections/ai_risk/competitive_position.html.j2" %}
+        {% include "sections/ai_risk/forward_assessment.html.j2" %}
+        {% include "sections/ai_risk/dimension_breakdown.html.j2" %}
+        {% include "sections/forward_looking/macro_risks.html.j2" %}
+        {% include "sections/ai_risk/ai_risk_density_alerts.html.j2" %}
+      {% endif %}
+
+      {# --- Industry Reference: D&O Tier Distribution (from decision record data) --- #}
+      {% set dec = decision|default({}) %}
+      {% if dec.get('decision_available', false) %}
+        {% set tiers = dec.get('tier_distribution', {}) %}
+        {% if tiers %}
+        <h3>Industry Reference &mdash; D&amp;O Tier Distribution</h3>
+        <p class="text-xs text-gray-500 mb-2">
+          Based on SCAC/Cornerstone historical data. For context only &mdash; not a recommendation.
+        </p>
+        {% set tier_order = ['PREFERRED', 'STANDARD', 'ELEVATED', 'HIGH_RISK', 'PROHIBITED'] %}
+        {% set tier_labels = {
+          'PREFERRED': 'Preferred',
+          'STANDARD': 'Standard',
+          'ELEVATED': 'Elevated',
+          'HIGH_RISK': 'High Risk',
+          'PROHIBITED': 'Prohibited'
+        } %}
+        {% set tier_colors = {
+          'PREFERRED': '#10b981',
+          'STANDARD': '#3b82f6',
+          'ELEVATED': '#f59e0b',
+          'HIGH_RISK': '#ef4444',
+          'PROHIBITED': '#7c3aed'
+        } %}
+        <div style="display:flex;height:24px;border-radius:6px;overflow:hidden;margin-bottom:8px;border:1px solid #e2e8f0;">
+          {% for tier_key in tier_order %}
+            {% set pct = tiers.get(tier_key, 0) %}
+            {% if pct > 0 %}
+            <div style="width:{{ pct }}%;background:{{ tier_colors[tier_key] }};display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:0.625rem;font-weight:700;color:#fff;white-space:nowrap;">{{ tier_labels[tier_key] }} {{ pct }}%</span>
+            </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+      {% endif %}
+
+      {# --- Placeholder: Sector-Specific Modules (7.4.A-E) --- #}
+      {# Future: Conditional includes based on GICS code for biotech, tech, financial, energy, cannabis #}
+    </div>
+  </div>
+</section>

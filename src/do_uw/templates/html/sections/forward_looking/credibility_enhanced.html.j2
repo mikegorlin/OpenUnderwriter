@@ -1,0 +1,59 @@
+{# Management Credibility Assessment — pattern classification + quarter table (Phase 136, FWD-03) #}
+{% if b.forward_credibility and b.forward_credibility.credibility_available %}
+<div style="margin-top:10px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+    <div style="font-size:9.5pt;font-weight:700;color:#1F3A5C">Management Credibility Assessment</div>
+    {# Pattern badge #}
+    <span style="padding:3px 12px;border-radius:12px;font-size:8pt;font-weight:700;background:{{ b.forward_credibility.pattern_color | default('#6B7280') }};color:white">{{ b.forward_credibility.pattern_label | default('Unknown') }}</span>
+  </div>
+
+  {# Beat rate + quarters subtitle #}
+  <div style="font-size:8pt;color:#6B7280;margin-bottom:6px">
+    Beat Rate: <span style="font-weight:600;color:#374151">{{ b.forward_credibility.beat_rate_pct | default('N/A') }}</span>
+    &middot; Quarters Assessed: <span style="font-weight:600;color:#374151">{{ b.forward_credibility.quarters_assessed | default(0) }}</span>
+    {% if b.forward_credibility.source %}
+    &middot; <span style="color:#9CA3AF">Source: {{ b.forward_credibility.source }}</span>
+    {% endif %}
+  </div>
+
+  {# Cumulative pattern visualization: colored letter blocks #}
+  {% if b.forward_credibility.cumulative_pattern %}
+  <div style="display:flex;gap:3px;margin-bottom:8px">
+    {% for ch in b.forward_credibility.cumulative_pattern %}
+    <div style="width:22px;height:22px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:8pt;font-weight:700;color:white;{% if ch == 'B' %}background:#16A34A{% elif ch == 'M' %}background:#DC2626{% elif ch == 'I' %}background:#9CA3AF{% else %}background:#D1D5DB;color:#6B7280{% endif %}">{{ ch }}</div>
+    {% endfor %}
+    <span style="font-size:7pt;color:#9CA3AF;margin-left:4px;align-self:center">B=Beat M=Miss I=Inline</span>
+  </div>
+  {% endif %}
+
+  {# Quarter-by-quarter table #}
+  {% if b.forward_credibility.quarter_table %}
+  <div style="background:white;border:1px solid #E5E7EB;border-radius:5px;overflow:hidden">
+    <table style="width:100%;border-collapse:collapse;font-size:8pt">
+      <thead>
+        <tr style="background:#F9FAFB">
+          <th style="text-align:left;padding:4px 8px;font-weight:700;color:#1F3A5C;font-size:7.5pt;text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid #E5E7EB">Quarter</th>
+          <th style="text-align:right;padding:4px 8px;font-weight:700;color:#1F3A5C;font-size:7.5pt;text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid #E5E7EB">Guidance</th>
+          <th style="text-align:right;padding:4px 8px;font-weight:700;color:#1F3A5C;font-size:7.5pt;text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid #E5E7EB">Actual</th>
+          <th style="text-align:right;padding:4px 8px;font-weight:700;color:#1F3A5C;font-size:7.5pt;text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid #E5E7EB">Delta</th>
+          <th style="text-align:right;padding:4px 8px;font-weight:700;color:#1F3A5C;font-size:7.5pt;text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid #E5E7EB">Magnitude</th>
+          <th style="text-align:center;padding:4px 8px;font-weight:700;color:#1F3A5C;font-size:7.5pt;text-transform:uppercase;letter-spacing:0.3px;border-bottom:1px solid #E5E7EB">Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for qr in b.forward_credibility.quarter_table %}
+        <tr style="{% if qr.beat_or_miss == 'BEAT' %}background:#F0FDF4{% elif qr.beat_or_miss == 'MISS' %}background:#FEF2F2{% else %}background:white{% endif %};{% if not loop.last %}border-bottom:1px solid #F3F4F6{% endif %}">
+          <td style="padding:4px 8px;font-weight:600;color:#111827">{{ qr.quarter | default('') }}</td>
+          <td style="padding:4px 8px;text-align:right;font-variant-numeric:tabular-nums;color:#374151">{{ qr.guidance | default('N/A') }}</td>
+          <td style="padding:4px 8px;text-align:right;font-variant-numeric:tabular-nums;color:#374151">{{ qr.actual | default('N/A') }}</td>
+          <td style="padding:4px 8px;text-align:right;font-variant-numeric:tabular-nums;color:#6B7280">{{ qr.delta | default('') }}</td>
+          <td style="padding:4px 8px;text-align:right;font-variant-numeric:tabular-nums;color:#6B7280">{{ qr.magnitude | default('') }}</td>
+          <td style="padding:4px 8px;text-align:center;font-weight:700;{% if qr.beat_or_miss == 'BEAT' %}color:#16A34A{% elif qr.beat_or_miss == 'MISS' %}color:#DC2626{% else %}color:#9CA3AF{% endif %}">{{ qr.beat_or_miss | default('') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</div>
+{% endif %}

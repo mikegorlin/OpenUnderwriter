@@ -1,0 +1,73 @@
+{# Interactive peer comparison partial.
+   Metric selector dropdown triggers htmx reload of this panel.
+   Chart container for Plotly peer comparison bar chart.
+   Table showing available metrics with data status.
+#}
+{% from "partials/_chart_container.html" import chart %}
+
+<div class="card bg-base-100 shadow-md">
+  <div class="card-body p-5">
+    <h3 class="card-title text-base mb-3" style="color: var(--ad-navy);">Peer Comparison</h3>
+
+    <!-- Metric selector -->
+    <div class="form-control mb-4">
+      <label class="label py-1">
+        <span class="label-text text-xs">Select Metric</span>
+      </label>
+      <select class="select select-bordered select-sm w-full max-w-xs"
+              hx-get="/api/peer-comparison"
+              hx-target="#peer-comparison-panel"
+              hx-swap="innerHTML"
+              hx-indicator="#global-indicator"
+              name="metric">
+        {% if peer_data and peer_data.available_metrics %}
+        {% for m in peer_data.available_metrics %}
+        <option value="{{ m.key }}"
+                {% if selected_metric == m.key %}selected{% endif %}>
+          {{ m.label }}
+        </option>
+        {% endfor %}
+        {% else %}
+        <option value="quality_score">Quality Score</option>
+        {% endif %}
+      </select>
+    </div>
+
+    <!-- Peer comparison chart -->
+    <div id="peer-chart-area">
+      {{ chart("chart-peer-detail", "/api/chart/peer-comparison/" + (selected_metric or "quality_score"), "Company vs Peers", "280px") }}
+    </div>
+
+    <!-- Peer data table -->
+    {% if peer_data and peer_data.available_metrics %}
+    <div class="overflow-x-auto mt-4">
+      <table class="table table-xs">
+        <thead>
+          <tr>
+            <th class="text-xs" style="color: var(--ad-navy);">Metric</th>
+            <th class="text-xs text-right" style="color: var(--ad-navy);">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in peer_data.available_metrics %}
+          <tr class="hover cursor-pointer"
+              hx-get="/api/peer-comparison?metric={{ m.key }}"
+              hx-target="#peer-comparison-panel"
+              hx-swap="innerHTML"
+              hx-indicator="#global-indicator">
+            <td class="text-xs">{{ m.label }}</td>
+            <td class="text-xs text-right">
+              {% if selected_metric == m.key %}
+              <span class="badge badge-warning badge-xs">Selected</span>
+              {% else %}
+              <span class="badge badge-info badge-xs">Data</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </div>
+</div>

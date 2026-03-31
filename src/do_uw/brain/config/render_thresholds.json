@@ -1,0 +1,14 @@
+{
+  "$schema": "render_thresholds",
+  "version": "1.0",
+  "description": "Thresholds used for section density decisions and render formatting. Centralized from hardcoded values in render code.",
+  "section_density": {
+    "board_independence_clean": 0.75,
+    "z_score_safe_zone": 2.99,
+    "short_interest_elevated_pct": 5.0,
+    "stock_drop_severe_pct": 10.0,
+    "earnings_miss_significant_pct": 10.0,
+    "leverage_percentile_elevated": 50,
+    "governance_percentile_elevated": 50
+  }
+}

@@ -1,0 +1,167 @@
+{# Narrative macros for Bloomberg-quality D&O worksheet HTML output.
+   Section narratives with evidence chains and 5-layer narrative
+   architecture (NARR-01). Formal research report voice — no system
+   internals or AI labels in the main body. #}
+
+
+{# Section narrative — formal research report prose.
+   Parses text into structured bullet format when possible;
+   falls back to plain paragraph for short/unstructured text.
+   text: the narrative content string. #}
+{% macro section_narrative(text) %}
+{%- if text and text is string and 'cannot write this narrative' not in text and 'data field is empty' not in text -%}
+{%- set text = text|clean_narrative -%}
+<div class="ai-assessment-box">
+  {% set segments = text|narratize %}
+  {% if segments %}
+  <ul class="ai-assessment-list">
+    {% for seg in segments %}
+    <li>
+      {%- if seg.header -%}
+        {%- if seg.header[-1:] in '.!?' -%}
+          <strong>{{ seg.header|safe }}</strong> {{ seg.body|safe }}
+        {%- else -%}
+          <strong>{{ seg.header|safe }}:</strong> {{ seg.body|safe }}
+        {%- endif -%}
+      {%- else -%}
+        {{ seg.body|safe }}
+      {%- endif -%}
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="ai-assessment-text">
+    {{ text|strip_md|safe }}
+  </div>
+  {% endif %}
+</div>
+{%- endif -%}
+{% endmacro %}
+
+
+{# 5-Layer Narrative Architecture (NARR-01).
+   Layer 1 (Glance): verdict badge + one-line thesis
+   Layer 2 (Standard): thesis paragraph + evidence grid table
+   Layer 3 (Deep): collapsible implications + deep context
+
+   verdict: string (FAVORABLE/NEUTRAL/CONCERNING/CRITICAL)
+   thesis: string (1-2 sentence thesis)
+   evidence_items: list of dicts with {label, value, source?}
+   implications: string (D&O implications text)
+   deep_context: list of dicts with {label, content} for collapsible deep context #}
+{% macro narrative_5layer(verdict, thesis, evidence_items, implications, deep_context) %}
+<div class="narrative-layers my-3 page-break-inside-avoid">
+
+  {# --- Layer 1: Glance — verdict badge + one-line thesis --- #}
+  <div class="narrative-glance">
+    {{ verdict_badge(verdict) }}
+    {% if thesis %}
+    <span class="narrative-thesis-inline font-body text-sm text-gray-700 ml-2">{{ thesis }}</span>
+    {% endif %}
+  </div>
+
+  {# --- Layer 2: Standard — evidence grid table --- #}
+  {% if evidence_items %}
+  <table class="narrative-evidence-grid w-full border-collapse my-2 text-sm">
+    <thead>
+      <tr class="bg-gray-50">
+        <th class="text-left px-2 py-1 border-b font-heading text-xs font-semibold uppercase text-gray-500 w-1/3">Indicator</th>
+        <th class="text-left px-2 py-1 border-b font-heading text-xs font-semibold uppercase text-gray-500 w-1/3">Value</th>
+        <th class="text-left px-2 py-1 border-b font-heading text-xs font-semibold uppercase text-gray-500 w-1/3">Source</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in evidence_items %}
+      <tr class="{{ 'bg-red-50' if item.severity == 'HIGH' else 'bg-amber-50' if item.severity == 'MEDIUM' else '' }}">
+        <td class="px-2 py-1 font-semibold text-xs text-gray-700">{{ item.label }}</td>
+        <td class="px-2 py-1 text-xs text-gray-600">{{ item.value }}</td>
+        <td class="px-2 py-1 text-xs text-gray-400 italic">{{ item.source | humanize_source if item.source else '' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {# --- Layer 3: Deep — collapsible implications + deep context --- #}
+  {% if implications or deep_context %}
+  <div>
+    <div style="font-weight:600;margin-bottom:4px">Deep Context &amp; Implications</div>
+    <div class="collapsible-content">
+      {% if implications %}
+      <div class="narrative-implications border-l-3 border-navy bg-blue-50 rounded-r p-1 my-2">
+        <p class="font-heading text-[10px] font-semibold text-navy uppercase tracking-widest mb-1 mt-0">
+          D&amp;O Implications
+        </p>
+        <p class="font-body text-sm text-gray-700 leading-relaxed m-0">{{ implications }}</p>
+      </div>
+      {% endif %}
+      {% if deep_context %}
+      <div class="narrative-deep-items my-2">
+        {% for item in deep_context %}
+        <div class="narrative-deep-item mb-2">
+          <p class="font-heading text-xs font-semibold text-gray-500 uppercase tracking-wide mb-0.5">{{ item.label }}</p>
+          <p class="font-body text-sm text-gray-600 leading-relaxed m-0">{{ item.content }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endmacro %}
+
+
+{# Bull/Bear Case Framing (NARR-02).
+   Two-column grid: bull case (left), bear case (right).
+   data: dict with bull_case and bear_case keys, each having title + items list. #}
+{% macro bull_bear_framing(data) %}
+{% if data and (data.bull_case or data.bear_case) %}
+<div class="bull-bear-grid my-3">
+  {% if data.bull_case %}
+  <div class="bull-case">
+    <h4 class="case-header bull-header">{{ data.bull_case.title|default('Bull Case') }}</h4>
+    <ul class="case-items">
+      {% for item in data.bull_case.entries %}
+      <li>{{ item.text }}{% if item.source %} <span class="source-tag">[{{ item.source | humanize_source }}]</span>{% endif %}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  {% if data.bear_case %}
+  <div class="bear-case">
+    <h4 class="case-header bear-header">{{ data.bear_case.title|default('Bear Case') }}</h4>
+    <ul class="case-items">
+      {% for item in data.bear_case.entries %}
+      <li class="{{ 'severity-high' if item.severity == 'HIGH' else 'severity-medium' if item.severity == 'MEDIUM' else '' }}">{{ item.text }}{% if item.source %} <span class="source-tag">[{{ item.source | humanize_source }}]</span>{% endif %}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+{% endmacro %}
+
+
+{# Bulleted evidence list for INFERENCE_PATTERN checks.
+   Per user decision: "written narrative + bulleted evidence list".
+   items: list of evidence strings or dicts with 'text' and optional 'source'. #}
+{% macro evidence_chain(items) %}
+{%- if items -%}
+<ul class="my-2 ml-4 space-y-1 list-disc">
+  {% for item in items %}
+  <li class="text-sm text-gray-700 leading-relaxed">
+    {%- if item is mapping -%}
+      {{ item.text }}
+      {%- if item.source -%}
+        <span class="font-mono text-xs text-gray-400 ml-1">[{{ item.source | humanize_source }}]</span>
+      {%- endif -%}
+    {%- else -%}
+      {{ item }}
+    {%- endif -%}
+  </li>
+  {% endfor %}
+</ul>
+{%- endif -%}
+{% endmacro %}

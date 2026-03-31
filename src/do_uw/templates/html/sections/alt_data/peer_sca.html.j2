@@ -1,0 +1,46 @@
+{# Competitor SCA Contagion — Phase 119 (ALTDATA-04) #}
+{# Renders peer SCA filings table, contagion risk, D&O relevance. #}
+
+{% if has_peer_sca %}
+<div class="page-break-inside-avoid mt-4">
+  <h4 class="font-heading text-sm font-semibold uppercase tracking-wider text-navy mb-2">Competitor SCA Contagion</h4>
+
+  <table class="data-table w-full border-collapse text-sm mb-3">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Company</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left px-2 py-2">Filing Date</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Allegation</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for sca in peer_scas %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 font-semibold">{{ sca.get('company', '') }}</td>
+        <td class="px-2 py-2 text-xs">{{ sca.get('filing_date', '') }}</td>
+        <td class="p-1 text-xs">{{ sca.get('allegation', '') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <table class="data-table w-full border-collapse text-sm mb-3">
+    <tbody>
+      <tr class="bg-bg-alt">
+        <td class="p-1 font-semibold w-1/4">Sector</td>
+        <td class="p-1">{{ peer_sector }}</td>
+      </tr>
+      <tr>
+        <td class="p-1 font-semibold">Contagion Risk</td>
+        <td class="p-1 {{ 'text-risk-red font-semibold' if peer_contagion_risk == 'HIGH' else 'text-amber-600 font-semibold' if peer_contagion_risk == 'MEDIUM' else '' }}">{{ peer_contagion_risk }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  {% if peer_do_relevance %}
+  <div class="border-l-4 border-amber-500 bg-amber-50 pl-3 py-2">
+    <p class="text-sm do-callout m-0"><strong>D&O Relevance:</strong> {{ peer_do_relevance }}</p>
+  </div>
+  {% endif %}
+</div>
+{% endif %}

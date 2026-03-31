@@ -1,0 +1,37 @@
+{# Board Tenure Distribution — horizontal bar chart by director #}
+
+{% set tenure_dist = gov.get('tenure_distribution', []) %}
+{% if tenure_dist %}
+<h3>Board Tenure Distribution</h3>
+<div style="margin: 8px 0 12px 0;">
+  {% set max_tenure = tenure_dist[0].years if tenure_dist else 1 %}
+  {% set max_display = [max_tenure, 1]|max %}
+  {% for td in tenure_dist %}
+  <div style="display: flex; align-items: center; gap: 8px; margin: 3px 0; height: 20px;">
+    <span style="width: 80px; font-size: 10px; font-weight: 600; color: #1e3a5f; text-align: right; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ td.name }}</span>
+    <div style="flex: 1; height: 14px; background: #f8fafc; border-radius: 3px; overflow: hidden; position: relative;">
+      {% set bar_pct = (td.years / max_display * 100)|int %}
+      <div style="height: 100%; width: {{ [bar_pct, 2]|max }}%; background: {{ '#1e3a5f' if td.independent else '#d97706' }}; border-radius: 3px; opacity: {{ '0.85' if td.independent else '0.7' }};"></div>
+    </div>
+    <span style="width: 40px; font-size: 10px; font-weight: 600; color: #374151; font-variant-numeric: tabular-nums; flex-shrink: 0;">{{ '%.1f'|format(td.years) }}y</span>
+    {% if not td.independent %}
+    <span style="font-size: 9px; color: #d97706; font-weight: 600; flex-shrink: 0;">mgmt</span>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+<div style="display: flex; gap: 16px; margin-bottom: 12px;">
+  <span style="font-size: 9px; color: #64748b;"><span style="display: inline-block; width: 10px; height: 10px; background: #1e3a5f; border-radius: 2px; vertical-align: middle; margin-right: 3px;"></span>Independent</span>
+  <span style="font-size: 9px; color: #64748b;"><span style="display: inline-block; width: 10px; height: 10px; background: #d97706; border-radius: 2px; vertical-align: middle; margin-right: 3px;"></span>Management/Insider</span>
+</div>
+<ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+  {% set long_tenured = tenure_dist|selectattr('years', 'ge', 15)|list|length %}
+  {% set new_directors = tenure_dist|selectattr('years', 'le', 2)|list|length %}
+  {% if long_tenured > 0 %}
+  <li>{{ long_tenured }} director{{ 's' if long_tenured > 1 }} with tenure exceeding 15 years&mdash;ISS and Glass Lewis consider long tenure a potential independence concern</li>
+  {% endif %}
+  {% if new_directors > 0 %}
+  <li>{{ new_directors }} director{{ 's' if new_directors > 1 }} with tenure under 2 years&mdash;indicates recent board refreshment</li>
+  {% endif %}
+</ul>
+{% endif %}

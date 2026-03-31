@@ -1,0 +1,56 @@
+{# Revenue Segment Breakdown + Concentration Assessment (Phase 118) #}
+{% set seg = dossier_segments | default({}) %}
+{% if seg.get('segments_available', false) %}
+<h3 id="dossier-revenue-segments">Revenue Segment Breakdown</h3>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Segment</th>
+      <th class="text-right p-1 border-b font-heading text-xs font-semibold uppercase">Revenue %</th>
+      <th class="text-right p-1 border-b font-heading text-xs font-semibold uppercase">Growth</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Rev-Rec Method</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">D&amp;O Litigation Exposure</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in seg.segments %}
+    <tr class="{{ s.row_class | default('', true) }} {{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ s.name }}</td>
+      <td class="p-1 text-right font-mono">{{ s.revenue_pct | default('--', true) }}</td>
+      <td class="p-1 text-right font-mono">{{ s.growth | default('--', true) }}</td>
+      <td class="p-1 text-xs">{{ s.rev_rec_method | default('--', true) }}</td>
+      <td class="p-1 text-xs">{{ s.do_risk }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if seg.get('concentration_available', false) and seg.concentration_dimensions %}
+<h4 class="text-sm font-semibold mt-4 mb-2">Concentration Assessment</h4>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Dimension</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Metric</th>
+      <th class="text-center p-1 border-b font-heading text-xs font-semibold uppercase">Risk Level</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">D&amp;O Implication</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for dim in seg.concentration_dimensions %}
+    <tr class="{{ dim.risk_class | default('', true) }} {{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ dim.dimension }}</td>
+      <td class="p-1">{{ dim.metric }}</td>
+      <td class="p-1 text-center font-semibold">
+        {% if dim.risk_level == 'HIGH' %}<span class="text-risk-red">HIGH</span>
+        {% elif dim.risk_level == 'MEDIUM' %}<span class="text-amber-600">MEDIUM</span>
+        {% elif dim.risk_level == 'LOW' %}<span class="text-green-600">LOW</span>
+        {% else %}<span class="text-gray-400">{{ dim.risk_level }}</span>{% endif %}
+      </td>
+      <td class="p-1 text-xs">{{ dim.do_implication }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endif %}

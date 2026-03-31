@@ -1,0 +1,186 @@
+# Sector Regulatory Overlay
+# Named regulators and regulatory intensity baseline per GICS industry group (4-digit)
+# This is the SECTOR baseline (SECT-03); company-specific intensity is ENVR-01
+
+metadata:
+  sources:
+    - "Federal Register regulatory agency databases"
+    - "Congressional Research Service: Sector-Specific Regulatory Guides"
+    - "Cornerstone Research: SEC Enforcement Statistics 2023"
+    - "D&O Diary regulatory enforcement trend analysis"
+  data_year: 2024
+  methodology: >
+    Regulatory intensity classification based on number of primary regulators
+    with enforcement authority, frequency of enforcement actions, and regulatory
+    burden (compliance cost as % of revenue). High = 5+ regulators with active
+    enforcement; Moderate = 2-4 regulators; Low = 0-1 regulators with limited
+    enforcement activity.
+  note: >
+    Sector-level baseline only. Company-specific regulatory intensity assessed
+    in ENVR.regulatory_intensity signal using actual filing data.
+  intensity_definitions:
+    High: "5+ regulators with active enforcement authority; heavy compliance burden"
+    Moderate: "2-4 regulators; moderate compliance requirements"
+    Low: "0-1 sector-specific regulators; general SEC/DOJ oversight only"
+
+overlays:
+  # Energy
+  "1010":  # Energy Equipment & Services
+    industry_group: "Energy Equipment & Services"
+    intensity: Moderate
+    regulators: ["EPA", "OSHA", "DOT", "BSEE"]
+    trend: "Increased EPA scrutiny of methane emissions and well safety standards since 2023"
+
+  "1020":  # Oil, Gas & Consumable Fuels
+    industry_group: "Oil, Gas & Consumable Fuels"
+    intensity: High
+    regulators: ["EPA", "FERC", "DOI", "BSEE", "PHMSA", "DOT"]
+    trend: "SEC climate disclosure rules and increased EPA methane regulation expanding compliance requirements"
+
+  # Materials
+  "1510":  # Chemicals
+    industry_group: "Chemicals"
+    intensity: High
+    regulators: ["EPA", "OSHA", "DOT", "TSCA", "state_environmental_agencies"]
+    trend: "PFAS 'forever chemicals' regulatory wave -- EPA designating PFOA/PFOS as hazardous substances under CERCLA"
+
+  "1520":  # Construction Materials
+    industry_group: "Construction Materials"
+    intensity: Moderate
+    regulators: ["EPA", "OSHA", "MSHA"]
+    trend: "Continued asbestos litigation exposure and increasing EPA scrutiny of quarry operations"
+
+  # Industrials
+  "2010":  # Capital Goods
+    industry_group: "Capital Goods"
+    intensity: Moderate
+    regulators: ["DOD", "FAA", "OSHA", "ITAR"]
+    trend: "Enhanced ITAR/EAR export control enforcement for defense technology transfers"
+
+  "2020":  # Commercial & Professional Services
+    industry_group: "Commercial & Professional Services"
+    intensity: Low
+    regulators: ["DOL", "FTC"]
+    trend: "FTC non-compete ban and DOL overtime rule expanding employer compliance obligations"
+
+  "2030":  # Transportation
+    industry_group: "Transportation"
+    intensity: Moderate
+    regulators: ["FAA", "NTSB", "FMCSA", "DOT", "FRA"]
+    trend: "Increased FAA scrutiny of airline maintenance and Boeing supply chain oversight"
+
+  # Consumer Discretionary
+  "2510":  # Automobiles & Components
+    industry_group: "Automobiles & Components"
+    intensity: High
+    regulators: ["NHTSA", "EPA", "DOT", "OSHA", "FTC"]
+    trend: "NHTSA expanding recall authority and EV battery safety regulation; EPA tightening emissions standards"
+
+  "2530":  # Consumer Services
+    industry_group: "Consumer Services"
+    intensity: Low
+    regulators: ["FTC", "state_consumer_protection"]
+    trend: "FTC increased scrutiny of subscription cancellation practices and dark patterns"
+
+  "2550":  # Retailing
+    industry_group: "Retailing"
+    intensity: Moderate
+    regulators: ["FTC", "CPSC", "state_consumer_protection", "PCI_DSS"]
+    trend: "FTC expanding data privacy enforcement and state privacy law proliferation (CCPA, CPRA)"
+
+  # Consumer Staples
+  "3010":  # Food & Staples Retailing
+    industry_group: "Food & Staples Retailing"
+    intensity: High
+    regulators: ["FDA", "DEA", "USDA", "FTC", "state_pharmacy_boards"]
+    trend: "DEA crackdown on controlled substance dispensing; state opioid litigation settlements ongoing"
+
+  "3020":  # Food, Beverage & Tobacco
+    industry_group: "Food, Beverage & Tobacco"
+    intensity: High
+    regulators: ["FDA", "USDA", "FTC", "TTB", "state_AG"]
+    trend: "FDA modernizing food safety standards; increased FTC scrutiny of health marketing claims"
+
+  "3030":  # Household & Personal Products
+    industry_group: "Household & Personal Products"
+    intensity: Moderate
+    regulators: ["FDA", "CPSC", "EPA", "FTC"]
+    trend: "PFAS regulation expanding to consumer products; FDA cosmetics reform (MoCRA) effective 2024"
+
+  # Health Care
+  "3510":  # Health Care Equipment & Services
+    industry_group: "Health Care Equipment & Services"
+    intensity: High
+    regulators: ["FDA", "CMS", "OIG", "DOJ", "state_health_departments"]
+    trend: "FDA 510(k) reform, CMS price transparency rules, and OIG anti-kickback enforcement intensifying"
+
+  "3520":  # Pharmaceuticals, Biotechnology & Life Sciences
+    industry_group: "Pharmaceuticals, Biotechnology & Life Sciences"
+    intensity: High
+    regulators: ["FDA", "CMS", "OIG", "DEA", "FTC"]
+    trend: "Increased FTC scrutiny of pharma M&A and patent thickets; IRA drug pricing negotiations beginning"
+
+  # Financials
+  "4010":  # Banks
+    industry_group: "Banks"
+    intensity: High
+    regulators: ["OCC", "FDIC", "Federal_Reserve", "CFPB", "FinCEN", "state_banking"]
+    trend: "CFPB expanding enforcement on junk fees and overdraft practices; FinCEN beneficial ownership rules"
+
+  "4020":  # Diversified Financials
+    industry_group: "Diversified Financials"
+    intensity: High
+    regulators: ["SEC", "FINRA", "CFTC", "CFPB", "state_securities"]
+    trend: "SEC expanding private fund adviser regulations and crypto enforcement actions"
+
+  "4030":  # Insurance
+    industry_group: "Insurance"
+    intensity: Moderate
+    regulators: ["state_insurance_commissioners", "NAIC", "FIO"]
+    trend: "State-level climate risk disclosure requirements and increased scrutiny of insurtech practices"
+
+  # Information Technology
+  "4510":  # Software & Services
+    industry_group: "Software & Services"
+    intensity: Moderate
+    regulators: ["FTC", "SEC", "DOJ_Antitrust", "state_privacy"]
+    trend: "FTC AI enforcement actions, SEC cybersecurity disclosure rules, and state privacy law proliferation"
+
+  "4520":  # Technology Hardware & Equipment
+    industry_group: "Technology Hardware & Equipment"
+    intensity: Moderate
+    regulators: ["FCC", "DOC_BIS", "ITC", "CPSC"]
+    trend: "Expanded export controls on semiconductor equipment to China; ITC Section 337 patent enforcement"
+
+  "4530":  # Semiconductors & Semiconductor Equipment
+    industry_group: "Semiconductors & Semiconductor Equipment"
+    intensity: Moderate
+    regulators: ["DOC_BIS", "CFIUS", "ITC", "EPA"]
+    trend: "CHIPS Act compliance requirements; expanded China export restrictions on advanced chips and equipment"
+
+  # Communication Services
+  "5010":  # Telecommunication Services
+    industry_group: "Telecommunication Services"
+    intensity: Moderate
+    regulators: ["FCC", "DOJ_Antitrust", "state_PUC"]
+    trend: "FCC net neutrality reinstatement and digital discrimination rules expanding compliance burden"
+
+  "5020":  # Media & Entertainment
+    industry_group: "Media & Entertainment"
+    intensity: Moderate
+    regulators: ["FCC", "FTC", "DOJ_Antitrust", "state_privacy"]
+    trend: "FTC children's privacy enforcement (COPPA update) and EU DSA compliance for global platforms"
+
+  # Utilities
+  "5510":  # Utilities
+    industry_group: "Utilities"
+    intensity: High
+    regulators: ["FERC", "NRC", "EPA", "state_PUC", "NERC"]
+    trend: "Wildfire liability reform, grid modernization mandates, and EPA carbon emission standards"
+
+  # Real Estate
+  "6010":  # Real Estate
+    industry_group: "Real Estate"
+    intensity: Low
+    regulators: ["SEC", "state_RE_commissions"]
+    trend: "SEC scrutiny of non-traded REIT valuations and fee disclosures; CRE ESG disclosure emerging"

@@ -1,0 +1,35 @@
+{# Dimension Breakdown — extracted from ai_risk.html.j2 #}
+{% if ai is not defined %}{% set ai = (ai_risk if ai_risk is defined and ai_risk else {}) %}{% endif %}
+
+  {# --- Dimension Breakdown --- #}
+  {% set dimensions = ai.get('dimensions', []) %}
+  {% if dimensions %}
+  <h3>Dimension Breakdown</h3>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Dimension</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Score</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Assessment</th>
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for dim in dimensions %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }} hover:bg-slate-100 transition-colors">
+        <td class="p-1 font-heading text-xs font-semibold text-navy">
+          {{ dim.name|dim_display_name }}
+        </td>
+        <td class="p-1 text-right font-semibold
+          {% if dim.score >= 7 %} text-risk-red
+          {% elif dim.score >= 5 %} text-risk-amber
+          {% else %} text-navy
+          {% endif %}
+        ">{{ dim.score }}/10</td>
+        <td class="p-1">
+          {{ traffic_light(dim.get('threat', 'INFO'), dim.get('threat', '')) }}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}

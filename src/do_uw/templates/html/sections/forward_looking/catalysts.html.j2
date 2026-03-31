@@ -1,0 +1,30 @@
+{# Forward Catalysts -- upcoming events with litigation risk (Phase 117 -- FORWARD-03) #}
+{% set fwd = forward_risk_map | default({}) %}
+{% if fwd.get('has_catalysts', false) %}
+<h3 id="forward-catalysts">{{ current_year | default('2026') }} Catalysts</h3>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Event</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Timing</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Impact if Negative</th>
+      <th class="text-center p-1 border-b font-heading text-xs font-semibold uppercase">Litigation Risk</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for cat in fwd.catalysts %}
+    <tr class="{{ cat.row_class }} {{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ cat.event }}</td>
+      <td class="p-1">{{ cat.timing | default('--', true) }}</td>
+      <td class="p-1 text-xs">{{ cat.impact_if_negative | default('--', true) }}</td>
+      <td class="p-1 text-center font-semibold">
+        {% if cat.litigation_risk == 'HIGH' %}<span class="text-risk-red">HIGH</span>
+        {% elif cat.litigation_risk == 'MEDIUM' %}<span class="text-amber-600">MEDIUM</span>
+        {% elif cat.litigation_risk == 'LOW' %}<span class="text-green-600">LOW</span>
+        {% else %}<span class="text-gray-400">{{ cat.litigation_risk | default('--', true) }}</span>{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}

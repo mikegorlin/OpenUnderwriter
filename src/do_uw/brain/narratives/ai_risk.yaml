@@ -1,0 +1,30 @@
+# Narrative configuration for AI Risk section
+# 5-layer architecture: Verdict > Thesis > Evidence Grid > Implications > Deep Context
+
+id: ai_risk
+name: AI & Technology Risk
+
+verdict:
+  thresholds:
+    CRITICAL: CRITICAL
+    ELEVATED: CONCERNING
+    CLEAN: FAVORABLE
+
+thesis_template: >
+  AI and technology risk assessment {{ 'identifies critical exposure' if density_level == 'CRITICAL' else 'shows elevated concern areas' if density_level == 'ELEVATED' else 'indicates manageable risk posture' }}.
+  {% if ai_exposure %}Material AI adoption creates emerging D&O liability under evolving regulatory frameworks.{% endif %}
+  {% if data_privacy %}Data privacy and cybersecurity exposure increasingly triggers D&O claims.{% endif %}
+
+evidence_keys:
+  - ai_risk.overall_score
+  - ai_risk.dimensions
+  - ai_risk.competitive_position
+  - ai_risk.forward_assessment
+
+implications_template: >
+  {% if density_level != 'CLEAN' %}AI and technology governance gaps may create emerging D&O liability — evaluate technology E&O carve-backs.{% endif %}
+  {% if density_level == 'CLEAN' %}Standard technology risk profile supports baseline coverage terms.{% endif %}
+
+deep_context_keys:
+  - ai_risk.dimension_detail
+  - ai_risk.regulatory_landscape

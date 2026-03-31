@@ -1,0 +1,224 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-02-11",
+  "source": "SYSTEM/07_LEARNING_ENGINE.md Part B",
+  "description": "Sector-specific baselines for contextual scoring. Metrics must be compared to sector norms.",
+  "short_interest": {
+    "description": "Short interest as % of float - normal varies significantly by sector",
+    "source": "Yahoo Finance Statistics, FINRA bi-monthly data, S&P Global 2024-2025",
+    "UTIL": {"normal": 2, "elevated": 4, "high": 6, "extreme": 6, "sector_etf": "XLU"},
+    "STPL": {"normal": 2.5, "elevated": 4, "high": 6, "extreme": 6, "sector_etf": "XLP"},
+    "FINS": {"normal": 3, "elevated": 5, "high": 8, "extreme": 8, "sector_etf": "XLF"},
+    "INDU": {"normal": 3, "elevated": 5, "high": 8, "extreme": 8, "sector_etf": "XLI"},
+    "TECH": {"normal": 4, "elevated": 7, "high": 10, "extreme": 10, "sector_etf": "XLK"},
+    "COMM": {"normal": 4, "elevated": 7, "high": 10, "extreme": 10, "sector_etf": "XLC"},
+    "HLTH": {"normal": 4, "elevated": 6, "high": 9, "extreme": 9, "sector_etf": "XLV"},
+    "CONS": {"normal": 5.5, "elevated": 8, "high": 12, "extreme": 12, "sector_etf": "XLY"},
+    "ENGY": {"normal": 4, "elevated": 6, "high": 10, "extreme": 10, "sector_etf": "XLE"},
+    "REIT": {"normal": 4, "elevated": 7, "high": 10, "extreme": 10, "sector_etf": "XLRE"},
+    "REIT_OFFICE": {"normal": 10, "elevated": 20, "high": 30, "extreme": 30, "sector_etf": "XLRE", "note": "Office REITs have structurally higher SI"},
+    "BIOT": {"normal": 6, "elevated": 10, "high": 15, "extreme": 20, "sector_etf": "XBI"},
+    "DEFAULT": {"normal": 3, "elevated": 5, "high": 8, "extreme": 12}
+  },
+  "volatility_90d": {
+    "description": "90-day standard deviation of daily returns",
+    "source": "Yahoo Finance Historical Data",
+    "calculation": "STDEV of 90 trading days daily returns",
+    "UTIL": {"typical": 1.25, "elevated": 2, "high": 3, "sector_etf": "XLU"},
+    "STPL": {"typical": 1.25, "elevated": 2, "high": 3, "sector_etf": "XLP"},
+    "HLTH": {"typical": 2, "elevated": 3, "high": 5, "sector_etf": "XLV"},
+    "FINS": {"typical": 2, "elevated": 3, "high": 5, "sector_etf": "XLF"},
+    "INDU": {"typical": 2.5, "elevated": 4, "high": 6, "sector_etf": "XLI"},
+    "TECH": {"typical": 2.5, "elevated": 4, "high": 6, "sector_etf": "XLK"},
+    "CONS": {"typical": 2.5, "elevated": 4, "high": 6, "sector_etf": "XLY"},
+    "COMM": {"typical": 2.5, "elevated": 4, "high": 6, "sector_etf": "XLC"},
+    "ENGY": {"typical": 3.25, "elevated": 5, "high": 8, "sector_etf": "XLE"},
+    "REIT": {"typical": 2.5, "elevated": 4, "high": 6, "sector_etf": "XLRE"},
+    "BIOT": {"typical": 5, "elevated": 8, "high": 12, "sector_etf": "XBI"},
+    "SPEC": {"typical": 6.5, "elevated": 10, "high": 15, "note": "Cannabis/speculative"},
+    "DEFAULT": {"typical": 2.5, "elevated": 4, "high": 6}
+  },
+  "leverage_debt_ebitda": {
+    "description": "Debt/EBITDA ratios by sector - what's normal for utilities is critical for tech",
+    "source": "10-Q/10-K Balance Sheet, NYU Stern Damodaran, S&P 500 benchmarks 2024",
+    "TECH": {"normal": 2.0, "elevated": 3.0, "critical": 4.0, "distress": 6.0},
+    "HLTH": {"normal": 3.0, "elevated": 4.5, "critical": 6.0, "distress": 8.0},
+    "CONS": {"normal": 2.5, "elevated": 4.0, "critical": 5.5, "distress": 7.0},
+    "STPL": {"normal": 2.5, "elevated": 4.0, "critical": 5.0, "distress": 6.5},
+    "INDU": {"normal": 3.0, "elevated": 4.5, "critical": 6.0, "distress": 8.0},
+    "ENGY": {"normal": 4.0, "elevated": 5.5, "critical": 7.0, "distress": 9.0},
+    "COMM": {"normal": 3.0, "elevated": 4.5, "critical": 6.0, "distress": 8.0},
+    "TELE": {"normal": 3.5, "elevated": 5.0, "critical": 6.5, "distress": 8.5},
+    "UTIL": {"normal": 5.0, "elevated": 6.5, "critical": 8.0, "distress": 10.0},
+    "REIT": {"normal": 5.5, "elevated": 7.0, "critical": 8.5, "distress": 10.5},
+    "REIT_OFFICE": {"normal": 6.0, "elevated": 8.0, "critical": 10.0, "distress": 12.0},
+    "FINS": {"metric": "debt_to_equity", "normal": 10, "elevated": 12, "critical": 15, "distress": 18, "note": "Use Debt/Equity instead"},
+    "DEFAULT": {"normal": 2.5, "elevated": 4.0, "critical": 5.5, "distress": 7.0}
+  },
+  "current_ratio": {
+    "description": "Current ratio thresholds by sector — what's distressed for industrials is normal for tech/retail",
+    "source": "Damodaran NYU Stern sector medians 2024, S&P Capital IQ industry benchmarks",
+    "note": "Tech/retail/software companies often run negative WC intentionally due to high turnover, deferred revenue, or supplier payment optimization. Banks use entirely different liquidity metrics.",
+    "TECH": {"normal": 1.2, "elevated": 0.8, "critical": 0.5, "distress": 0.3, "note": "Asset-light models often have CR < 1.0 by design"},
+    "CONS": {"normal": 1.0, "elevated": 0.7, "critical": 0.5, "distress": 0.3, "note": "Retail inventory turns drive negative WC"},
+    "STPL": {"normal": 0.9, "elevated": 0.7, "critical": 0.5, "distress": 0.3, "note": "Consumer staples have predictable cash flow, low CR normal"},
+    "HLTH": {"normal": 1.5, "elevated": 1.0, "critical": 0.7, "distress": 0.5},
+    "INDU": {"normal": 1.5, "elevated": 1.0, "critical": 0.7, "distress": 0.5},
+    "ENGY": {"normal": 1.2, "elevated": 0.9, "critical": 0.6, "distress": 0.4},
+    "COMM": {"normal": 1.2, "elevated": 0.8, "critical": 0.5, "distress": 0.3},
+    "UTIL": {"normal": 0.8, "elevated": 0.6, "critical": 0.4, "distress": 0.2, "note": "Utilities have regulated cash flows, low CR expected"},
+    "REIT": {"normal": 1.0, "elevated": 0.7, "critical": 0.5, "distress": 0.3},
+    "FINS": {"normal": 1.0, "elevated": 0.7, "critical": 0.4, "distress": 0.2, "note": "Banks/insurers use Tier 1 capital and reserves, not CR"},
+    "BIOT": {"normal": 3.0, "elevated": 1.5, "critical": 1.0, "distress": 0.5, "note": "Pre-revenue biotechs need high CR for cash runway"},
+    "DEFAULT": {"normal": 1.5, "elevated": 1.0, "critical": 0.7, "distress": 0.5}
+  },
+  "cash_runway_biotech": {
+    "description": "Cash runway requirements for pre-revenue companies",
+    "source": "07_LEARNING_ENGINE.md B.3",
+    "note": "39% of biotechs in 2024 had <6 months runway",
+    "thresholds": {
+      "critical": {"months": 6, "points": 6, "triggers_crf": true},
+      "concerning": {"months": 12, "points": 4},
+      "fundraising_needed": {"months": 18, "points": 2},
+      "monitor": {"months": 24, "points": 1},
+      "adequate": {"months": null, "points": 0}
+    }
+  },
+  "guidance_miss_sector_adjustments": {
+    "description": "Sector-specific multipliers for F.5 scoring based on beat rates",
+    "source": "SYSTEM/07_LEARNING_ENGINE.md B.0.1",
+    "TECH": {"beat_rate": 82, "multiplier": 1.25, "rationale": "Misses rare and heavily penalized"},
+    "FINS": {"beat_rate": 80, "multiplier": 1.2, "rationale": "High beat expectations"},
+    "HLTH": {"beat_rate": 75, "multiplier": 1.0, "rationale": "Baseline"},
+    "BIOT": {"beat_rate": 65, "multiplier": 0.75, "rationale": "High miss rates structural"},
+    "CONS": {"beat_rate": 78, "multiplier": 1.1, "rationale": "Above-average expectations"},
+    "COMM": {"beat_rate": 78, "multiplier": 1.1, "rationale": "Entertainment earnings volatile, above-average expectations"},
+    "INDU": {"beat_rate": 75, "multiplier": 1.0, "rationale": "Baseline"},
+    "DEFAULT": {"beat_rate": 75, "multiplier": 1.0}
+  },
+  "insider_trading_sector_context": {
+    "description": "Normal buy/sell ratios by sector for F.7 context",
+    "source": "SYSTEM/07_LEARNING_ENGINE.md B.0.2",
+    "TECH": {"normal_ratio_min": 0.10, "normal_ratio_max": 0.20, "concern_below": 0.05, "note": "Tech insiders rarely buy"},
+    "COMM": {"normal_ratio_min": 0.10, "normal_ratio_max": 0.20, "concern_below": 0.05, "note": "Similar to TECH insider patterns"},
+    "BIOT": {"normal_ratio_min": 0.25, "normal_ratio_max": 0.40, "concern_below": 0.15},
+    "FINS": {"normal_ratio_min": 0.30, "normal_ratio_max": 0.50, "concern_below": 0.20},
+    "INDU": {"normal_ratio_min": 0.35, "normal_ratio_max": 0.50, "concern_below": 0.25},
+    "CONS": {"normal_ratio_min": 0.30, "normal_ratio_max": 0.45, "concern_below": 0.20},
+    "ENGY": {"normal_ratio_min": 0.40, "normal_ratio_max": 0.60, "concern_below": 0.30, "note": "Often see insider buying"},
+    "REIT": {"normal_ratio_min": 0.35, "normal_ratio_max": 0.50, "concern_below": 0.25},
+    "DEFAULT": {"normal_ratio_min": 0.34, "normal_ratio_max": 0.42, "concern_below": 0.29}
+  },
+  "sector_etfs": {
+    "description": "Primary benchmark ETFs for sector comparison",
+    "TECH": {"primary": "XLK", "alternatives": ["QQQ", "IGV"], "note": "IGV for software"},
+    "HLTH": {"primary": "XLV", "alternatives": ["IBB", "XBI"], "note": "XBI for small-cap biotech"},
+    "FINS": {"primary": "XLF", "alternatives": ["KRE"], "note": "KRE for regional banks"},
+    "INDU": {"primary": "XLI", "alternatives": []},
+    "ENGY": {"primary": "XLE", "alternatives": ["XOP"], "note": "XOP for E&P specifically"},
+    "CONS": {"primary": "XLY", "alternatives": ["RTH"], "note": "RTH for retail"},
+    "STPL": {"primary": "XLP", "alternatives": []},
+    "MATL": {"primary": "XLB", "alternatives": []},
+    "UTIL": {"primary": "XLU", "alternatives": []},
+    "REIT": {"primary": "XLRE", "alternatives": ["VNQ"]},
+    "COMM": {"primary": "XLC", "alternatives": []},
+    "BIOT": {"primary": "XBI", "alternatives": ["IBB"]},
+    "BDCS": {"primary": "BIZD", "alternatives": []}
+  },
+  "dismissal_rates": {
+    "description": "Sector-specific dismissal rates for tower positioning guidance",
+    "source": "SYSTEM/03_SCORING_ENGINE.md tower positioning",
+    "note": "High dismissal rate sectors offer opportunity at low attachment with proper pricing",
+    "BIOT": {"rate": 67.5, "implication": "Higher risk tolerance at low attachment OK"},
+    "TECH": {"rate": 57.5, "implication": "Standard approach"},
+    "COMM": {"rate": 52.5, "implication": "Media sector moderate dismissal rate"},
+    "FINS": {"rate": 52.5, "implication": "Slightly conservative"},
+    "CONS": {"rate": 47.5, "implication": "Standard approach"},
+    "ENGY": {"rate": 42.5, "implication": "More conservative"},
+    "HLTH": {"rate": 37.5, "implication": "Conservative (non-pharma)"},
+    "DEFAULT": {"rate": 50, "implication": "Standard approach"}
+  },
+  "sector_codes": {
+    "description": "Standard sector code mappings",
+    "mappings": {
+      "TECH": "Technology",
+      "HLTH": "Healthcare",
+      "BIOT": "Biotech/Pharma",
+      "FINS": "Financials",
+      "INDU": "Industrials",
+      "ENGY": "Energy",
+      "CONS": "Consumer Discretionary",
+      "STPL": "Consumer Staples",
+      "MATL": "Materials",
+      "UTIL": "Utilities",
+      "REIT": "Real Estate",
+      "COMM": "Communications",
+      "TELE": "Telecom",
+      "BDCS": "Business Development Companies",
+      "SPEC": "Speculative/Cannabis"
+    }
+  },
+  "claim_base_rates": {
+    "description": "Annual SCA filing probability (%) by sector. Source: Cornerstone/NERA 2024-2025. Calibrated 2026-02-10.",
+    "source": "Calibrated from Cornerstone Research 2024, NERA 2024 Full-Year Review, Stanford SCAC sector data",
+    "BIOT": 7.0,
+    "TECH": 5.0,
+    "HLTH": 4.0,
+    "FINS": 4.0,
+    "COMM": 3.5,
+    "CONS": 3.5,
+    "ENGY": 3.0,
+    "INDU": 2.5,
+    "STPL": 2.0,
+    "UTIL": 1.5,
+    "REIT": 3.0,
+    "DEFAULT": 3.5
+  },
+  "market_cap_filing_multipliers": {
+    "description": "Filing rate multiplier by market cap tier vs mid-cap base. Calibrated 2026-02-10.",
+    "source": "Cornerstone 2024: S&P 500=6.1% vs all-company=3.9%",
+    "mega": {"min_cap": 50000000000, "multiplier": 1.56},
+    "large": {"min_cap": 10000000000, "multiplier": 1.28},
+    "mid": {"min_cap": 2000000000, "multiplier": 1.00},
+    "small": {"min_cap": 500000000, "multiplier": 0.95},
+    "micro": {"min_cap": 0, "multiplier": 0.77}
+  },
+  "factor_weight_adjustments": {
+    "description": "Sector-specific factor weight multipliers. Applied to max_points per factor. 1.0 = no change. >1.0 = this factor matters MORE for this sector. <1.0 = matters LESS. Rationale from D&O claims data (Cornerstone/NERA 2024).",
+    "source": "D&O claims analysis: frequency × severity by sector and allegation type",
+    "TECH": {
+      "F8_financial_distress": 0.6,
+      "F5_guidance_misses": 1.3,
+      "F7_volatility": 0.8,
+      "_rationale": "Tech: financial distress metrics misleading (asset-light, negative WC by design), earnings misses heavily penalized, volatility structurally higher"
+    },
+    "BIOT": {
+      "F8_financial_distress": 1.4,
+      "F5_guidance_misses": 0.5,
+      "F6_short_interest": 1.3,
+      "_rationale": "Biotech: cash runway critical (F8 up), guidance less relevant for pre-revenue (F5 down), short interest more predictive of binary events (F6 up)"
+    },
+    "FINS": {
+      "F8_financial_distress": 0.7,
+      "F9_governance": 1.3,
+      "F6_short_interest": 1.2,
+      "_rationale": "Financials: standard financial ratios misleading (different balance sheet), governance critical for fiduciary duty, short interest reflects systemic risk"
+    },
+    "ENGY": {
+      "F8_financial_distress": 1.2,
+      "F7_volatility": 0.8,
+      "_rationale": "Energy: leverage and commodity exposure amplify financial risk, high volatility is structural (not a signal)"
+    },
+    "UTIL": {
+      "F8_financial_distress": 0.5,
+      "F7_volatility": 0.6,
+      "_rationale": "Utilities: regulated returns make financial distress rare, volatility structurally low"
+    },
+    "CONS": {
+      "F5_guidance_misses": 1.2,
+      "F10_officer_stability": 1.2,
+      "_rationale": "Consumer discretionary: earnings sensitivity high, officer turnover more disruptive"
+    },
+    "DEFAULT": {}
+  }
+}

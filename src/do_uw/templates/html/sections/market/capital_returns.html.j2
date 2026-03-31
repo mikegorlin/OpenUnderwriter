@@ -1,0 +1,59 @@
+{# Capital Returns — Dividend & Buyback History.
+   Data from yfinance info + XBRL cash flow via mkt.capital_returns. #}
+
+{% set cr = mkt.get('capital_returns', {}) %}
+{% if cr and (cr.get('dividend_rate') or cr.get('dividends_paid') or cr.get('share_repurchases')) %}
+  <h3>Capital Returns</h3>
+
+  {# --- Dividend Summary --- #}
+  {% if cr.get('dividend_rate') or cr.get('dividend_yield') %}
+  <h4>Dividend Profile</h4>
+  {{ kv_table([
+    {'key': 'Annual Dividend Rate', 'value': cr.get('dividend_rate', 'N/A')},
+    {'key': 'Current Yield', 'value': cr.get('dividend_yield', 'N/A')},
+    {'key': '5-Year Avg Yield', 'value': cr.get('five_yr_avg_yield', 'N/A')},
+    {'key': 'Payout Ratio', 'value': cr.get('payout_ratio', 'N/A')},
+    {'key': 'Ex-Dividend Date', 'value': cr.get('ex_dividend_date', 'N/A')},
+  ]) }}
+  {% endif %}
+
+  {# --- Capital Allocation Table (Dividends + Buybacks per period) --- #}
+  {% set divs = cr.get('dividends_paid', []) %}
+  {% set bbs = cr.get('share_repurchases', []) %}
+  {% if divs or bbs %}
+  <h4>Capital Allocation History</h4>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Category</th>
+        {% for d in (divs if divs|length >= (bbs|length) else bbs) %}
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">{{ d.period }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% if divs %}
+      <tr class="bg-bg-alt">
+        <td class="p-1 font-heading text-xs font-semibold text-navy">Dividends Paid</td>
+        {% for d in divs %}
+        <td class="p-1 text-right">{{ d.value }}</td>
+        {% endfor %}
+      </tr>
+      {% endif %}
+      {% if bbs %}
+      <tr class="bg-white">
+        <td class="p-1 font-heading text-xs font-semibold text-navy">Share Repurchases</td>
+        {% for d in bbs %}
+        <td class="p-1 text-right">{{ d.value }}</td>
+        {% endfor %}
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>Aggressive buybacks at elevated prices can signal insider overconfidence and create shareholder derivative claim exposure</li>
+    <li>Dividend cuts or suspensions are high-severity stock drop catalysts and frequently precede SCA filings</li>
+  </ul>
+{% endif %}

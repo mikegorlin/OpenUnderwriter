@@ -1,0 +1,66 @@
+/* =====================================================================
+   Infographic Component Styles (Phase 126)
+   KPI cards, visual enhancements for gauge/bars/arrows.
+   ===================================================================== */
+
+/* KPI Summary Cards (INFO-06) — compact metric card grid */
+.kpi-strip {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.kpi-strip--2 { grid-template-columns: repeat(2, 1fr); }
+.kpi-strip--3 { grid-template-columns: repeat(3, 1fr); }
+.kpi-strip--4 { grid-template-columns: repeat(4, 1fr); }
+.kpi-strip--5 { grid-template-columns: repeat(5, 1fr); }
+.kpi-strip--6 { grid-template-columns: repeat(3, 1fr); }
+
+.kpi-card {
+  padding: 8px 10px;
+  border-radius: 5px;
+  background: white;
+  border: 1px solid #E5E7EB;
+  text-align: center;
+}
+
+.kpi-card--critical { border-color: var(--do-risk-critical, #DC2626); border-width: 2px; }
+.kpi-card--elevated { border-color: var(--do-risk-elevated, #EA580C); border-width: 2px; }
+.kpi-card--watch    { border-color: var(--do-risk-watch, #EAB308); border-width: 2px; }
+.kpi-card--positive { border-color: var(--do-risk-positive, #2563EB); border-width: 2px; }
+
+.kpi-card-value {
+  font-size: 13pt;
+  font-weight: 800;
+  color: #374151;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.kpi-card-trend {
+  display: inline-flex;
+  align-items: center;
+}
+
+.kpi-card-label {
+  font-size: 6pt;
+  color: #6B7280;
+  font-weight: 600;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.kpi-card-sub {
+  font-size: 0.625rem;
+  color: #9CA3AF;
+  margin-top: 0.0625rem;
+}
+
+@media print {
+  .kpi-strip { break-inside: avoid; page-break-inside: avoid; }
+  .kpi-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

@@ -1,0 +1,35 @@
+# Narrative configuration for Red Flags section
+# 5-layer architecture: Verdict > Thesis > Evidence Grid > Implications > Deep Context
+
+id: red_flags
+name: Red Flags
+
+verdict:
+  thresholds:
+    CRITICAL: CRITICAL
+    ELEVATED: CONCERNING
+    CLEAN: FAVORABLE
+  # Count-based overrides for red flags
+  count_overrides:
+    # 5+ triggered flags = CRITICAL
+    critical_threshold: 5
+    # 2+ triggered flags = CONCERNING
+    concerning_threshold: 2
+
+thesis_template: >
+  {% if flag_count > 0 %}{{ flag_count }} risk signal{{ 's' if flag_count != 1 }} flagged requiring underwriter attention.
+  {% if critical_flags %}{{ critical_flags }} critical-severity flag{{ 's' if critical_flags != 1 }} identified.{% endif %}
+  {% else %}No triggered risk signals identified — clean risk profile.{% endif %}
+
+evidence_keys:
+  - scoring.red_flags
+  - scoring.ceiling_flags
+
+implications_template: >
+  {% if flag_count >= 5 %}Multiple triggered flags indicate systemic risk requiring enhanced underwriting scrutiny and potential declination consideration.{% endif %}
+  {% if flag_count >= 2 and flag_count < 5 %}{{ flag_count }} triggered flags indicate concentrated risk -- see individual flag detail below for specific exposures.{% endif %}
+  {% if flag_count < 2 %}Clean or minimal flag profile supports standard underwriting approach.{% endif %}
+
+deep_context_keys:
+  - scoring.red_flag_detail
+  - scoring.ceiling_impact

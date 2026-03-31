@@ -1,0 +1,24 @@
+{# Executive Risk Profile — extracted from scoring.html.j2 #}
+{% if executive_risk %}
+<h3>Executive Risk Profile</h3>
+<div class="bg-bg-alt border border-gray-200 rounded p-4 my-3 page-break-inside-avoid">
+  <p class="font-heading text-sm m-0">
+    {% if executive_risk.weighted_score and executive_risk.weighted_score != 'N/A' %}Weighted Score: <strong>{{ executive_risk.weighted_score }}</strong>{% endif %}
+    {% if executive_risk.risk_level and executive_risk.risk_level != 'N/A' %}{% if executive_risk.weighted_score and executive_risk.weighted_score != 'N/A' %} | {% endif %}Risk Level: <strong>{{ executive_risk.risk_level|humanize }}</strong>{% endif %}
+  </p>
+</div>
+{% if executive_risk.findings %}
+<ul class="text-sm space-y-1 my-2">
+  {% for finding in executive_risk.findings %}
+  <li>{% if finding is mapping %}{% if finding.person %}<strong>{{ finding.person }}</strong>: {% endif %}{{ finding.detail | humanize_evidence }}{% else %}{{ finding | humanize_evidence }}{% endif %}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+<p class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed">
+  Evaluates personal risk factors for key executives and directors that may affect D&amp;O claim likelihood or severity,
+  including prior litigation involvement, tenure stability, and governance concerns.
+</p>
+{% else %}
+<h3>Executive Risk Profile</h3>
+{{ gap_notice("Executive Risk", "Executive risk profile not available") }}
+{% endif %}

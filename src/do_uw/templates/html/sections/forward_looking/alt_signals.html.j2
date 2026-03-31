@@ -1,0 +1,35 @@
+{# Alternative Forward-Looking Signals -- short interest, analyst sentiment, buyback (Phase 117 -- FORWARD-06) #}
+{% set fwd = forward_risk_map | default({}) %}
+{% set alt = fwd.get('alt_signals', {}) %}
+{% if alt.get('has_alt_signals', false) %}
+<h3 id="alt-forward-signals">Alternative Forward-Looking Signals</h3>
+<div class="grid grid-cols-3 gap-3 my-3">
+  {% if alt.short_interest %}
+  <div class="bg-bg-alt border border-gray-200 rounded p-3 page-break-inside-avoid">
+    <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0 mb-1">Short Interest</p>
+    <p class="text-lg font-bold text-navy m-0">{{ alt.short_interest.get('short_ratio', '--') }}</p>
+    <p class="text-xs text-gray-500 m-0">Shares Short: {{ alt.short_interest.get('shares_short', '--') }}</p>
+    <p class="text-xs text-gray-500 m-0">Trend: {{ alt.short_interest.get('trend', '--') }}</p>
+  </div>
+  {% endif %}
+  {% if alt.analyst_sentiment %}
+  <div class="bg-bg-alt border border-gray-200 rounded p-3 page-break-inside-avoid">
+    <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0 mb-1">Analyst Sentiment</p>
+    <p class="text-lg font-bold text-navy m-0">{{ alt.analyst_sentiment.get('consensus', '--') }}</p>
+    <p class="text-xs text-gray-500 m-0">Target: {{ alt.analyst_sentiment.get('target_mean', '--') }}</p>
+    <p class="text-xs text-gray-500 m-0">Coverage: {{ alt.analyst_sentiment.get('coverage_count', '--') }} analysts</p>
+  </div>
+  {% endif %}
+  {% if alt.buyback_support %}
+  <div class="bg-bg-alt border border-gray-200 rounded p-3 page-break-inside-avoid">
+    <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0 mb-1">Buyback Support</p>
+    <p class="text-lg font-bold m-0 {{ 'text-green-600' if alt.buyback_support.get('has_buyback', false) else 'text-gray-400' }}">
+      {{ 'Active' if alt.buyback_support.get('has_buyback', false) else 'None' }}
+    </p>
+    {% if alt.buyback_support.get('amount') %}
+    <p class="text-xs text-gray-500 m-0">Amount: {{ alt.buyback_support.amount }}</p>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endif %}

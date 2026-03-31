@@ -1,0 +1,8 @@
+{# Financial Health Narrative summary card — navy-bordered box #}
+{% set narrative = fin.get('health_narrative', '') %}
+{% if narrative %}
+<div style="border:1.5px solid #1A1446; border-radius:5px; padding:8px 12px; margin-bottom:0.75rem; background:#F8F9FC;">
+  <div style="font-size:6pt; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#1A1446; margin-bottom:3px;">Financial Health Summary</div>
+  <div style="font-size:8.5pt; color:#374151; line-height:1.5;">{{ narrative }}</div>
+</div>
+{% endif %}

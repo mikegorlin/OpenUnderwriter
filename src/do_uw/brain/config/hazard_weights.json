@@ -1,0 +1,664 @@
+{
+  "version": "1.0",
+  "categories": {
+    "H1": {
+      "name": "Business & Operating Model",
+      "weight_pct": 32.5,
+      "description": "Characteristics of the business itself that create inherent D&O exposure surfaces"
+    },
+    "H2": {
+      "name": "People & Management",
+      "weight_pct": 15.0,
+      "description": "Characteristics of management and board that create exposure through inexperience or structural dependencies"
+    },
+    "H3": {
+      "name": "Financial Structure",
+      "weight_pct": 15.0,
+      "description": "Financial structure characteristics that create inherent D&O claim exposure surfaces"
+    },
+    "H4": {
+      "name": "Governance Structure",
+      "weight_pct": 7.5,
+      "description": "Structural governance characteristics that increase exposure by reducing accountability"
+    },
+    "H5": {
+      "name": "Public Company Maturity",
+      "weight_pct": 10.0,
+      "description": "Where the company sits in its public company lifecycle"
+    },
+    "H6": {
+      "name": "External Environment",
+      "weight_pct": 10.0,
+      "description": "External conditions that amplify or suppress D&O exposure"
+    },
+    "H7": {
+      "name": "Emerging / Modern Hazards",
+      "weight_pct": 10.0,
+      "description": "New-era exposure sources not fully addressed in traditional frameworks"
+    }
+  },
+  "dimensions": {
+    "H1-01": {
+      "name": "Industry Sector Risk Tier",
+      "category": "H1",
+      "max_score": 10,
+      "description": "Inherent litigation rate associated with the company's primary industry",
+      "scoring_method": "config_lookup",
+      "data_sources": [
+        "company.identity.sic_code",
+        "company.identity.sector"
+      ],
+      "default_score_pct": 50
+    },
+    "H1-02": {
+      "name": "Business Model Complexity",
+      "category": "H1",
+      "max_score": 5,
+      "description": "How difficult the business is to understand, explain, and evaluate from outside",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "company.revenue_segments",
+        "company.operational_complexity"
+      ],
+      "default_score_pct": 50
+    },
+    "H1-03": {
+      "name": "Regulatory Intensity",
+      "category": "H1",
+      "max_score": 5,
+      "description": "Number and power of regulatory bodies overseeing operations",
+      "scoring_method": "config_lookup",
+      "data_sources": [
+        "company.identity.sic_code"
+      ],
+      "default_score_pct": 50
+    },
+    "H1-04": {
+      "name": "Geographic Complexity",
+      "category": "H1",
+      "max_score": 5,
+      "description": "Number and risk level of jurisdictions where the company operates",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "company.geographic_footprint",
+        "extracted.governance"
+      ],
+      "default_score_pct": 50
+    },
+    "H1-05": {
+      "name": "Revenue Model Manipulation Surface",
+      "category": "H1",
+      "max_score": 5,
+      "description": "How susceptible revenue recognition is to manipulation or aggressive accounting",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.financials",
+        "company.business_model_description"
+      ],
+      "default_score_pct": 50
+    },
+    "H1-06": {
+      "name": "Customer & Supplier Concentration",
+      "category": "H1",
+      "max_score": 4,
+      "description": "Revenue and supply chain dependency on a small number of counterparties",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "company.customer_concentration",
+        "company.supplier_concentration"
+      ],
+      "default_score_pct": 50
+    },
+    "H1-07": {
+      "name": "Capital Intensity",
+      "category": "H1",
+      "max_score": 3,
+      "description": "Degree of large, lumpy capital investments with long payback periods",
+      "scoring_method": "quantitative",
+      "data_sources": [
+        "extracted.financials.statements"
+      ],
+      "default_score_pct": 50
+    },
+    "H1-08": {
+      "name": "M&A Activity",
+      "category": "H1",
+      "max_score": 5,
+      "description": "Level and nature of acquisition activity and integration complexity",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "company.business_changes",
+        "extracted.financials.statements"
+      ],
+      "default_score_pct": 50
+    },
+    "H1-09": {
+      "name": "Speed of Growth",
+      "category": "H1",
+      "max_score": 5,
+      "description": "Rate of revenue, headcount, and operational footprint growth",
+      "scoring_method": "quantitative",
+      "data_sources": [
+        "extracted.financials",
+        "extracted.market"
+      ],
+      "default_score_pct": 50
+    },
+    "H1-10": {
+      "name": "Dual-Class Structure",
+      "category": "H1",
+      "max_score": 3,
+      "description": "Multi-class share structure separating economic ownership from voting control",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "company.operational_complexity",
+        "extracted.governance"
+      ],
+      "default_score_pct": 0
+    },
+    "H1-11": {
+      "name": "Non-GAAP Reliance",
+      "category": "H1",
+      "max_score": 3,
+      "description": "Extent of emphasis on non-GAAP financial measures in investor communications",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.financials"
+      ],
+      "default_score_pct": 50
+    },
+    "H1-12": {
+      "name": "Technology Platform Dependency",
+      "category": "H1",
+      "max_score": 2,
+      "description": "Dependency on third-party technology platforms for distribution or core operations",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "company.risk_factors"
+      ],
+      "default_score_pct": 50
+    },
+    "H1-13": {
+      "name": "IP Dependency",
+      "category": "H1",
+      "max_score": 2,
+      "description": "Degree to which company value depends on IP that could be challenged or expired",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "company.risk_factors",
+        "extracted.litigation"
+      ],
+      "default_score_pct": 50
+    },
+    "H2-01": {
+      "name": "Management Public Company Experience",
+      "category": "H2",
+      "max_score": 5,
+      "description": "Depth of CEO, CFO, and C-suite experience in running public companies",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.governance.leadership"
+      ],
+      "default_score_pct": 50
+    },
+    "H2-02": {
+      "name": "Industry Expertise Match",
+      "category": "H2",
+      "max_score": 3,
+      "description": "Whether CEO and CFO have deep experience in the company's specific industry",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.governance.leadership",
+        "company.identity.sic_code"
+      ],
+      "default_score_pct": 50
+    },
+    "H2-03": {
+      "name": "Scale Experience Mismatch",
+      "category": "H2",
+      "max_score": 3,
+      "description": "Whether management has experience operating at the current company's scale",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.governance.leadership"
+      ],
+      "default_score_pct": 50
+    },
+    "H2-04": {
+      "name": "Board Governance Experience & Quality",
+      "category": "H2",
+      "max_score": 5,
+      "description": "Collective experience, expertise diversity, and oversight capability of the board",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.governance.board_forensic",
+        "extracted.governance.governance_quality"
+      ],
+      "default_score_pct": 50
+    },
+    "H2-05": {
+      "name": "Founder-Led vs Professional Management",
+      "category": "H2",
+      "max_score": 3,
+      "description": "Whether the company is led by its founder(s) or professional management",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.governance.leadership"
+      ],
+      "default_score_pct": 50
+    },
+    "H2-06": {
+      "name": "Key Person Dependency",
+      "category": "H2",
+      "max_score": 3,
+      "description": "Degree to which company value depends on specific individuals",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "company.risk_factors"
+      ],
+      "default_score_pct": 50
+    },
+    "H2-07": {
+      "name": "Management Turnover",
+      "category": "H2",
+      "max_score": 3,
+      "description": "Recent C-suite turnover and reasons for departures",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.governance.leadership_stability"
+      ],
+      "default_score_pct": 50
+    },
+    "H2-08": {
+      "name": "Tone at the Top",
+      "category": "H2",
+      "max_score": 3,
+      "description": "Observable indicators of corporate culture and management transparency attitude",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.governance.sentiment",
+        "extracted.governance.narrative_coherence"
+      ],
+      "default_score_pct": 50
+    },
+    "H3-01": {
+      "name": "Leverage & Capital Structure",
+      "category": "H3",
+      "max_score": 5,
+      "description": "Level of debt relative to equity and complexity of debt structure",
+      "scoring_method": "quantitative",
+      "data_sources": [
+        "extracted.financials.distress"
+      ],
+      "default_score_pct": 50
+    },
+    "H3-02": {
+      "name": "Off-Balance Sheet Arrangements",
+      "category": "H3",
+      "max_score": 3,
+      "description": "Extent of VIEs, unconsolidated JVs, and special-purpose entities",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.financials"
+      ],
+      "default_score_pct": 50
+    },
+    "H3-03": {
+      "name": "Goodwill-Heavy Balance Sheet",
+      "category": "H3",
+      "max_score": 3,
+      "description": "Proportion of total assets represented by goodwill and acquired intangibles",
+      "scoring_method": "quantitative",
+      "data_sources": [
+        "extracted.financials.statements"
+      ],
+      "default_score_pct": 50
+    },
+    "H3-04": {
+      "name": "Earnings Quality Characteristics",
+      "category": "H3",
+      "max_score": 5,
+      "description": "Structural susceptibility of earnings to manipulation independent of actual manipulation",
+      "scoring_method": "quantitative",
+      "data_sources": [
+        "extracted.financials"
+      ],
+      "default_score_pct": 50
+    },
+    "H3-05": {
+      "name": "Cash Flow vs Earnings Divergence",
+      "category": "H3",
+      "max_score": 3,
+      "description": "Structural tendency for cash flows to diverge from reported earnings",
+      "scoring_method": "quantitative",
+      "data_sources": [
+        "extracted.financials.statements"
+      ],
+      "default_score_pct": 50
+    },
+    "H3-06": {
+      "name": "Pre-Revenue / Cash Burn",
+      "category": "H3",
+      "max_score": 5,
+      "description": "Whether the company is pre-revenue or early-revenue with significant cash burn",
+      "scoring_method": "quantitative",
+      "data_sources": [
+        "extracted.financials"
+      ],
+      "default_score_pct": 50
+    },
+    "H3-07": {
+      "name": "Related Party Transactions",
+      "category": "H3",
+      "max_score": 3,
+      "description": "Volume and nature of transactions between company and its officers/directors",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.governance"
+      ],
+      "default_score_pct": 50
+    },
+    "H3-08": {
+      "name": "Capital Markets Activity",
+      "category": "H3",
+      "max_score": 4,
+      "description": "Recent or pending securities offerings and capital raises",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "company.business_changes",
+        "extracted.market.capital_markets"
+      ],
+      "default_score_pct": 50
+    },
+    "H4-01": {
+      "name": "Combined CEO / Board Chair",
+      "category": "H4",
+      "max_score": 3,
+      "description": "Whether the CEO also serves as Chairman of the Board",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.governance.board_forensic",
+        "extracted.governance.board"
+      ],
+      "default_score_pct": 50
+    },
+    "H4-02": {
+      "name": "Board Independence",
+      "category": "H4",
+      "max_score": 3,
+      "description": "Percentage of independent directors on the board and key committees",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.governance.governance_quality",
+        "extracted.governance.board"
+      ],
+      "default_score_pct": 50
+    },
+    "H4-03": {
+      "name": "Anti-Takeover Provisions",
+      "category": "H4",
+      "max_score": 5,
+      "description": "Accumulation of anti-takeover defenses entrenching management",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.governance"
+      ],
+      "default_score_pct": 50
+    },
+    "H4-04": {
+      "name": "Audit Committee Quality",
+      "category": "H4",
+      "max_score": 4,
+      "description": "Expertise, activity level, and effectiveness of the audit committee",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.governance.governance_quality"
+      ],
+      "default_score_pct": 50
+    },
+    "H4-05": {
+      "name": "Shareholder Rights",
+      "category": "H4",
+      "max_score": 3,
+      "description": "Practical mechanisms for shareholders to hold management accountable",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.governance"
+      ],
+      "default_score_pct": 50
+    },
+    "H4-06": {
+      "name": "Compensation Structure",
+      "category": "H4",
+      "max_score": 3,
+      "description": "Whether compensation structure creates incentives that increase D&O risk",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.governance.compensation_analysis"
+      ],
+      "default_score_pct": 50
+    },
+    "H4-07": {
+      "name": "Compliance Infrastructure",
+      "category": "H4",
+      "max_score": 3,
+      "description": "Visible presence and quality of compliance and reporting infrastructure",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.governance"
+      ],
+      "default_score_pct": 50
+    },
+    "H4-08": {
+      "name": "State of Incorporation",
+      "category": "H4",
+      "max_score": 2,
+      "description": "Legal framework governing the company based on state of incorporation",
+      "scoring_method": "config_lookup",
+      "data_sources": [
+        "company.identity.state_of_incorporation"
+      ],
+      "default_score_pct": 50
+    },
+    "H5-01": {
+      "name": "IPO Recency",
+      "category": "H5",
+      "max_score": 5,
+      "description": "How recently the company completed its IPO (most powerful hazard dimension)",
+      "scoring_method": "quantitative",
+      "data_sources": [
+        "company.years_public"
+      ],
+      "default_score_pct": 50
+    },
+    "H5-02": {
+      "name": "Method of Going Public",
+      "category": "H5",
+      "max_score": 4,
+      "description": "How the company became publicly traded (IPO, SPAC, direct listing, etc.)",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "company.filing_history"
+      ],
+      "default_score_pct": 50
+    },
+    "H5-03": {
+      "name": "Exchange & Index Membership",
+      "category": "H5",
+      "max_score": 3,
+      "description": "Which exchange and major indices the company belongs to",
+      "scoring_method": "config_lookup",
+      "data_sources": [
+        "company.identity.exchange"
+      ],
+      "default_score_pct": 50
+    },
+    "H5-04": {
+      "name": "FPI / ADR Status",
+      "category": "H5",
+      "max_score": 2,
+      "description": "Whether the company is a foreign private issuer listed via ADR",
+      "scoring_method": "config_lookup",
+      "data_sources": [
+        "company.identity.is_fpi"
+      ],
+      "default_score_pct": 50
+    },
+    "H5-05": {
+      "name": "Seasoning & Track Record",
+      "category": "H5",
+      "max_score": 3,
+      "description": "Track record of navigating public company reporting and market corrections",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "company.filing_history",
+        "extracted.litigation"
+      ],
+      "default_score_pct": 50
+    },
+    "H6-01": {
+      "name": "Market Cycle Position",
+      "category": "H6",
+      "max_score": 3,
+      "description": "Where the broader equity market sits in its cycle",
+      "scoring_method": "config_lookup",
+      "data_sources": [
+        "extracted.market"
+      ],
+      "default_score_pct": 50
+    },
+    "H6-02": {
+      "name": "Industry Regulatory Spotlight",
+      "category": "H6",
+      "max_score": 3,
+      "description": "Whether the company's industry is under heightened regulatory scrutiny",
+      "scoring_method": "config_lookup",
+      "data_sources": [
+        "company.identity.sector"
+      ],
+      "default_score_pct": 50
+    },
+    "H6-03": {
+      "name": "Industry Litigation Wave",
+      "category": "H6",
+      "max_score": 3,
+      "description": "Whether the industry is experiencing a wave of D&O-related litigation",
+      "scoring_method": "config_lookup",
+      "data_sources": [
+        "company.identity.sector"
+      ],
+      "default_score_pct": 50
+    },
+    "H6-04": {
+      "name": "Political & Policy Environment",
+      "category": "H6",
+      "max_score": 2,
+      "description": "Current political environment impact on regulatory enforcement",
+      "scoring_method": "config_lookup",
+      "data_sources": [],
+      "default_score_pct": 50
+    },
+    "H6-05": {
+      "name": "Interest Rate Environment",
+      "category": "H6",
+      "max_score": 2,
+      "description": "Prevailing interest rate environment and impact on leverage-sensitive companies",
+      "scoring_method": "derived",
+      "data_sources": [
+        "extracted.financials.distress"
+      ],
+      "default_score_pct": 50
+    },
+    "H6-06": {
+      "name": "Plaintiff Attorney Activity",
+      "category": "H6",
+      "max_score": 1,
+      "description": "Current level of plaintiff attorney activity and resources in securities litigation",
+      "scoring_method": "config_lookup",
+      "data_sources": [],
+      "default_score_pct": 50
+    },
+    "H6-07": {
+      "name": "Geopolitical Risk",
+      "category": "H6",
+      "max_score": 2,
+      "description": "Geopolitical tensions, sanctions, and cross-border risks affecting operations",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "company.geographic_footprint"
+      ],
+      "default_score_pct": 50
+    },
+    "H7-01": {
+      "name": "AI Adoption & Governance",
+      "category": "H7",
+      "max_score": 4,
+      "description": "Degree of AI use/development and maturity of AI governance framework",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.ai_risk"
+      ],
+      "default_score_pct": 50
+    },
+    "H7-02": {
+      "name": "Cybersecurity Governance",
+      "category": "H7",
+      "max_score": 3,
+      "description": "Cyber risk profile and board-level cyber governance maturity",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "company.risk_factors"
+      ],
+      "default_score_pct": 50
+    },
+    "H7-03": {
+      "name": "ESG / Climate Exposure",
+      "category": "H7",
+      "max_score": 3,
+      "description": "Exposure to ESG-related litigation and climate disclosure obligations",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "company.risk_factors"
+      ],
+      "default_score_pct": 50
+    },
+    "H7-04": {
+      "name": "Crypto / Digital Asset Exposure",
+      "category": "H7",
+      "max_score": 3,
+      "description": "Involvement with cryptocurrency, blockchain, or digital asset operations",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "company.business_model_description"
+      ],
+      "default_score_pct": 50
+    },
+    "H7-05": {
+      "name": "Social Media / Public Persona Risk",
+      "category": "H7",
+      "max_score": 2,
+      "description": "Risk from executive social media presence and public statements",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.market.sentiment"
+      ],
+      "default_score_pct": 50
+    },
+    "H7-06": {
+      "name": "Workforce & Labor Model",
+      "category": "H7",
+      "max_score": 2,
+      "description": "Workforce model risks including contractor classification and labor practices",
+      "scoring_method": "proxy",
+      "data_sources": [
+        "extracted.governance.leadership"
+      ],
+      "default_score_pct": 50
+    }
+  },
+  "missing_data_handling": {
+    "default_score_pct": 50,
+    "low_coverage_threshold_pct": 60,
+    "low_coverage_note": "IES based on limited data coverage"
+  }
+}

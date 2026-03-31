@@ -1,0 +1,28 @@
+{# Scoring Density Alerts — extracted from scoring.html.j2 #}
+
+{# --- ELEVATED concerns --- #}
+{% if level == "ELEVATED" %}
+  {% set concerns = density.concerns|default([]) if density else [] %}
+  {% for concern in concerns %}
+    {{ warning_box(concern, "Elevated scoring indicates heightened claim exposure.") }}
+  {% endfor %}
+{% endif %}
+
+{# --- CRITICAL deep dive --- #}
+{% if level == "CRITICAL" %}
+<h3>Scoring Risk -- Deep Dive</h3>
+<div class="border-l-4 border-red-700 bg-red-50 pl-4 py-3 my-3">
+  <p class="text-sm text-red-800 font-semibold m-0 mb-2">
+    Critical risk scoring requires enhanced underwriting review.
+    Multiple factors at maximum indicates high claim probability.
+  </p>
+  {% set evidence = density.critical_evidence|default([]) if density else [] %}
+  {% if evidence %}
+  <ul class="my-2 ml-4 space-y-1 list-disc">
+    {% for item in evidence %}
+    <li class="text-sm text-gray-700 leading-relaxed">{{ item | humanize_evidence }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endif %}

@@ -1,0 +1,726 @@
+# RAP Taxonomy: Host / Agent / Environment (H/A/E) Risk Decomposition
+# Source of truth for the multiplicative scoring model P = H x A x E.
+# Replaces flat 10-factor scoring with 3-dimensional risk decomposition
+# that captures interaction effects between structural, behavioral, and
+# environmental risk drivers in D&O underwriting.
+#
+# Created: Phase 102-01 (v7.0 Signal-Render Integrity)
+# DuckDB is rebuilt from this file via `brain build`.
+
+version: 1
+name: "RAP Risk Taxonomy"
+description: >
+  Three-dimensional risk decomposition for Directors & Officers liability.
+  Host captures what a company IS (structural risk surface area).
+  Agent captures what HAPPENED or is happening (behavioral claim triggers).
+  Environment captures what's AROUND the company (external amplifiers/context).
+  The multiplicative model P = H x A x E means a company with high structural
+  exposure (H) AND active misconduct (A) AND hostile market conditions (E)
+  faces dramatically higher claim risk than any single dimension suggests.
+
+categories:
+  - id: host
+    name: "Host"
+    headline: "What the company IS"
+    description: >
+      Structural, inherent characteristics that create baseline risk exposure.
+      These are slow-moving attributes that define the company's risk profile
+      independent of any specific actions or events. Host risk is the "surface
+      area" for D&O claims -- a large-cap tech company with complex multi-segment
+      operations, significant debt, and regulatory dependencies has a larger
+      surface area than a small, simple, cash-rich business. Host factors change
+      on timescales of quarters to years.
+    d_and_o_rationale: >
+      In D&O underwriting, host factors determine base premium -- a $50B
+      market cap company in a litigious sector pays more than a $500M company
+      in a benign sector, regardless of current events. Host risk is the
+      "what are we insuring" foundation of the pricing model.
+    claim_relevance: >
+      Host characteristics determine the pool of potential plaintiffs (market cap
+      drives class size), available legal theories (regulated industries face
+      more enforcement), and baseline settlement expectations (larger companies
+      settle for more). Host does not trigger claims but determines the magnitude
+      of any claim that does occur.
+
+    subcategories:
+      - id: host.identity
+        name: "Company Identity"
+        description: >
+          Size, sector classification, public company tenure, and market
+          capitalization tier. These are the most fundamental risk attributes --
+          the company's position in the underwriting universe.
+        signal_prefixes:
+          - BIZ.CLASS
+          - BIZ.SIZE
+          - FIN.SECTOR
+          - SECT
+        d_and_o_rationale: >
+          Belongs in Host because these attributes define WHAT the company is,
+          not what it does. A company's sector, size, and public tenure are
+          structural facts that change slowly if at all. They cannot be Agent
+          (not actions) or Environment (not external forces).
+        claim_relevance: >
+          Market cap directly determines class action damages (larger cap =
+          larger investor class = higher settlement). Sector determines
+          regulatory exposure. Public tenure drives IPO/Section 11 risk
+          (newer = higher). Litigation history signals recidivism risk.
+
+      - id: host.structure
+        name: "Business Structure & Complexity"
+        description: >
+          Business model characteristics, operational complexity, subsidiary
+          structure, related party arrangements, and holding company design.
+          Complexity creates opacity, and opacity creates D&O risk.
+        signal_prefixes:
+          - BIZ.MODEL
+          - BIZ.OPS
+          - BIZ.STRUC
+          - BIZ.STRUCT
+        d_and_o_rationale: >
+          Belongs in Host because business structure is an inherent attribute,
+          not a discrete action. A company with 200 subsidiaries across 40
+          countries is structurally more opaque than a single-segment domestic
+          business. Structure is what the company IS, not what it does.
+        claim_relevance: >
+          Complex structures enable hidden losses, undisclosed related-party
+          transactions, and VIE/SPE off-balance-sheet risk. Revenue
+          concentration creates earnings surprise risk. Geographic spread
+          creates multi-jurisdictional regulatory exposure.
+
+      - id: host.financials
+        name: "Financial Position"
+        description: >
+          Balance sheet position, liquidity metrics, debt structure, credit
+          profile, and profitability baseline. Current-state financial health
+          as a structural attribute, not financial deterioration trends
+          (which are Agent signals).
+        signal_prefixes:
+          - FIN.LIQ
+          - FIN.DEBT
+          - FIN.PROFIT
+        d_and_o_rationale: >
+          Belongs in Host because current financial position is a structural
+          attribute -- a company's leverage ratio, cash position, and margin
+          profile define its risk surface area. Distinguished from Agent
+          financial signals which capture management CONDUCT (manipulation,
+          deterioration patterns).
+        claim_relevance: >
+          Financial position determines zone-of-insolvency risk (fiduciary
+          duty shifts to creditors), ability to absorb losses, and whether
+          financial distress itself becomes a claim trigger. Debt covenants
+          create event triggers. Credit downgrades amplify stock drops.
+
+      - id: host.governance_structure
+        name: "Governance Architecture"
+        description: >
+          Board composition, shareholder rights provisions, executive
+          profiles, and structural governance features. The DESIGN of
+          governance, not the OUTCOMES of governance decisions.
+        signal_prefixes:
+          - GOV.BOARD  # Most, except departures/refresh_activity which are Agent
+          - GOV.RIGHTS
+          - EXEC.PROFILE
+          - EXEC.AGGREGATE
+          - EXEC.PRIOR_LIT
+        d_and_o_rationale: >
+          Belongs in Host because governance structure is an architectural
+          attribute of the company. Board size, independence ratio, and
+          shareholder rights define the governance framework. Distinguished
+          from Agent governance signals which capture what actors DO within
+          that framework (insider trading, departures, compensation decisions).
+        claim_relevance: >
+          Weak governance structure creates exposure to derivative suits
+          (Caremark duty of oversight), proxy contests, and say-on-pay
+          failures. Classified boards and supermajority provisions affect
+          plaintiff strategy. Prior litigation history of directors/officers
+          signals recidivism risk.
+
+      - id: host.dependencies
+        name: "Business Dependencies"
+        description: >
+          Customer/supplier concentration, key person dependencies,
+          regulatory dependencies, and competitive landscape positioning.
+          Structural vulnerabilities that amplify event-driven losses.
+        signal_prefixes:
+          - BIZ.DEPEND
+          - BIZ.COMP  # Except peer_litigation which is Environment
+        d_and_o_rationale: >
+          Belongs in Host because dependencies are structural attributes of
+          the business model. Customer concentration does not change quarter
+          to quarter -- it is a design characteristic. Competitive position
+          is the result of long-term strategy, not a single action.
+        claim_relevance: >
+          Customer concentration creates catastrophic earnings surprise risk
+          when a major customer leaves. Key person dependency creates
+          succession crisis claims. Regulatory dependency means regulatory
+          changes become existential events rather than routine adjustments.
+
+      - id: host.environment_exposure
+        name: "Structural Environment Exposure"
+        description: >
+          Inherent sensitivity to macro conditions, sector risk overlay,
+          and regulatory intensity as structural attributes of the company's
+          position. These are exposure CHARACTERISTICS, not current
+          environmental CONDITIONS (which are Environment signals).
+        signal_prefixes:
+          - ENVR
+        d_and_o_rationale: >
+          Belongs in Host because these describe the company's inherent
+          sensitivity to external factors, not the external factors themselves.
+          A pharmaceutical company has structural regulatory intensity whether
+          or not the FDA is currently taking enforcement action. A global
+          manufacturer has structural geopolitical exposure whether or not
+          trade tensions are currently elevated.
+        claim_relevance: >
+          Regulatory intensity determines enforcement action frequency.
+          Macro sensitivity determines earnings volatility in downturns.
+          Cyber risk exposure determines breach claim probability. ESG gap
+          creates greenwashing litigation exposure.
+
+      - id: host.data_foundation
+        name: "Analysis Data Foundation"
+        description: >
+          Data acquisition signals that describe what filings, data sources,
+          and analytical inputs are available for the analysis. These are
+          metadata about the analysis itself, not risk evaluations.
+        signal_prefixes:
+          - BASE
+        d_and_o_rationale: >
+          Belongs in Host because data availability is a structural attribute
+          of the analysis -- it describes WHAT we have to work with, not
+          actions taken or external conditions. A company with all filings
+          available has a different analysis foundation than one with gaps.
+        claim_relevance: >
+          Data completeness affects underwriting confidence. Missing filings
+          may themselves indicate risk (late filing, NT filing). Forensic
+          data availability determines whether manipulation signals can be
+          computed. Limited data foundation should increase uncertainty
+          loading in pricing.
+
+  - id: agent
+    name: "Agent"
+    headline: "What HAPPENED or is happening"
+    description: >
+      Actions, events, behaviors, and decisions by directors, officers, or
+      the company that change risk during the policy period. These are dynamic
+      signals that indicate specific claim-triggering conduct or events.
+      Agent signals are the most directly connected to actual D&O claims --
+      a securities class action requires CONDUCT (misrepresentation, omission,
+      insider trading) not just structural exposure. Agent factors change on
+      timescales of days to quarters.
+    d_and_o_rationale: >
+      In D&O underwriting, agent factors are the primary claim TRIGGERS.
+      A restatement, insider selling cluster, or SEC investigation are
+      Agent signals that directly predict near-term claim filing. Agent
+      factors drive the "what's happening NOW" component of risk assessment
+      and determine whether to write, decline, or restrict coverage.
+    claim_relevance: >
+      Agent signals map directly to elements of D&O legal theories.
+      Scienter (knowledge/intent) is proven through insider trading timing,
+      guidance misses, and accounting manipulation. Breach of duty is
+      proven through governance failures, related-party transactions, and
+      inadequate oversight. Most claim theories require Agent conduct --
+      Host exposure alone rarely triggers litigation.
+
+    subcategories:
+      - id: agent.financial_conduct
+        name: "Financial Conduct"
+        description: >
+          Accounting manipulation indicators, restatement events, earnings
+          management patterns, and forensic anomalies that suggest management
+          is actively misrepresenting financial performance. The most potent
+          D&O claim trigger category.
+        signal_prefixes:
+          - FIN.ACCT
+          - FIN.FORENSIC
+          - FIN.QUALITY
+          - FIN.TEMPORAL
+        d_and_o_rationale: >
+          Belongs in Agent because these signals detect management CONDUCT --
+          active manipulation, quality deterioration due to management
+          decisions, and temporal patterns that suggest intentional
+          misrepresentation. Financial forensics specifically target
+          behavioral anomalies, not structural attributes.
+        claim_relevance: >
+          Restatements trigger near-automatic SCA filing (65% filing rate).
+          Forensic anomalies (Beneish M-Score, Dechow F-Score) predict
+          future restatements 12-24 months ahead. Earnings quality issues
+          build the scienter case that plaintiffs need for 10b-5 claims.
+          Financial deterioration trends suggest management concealment.
+
+      - id: agent.disclosure_conduct
+        name: "Disclosure Conduct"
+        description: >
+          Management's disclosure practices, guidance track record, filing
+          language changes, and year-over-year disclosure mutations. How
+          management CHOOSES to communicate with investors and regulators.
+        signal_prefixes:
+          - FIN.GUIDE
+          - FWRD.DISC
+          - NLP
+          - DISC.YOY
+        d_and_o_rationale: >
+          Belongs in Agent because disclosure is a deliberate management
+          ACTION. Changing risk factor language, shifting MD&A tone, hedging
+          forward-looking statements -- these are behavioral choices that
+          reveal management's assessment of and response to risk. NLP
+          analysis detects these behavioral shifts computationally.
+        claim_relevance: >
+          Guidance misses are primary scienter evidence in 10b-5 claims.
+          Filing language changes (new risk factors, tone shifts, hedging
+          increases) can establish that management KNEW about problems before
+          disclosure. Year-over-year disclosure changes are heavily analyzed
+          by plaintiff firms. PSLRA safe harbor effectiveness depends on
+          disclosure quality.
+
+      - id: agent.executive_conduct
+        name: "Executive Conduct"
+        description: >
+          Insider trading patterns, executive departures as events, cluster
+          selling timing, and behavioral patterns of individual officers that
+          suggest awareness of undisclosed material information.
+        signal_prefixes:
+          - GOV.INSIDER
+          - EXEC.INSIDER
+          - EXEC.DEPARTURE
+          - STOCK.INSIDER
+        d_and_o_rationale: >
+          Belongs in Agent because insider trading is CONDUCT by specific
+          individuals, and executive departures are EVENTS. The timing of
+          trades relative to material events, cluster selling patterns, and
+          departure contexts reveal behavioral signals that structural
+          analysis cannot capture.
+        claim_relevance: >
+          Insider trading is the strongest scienter indicator in SCA claims.
+          Cluster selling before negative announcements is the single most
+          cited evidence in securities fraud complaints. CFO departures
+          before restatements are near-certain litigation triggers. Trading
+          outside 10b5-1 plans eliminates the planned-trading defense.
+
+      - id: agent.corporate_events
+        name: "Corporate Events"
+        description: >
+          M&A transactions, IPO activity, capital structure changes,
+          restatement events, and forward-looking event triggers that
+          represent discrete management decisions or corporate actions.
+        signal_prefixes:
+          - BIZ.EVENT
+          - FWRD.EVENT
+        d_and_o_rationale: >
+          Belongs in Agent because corporate events are DECISIONS made by
+          management and the board. An M&A transaction, IPO timing, capital
+          raise, or covenant test are actions that create specific claim
+          windows. These are not structural attributes (Host) or external
+          forces (Environment).
+        claim_relevance: >
+          M&A triggers merger objection suits (85% filing rate for public
+          M&A). IPO creates Section 11 strict liability window. Lockup
+          expiry creates insider selling pressure. Covenant tests create
+          going-concern and zone-of-insolvency triggers. Proxy deadlines
+          activate activist strategies.
+
+      - id: agent.compensation_decisions
+        name: "Compensation Decisions"
+        description: >
+          Pay structure design, clawback provisions, say-on-pay outcomes,
+          perquisites, related party transactions, and compensation-related
+          governance decisions that reflect board judgment and values.
+        signal_prefixes:
+          - GOV.PAY
+        d_and_o_rationale: >
+          Belongs in Agent because compensation design is a DECISION by the
+          compensation committee and board. Pay quantum, incentive metrics,
+          clawback terms, and related-party transactions are choices that
+          reveal governance quality through action, not structure.
+        claim_relevance: >
+          Say-on-pay failures trigger derivative suits. Excessive perks and
+          related-party transactions support corporate waste claims.
+          Incentive structures that reward short-term stock price create
+          misrepresentation incentives. Weak clawback provisions reduce
+          deterrence. Golden parachute provisions become contentious in M&A.
+
+      - id: agent.litigation_actions
+        name: "Litigation & Enforcement Actions"
+        description: >
+          Active securities class actions, derivative suits, SEC enforcement,
+          regulatory actions, and other litigation events. These are claims
+          that have already been filed or investigations already commenced --
+          they represent the OUTCOME of prior conduct.
+        signal_prefixes:
+          - LIT.SCA
+          - LIT.REG
+          - LIT.OTHER
+          - STOCK.LIT
+        d_and_o_rationale: >
+          Belongs in Agent because litigation events are the direct
+          consequence of prior Agent conduct. An active SCA, SEC
+          investigation, or whistleblower claim represents crystallized
+          risk from management actions. While the claim itself is an
+          external event, it is triggered by and attributed to Agent conduct.
+        claim_relevance: >
+          Active litigation directly impacts pricing (known losses), coverage
+          terms (prior acts exclusions), and policy period risk (follow-on
+          claims, parallel investigations). Multiple concurrent claims
+          suggest systemic governance failure. SEC investigations often
+          trigger parallel private litigation.
+
+      - id: agent.governance_events
+        name: "Governance Events"
+        description: >
+          Board departures, refresh activity, executive turnover as an event,
+          governance effectiveness findings (material weakness, late filing),
+          and auditor changes. These are events or findings within the
+          governance framework, not the framework structure itself.
+        signal_prefixes:
+          - GOV.EFFECT  # Findings like material_weakness, late_filing, auditor_change
+          - GOV.EXEC    # Turnover, departure context, character conduct
+        d_and_o_rationale: >
+          Belongs in Agent because these represent things that HAPPENED
+          within the governance structure. A material weakness finding is
+          an event. An auditor change is a decision. Executive departure
+          context reveals behavioral dynamics. Distinguished from Host
+          governance structure signals which describe the architecture.
+        claim_relevance: >
+          Material weakness findings create Caremark claim exposure. Late
+          filings signal internal control breakdown. Auditor changes
+          (especially during audit) are strong restatement predictors.
+          Executive departures with specific contexts (e.g., "to pursue
+          other opportunities" after short tenure) signal undisclosed
+          problems.
+
+  - id: environment
+    name: "Environment"
+    headline: "What's AROUND the company"
+    description: >
+      External market conditions, third-party actions, and contextual factors
+      that the company does not control but that amplify or mitigate D&O claim
+      risk. Environment signals represent the CONDITIONS in which Host exposure
+      and Agent conduct are evaluated. A stock drop in a broad market selloff
+      is different from an idiosyncratic collapse. Environment factors change
+      on timescales of hours to months.
+    d_and_o_rationale: >
+      In D&O underwriting, environment factors determine whether structural
+      exposure and management conduct will actually crystallize into claims.
+      The same Agent misconduct produces different outcomes in bull vs bear
+      markets, activist vs passive shareholder bases, and favorable vs hostile
+      legal environments. Environment is the "what conditions prevail" multiplier.
+    claim_relevance: >
+      Environment determines loss development -- a stock drop during a market
+      crash produces smaller per-share damages than an idiosyncratic drop.
+      Short seller activity provides plaintiff firms with pre-built fraud
+      narratives. Analyst downgrades establish market expectations against
+      which misrepresentation is measured. Peer litigation patterns signal
+      sector-wide claim waves.
+
+    subcategories:
+      - id: environment.market_signals
+        name: "Market Signals"
+        description: >
+          Stock price behavior, volatility metrics, analyst coverage and
+          sentiment, and valuation ratios. Market-derived signals that
+          reflect collective external assessment of the company.
+        signal_prefixes:
+          - STOCK.PRICE
+          - STOCK.VALUATION
+          - STOCK.ANALYST
+          - STOCK.TRADE
+        d_and_o_rationale: >
+          Belongs in Environment because stock price and market metrics
+          are determined by external actors (investors, analysts, market
+          makers), not by management. Management cannot control stock
+          price directly. Market signals reflect the aggregate judgment
+          of external participants.
+        claim_relevance: >
+          Stock price decline is the primary damages driver in SCA claims
+          (per NERA LEAD model). Volatility correlates with class size and
+          settlement quantum. Analyst downgrades establish the "truth" that
+          management allegedly concealed. Trading volume patterns indicate
+          informed trading by external actors.
+
+      - id: environment.market_patterns
+        name: "Market Patterns"
+        description: >
+          Complex market microstructure patterns including short attacks,
+          death spirals, informed trading detection, and event collapse
+          patterns. These represent coordinated or emergent external
+          market behaviors.
+        signal_prefixes:
+          - STOCK.PATTERN
+          - STOCK.SHORT
+        d_and_o_rationale: >
+          Belongs in Environment because these patterns arise from external
+          actor behavior -- short sellers, momentum traders, and market
+          microstructure dynamics. A short attack is an external actor's
+          decision to publish fraud allegations. A death spiral is a market
+          feedback loop, not a management action.
+        claim_relevance: >
+          Short seller reports trigger 35% SCA filing rate and provide
+          plaintiff firms with pre-built fraud narratives. Death spiral
+          patterns indicate catastrophic loss potential. Informed trading
+          detection suggests information asymmetry that plaintiffs can
+          exploit. Event collapse patterns establish corrective disclosure
+          timeline for damages calculation.
+
+      - id: environment.ownership
+        name: "Ownership Environment"
+        description: >
+          Institutional ownership composition, activist investor campaigns,
+          ownership concentration, and shareholder base characteristics.
+          The external actors who own the company and may bring claims.
+        signal_prefixes:
+          - STOCK.OWN
+          - GOV.ACTIVIST
+        d_and_o_rationale: >
+          Belongs in Environment because ownership composition is determined
+          by external investors, not management. Activist campaigns are
+          initiated by external actors. Institutional concentration affects
+          class certification likelihood. Activist pressure creates external
+          event triggers that management must respond to.
+        claim_relevance: >
+          Institutional ownership concentration affects class certification
+          (large institutional holders may opt out, reducing class). Activist
+          campaigns create proxy contest risk, derivative suit risk, and
+          strategic alternative demands. 13D filings signal potential for
+          control contests. Activist short sellers combine ownership with
+          public fraud allegations.
+
+      - id: environment.peer_context
+        name: "Peer & Industry Context"
+        description: >
+          Peer benchmarking comparisons, industry litigation patterns,
+          peer contagion effects, and sector-level risk indicators.
+          Context provided by what similar companies are experiencing.
+        signal_prefixes:
+          - FIN.PEER
+          - LIT.PATTERN
+          - LIT.SECTOR
+          - BIZ.COMP.peer_litigation
+        d_and_o_rationale: >
+          Belongs in Environment because peer and industry conditions are
+          external context that the company cannot control. A wave of SCA
+          filings across a sector creates contagion risk. Peer financial
+          comparisons establish market expectations. Industry litigation
+          theories spread across companies via plaintiff firms.
+        claim_relevance: >
+          Peer contagion is a documented phenomenon -- when one company in
+          a sector is sued, competitors face elevated filing risk for 6-12
+          months. Industry litigation theories (e.g., PFAS, opioid) spread
+          across multiple defendants. Peer financial comparisons establish
+          whether a company's performance is idiosyncratically poor or
+          sector-wide, affecting scienter analysis.
+
+      - id: environment.external_warnings
+        name: "External Warning Signals"
+        description: >
+          Third-party sentiment, news coverage, blind spot signals,
+          whistleblower indicators, and external early warning signals
+          from non-market sources. Forward-looking external intelligence.
+        signal_prefixes:
+          - FWRD.WARN
+          - FWRD.NARRATIVE
+          - FWRD.MACRO  # Emerging conditions, not structural exposure
+        d_and_o_rationale: >
+          Belongs in Environment because these signals come from external
+          sources -- journalists, analysts, former employees, regulators,
+          and macro conditions. The company does not control news coverage,
+          Glassdoor sentiment, or macro economic conditions. These are
+          environmental factors that create the context for claim emergence.
+        claim_relevance: >
+          External warnings are leading indicators of future claims.
+          Glassdoor sentiment decline predicts workforce-related litigation
+          6-12 months ahead. Journalist investigation predicts regulatory
+          action. Macro conditions (interest rates, trade policy) create
+          sector-wide stress that amplifies individual company vulnerabilities.
+          Narrative analysis reveals disconnects between management story
+          and external perception.
+
+      - id: environment.defense_posture
+        name: "Legal Defense Environment"
+        description: >
+          Available legal defenses, safe harbor provisions, and forum
+          selection protections. The legal environment that determines
+          defense effectiveness against claims.
+        signal_prefixes:
+          - LIT.DEFENSE
+        d_and_o_rationale: >
+          Belongs in Environment because defense posture reflects the
+          legal framework and jurisdictional context, which are external
+          to the company's conduct. Forum selection provisions leverage
+          external legal environments. PSLRA safe harbor is a statutory
+          protection. Contingent liability disclosures reflect external
+          litigation posture.
+        claim_relevance: >
+          Forum selection in Delaware Federal District Court dramatically
+          reduces SCA survival rates. PSLRA safe harbor protects
+          forward-looking statements with meaningful cautionary language.
+          Contingent liability reserves indicate management assessment of
+          external claim exposure. Defense quality directly affects
+          settlement quantum and litigation duration.
+
+# ---------------------------------------------------------------
+# Classification Rules for Edge Cases
+# ---------------------------------------------------------------
+classification_rules:
+  - rule: "GOV.BOARD signals split by nature"
+    description: >
+      Most GOV.BOARD.* signals are Host (governance_structure) because they
+      describe the board's composition and design. However, GOV.BOARD.departures
+      and GOV.BOARD.refresh_activity are Agent (governance_events) because they
+      represent events/actions that change the board.
+    host_signals:
+      - GOV.BOARD.independence
+      - GOV.BOARD.ceo_chair
+      - GOV.BOARD.size
+      - GOV.BOARD.tenure
+      - GOV.BOARD.diversity
+      - GOV.BOARD.expertise
+      - GOV.BOARD.qualifications
+      - GOV.BOARD.overboarding
+      - GOV.BOARD.meetings
+      - GOV.BOARD.attendance
+      - GOV.BOARD.committees
+      - GOV.BOARD.prior_litigation
+      - GOV.BOARD.succession
+    agent_signals:
+      - GOV.BOARD.departures
+      - GOV.BOARD.refresh_activity
+      - GOV.BOARD.character_conduct
+
+  - rule: "GOV.EXEC signals split by structural vs behavioral"
+    description: >
+      GOV.EXEC.ceo_profile, cfo_profile, other_officers, founder, key_person,
+      and stability are Host (governance_structure) -- they describe WHO is
+      in place. GOV.EXEC.turnover_analysis, turnover_pattern, departure_context,
+      succession_status, character_conduct, and officer_litigation are Agent
+      (governance_events) -- they describe WHAT happened with those people.
+    host_signals:
+      - GOV.EXEC.ceo_profile
+      - GOV.EXEC.cfo_profile
+      - GOV.EXEC.other_officers
+      - GOV.EXEC.founder
+      - GOV.EXEC.key_person
+      - GOV.EXEC.stability
+    agent_signals:
+      - GOV.EXEC.turnover_analysis
+      - GOV.EXEC.turnover_pattern
+      - GOV.EXEC.departure_context
+      - GOV.EXEC.succession_status
+      - GOV.EXEC.character_conduct
+      - GOV.EXEC.officer_litigation
+
+  - rule: "GOV.EFFECT signals split by structural controls vs findings"
+    description: >
+      GOV.EFFECT.sox_404, audit_committee, audit_opinion, iss_score, and
+      proxy_advisory are Host (governance_structure) because they describe
+      structural control effectiveness. GOV.EFFECT.material_weakness,
+      late_filing, nt_filing, sig_deficiency, and auditor_change are Agent
+      (governance_events) because they represent findings or events.
+    host_signals:
+      - GOV.EFFECT.sox_404
+      - GOV.EFFECT.audit_committee
+      - GOV.EFFECT.audit_opinion
+      - GOV.EFFECT.iss_score
+      - GOV.EFFECT.proxy_advisory
+    agent_signals:
+      - GOV.EFFECT.material_weakness
+      - GOV.EFFECT.late_filing
+      - GOV.EFFECT.nt_filing
+      - GOV.EFFECT.sig_deficiency
+      - GOV.EFFECT.auditor_change
+
+  - rule: "EXEC.TENURE signals split by state vs event"
+    description: >
+      EXEC.TENURE.ceo_new and cfo_new are Host signals -- they describe the
+      current state (is the CEO/CFO new?). EXEC.TENURE.c_suite_turnover is
+      Agent because it measures the rate of executive changes, which is a
+      behavioral pattern.
+    host_signals:
+      - EXEC.TENURE.ceo_new
+      - EXEC.TENURE.cfo_new
+    agent_signals:
+      - EXEC.TENURE.c_suite_turnover
+
+  - rule: "EXEC.CEO/CFO risk_score classified as Agent"
+    description: >
+      Despite being composite scores, EXEC.CEO.risk_score and
+      EXEC.CFO.risk_score are classified as Agent because their computation
+      is heavily weighted by behavioral signals (insider trading patterns,
+      departure timing, prior litigation involvement) rather than structural
+      attributes.
+    agent_signals:
+      - EXEC.CEO.risk_score
+      - EXEC.CFO.risk_score
+
+  - rule: "BIZ.UNI signals split by nature"
+    description: >
+      BIZ.UNI.ai_claims is Agent (corporate_events) because it measures
+      active AI-related risk claims. BIZ.UNI.cyber_posture and
+      BIZ.UNI.cyber_business are Host (structure) because they describe
+      structural cyber risk exposure.
+    host_signals:
+      - BIZ.UNI.cyber_posture
+      - BIZ.UNI.cyber_business
+    agent_signals:
+      - BIZ.UNI.ai_claims
+
+  - rule: "BIZ.COMP.peer_litigation is Environment, not Host"
+    description: >
+      While most BIZ.COMP.* signals describe the company's competitive
+      position (Host), peer_litigation describes external litigation
+      patterns affecting similar companies (Environment peer_context).
+    environment_signals:
+      - BIZ.COMP.peer_litigation
+
+  - rule: "FWRD.MACRO signals split by structural vs emerging"
+    description: >
+      FWRD.MACRO signals that describe structural exposures inherent to
+      the business model (fx_exposure, commodity_impact) could be Host,
+      but they are classified as Environment because they describe EXTERNAL
+      macro conditions and their impact. The company's sensitivity to these
+      is captured in ENVR.* (Host). FWRD.MACRO captures the current state
+      of the external macro environment.
+    environment_signals: "All FWRD.MACRO.*"
+
+# ---------------------------------------------------------------
+# Dual-Aspect Signals
+# ---------------------------------------------------------------
+dual_aspect_signals:
+  - signal_pattern: "GOV.INSIDER.*"
+    host_aspect: "Insider ownership structure is a governance attribute"
+    agent_aspect: "Trading TIMING and PATTERNS are behavioral conduct"
+    resolution: >
+      Classified as Agent because the primary D&O relevance is the
+      behavioral pattern (timing, clustering, deviation from plans),
+      not the structural ownership percentage. GOV.INSIDER.ownership_pct
+      and ownership_concentration have a Host dimension but are classified
+      as Agent because in the insider trading context, ownership level
+      affects the significance of selling decisions.
+
+  - signal_pattern: "EXEC.AGGREGATE.*"
+    host_aspect: "Aggregate risk assessment of the executive team is structural"
+    agent_aspect: "Risk scores incorporate behavioral signals"
+    resolution: >
+      Classified as Host because these are composite structural
+      assessments of the executive team, not individual behavioral
+      signals. EXEC.AGGREGATE.board_risk and highest_risk_individual
+      summarize the governance architecture's risk profile.
+
+  - signal_pattern: "FIN.TEMPORAL.*"
+    host_aspect: "Financial trends describe evolving structural position"
+    agent_aspect: "Deterioration patterns suggest management failure or concealment"
+    resolution: >
+      Classified as Agent because temporal patterns represent the
+      RESULT of management decisions and conduct. Cash flow deterioration,
+      margin compression, and working capital deterioration are not
+      inevitable structural changes -- they result from management actions
+      or inaction that a reasonable director should prevent or disclose.
+
+  - signal_pattern: "STOCK.PRICE.*"
+    host_aspect: "Stock price level is part of company identity (market cap)"
+    agent_aspect: "Price drops may result from company conduct"
+    resolution: >
+      Classified as Environment because stock price is determined by
+      external market participants. While company conduct AFFECTS stock
+      price, the price itself is an external signal. The company's
+      market cap as an identity attribute is captured separately in
+      BIZ.SIZE.market_cap (Host).

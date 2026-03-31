@@ -1,0 +1,1056 @@
+# Domain: biz/model.yaml  |  Count: 13
+# 8 original signals + 5 new (v6.0 BMOD) signals
+- id: BIZ.MODEL.description
+  name: Business Description
+  work_type: extract
+  layer: hazard
+  peril_ids: []
+  chain_roles:
+    cyber_to_sca: evidence
+    ai_claims: evidence
+    product_to_do: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+  threshold:
+    type: info
+  tier: 2
+  depth: 1
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.2'
+  data_strategy:
+    field_key: business_description
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: business_description
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: business_description
+  signal_class: evaluative
+  field_path: business_description
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: business model characteristics as predictors of claim type and frequency'
+    threshold_basis: Business model risk classification based on D&O claims experience and underwriting practice
+  rap_class: host
+  rap_subcategory: host.structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} business description at {value} represents host risk (company-level characteristics that attract
+        or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} business description at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} business description at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'
+- id: BIZ.MODEL.revenue_type
+  name: Revenue Model Type
+  work_type: extract
+  layer: hazard
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - revenue_recognition_note
+  threshold:
+    type: classification
+    values:
+    - RECURRING
+    - PROJECT
+    - TRANSACTION
+    - HYBRID
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.2'
+  factors:
+  - F1
+  claims_correlation: 0.6
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - company.revenue_model_type
+  evaluation:
+    formula: revenue_model_type
+    thresholds:
+    - op: ==
+      value: TRANSACTION
+      label: YELLOW
+    - op: ==
+      value: PROJECT
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    context_templates:
+      TRIGGERED: Revenue model type ({value}) carries elevated revenue recognition litigation risk
+      CLEAR: Revenue model type ({value}) has standard recognition patterns
+    detail_levels:
+    - level: glance
+      template: 'Revenue model: {value}'
+    - level: standard
+      template: Revenue model type ({value}) — {context}
+    do_context:
+      TRIGGERED_RED: '{company} Revenue Model Type at {value} signals elevated Litigation History / Settlement Patterns risk
+        (F1). Revenue model type determines the applicable accounting standards and recognition timing risks. Certain models (long-term contracts, subscription, percentage-of-completion) carry inherently higher restatement risk. Transaction and project revenue models have higher revenue recognition
+        risk and D&O claim correlation.'
+      TRIGGERED_YELLOW: '{company} Revenue Model Type at {value} is in the caution zone for Litigation History / Settlement
+        Patterns (F1). Monitor for deterioration — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Revenue Model Type at {value} is within acceptable range for Litigation History / Settlement Patterns
+        (F1) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  data_strategy:
+    field_key: revenue_model_type
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: always
+  provenance:
+    origin: v6_bmod
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Transaction and project revenue models have higher revenue recognition risk and D&O claim correlation
+    render_target: revenue_model_type
+    formula: ''
+  display:
+    value_format: category
+    source_type: SEC_10K
+    threshold_context: Revenue recognition risk varies by model type
+  group: business_model
+  signal_class: evaluative
+  field_path: revenue_model_type
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: business model characteristics as predictors of claim type and frequency'
+    threshold_basis: Transaction and project revenue models have higher revenue recognition risk and D&O claim 
+      correlation
+  rap_class: host
+  rap_subcategory: host.structure
+- id: BIZ.MODEL.revenue_segment
+  name: Revenue Mix by Segment
+  work_type: extract
+  layer: hazard
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - segment_information
+  threshold:
+    type: percentage
+    yellow: Single segment >80%
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.2'
+  extraction_hints:
+    field_patterns:
+    - revenue_segments
+    - segment_data
+    - operating_segments
+    expected_type: dict
+    no_data_sentinel: 10-K segments section not extractable or single-segment filer
+    validation_rule: at least one segment with revenue amount
+  data_strategy:
+    field_key: xbrl_revenue_segments
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: revenue_segments
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: revenue_segments
+  signal_class: evaluative
+  field_path: xbrl_revenue_segments
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: business model characteristics as predictors of claim type and frequency'
+    threshold_basis: Business model risk classification based on D&O claims experience and underwriting practice
+  rap_class: host
+  rap_subcategory: host.structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Revenue Mix by Segment at {value} signals elevated D&O risk assessment risk. Revenue segment mix determines which parts of the business carry the highest disclosure risk. Segment-level performance misses trigger SCA filings when plaintiffs allege management concealed deterioration in specific segments. Business model risk classification based on D&O claims experience and underwriting practice.'
+      TRIGGERED_YELLOW: '{company} Revenue Mix by Segment at {value} (threshold: Single segment >80%) is in the caution zone
+        for D&O risk assessment. Monitor for deterioration — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Revenue Mix by Segment at {value} is within acceptable range for D&O risk assessment — this level
+        is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: BIZ.MODEL.revenue_geo
+  name: Revenue Mix by Geography
+  work_type: extract
+  layer: hazard
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - geographic_information
+  threshold:
+    type: percentage
+    yellow: Single country >70% (ex-US)
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.2'
+  - '1.3'
+  extraction_hints:
+    field_patterns:
+    - geographic_revenue
+    - revenue_by_region
+    - international_revenue
+    expected_type: dict
+    no_data_sentinel: Geographic revenue breakdown not disclosed in 10-K
+    validation_rule: regions sum to approximately total revenue
+  data_strategy:
+    field_key: xbrl_revenue_geo
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: geographic_footprint
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: geographic_footprint
+  signal_class: evaluative
+  field_path: xbrl_revenue_geo
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: business model characteristics as predictors of claim type and frequency'
+    threshold_basis: Business model risk classification based on D&O claims experience and underwriting practice
+  rap_class: host
+  rap_subcategory: host.structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Revenue Mix by Geography at {value} signals elevated D&O risk assessment risk. Geographic revenue mix creates jurisdiction-specific regulatory and litigation exposure. Concentrated international revenue increases FCPA risk and cross-border disclosure obligations. Business model risk classification based on D&O claims experience and underwriting practice.'
+      TRIGGERED_YELLOW: '{company} Revenue Mix by Geography at {value} (threshold: Single country >70% (ex-US)) is in the
+        caution zone for D&O risk assessment. Monitor for deterioration — trend direction and peer comparison inform the D&O
+        risk assessment.'
+      CLEAR: '{company} Revenue Mix by Geography at {value} is within acceptable range for D&O risk assessment — this level
+        is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: BIZ.MODEL.cost_structure
+  name: Cost Structure
+  work_type: extract
+  layer: hazard
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_7_mda
+    - financial_statements
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.2'
+  data_strategy:
+    field_key: cost_structure_analysis
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: business_description
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: business_description
+  signal_class: evaluative
+  field_path: cost_structure_analysis
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: business model characteristics as predictors of claim type and frequency'
+    threshold_basis: Business model risk classification based on D&O claims experience and underwriting practice
+  rap_class: host
+  rap_subcategory: host.structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} cost structure at {value} represents host risk (company-level characteristics that attract
+        or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} cost structure at {value} is a moderate indicator for D&O risk assessment, warranting review
+        of supporting evidence: {evidence}.'
+      CLEAR: '{company} cost structure at {value} is within normal parameters for D&O risk assessment — no D&O concern at
+        this level.'
+- id: BIZ.MODEL.leverage_ops
+  name: Operating Leverage Assessment
+  work_type: extract
+  layer: hazard
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - financial_statements
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.2'
+  data_strategy:
+    field_key: operating_leverage
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: business_description
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: business_description
+  signal_class: evaluative
+  field_path: operating_leverage
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: business model characteristics as predictors of claim type and frequency'
+    threshold_basis: Business model risk classification based on D&O claims experience and underwriting practice
+  rap_class: host
+  rap_subcategory: host.structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} operating leverage assessment at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} operating leverage assessment at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} operating leverage assessment at {value} is within normal parameters for D&O risk assessment — no
+        D&O concern at this level.'
+- id: BIZ.MODEL.regulatory_dep
+  name: Regulatory Dependency
+  work_type: extract
+  layer: hazard
+  peril_ids: []
+  chain_roles:
+    industry_reg_action: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.2'
+  data_strategy:
+    field_key: model_regulatory_dependency
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: business_description
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: business_description
+  signal_class: evaluative
+  field_path: model_regulatory_dependency
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: business model characteristics as predictors of claim type and frequency'
+    threshold_basis: Business model risk classification based on D&O claims experience and underwriting practice
+  rap_class: host
+  rap_subcategory: host.structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} regulatory dependency at {value} represents host risk (company-level characteristics that
+        attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} regulatory dependency at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} regulatory dependency at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'
+- id: BIZ.MODEL.capital_intensity
+  name: Capital Intensity
+  work_type: extract
+  layer: hazard
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - cash_flow_statement
+    - item_7_mda
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.2'
+  data_strategy:
+    field_key: capital_intensity_ratio
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: business_description
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: business_description
+  signal_class: evaluative
+  field_path: capital_intensity_ratio
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: business model characteristics as predictors of claim type and frequency'
+    threshold_basis: Business model risk classification based on D&O claims experience and underwriting practice
+  rap_class: host
+  rap_subcategory: host.structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} capital intensity at {value} represents host risk (company-level characteristics that attract
+        or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} capital intensity at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} capital intensity at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'
+- id: BIZ.MODEL.concentration_risk
+  name: Revenue Concentration Risk
+  work_type: evaluate
+  layer: hazard
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - segment_information
+    - item_1_business
+  threshold:
+    type: tiered
+    red: Single segment >50% OR single customer >10% OR single geography >40%
+    yellow: Single segment >40% OR single customer >5% OR single geography >30%
+    clear: Diversified across segments, customers, and geographies
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.2'
+  factors:
+  - F9
+  claims_correlation: 0.7
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - company.revenue_segments
+      - company.customer_concentration
+      - company.geographic_footprint
+  evaluation:
+    formula: concentration_risk_composite
+    thresholds:
+    - op: '>='
+      value: 3
+      label: RED
+    - op: '>='
+      value: 2
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    context_templates:
+      TRIGGERED: 'Revenue concentration risk: {evidence}'
+      CLEAR: Revenue well-diversified across segments, customers, and geographies
+    detail_levels:
+    - level: glance
+      template: 'Concentration score: {value}/3'
+    - level: standard
+      template: Concentration risk score {value}/3 — {context}
+    do_context:
+      TRIGGERED_RED: '{company} Revenue Concentration Risk at {value} (threshold: Single segment >50% OR single customer >10%
+        OR single geography >40%) signals elevated SEC Enforcement / Regulatory Compliance risk (F9). Revenue concentration creates binary risk -- loss of a major revenue source forces material adverse disclosure. Concentrated revenue models amplify the stock decline from any single customer or product setback. Revenue concentration is a leading indicator of stock drop claims when concentrated segment underperforms.'
+      TRIGGERED_YELLOW: '{company} Revenue Concentration Risk at {value} (threshold: Single segment >40% OR single customer
+        >5% OR single geography >30%) is in the caution zone for SEC Enforcement / Regulatory Compliance (F9). Monitor for
+        deterioration — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Revenue Concentration Risk at {value} is within acceptable range for SEC Enforcement / Regulatory
+        Compliance (F9) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  data_strategy:
+    field_key: concentration_risk_composite
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: always
+  provenance:
+    origin: v6_bmod
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Revenue concentration is a leading indicator of stock drop claims when concentrated segment 
+        underperforms
+    render_target: concentration_risk
+    formula: ''
+  display:
+    value_format: score
+    source_type: SEC_10K
+    threshold_context: Score 0-3 based on concentration dimensions
+  group: business_model
+  signal_class: evaluative
+  field_path: concentration_risk_composite
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: business model characteristics as predictors of claim type and frequency'
+    threshold_basis: Revenue concentration is a leading indicator of stock drop claims when concentrated segment 
+      underperforms
+  rap_class: host
+  rap_subcategory: host.structure
+- id: BIZ.MODEL.key_person
+  name: Key Person Dependency
+  work_type: evaluate
+  layer: hazard
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_DEF14A
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    SEC_DEF14A:
+    - executive_compensation
+  threshold:
+    type: tiered
+    red: Founder-led with no succession plan AND CEO tenure >15yr
+    yellow: Founder-led OR CEO tenure >10yr OR no succession plan
+    clear: Professional management with succession plan
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.2'
+  factors:
+  - F8
+  - F9
+  claims_correlation: 0.65
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - company.key_person_risk
+    - type: SEC_DEF14A
+      fields:
+      - governance.leadership
+  evaluation:
+    formula: key_person_risk_score
+    thresholds:
+    - op: '>='
+      value: 3
+      label: RED
+    - op: '>='
+      value: 2
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    context_templates:
+      TRIGGERED: 'Key person dependency: {evidence}'
+      CLEAR: Professional management with succession planning in place
+    detail_levels:
+    - level: glance
+      template: 'Key person risk: {value}/3'
+    - level: standard
+      template: Key person risk score {value}/3 — {context}
+    do_context:
+      TRIGGERED_RED: '{company} Key Person Dependency at {value} (threshold: Founder-led with no succession plan AND CEO tenure
+        >15yr) signals elevated Market Position / Business Risk risk (F8, F9). Key person dependency creates single-point-of-failure risk at the business model level. Unexpected departures force material disclosure and create SCA exposure alleging the company failed to disclose the concentration risk.'
+      TRIGGERED_YELLOW: '{company} Key Person Dependency at {value} (threshold: Founder-led OR CEO tenure >10yr OR no succession
+        plan) is in the caution zone for Market Position / Business Risk (F8, F9). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Key Person Dependency at {value} is within acceptable range for Market Position / Business Risk (F8,
+        F9) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  data_strategy:
+    field_key: key_person_risk_score
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: always
+  provenance:
+    origin: v6_bmod
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Founder-led companies with long CEO tenure and no succession plan face elevated D&O exposure from key 
+        person departure risk
+    render_target: key_person_risk
+    formula: ''
+  display:
+    value_format: score
+    source_type: SEC_10K
+    threshold_context: Score 0-3 (founder-led=1, tenure>10yr=1, no succession=1)
+  group: business_model
+  signal_class: evaluative
+  field_path: key_person_risk_score
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: business model characteristics as predictors of claim type and frequency'
+    threshold_basis: Founder-led companies with long CEO tenure and no succession plan face elevated D&O exposure from 
+      key person departure risk
+  rap_class: host
+  rap_subcategory: host.structure
+- id: BIZ.MODEL.lifecycle
+  name: Segment Lifecycle Risk
+  work_type: extract
+  layer: hazard
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - segment_information
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: '>50% revenue from declining segments'
+    yellow: '>30% revenue from declining segments'
+    clear: Majority growth/mature segments
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.2'
+  factors:
+  - F1
+  claims_correlation: 0.5
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - company.segment_lifecycle
+  evaluation:
+    formula: segment_lifecycle_risk
+    thresholds:
+    - op: '>='
+      value: 50
+      label: RED
+    - op: '>='
+      value: 30
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    context_templates:
+      TRIGGERED: 'Lifecycle risk: {value}% revenue from declining segments'
+      CLEAR: 'Healthy segment mix: majority growth/mature'
+    detail_levels:
+    - level: glance
+      template: 'Declining revenue: {value}%'
+    - level: standard
+      template: '{value}% revenue from declining segments — {context}'
+    do_context:
+      TRIGGERED_RED: '{company} Segment Lifecycle Risk at {value} (threshold: >50% revenue from declining segments) signals
+        elevated Litigation History / Settlement Patterns risk (F1). Mature or declining business segments face impairment testing risk. When segment performance deteriorates below carrying value, write-downs trigger the disclosure events that initiate SCA filings. Companies with significant
+        declining segment revenue face elevated stock drop risk when decline accelerates.'
+      TRIGGERED_YELLOW: '{company} Segment Lifecycle Risk at {value} (threshold: >30% revenue from declining segments) is
+        in the caution zone for Litigation History / Settlement Patterns (F1). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Segment Lifecycle Risk at {value} is within acceptable range for Litigation History / Settlement Patterns
+        (F1) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  data_strategy:
+    field_key: segment_lifecycle_risk
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: always
+  provenance:
+    origin: v6_bmod
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Companies with significant declining segment revenue face elevated stock drop risk when decline 
+        accelerates
+    render_target: segment_lifecycle
+    formula: ''
+  display:
+    value_format: pct_0dp
+    source_type: SEC_10K
+    threshold_context: Percentage of revenue from declining segments
+  group: business_model
+  signal_class: evaluative
+  field_path: segment_lifecycle_risk
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: business model characteristics as predictors of claim type and frequency'
+    threshold_basis: Companies with significant declining segment revenue face elevated stock drop risk when decline 
+      accelerates
+  rap_class: host
+  rap_subcategory: host.structure
+- id: BIZ.MODEL.disruption
+  name: Business Model Disruption Risk
+  work_type: evaluate
+  layer: hazard
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+  threshold:
+    type: tiered
+    red: HIGH disruption risk (multiple active threats)
+    yellow: MODERATE disruption risk (emerging threats)
+    clear: LOW disruption risk (strong competitive position)
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.2'
+  factors:
+  - F1
+  - F9
+  claims_correlation: 0.55
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - company.disruption_risk
+    - type: WEB_SEARCH
+      fields:
+      - blind_spot.competitive_threats
+  evaluation:
+    formula: disruption_risk_level
+    thresholds:
+    - op: ==
+      value: HIGH
+      label: RED
+    - op: ==
+      value: MODERATE
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    context_templates:
+      TRIGGERED: 'Business model disruption: {evidence}'
+      CLEAR: Strong competitive position, low disruption exposure
+    detail_levels:
+    - level: glance
+      template: 'Disruption risk: {value}'
+    - level: standard
+      template: Disruption risk level {value} — {context}
+    do_context:
+      TRIGGERED_RED: '{company} Business Model Disruption Risk at {value} (threshold: HIGH disruption risk (multiple active
+        threats)) signals elevated Litigation History / Settlement Patterns risk (F1, F9). Business model disruption risk creates forward-looking disclosure obligations. When management fails to adequately disclose competitive threats or technology shifts, the subsequent revenue impact triggers 10b-5 claims. Business
+        model disruption threats correlate with stock drop claims when competitive position erodes.'
+      TRIGGERED_YELLOW: '{company} Business Model Disruption Risk at {value} (threshold: MODERATE disruption risk (emerging
+        threats)) is in the caution zone for Litigation History / Settlement Patterns (F1, F9). Monitor for deterioration
+        — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Business Model Disruption Risk at {value} is within acceptable range for Litigation History / Settlement
+        Patterns (F1, F9) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  data_strategy:
+    field_key: disruption_risk_level
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: always
+  provenance:
+    origin: v6_bmod
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Business model disruption threats correlate with stock drop claims when competitive position erodes
+    render_target: disruption_risk
+    formula: ''
+  display:
+    value_format: category
+    source_type: SEC_10K
+    threshold_context: HIGH/MODERATE/LOW based on threat analysis
+  group: business_model
+  signal_class: evaluative
+  field_path: disruption_risk_level
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: business model characteristics as predictors of claim type and frequency'
+    threshold_basis: Business model disruption threats correlate with stock drop claims when competitive position erodes
+  rap_class: host
+  rap_subcategory: host.structure
+- id: BIZ.MODEL.segment_margins
+  name: Segment Margin Profile
+  work_type: extract
+  layer: hazard
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - segment_information
+    - financial_statements
+  threshold:
+    type: tiered
+    red: Any segment margin declining >500bps YoY OR negative margin
+    yellow: Any segment margin declining >200bps YoY
+    clear: Stable or improving margins
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.2'
+  factors:
+  - F1
+  claims_correlation: 0.6
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - company.segment_margins
+  evaluation:
+    formula: segment_margin_risk
+    thresholds:
+    - op: '>='
+      value: 500
+      label: RED
+    - op: '>='
+      value: 200
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    context_templates:
+      TRIGGERED: 'Margin pressure: {evidence}'
+      CLEAR: Margins stable or improving across segments
+    detail_levels:
+    - level: glance
+      template: 'Max margin decline: {value}bps'
+    - level: standard
+      template: Max segment margin decline {value}bps — {context}
+    do_context:
+      TRIGGERED_RED: '{company} Segment Margin Profile at {value} (threshold: Any segment margin declining >500bps YoY OR
+        negative margin) signals elevated Litigation History / Settlement Patterns risk (F1). Segment margin profile reveals which business units are subsidizing others. When low-margin segments drag down consolidated results, plaintiffs allege management concealed segment-level weakness. Segment margin deterioration is a leading indicator of earnings miss claims.'
+      TRIGGERED_YELLOW: '{company} Segment Margin Profile at {value} (threshold: Any segment margin declining >200bps YoY)
+        is in the caution zone for Litigation History / Settlement Patterns (F1). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Segment Margin Profile at {value} is within acceptable range for Litigation History / Settlement Patterns
+        (F1) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  data_strategy:
+    field_key: segment_margin_risk
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: always
+  provenance:
+    origin: v6_bmod
+    confidence: designed
+    last_validated:
+    source_url:
+    source_date:
+    source_author: v6.0
+    added_by:
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: Segment margin deterioration is a leading indicator of earnings miss claims
+    render_target: segment_margins
+    formula: ''
+  display:
+    value_format: bps
+    source_type: SEC_10K
+    threshold_context: Max YoY margin decline in basis points across segments
+  group: business_model
+  signal_class: evaluative
+  field_path: segment_margin_risk
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'D&O claims analysis: business model characteristics as predictors of claim type and frequency'
+    threshold_basis: Segment margin deterioration is a leading indicator of earnings miss claims
+  rap_class: host
+  rap_subcategory: host.structure

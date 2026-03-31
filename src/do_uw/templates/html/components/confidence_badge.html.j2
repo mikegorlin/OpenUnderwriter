@@ -1,0 +1,14 @@
+{# Confidence Badge Macro -- inline micro-badge showing data confidence level.
+   HIGH: solid navy bg, white text. MEDIUM: navy outline. LOW: dashed amber outline.
+   Phase 114-02. #}
+
+{% macro confidence(level) %}
+{%- set lvl = level | upper if level else "" -%}
+{%- if lvl == "HIGH" -%}
+  <span class="confidence-badge confidence-high" title="High confidence: audited/official source">HIGH</span>
+{%- elif lvl == "MEDIUM" -%}
+  <span class="confidence-badge confidence-medium" title="Medium confidence: unaudited/estimated">MED</span>
+{%- elif lvl == "LOW" -%}
+  <span class="confidence-badge confidence-low" title="Low confidence: web/derived source">LOW</span>
+{%- endif -%}
+{% endmacro %}

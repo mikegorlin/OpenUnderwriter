@@ -1,0 +1,481 @@
+# Causal Chain Model: claim pathways from trigger to D&O loss
+# Source of truth. DuckDB rebuilt from this file via `brain build`.
+#
+# Each chain traces how a risk signal propagates through the
+# system to produce an actual D&O claim. Chains connect checks
+# to perils through explicit trigger → amplifier → evidence paths.
+
+version: 1
+
+chains:
+  # ============================================================
+  # SECURITIES peril chains
+  # ============================================================
+
+  - id: stock_drop_to_sca
+    name: "Stock Drop → Securities Class Action"
+    peril_id: SECURITIES
+    description: >
+      Significant stock price decline triggers securities fraud
+      class action alleging material misrepresentation. The most
+      common D&O claim pathway — ~70% of SCAs involve >20% decline.
+    trigger_signals:
+      - STOCK.PRICE.recent_drop_alert
+      - STOCK.PRICE.returns_multi_horizon
+      - STOCK.PATTERN.event_collapse
+    amplifier_signals:
+      - GOV.INSIDER.cluster_sales
+      - GOV.INSIDER.unusual_timing
+      - EXEC.INSIDER.cluster_selling
+      - FIN.GUIDE.track_record
+      - FIN.ACCT.restatement
+      - STOCK.SHORT.report
+    mitigator_signals:
+      - LIT.DEFENSE.forum_selection
+      - LIT.DEFENSE.pslra_safe_harbor
+      - GOV.PAY.clawback
+    evidence_signals:
+      - STOCK.PRICE.position
+      - STOCK.TRADE.volume_patterns
+      - FIN.GUIDE.earnings_reaction
+    frequency_factors: [F1, F2, F5, F6]
+    severity_factors: [F2, F7]
+    patterns: [EVENT_COLLAPSE, INFORMED_TRADING]
+    red_flags: [CRF-1, CRF-4]
+    historical_filing_rate: 0.15
+    median_severity_usd: 14000000
+
+  - id: restatement_to_sca
+    name: "Restatement → Securities Class Action"
+    peril_id: SECURITIES
+    description: >
+      Financial restatement (especially revenue/earnings) triggers
+      near-automatic SCA filing. Restatements provide strong
+      scienter evidence for plaintiffs.
+    trigger_signals:
+      - FIN.ACCT.restatement
+      - FIN.ACCT.restatement_magnitude
+    amplifier_signals:
+      - FIN.ACCT.material_weakness
+      - FIN.ACCT.internal_controls
+      - GOV.EFFECT.auditor_change
+      - FIN.ACCT.restatement_pattern
+      - FIN.ACCT.restatement_auditor_link
+    mitigator_signals:
+      - GOV.EFFECT.sox_404
+      - GOV.EFFECT.audit_committee
+      - FIN.ACCT.auditor
+    evidence_signals:
+      - FIN.ACCT.restatement_stock_window
+      - FIN.FORENSIC.fis_composite
+      - FIN.FORENSIC.beneish_dechow_convergence
+    frequency_factors: [F1, F3]
+    severity_factors: [F2, F7]
+    patterns: [EARNINGS_QUALITY_DETERIORATION]
+    red_flags: [CRF-5, CRF-6]
+    historical_filing_rate: 0.65
+    median_severity_usd: 25000000
+
+  - id: ipo_to_section11
+    name: "IPO/Offering → Section 11 Claim"
+    peril_id: SECURITIES
+    description: >
+      IPO or secondary offering followed by stock decline triggers
+      Section 11 strict liability claim. No scienter requirement
+      makes these easier for plaintiffs.
+    trigger_signals:
+      - BIZ.SIZE.public_tenure
+      - FWRD.EVENT.lockup_expiry
+    amplifier_signals:
+      - STOCK.PRICE.recent_drop_alert
+      - GOV.INSIDER.net_selling
+      - FIN.GUIDE.track_record
+    mitigator_signals:
+      - LIT.DEFENSE.pslra_safe_harbor
+    evidence_signals:
+      - STOCK.OWN.structure
+      - BIZ.SIZE.growth_trajectory
+    frequency_factors: [F1, F4]
+    severity_factors: [F2, F7]
+    patterns: []
+    red_flags: [CRF-1]
+    historical_filing_rate: 0.05
+    median_severity_usd: 20000000
+
+  - id: guidance_to_sca
+    name: "Guidance Miss → Securities Fraud"
+    peril_id: SECURITIES
+    description: >
+      Repeated guidance misses or aggressive forward guidance
+      builds scienter case for securities fraud claim when stock
+      eventually declines.
+    trigger_signals:
+      - FIN.GUIDE.track_record
+      - FIN.GUIDE.earnings_reaction
+    amplifier_signals:
+      - GOV.INSIDER.executive_sales
+      - EXEC.INSIDER.ceo_net_selling
+      - EXEC.INSIDER.cfo_net_selling
+      - STOCK.PRICE.recent_drop_alert
+    mitigator_signals:
+      - LIT.DEFENSE.pslra_safe_harbor
+      - NLP.MDA.tone_shift
+    evidence_signals:
+      - FIN.QUALITY.non_gaap_divergence
+      - NLP.RISK.new_risk_factors
+    frequency_factors: [F1, F5]
+    severity_factors: [F2, F7]
+    patterns: [GUIDANCE_TRACK_RECORD]
+    red_flags: []
+    historical_filing_rate: 0.08
+    median_severity_usd: 12000000
+
+  - id: short_attack_to_sca
+    name: "Short Seller Report → Securities Litigation"
+    peril_id: SECURITIES
+    description: >
+      Short seller publishes fraud allegations report, triggering
+      stock decline and subsequent SCA. Short sellers increasingly
+      drive litigation timing.
+    trigger_signals:
+      - STOCK.SHORT.report
+      - STOCK.PATTERN.short_attack
+    amplifier_signals:
+      - STOCK.SHORT.position
+      - STOCK.SHORT.trend
+      - FIN.FORENSIC.fis_composite
+    mitigator_signals:
+      - LIT.DEFENSE.forum_selection
+    evidence_signals:
+      - STOCK.PRICE.recent_drop_alert
+      - STOCK.ANALYST.coverage
+    frequency_factors: [F1, F6]
+    severity_factors: [F2, F7]
+    patterns: []
+    red_flags: [CRF-4]
+    historical_filing_rate: 0.35
+    median_severity_usd: 18000000
+
+  # ============================================================
+  # FIDUCIARY peril chains
+  # ============================================================
+
+  - id: governance_to_derivative
+    name: "Governance Failure → Derivative Suit"
+    peril_id: FIDUCIARY
+    description: >
+      Weak governance structure (low independence, CEO/Chair duality,
+      poor say-on-pay) creates basis for Caremark duty of oversight
+      claims and derivative suits.
+    trigger_signals:
+      - GOV.BOARD.independence
+      - GOV.BOARD.ceo_chair
+      - GOV.PAY.say_on_pay
+    amplifier_signals:
+      - GOV.BOARD.overboarding
+      - GOV.BOARD.tenure
+      - GOV.BOARD.diversity
+      - GOV.EXEC.turnover_analysis
+    mitigator_signals:
+      - GOV.EFFECT.audit_committee
+      - GOV.PAY.clawback
+      - GOV.RIGHTS.classified
+    evidence_signals:
+      - GOV.EXEC.departure_context
+      - EXEC.TENURE.c_suite_turnover
+    frequency_factors: [F9, F10]
+    severity_factors: [F7]
+    patterns: [TURNOVER_STRESS, CREDIBILITY_RISK]
+    red_flags: []
+    historical_filing_rate: 0.03
+    median_severity_usd: 8000000
+
+  - id: activist_to_derivative
+    name: "Activist Pressure → Derivative/Proxy"
+    peril_id: FIDUCIARY
+    description: >
+      Activist investor accumulates position, files 13D, demands
+      board changes or strategic alternatives. May escalate to
+      proxy contest or derivative action.
+    trigger_signals:
+      - GOV.ACTIVIST.13d_filings
+      - GOV.ACTIVIST.schedule_13g
+      - STOCK.OWN.activist
+    amplifier_signals:
+      - GOV.BOARD.independence
+      - GOV.PAY.say_on_pay
+      - STOCK.PRICE.position
+    mitigator_signals:
+      - GOV.RIGHTS.classified
+      - LIT.DEFENSE.forum_selection
+    evidence_signals:
+      - STOCK.OWN.concentration
+      - STOCK.OWN.structure
+    frequency_factors: [F9]
+    severity_factors: [F7]
+    patterns: [PROXY_ADVISOR_RISK]
+    red_flags: []
+    historical_filing_rate: 0.10
+    median_severity_usd: 5000000
+
+  - id: ma_to_claims
+    name: "M&A Transaction → Fiduciary Claims"
+    peril_id: FIDUCIARY
+    description: >
+      M&A activity triggers merger objection suits, Revlon duty
+      claims, and synergy shortfall litigation. Integration
+      risk amplifies post-close exposure.
+    trigger_signals:
+      - FWRD.EVENT.ma_closing
+      - LIT.SCA.merger_obj
+    amplifier_signals:
+      - FWRD.EVENT.synergy
+      - BIZ.STRUCT.related_party
+      - FWRD.WARN.goodwill_risk
+    mitigator_signals:
+      - LIT.DEFENSE.forum_selection
+    evidence_signals:
+      - BIZ.SIZE.growth_trajectory
+      - STOCK.VALUATION.pe_ratio
+    frequency_factors: [F4]
+    severity_factors: [F2, F7]
+    patterns: [CATALYST_RISK]
+    red_flags: []
+    historical_filing_rate: 0.85
+    median_severity_usd: 3000000
+
+  # ============================================================
+  # REGULATORY peril chains
+  # ============================================================
+
+  - id: enforcement_to_penalty
+    name: "SEC Investigation → Enforcement Action"
+    peril_id: REGULATORY
+    description: >
+      SEC investigation escalates through Wells notice to formal
+      enforcement action. Often triggers parallel DOJ investigation
+      and follow-on private securities litigation.
+    trigger_signals:
+      - LIT.REG.sec_investigation
+      - LIT.REG.sec_active
+      - LIT.REG.wells_notice
+    amplifier_signals:
+      - LIT.REG.doj_investigation
+      - NLP.WHISTLE.language_detected
+      - NLP.WHISTLE.internal_investigation
+      - FIN.ACCT.sec_correspondence
+    mitigator_signals:
+      - GOV.EFFECT.sox_404
+    evidence_signals:
+      - LIT.REG.sec_severity
+      - LIT.REG.comment_letters
+      - LIT.REG.subpoena
+    frequency_factors: [F1, F3]
+    severity_factors: [F7, F8]
+    patterns: []
+    red_flags: [CRF-2, CRF-3]
+    historical_filing_rate: 0.02
+    median_severity_usd: 50000000
+
+  - id: industry_reg_action
+    name: "Industry Regulator → Enforcement"
+    peril_id: REGULATORY
+    description: >
+      Industry-specific regulators (FTC, CFPB, FDA, EPA, OSHA)
+      take enforcement action. State AG coordination amplifies
+      exposure across jurisdictions.
+    trigger_signals:
+      - LIT.REG.industry_reg
+      - LIT.REG.ftc_investigation
+      - LIT.REG.cfpb_action
+      - LIT.REG.fda_warning
+    amplifier_signals:
+      - LIT.REG.state_ag
+      - LIT.REG.state_action
+      - LIT.REG.epa_action
+      - LIT.REG.osha_citation
+    mitigator_signals: []
+    evidence_signals:
+      - BIZ.MODEL.regulatory_dep
+      - BIZ.DEPEND.regulatory_dep
+    frequency_factors: [F1]
+    severity_factors: [F7]
+    patterns: []
+    red_flags: []
+    historical_filing_rate: 0.01
+    median_severity_usd: 25000000
+
+  # ============================================================
+  # FINANCIAL_DISTRESS peril chains
+  # ============================================================
+
+  - id: distress_to_bankruptcy
+    name: "Financial Distress → Insolvency Claims"
+    peril_id: FINANCIAL_DISTRESS
+    description: >
+      Deteriorating financial metrics lead to zone of insolvency,
+      shifting fiduciary duties to creditors. Triggers bankruptcy-
+      related D&O claims with catastrophic severity.
+    trigger_signals:
+      - FWRD.WARN.zone_of_insolvency
+      - FIN.LIQ.cash_burn
+      - STOCK.PRICE.delisting_risk
+    amplifier_signals:
+      - FIN.DEBT.covenants
+      - FIN.DEBT.maturity
+      - FIN.LIQ.position
+      - FIN.LIQ.working_capital
+      - FIN.TEMPORAL.cash_flow_deterioration
+      - STOCK.PATTERN.death_spiral
+    mitigator_signals: []
+    evidence_signals:
+      - FIN.DEBT.structure
+      - FIN.DEBT.coverage
+      - FIN.DEBT.credit_rating
+    frequency_factors: [F8]
+    severity_factors: [F2, F7, F8]
+    patterns: [LIQUIDITY_STRESS, DEATH_SPIRAL]
+    red_flags: [CRF-7, CRF-8]
+    historical_filing_rate: 0.10
+    median_severity_usd: 75000000
+
+  # ============================================================
+  # EMPLOYMENT peril chains
+  # ============================================================
+
+  - id: whistleblower_to_claims
+    name: "Whistleblower → Employment/Retaliation Claims"
+    peril_id: EMPLOYMENT
+    description: >
+      Whistleblower activity or internal investigation leads to
+      employment retaliation claims. Often precedes broader
+      regulatory investigation.
+    trigger_signals:
+      - NLP.WHISTLE.language_detected
+      - NLP.WHISTLE.internal_investigation
+      - LIT.OTHER.whistleblower
+    amplifier_signals:
+      - LIT.OTHER.employment
+      - GOV.EXEC.turnover_analysis
+      - EXEC.DEPARTURE.cfo_departure_timing
+    mitigator_signals:
+      - GOV.PAY.clawback
+    evidence_signals:
+      - BIZ.DEPEND.labor
+      - BIZ.SIZE.employees
+    frequency_factors: [F10]
+    severity_factors: []
+    patterns: []
+    red_flags: []
+    historical_filing_rate: 0.05
+    median_severity_usd: 3000000
+
+  # ============================================================
+  # EMERGING peril chains
+  # ============================================================
+
+  - id: cyber_to_sca
+    name: "Cyber Breach → Securities/D&O Claims"
+    peril_id: EMERGING
+    description: >
+      Data breach or cyber incident triggers stock decline and
+      subsequent SCA alleging inadequate disclosure or oversight.
+      13.6x increase in SCA risk post-breach.
+    trigger_signals:
+      - BIZ.UNI.cyber_posture
+      - BIZ.UNI.cyber_business
+      - LIT.OTHER.cyber_breach
+    amplifier_signals:
+      - STOCK.PRICE.recent_drop_alert
+      - NLP.FILING.late_filing
+    mitigator_signals: []
+    evidence_signals:
+      - BIZ.MODEL.description
+      - BIZ.DEPEND.tech_dep
+    frequency_factors: [F1]
+    severity_factors: [F2, F7]
+    patterns: []
+    red_flags: []
+    historical_filing_rate: 0.03
+    median_severity_usd: 30000000
+
+  - id: ai_claims
+    name: "AI Risk → D&O Claims"
+    peril_id: EMERGING
+    description: >
+      AI-related risks including overclaiming, algorithmic bias,
+      and concentrated revenue dependency on AI trends. Fastest-
+      growing D&O claim category.
+    trigger_signals:
+      - BIZ.UNI.ai_claims
+      - FWRD.WARN.ai_revenue_concentration
+    amplifier_signals:
+      - FWRD.WARN.hyperscaler_dependency
+      - FWRD.WARN.gpu_allocation
+      - FWRD.WARN.data_center_risk
+    mitigator_signals: []
+    evidence_signals:
+      - BIZ.MODEL.description
+      - BIZ.DEPEND.tech_dep
+    frequency_factors: [F1]
+    severity_factors: [F2]
+    patterns: []
+    red_flags: []
+    historical_filing_rate: 0.01
+    median_severity_usd: 15000000
+
+  # ============================================================
+  # CONSUMER peril chains
+  # ============================================================
+
+  - id: product_to_do
+    name: "Product Liability → D&O Escalation"
+    peril_id: CONSUMER
+    description: >
+      Product liability or safety failure escalates to D&O level
+      when board oversight failures are alleged. Boeing, PG&E
+      precedents.
+    trigger_signals:
+      - LIT.OTHER.product
+    amplifier_signals:
+      - LIT.OTHER.class_action
+      - GOV.BOARD.independence
+    mitigator_signals:
+      - GOV.EFFECT.audit_committee
+    evidence_signals:
+      - BIZ.MODEL.description
+      - LIT.OTHER.aggregate
+    frequency_factors: [F1]
+    severity_factors: [F7]
+    patterns: []
+    red_flags: []
+    historical_filing_rate: 0.02
+    median_severity_usd: 40000000
+
+  # ============================================================
+  # COMMERCIAL peril chains
+  # ============================================================
+
+  - id: antitrust_claims
+    name: "Antitrust → D&O Exposure"
+    peril_id: COMMERCIAL
+    description: >
+      Antitrust investigation or private action creates D&O
+      exposure through treble damages and potential criminal
+      liability for officers.
+    trigger_signals:
+      - LIT.OTHER.antitrust
+    amplifier_signals:
+      - LIT.REG.ftc_investigation
+      - BIZ.COMP.market_position
+    mitigator_signals:
+      - LIT.DEFENSE.forum_selection
+    evidence_signals:
+      - BIZ.COMP.market_share
+      - BIZ.COMP.competitive_advantage
+    frequency_factors: [F1]
+    severity_factors: [F7]
+    patterns: []
+    red_flags: []
+    historical_filing_rate: 0.01
+    median_severity_usd: 35000000

@@ -1,0 +1,173 @@
+{# Business Model Profile - full template with all 6 BMOD dimensions #}
+{% if company and company.business_model %}
+{% set bm = company.business_model %}
+{% set _has_bm_data = bm.revenue_model_type or bm.get('concentration_level') or bm.get('geographic_reach') or bm.get('customer_type') %}
+{% if _has_bm_data %}
+<div class="subsection" id="business-model">
+  <h4>Business Model Profile</h4>
+  <table class="kv-table">
+    <tbody>
+      {# BMOD-01: Revenue Model Type #}
+      {% if bm.revenue_model_type %}
+      <tr>
+        <td class="kv-label">Revenue Model</td>
+        <td class="kv-value">
+          <span class="badge-pill bg-sky-500 text-white">{{ bm.revenue_model_type }}</span>
+          {% if bm.revenue_model_type == 'HYBRID' or bm.revenue_model_type == 'Hybrid' %}
+          <div style="font-size:7.5pt;color:#6B7280;font-style:italic;margin-top:2px">Mixed revenue model creates dual SCA exposure: product liability claims (Section 11) and services disruption claims (10b-5)</div>
+          {% elif bm.revenue_model_type == 'SUBSCRIPTION' or bm.revenue_model_type == 'Subscription' or bm.revenue_model_type == 'RECURRING' %}
+          <div style="font-size:7.5pt;color:#6B7280;font-style:italic;margin-top:2px">Recurring revenue model reduces earnings volatility but concentrates SCA exposure around subscriber metrics and churn disclosures</div>
+          {% elif bm.revenue_model_type == 'PRODUCT' or bm.revenue_model_type == 'Product' %}
+          <div style="font-size:7.5pt;color:#6B7280;font-style:italic;margin-top:2px">Product-driven revenue creates exposure to seasonal inventory write-downs and channel-stuffing allegations in SCA complaints</div>
+          {% endif %}
+        </td>
+      </tr>
+      {% endif %}
+
+      {# BMOD-02: Concentration Risk #}
+      {% if bm.concentration_level and bm.concentration_level != 'NONE' %}
+      <tr>
+        <td class="kv-label">Concentration Risk</td>
+        <td class="kv-value">
+          {% if bm.concentration_level == 'HIGH' %}
+          <span class="badge-pill bg-red-700 text-white">{{ bm.concentration_level }}</span>
+          {% elif bm.concentration_level == 'MODERATE' %}
+          <span class="badge-pill bg-amber-500 text-white">{{ bm.concentration_level }}</span>
+          {% else %}
+          <span class="badge-pill bg-emerald-600 text-white">{{ bm.concentration_level }}</span>
+          {% endif %}
+          <span class="text-xs text-gray-500 ml-1">Score: {{ bm.concentration_score }}/3</span>
+          {% if bm.concentration_flags %}
+          <br>
+          {% for flag in bm.concentration_flags %}
+          <span class="text-xs text-gray-500">{{ flag }}{% if not loop.last %}; {% endif %}</span>
+          {% endfor %}
+          {% endif %}
+          {% if bm.concentration_level == 'HIGH' %}
+          <div style="font-size:7.5pt;color:#991B1B;font-style:italic;margin-top:2px">High concentration amplifies stock drop severity when key customer/market relationships change &mdash; a primary SCA trigger</div>
+          {% elif bm.concentration_level == 'LOW' %}
+          <div style="font-size:7.5pt;color:#6B7280;font-style:italic;margin-top:2px">Low concentration is favorable &mdash; diversified revenue reduces exposure to single-event stock drops that drive SCA filings</div>
+          {% endif %}
+        </td>
+      </tr>
+      {% endif %}
+
+      {# BMOD-03: Key Person Risk #}
+      {% if bm.key_person %}
+      <tr>
+        <td class="kv-label">Key Person Risk</td>
+        <td class="kv-value">
+          {% if bm.key_person.risk_level == 'HIGH' %}
+          <span class="badge-pill bg-red-700 text-white">{{ bm.key_person.risk_level }}</span>
+          {% elif bm.key_person.risk_level == 'MODERATE' %}
+          <span class="badge-pill bg-amber-500 text-white">{{ bm.key_person.risk_level }}</span>
+          {% else %}
+          <span class="badge-pill bg-emerald-600 text-white">{{ bm.key_person.risk_level }}</span>
+          {% endif %}
+          <span class="text-xs text-gray-500 ml-1">Score: {{ bm.key_person.risk_score }}/3</span>
+          <br>
+          <span class="text-xs text-gray-500">
+            {% if bm.key_person.is_founder_led %}Founder-led{% endif %}
+            {% if bm.key_person.ceo_tenure_years is not none %}
+            {% if bm.key_person.is_founder_led %} | {% endif %}CEO tenure: {{ bm.key_person.ceo_tenure_years }}yr
+            {% endif %}
+            {% if bm.key_person.has_succession_plan is not none %}
+            | Succession: {{ "Yes" if bm.key_person.has_succession_plan else "No" }}
+            {% endif %}
+          </span>
+          {% if bm.key_person.risk_level == 'HIGH' %}
+          <div style="font-size:7.5pt;color:#991B1B;font-style:italic;margin-top:2px">
+            {% if bm.key_person.is_founder_led %}Founder-led companies face elevated D&amp;O exposure from succession uncertainty and personal brand dependence{% endif %}
+            {% if not bm.key_person.has_succession_plan %} &mdash; no succession plan disclosed increases D&amp;O risk from leadership transition scenarios{% endif %}
+          </div>
+          {% elif bm.key_person.risk_level == 'LOW' %}
+          <div style="font-size:7.5pt;color:#6B7280;font-style:italic;margin-top:2px">Low key person risk indicates management depth &mdash; reduces D&amp;O exposure from leadership disruption</div>
+          {% endif %}
+        </td>
+      </tr>
+      {% endif %}
+
+      {# BMOD-05: Disruption Risk #}
+      {% if bm.disruption %}
+      <tr>
+        <td class="kv-label">Disruption Risk</td>
+        <td class="kv-value">
+          {% if bm.disruption.level == 'HIGH' %}
+          <span class="badge-pill bg-red-700 text-white">{{ bm.disruption.level }}</span>
+          {% elif bm.disruption.level == 'MODERATE' %}
+          <span class="badge-pill bg-amber-500 text-white">{{ bm.disruption.level }}</span>
+          {% else %}
+          <span class="badge-pill bg-emerald-600 text-white">{{ bm.disruption.level }}</span>
+          {% endif %}
+          {% if bm.disruption.threat_count %}
+          <span class="text-xs text-gray-500 ml-1">{{ bm.disruption.threat_count }} threat{{ "s" if bm.disruption.threat_count > 1 }}</span>
+          {% endif %}
+          {% if bm.disruption.threats %}
+          <br>
+          {% for threat in bm.disruption.threats %}
+          <span class="text-xs text-gray-500">{{ threat }}{% if not loop.last %}; {% endif %}</span>
+          {% endfor %}
+          {% endif %}
+          {% if bm.disruption.level == 'HIGH' %}
+          <div style="font-size:7.5pt;color:#991B1B;font-style:italic;margin-top:2px">High disruption risk increases forward-looking D&amp;O exposure &mdash; management statements about competitive position become SCA fodder if disruption materializes</div>
+          {% endif %}
+        </td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+
+  {# BMOD-04: Segment Lifecycle table #}
+  {% if bm.lifecycle %}
+  <div class="mt-3">
+    <h5 class="text-sm font-semibold text-gray-700 mb-1">Segment Lifecycle</h5>
+    <table class="data-table text-sm w-full">
+      <thead>
+        <tr>
+          <th class="text-left">Segment</th>
+          <th class="text-left">Stage</th>
+          <th class="text-right">Growth Rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for seg in bm.lifecycle %}
+        <tr>
+          <td>{{ seg.name }}</td>
+          <td>{{ seg.stage }}</td>
+          <td class="text-right tabular-nums">{{ seg.growth_rate }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  {# BMOD-06: Segment Margins table #}
+  {% if bm.segment_margins %}
+  <div class="mt-3">
+    <h5 class="text-sm font-semibold text-gray-700 mb-1">Segment Margins</h5>
+    <table class="data-table text-sm w-full">
+      <thead>
+        <tr>
+          <th class="text-left">Segment</th>
+          <th class="text-right">Margin</th>
+          <th class="text-right">Prior</th>
+          <th class="text-right">Change (bps)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for seg in bm.segment_margins %}
+        <tr>
+          <td>{{ seg.name }}</td>
+          <td class="text-right tabular-nums">{{ seg.margin }}</td>
+          <td class="text-right tabular-nums">{{ seg.prior_margin if seg.prior_margin and seg.prior_margin != 'N/A' else '—' }}</td>
+          <td class="text-right tabular-nums">{{ seg.change_bps if seg.change_bps and seg.change_bps != 'N/A' else '—' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+{% endif %}

@@ -1,0 +1,325 @@
+{# ═══════════════════════════════════════════════════════════════
+   Domain-Specific Analysis Cards — D&O Underwriting Worksheet
+
+   Detailed analytical presentation cards for underwriting data.
+   Each card combines metrics, visuals, text, and risk assessment.
+
+   Usage: {% from "components/analysis_cards.html.j2" import quarterly_trend_card, ... %}
+   ═══════════════════════════════════════════════════════════════ #}
+
+
+{# ─── 1. QUARTERLY TREND CARD: 8Q analysis with inline sparkline + direction ─── #}
+{# Usage: {{ quarterly_trend_card("Revenue", quarters, format="currency") }}
+   quarters = [{"label":"Q1'24","value":94036,"yoy":"+5.2%","beat":true}, ...] #}
+{% macro quarterly_trend_card(title, quarters, format="currency", emoji="📊") %}
+{% if quarters %}
+<div style="border:1px solid #E5E7EB;border-radius:6px;overflow:hidden;margin:6px 0;">
+  <div style="background:#1F3A5C;color:white;padding:5px 10px;display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-size:8pt;font-weight:700;">{% if emoji %}{{ emoji }} {% endif %}{{ title }} — Quarterly Trend</span>
+    <span style="font-size:6.5pt;opacity:0.7;">{{ quarters|length }}Q</span>
+  </div>
+  <table style="width:100%;border-collapse:collapse;">
+    <thead>
+      <tr style="background:#F9FAFB;">
+        <th style="padding:3px 6px;font-size:6pt;font-weight:600;color:#6B7280;text-transform:uppercase;text-align:left;">Quarter</th>
+        <th style="padding:3px 6px;font-size:6pt;font-weight:600;color:#6B7280;text-transform:uppercase;text-align:right;">Value</th>
+        <th style="padding:3px 6px;font-size:6pt;font-weight:600;color:#6B7280;text-transform:uppercase;text-align:right;">YoY</th>
+        <th style="padding:3px 6px;font-size:6pt;font-weight:600;color:#6B7280;text-transform:uppercase;text-align:center;">Trend</th>
+        {% if quarters[0].get('beat') is not none %}
+        <th style="padding:3px 6px;font-size:6pt;font-weight:600;color:#6B7280;text-transform:uppercase;text-align:center;">B/M</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for q in quarters %}
+      {% set yoy_val = q.yoy|default("") %}
+      {% set is_positive = yoy_val and yoy_val[0] == '+' %}
+      {% set is_negative = yoy_val and yoy_val[0] == '-' %}
+      <tr style="{% if not loop.last %}border-bottom:1px solid #F3F4F6;{% endif %}{% if is_negative %}background:#FEF2F2;{% endif %}">
+        <td style="padding:3px 6px;font-size:8pt;font-weight:600;color:#374151;">{{ q.label }}</td>
+        <td style="padding:3px 6px;font-size:8pt;color:#111827;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;">{{ q.value }}</td>
+        <td style="padding:3px 6px;font-size:8pt;text-align:right;font-weight:600;color:{% if is_positive %}#16A34A{% elif is_negative %}#DC2626{% else %}#6B7280{% endif %};">{{ yoy_val }}</td>
+        <td style="padding:3px 6px;text-align:center;font-size:10pt;">{% if is_positive %}📈{% elif is_negative %}📉{% else %}➡️{% endif %}</td>
+        {% if q.get('beat') is not none %}
+        <td style="padding:3px 6px;text-align:center;">
+          {% if q.beat %}<span style="display:inline-block;width:8px;height:8px;border-radius:4px;background:#16A34A;" title="Beat"></span>
+          {% else %}<span style="display:inline-block;width:8px;height:8px;border-radius:4px;background:#DC2626;" title="Miss"></span>{% endif %}
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endmacro %}
+
+
+{# ─── 2. FINANCIAL COMPARISON CARD: YoY with arrows and % change ─── #}
+{# Usage: {{ financial_comparison_card("Income Statement", current_period, prior_period, rows) }}
+   rows = [{"label":"Revenue","current":"$416.2B","prior":"$391.0B","change":"+6.4%","direction":"up"}] #}
+{% macro financial_comparison_card(title, current_label, prior_label, rows, emoji="💰") %}
+{% if rows %}
+<div style="border:1px solid #E5E7EB;border-radius:6px;overflow:hidden;margin:6px 0;">
+  <div style="background:#1F3A5C;color:white;padding:5px 10px;">
+    <span style="font-size:8pt;font-weight:700;">{% if emoji %}{{ emoji }} {% endif %}{{ title }}</span>
+  </div>
+  <table style="width:100%;border-collapse:collapse;">
+    <thead>
+      <tr style="background:#F9FAFB;">
+        <th style="padding:3px 8px;font-size:6pt;font-weight:600;color:#6B7280;text-transform:uppercase;text-align:left;width:35%;">Metric</th>
+        <th style="padding:3px 8px;font-size:6pt;font-weight:600;color:#6B7280;text-transform:uppercase;text-align:right;">{{ current_label }}</th>
+        <th style="padding:3px 8px;font-size:6pt;font-weight:600;color:#6B7280;text-transform:uppercase;text-align:right;">{{ prior_label }}</th>
+        <th style="padding:3px 8px;font-size:6pt;font-weight:600;color:#6B7280;text-transform:uppercase;text-align:right;">Change</th>
+        <th style="padding:3px 4px;font-size:6pt;text-align:center;width:24px;"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      {% set is_up = r.direction == 'up' %}
+      {% set is_down = r.direction == 'down' %}
+      <tr style="{% if not loop.last %}border-bottom:1px solid #F3F4F6;{% endif %}">
+        <td style="padding:3px 8px;font-size:8pt;font-weight:600;color:#374151;">{{ r.label }}</td>
+        <td style="padding:3px 8px;font-size:8pt;color:#111827;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;">{{ r.current }}</td>
+        <td style="padding:3px 8px;font-size:8pt;color:#6B7280;text-align:right;font-variant-numeric:tabular-nums;">{{ r.prior }}</td>
+        <td style="padding:3px 8px;font-size:8pt;text-align:right;font-weight:600;color:{% if is_up %}#16A34A{% elif is_down %}#DC2626{% else %}#6B7280{% endif %};">{{ r.change }}</td>
+        <td style="padding:3px 4px;text-align:center;font-size:9pt;">{% if is_up %}🟢{% elif is_down %}🔴{% else %}⚪{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endmacro %}
+
+
+{# ─── 3. FORENSIC SCORE CARD: Distress model with zone indicator + components ─── #}
+{# Usage: {{ forensic_score_card("Beneish M-Score", "-2.29", "SAFE", "green", components, "🔬") }}
+   components = [{"name":"DSRI","value":"1.02","zone":"normal"},{"name":"GMI","value":"0.98","zone":"normal"}] #}
+{% macro forensic_score_card(title, score, zone_label, color, components=[], emoji="🔬") %}
+{% set colors = {
+  "green": {"bg":"#F0FDF4","border":"#16A34A","zone_bg":"#16A34A"},
+  "amber": {"bg":"#FFFBEB","border":"#D97706","zone_bg":"#D97706"},
+  "red":   {"bg":"#FEF2F2","border":"#DC2626","zone_bg":"#DC2626"}
+} %}
+{% set c = colors.get(color, colors.green) %}
+<div style="border:1.5px solid {{ c.border }};border-radius:6px;overflow:hidden;margin:6px 0;">
+  <div style="background:{{ c.bg }};padding:8px 12px;display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <span style="font-size:9pt;font-weight:700;color:#111827;">{% if emoji %}{{ emoji }} {% endif %}{{ title }}</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:18pt;font-weight:800;color:#111827;font-variant-numeric:tabular-nums;">{{ score }}</span>
+      <span style="padding:2px 10px;border-radius:10px;font-size:7pt;font-weight:700;color:white;background:{{ c.zone_bg }};">{{ zone_label }}</span>
+    </div>
+  </div>
+  {% if components %}
+  <div style="padding:4px 12px;display:flex;flex-wrap:wrap;gap:3px;">
+    {% for comp in components %}
+    {% set comp_color = "#DC2626" if comp.zone == "danger" else ("#D97706" if comp.zone == "warning" else "#16A34A") %}
+    <div style="flex:1;min-width:60px;text-align:center;padding:3px 4px;border-radius:4px;background:#F9FAFB;border:1px solid #E5E7EB;">
+      <div style="font-size:9pt;font-weight:700;color:{{ comp_color }};font-variant-numeric:tabular-nums;">{{ comp.value }}</div>
+      <div style="font-size:5.5pt;color:#6B7280;text-transform:uppercase;">{{ comp.name }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endmacro %}
+
+
+{# ─── 4. OFFICER PROFILE CARD: Executive with tenure, risk, and flags ─── #}
+{# Usage: {{ officer_card("Tim Cook", "CEO", "15.0 yrs", risk_badges, flags) }}
+   risk_badges = [("No Prior SCA","green"),("Long Tenure","blue")]
+   flags = ["Prior litigation: None", "Character issues: None"] #}
+{% macro officer_card(name, title, tenure, badges=[], flags=[], emoji="👤") %}
+<div style="border:1px solid #E5E7EB;border-radius:6px;padding:8px 12px;margin:4px 0;display:flex;gap:10px;align-items:flex-start;">
+  <div style="width:36px;height:36px;border-radius:18px;background:#1F3A5C;color:white;display:flex;align-items:center;justify-content:center;font-size:12pt;font-weight:700;flex-shrink:0;">{{ name[0] }}</div>
+  <div style="flex:1;">
+    <div style="display:flex;align-items:baseline;gap:6px;">
+      <span style="font-size:9pt;font-weight:700;color:#111827;">{{ name }}</span>
+      <span style="font-size:7pt;color:#6B7280;">{{ title }}</span>
+      <span style="font-size:7pt;color:#1F3A5C;font-weight:600;">{{ tenure }}</span>
+    </div>
+    {% if badges %}
+    <div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:3px;">
+      {% for label, color in badges %}
+      {% set bc = {"green":"#DCFCE7;color:#166534","amber":"#FEF3C7;color:#92400E","red":"#FEE2E2;color:#991B1B","blue":"#DBEAFE;color:#1E40AF"}.get(color, "#F3F4F6;color:#374151") %}
+      <span style="padding:1px 6px;border-radius:8px;font-size:6pt;font-weight:600;background:{{ bc }};">{{ label }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% if flags %}
+    <div style="margin-top:3px;">
+      {% for flag in flags %}
+      <div style="font-size:7pt;color:#6B7280;line-height:1.4;">{{ flag }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endmacro %}
+
+
+{# ─── 5. CASE DETAIL CARD: Litigation case with full detail ─── #}
+{# Usage: {{ case_card("Tucker v. Apple", status, detail_pairs, theories, severity) }} #}
+{% macro case_card(case_name, status, details=[], theories=[], severity="medium", emoji="⚖️") %}
+{% set sev_colors = {"high":{"bg":"#FEF2F2","border":"#DC2626","badge":"#DC2626"},"medium":{"bg":"#FFFBEB","border":"#D97706","badge":"#D97706"},"low":{"bg":"#F0FDF4","border":"#16A34A","badge":"#16A34A"}} %}
+{% set c = sev_colors.get(severity, sev_colors.medium) %}
+<div style="border:1px solid {{ c.border }};border-left:3px solid {{ c.border }};border-radius:0 6px 6px 0;padding:8px 12px;margin:6px 0;background:{{ c.bg }};">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+    <span style="font-size:9pt;font-weight:700;color:#111827;">{% if emoji %}{{ emoji }} {% endif %}{{ case_name }}</span>
+    <span style="padding:2px 8px;border-radius:8px;font-size:6.5pt;font-weight:700;color:white;background:{{ c.badge }};flex-shrink:0;margin-left:8px;">{{ status }}</span>
+  </div>
+  {% if details %}
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 12px;">
+    {% for key, val in details %}
+    <div style="display:flex;justify-content:space-between;padding:1px 0;border-bottom:1px solid rgba(0,0,0,0.05);">
+      <span style="font-size:7pt;color:#6B7280;">{{ key }}</span>
+      <span style="font-size:7pt;font-weight:600;color:#374151;">{{ val if val else "—" }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% if theories %}
+  <div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:4px;">
+    {% for theory in theories %}
+    <span style="padding:1px 6px;border-radius:8px;font-size:6pt;font-weight:600;background:rgba(0,0,0,0.08);color:#374151;">{{ theory }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endmacro %}
+
+
+{# ─── 6. STOCK DROP CARD: Drop event with attribution ─── #}
+{# Usage: {{ drop_card("2025-08-15", "-12.3%", attribution, context) }}
+   attribution = {"company":"72%","market":"18%","sector":"10%"}
+   context = "Earnings miss: EPS $1.20 vs $1.45 consensus" #}
+{% macro drop_card(date, magnitude, attribution={}, context="", recovery_days=0) %}
+{% set mag_num = magnitude|replace('%','')|replace('+','')|float(0) %}
+{% set severity = "red" if mag_num < -10 else ("amber" if mag_num < -5 else "green") %}
+{% set colors = {"red":{"bg":"#FEF2F2","border":"#DC2626"},"amber":{"bg":"#FFFBEB","border":"#D97706"},"green":{"bg":"#F0FDF4","border":"#16A34A"}} %}
+{% set c = colors.get(severity, colors.amber) %}
+<div style="border:1px solid {{ c.border }};border-radius:6px;padding:8px 12px;margin:4px 0;background:{{ c.bg }};">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+    <span style="font-size:8pt;font-weight:600;color:#374151;">📅 {{ date }}</span>
+    <span style="font-size:14pt;font-weight:800;color:{{ c.border }};font-variant-numeric:tabular-nums;">{{ magnitude }}</span>
+  </div>
+  {% if context %}<div style="font-size:8pt;color:#4B5563;line-height:1.4;margin-bottom:4px;">{{ context }}</div>{% endif %}
+  {% if attribution %}
+  <div style="display:flex;gap:6px;align-items:center;">
+    <span style="font-size:6.5pt;color:#6B7280;text-transform:uppercase;">Attribution:</span>
+    {% for source, pct in attribution.items() %}
+    <span style="font-size:7pt;font-weight:600;{% if source == 'company' %}color:#DC2626{% elif source == 'market' %}color:#2563EB{% else %}color:#7C3AED{% endif %};">{{ source|title }} {{ pct }}</span>
+    {% endfor %}
+    {% if recovery_days %}<span style="font-size:6.5pt;color:#6B7280;margin-left:auto;">Recovery: {{ recovery_days }}d</span>{% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endmacro %}
+
+
+{# ─── 7. FACTOR SCORE CARD: Scoring factor with bar + evidence ─── #}
+{# Usage: {{ factor_card("F1", "Prior Litigation", 5.2, 20, evidence_items, "red") }}
+   evidence_items = ["Active SCA: Tucker v. Apple", "4 derivative suits pending"] #}
+{% macro factor_card(factor_id, name, points, max_points, evidence=[], color="amber") %}
+{% set pct = (points / max_points * 100) if max_points > 0 else 0 %}
+{% set colors = {"red":"#DC2626","amber":"#D97706","green":"#16A34A","blue":"#2563EB"} %}
+{% set bar_color = colors.get(color, "#D97706") %}
+<div style="border:1px solid #E5E7EB;border-radius:6px;padding:8px 12px;margin:4px 0;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:12px;background:{{ bar_color }};color:white;font-size:7pt;font-weight:700;">{{ factor_id }}</span>
+      <span style="font-size:9pt;font-weight:700;color:#111827;">{{ name }}</span>
+    </div>
+    <span style="font-size:9pt;font-weight:800;color:{{ bar_color }};font-variant-numeric:tabular-nums;">{{ "%.1f"|format(points) }}/{{ max_points }}</span>
+  </div>
+  {# Score bar #}
+  <div style="height:6px;background:#E5E7EB;border-radius:3px;overflow:hidden;margin-bottom:4px;">
+    <div style="height:100%;width:{{ pct }}%;background:{{ bar_color }};border-radius:3px;"></div>
+  </div>
+  {% if evidence %}
+  <ul style="margin:0;padding:0 0 0 14px;font-size:7.5pt;color:#4B5563;line-height:1.4;">
+    {% for item in evidence[:3] %}
+    <li style="margin-bottom:1px;">{{ item }}</li>
+    {% endfor %}
+    {% if evidence|length > 3 %}<li style="color:#9CA3AF;">+{{ evidence|length - 3 }} more</li>{% endif %}
+  </ul>
+  {% endif %}
+</div>
+{% endmacro %}
+
+
+{# ─── 8. 8-K EVENT CARD: Filing with item badges and severity ─── #}
+{# Usage: {{ eight_k_card("2026-01-02", items, severity, summary) }}
+   items = [{"number":"5.02","title":"Officer Departure","critical":true}] #}
+{% macro eight_k_card(date, items, severity="LOW", summary="") %}
+{% set sev_colors = {"HIGH":"#DC2626","MEDIUM":"#D97706","LOW":"#6B7280","CRITICAL":"#7F1D1D"} %}
+{% set sev_color = sev_colors.get(severity, "#6B7280") %}
+<div style="border:1px solid #E5E7EB;border-radius:6px;padding:6px 10px;margin:3px 0;display:flex;align-items:center;gap:8px;{% if severity in ['HIGH','CRITICAL'] %}background:#FEF2F2;border-color:#FECACA;{% endif %}">
+  <div style="font-size:7.5pt;font-weight:600;color:#374151;min-width:70px;font-variant-numeric:tabular-nums;">📄 {{ date }}</div>
+  <div style="display:flex;gap:3px;flex-wrap:wrap;flex:1;">
+    {% for item in items %}
+    <span style="padding:1px 6px;border-radius:8px;font-size:6pt;font-weight:600;{% if item.critical %}background:#DC2626;color:white;{% else %}background:#F3F4F6;color:#374151;{% endif %}">{{ item.number }}: {{ item.title }}</span>
+    {% endfor %}
+  </div>
+  <span style="padding:1px 6px;border-radius:8px;font-size:6pt;font-weight:700;color:white;background:{{ sev_color }};">{{ severity }}</span>
+</div>
+{% endmacro %}
+
+
+{# ─── 9. PEER BENCHMARK CARD: Company vs percentile with bar ─── #}
+{# Usage: {{ peer_benchmark_card("Revenue", "$416.2B", 95, "Top quartile among SEC filers") }} #}
+{% macro peer_benchmark_card(metric, value, percentile, context="") %}
+{% set pct_color = "#16A34A" if percentile >= 75 else ("#2563EB" if percentile >= 50 else ("#D97706" if percentile >= 25 else "#DC2626")) %}
+<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #F3F4F6;">
+  <span style="font-size:8pt;color:#6B7280;min-width:120px;">{{ metric }}</span>
+  <span style="font-size:8pt;font-weight:700;color:#111827;min-width:80px;text-align:right;font-variant-numeric:tabular-nums;">{{ value }}</span>
+  <div style="flex:1;height:6px;background:#E5E7EB;border-radius:3px;overflow:hidden;position:relative;">
+    <div style="height:100%;width:{{ percentile }}%;background:{{ pct_color }};border-radius:3px;"></div>
+  </div>
+  <span style="font-size:7pt;font-weight:700;color:{{ pct_color }};min-width:30px;text-align:right;">P{{ percentile }}</span>
+  {% if context %}<span style="font-size:6pt;color:#9CA3AF;">{{ context }}</span>{% endif %}
+</div>
+{% endmacro %}
+
+
+{# ─── 10. COMPENSATION CARD: Executive comp breakdown ─── #}
+{# Usage: {{ comp_card("Tim Cook", "CEO", total, components, pay_ratio, say_on_pay) }}
+   components = [{"type":"Salary","amount":"$3M","pct":"4%"},{"type":"Equity","amount":"$70M","pct":"94%"}] #}
+{% macro comp_card(name, title, total, components=[], pay_ratio="", say_on_pay="", actually_paid="", emoji="💼") %}
+<div style="border:1px solid #E5E7EB;border-radius:6px;overflow:hidden;margin:6px 0;">
+  <div style="background:#1F3A5C;color:white;padding:5px 10px;display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-size:8pt;font-weight:700;">{% if emoji %}{{ emoji }} {% endif %}{{ name }} — {{ title }}</span>
+    <span style="font-size:12pt;font-weight:800;">{{ total }}</span>
+  </div>
+  {% if components %}
+  {# Stacked bar #}
+  <div style="display:flex;height:8px;margin:0;">
+    {% for comp in components %}
+    {% set comp_colors = {"Salary":"#1D4ED8","Bonus":"#7C3AED","Equity":"#16A34A","Stock Awards":"#16A34A","Option Awards":"#0891B2","Non-Equity Incentive":"#D97706","Other":"#6B7280","Pension":"#9333EA"} %}
+    <div style="flex:{{ comp.pct|replace('%','') }};background:{{ comp_colors.get(comp.type, '#6B7280') }};"></div>
+    {% endfor %}
+  </div>
+  <div style="padding:6px 10px;">
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+      {% for comp in components %}
+      {% set comp_colors = {"Salary":"#1D4ED8","Bonus":"#7C3AED","Equity":"#16A34A","Stock Awards":"#16A34A","Option Awards":"#0891B2","Non-Equity Incentive":"#D97706","Other":"#6B7280","Pension":"#9333EA"} %}
+      <div style="display:flex;align-items:center;gap:3px;">
+        <div style="width:8px;height:8px;border-radius:2px;background:{{ comp_colors.get(comp.type, '#6B7280') }};"></div>
+        <span style="font-size:7pt;color:#6B7280;">{{ comp.type }}</span>
+        <span style="font-size:7pt;font-weight:600;color:#111827;">{{ comp.amount }}</span>
+        <span style="font-size:6pt;color:#9CA3AF;">({{ comp.pct }})</span>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="display:flex;gap:12px;border-top:1px solid #F3F4F6;padding-top:4px;">
+      {% if actually_paid %}<div style="font-size:7pt;"><span style="color:#6B7280;">Actually Paid:</span> <span style="font-weight:700;color:#111827;">{{ actually_paid }}</span></div>{% endif %}
+      {% if pay_ratio %}<div style="font-size:7pt;"><span style="color:#6B7280;">Pay Ratio:</span> <span style="font-weight:700;">{{ pay_ratio }}</span></div>{% endif %}
+      {% if say_on_pay %}<div style="font-size:7pt;"><span style="color:#6B7280;">Say-on-Pay:</span> <span style="font-weight:700;{% if say_on_pay|replace('%','')|float(0) >= 70 %}color:#16A34A{% else %}color:#DC2626{% endif %};">{{ say_on_pay }}</span></div>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endmacro %}

@@ -1,0 +1,43 @@
+{# Company Identity Block — replaces cover.html.j2.
+   Provides section id="identity" for sidebar TOC linking.
+   Shows: company name, ticker, sector, size, description, run date. #}
+{% set es = executive_summary or {} %}
+{% set snap = es.get('snapshot', {}) if es else {} %}
+{% set cl = classification or {} %}
+
+<section id="identity">
+  <div class="identity-block">
+    <h1 class="identity-company-name">
+      {% if company_logo_b64 %}
+      <img src="data:image/png;base64,{{ company_logo_b64 }}" alt="{{ company_name | default('Company') }} logo" style="height:{% if pdf_mode %}48px{% else %}32px{% endif %};width:auto;display:inline-block;vertical-align:middle;margin-right:0.5rem;border-radius:4px;" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';">
+      <span style="display:none;align-items:center;justify-content:center;height:{% if pdf_mode %}48px{% else %}32px{% endif %};min-width:{% if pdf_mode %}48px{% else %}32px{% endif %};background:var(--do-navy,#0B1D3A);border-radius:4px;color:white;font-weight:700;font-size:{% if pdf_mode %}1.25rem{% else %}1rem{% endif %};vertical-align:middle;margin-right:0.5rem;">{{ (company_name | default("?"))[:1] }}</span>
+      {% else %}
+      <span style="display:inline-flex;align-items:center;justify-content:center;height:{% if pdf_mode %}48px{% else %}32px{% endif %};min-width:{% if pdf_mode %}48px{% else %}32px{% endif %};background:var(--do-navy,#0B1D3A);border-radius:4px;color:white;font-weight:700;font-size:{% if pdf_mode %}1.25rem{% else %}1rem{% endif %};vertical-align:middle;margin-right:0.5rem;">{{ (company_name | default("?"))[:1] }}</span>
+      {% endif %}
+      {{ company_name | default("—") }}
+      {% if ticker %}
+        <span class="identity-ticker">({{ ticker }})</span>
+      {% endif %}
+    </h1>
+    <p class="identity-meta">
+      {% if cl.get('exchange') %}{{ cl.exchange }} |{% endif %}
+      {% if sector %}{{ sector }} |{% endif %}
+      {% if snap.get('industry') %}{{ snap.industry }} |{% endif %}
+      Analyzed: {{ generation_date | default("N/A") }}
+    </p>
+    {% if es.get('business_description') %}
+    <p class="identity-desc">{{ es.business_description  }}</p>
+    {% elif snap.get('description') %}
+    <p class="identity-desc">{{ snap.description  }}</p>
+    {% endif %}
+  </div>
+  {# Build paired KV pairs for CIQ-density 4-column layout #}
+  {# Market Cap and Revenue removed — homes are Decision Dashboard and Financial section (DEDUP-04) #}
+  {% set id_pairs = [] %}
+  {% if snap.get('employees') %}{% set _ = id_pairs.append(("Employees", snap.employees)) %}{% endif %}
+  {% if ipo_date %}{% set _ = id_pairs.append(("IPO / Listed", ipo_date ~ (" — " ~ cl.get('years_public', '') ~ " yrs public" if cl.get('years_public') else ""))) %}
+  {% elif cl.get('years_public') %}{% set _ = id_pairs.append(("IPO / Listed", cl.years_public ~ " yrs public")) %}{% endif %}
+  {% if id_pairs %}
+  {{ paired_kv_table(id_pairs) }}
+  {% endif %}
+</section>

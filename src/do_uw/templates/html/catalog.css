@@ -1,0 +1,382 @@
+/* ══════════════════════════════════════════════════════════════
+   CATALOG DESIGN LANGUAGE v4
+   New visual system for D&O Worksheet. Additive — does NOT
+   override existing classes unless prefixed with .cat-
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Typography ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ── Section Colors ── */
+:root {
+  --cat-dash: #0F172A;
+  --cat-brief: #6D28D9;
+  --cat-company: #0369A1;
+  --cat-market: #EA580C;
+  --cat-financial: #059669;
+  --cat-governance: #D97706;
+  --cat-litigation: #DC2626;
+  --cat-forward: #0D9488;
+  --cat-industry: #7C3AED;
+  --cat-scoring: #0891B2;
+  --cat-uw: #4338CA;
+  --cat-meeting: #BE185D;
+  --cat-audit: #64748B;
+  --cat-gold: #D4A843;
+  --cat-bg: #F8FAFC;
+  --cat-card-bg: #FFFFFF;
+  --cat-border: #E2E8F0;
+  --cat-text: #1E293B;
+  --cat-muted: #64748B;
+  --cat-faint: #94A3B8;
+  --cat-red: #DC2626;
+  --cat-amber: #F59E0B;
+  --cat-green: #16A34A;
+  --cat-blue: #1D4ED8;
+}
+
+/* ── Header Bar (replaces old #111827 header) ── */
+.cat-header {
+  background: var(--cat-dash);
+  color: white;
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+  font-family: Inter, -apple-system, sans-serif;
+}
+.cat-header-logo {
+  min-width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 8px;
+}
+.cat-header-logo-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14pt;
+  font-weight: 800;
+  color: var(--cat-gold);
+  letter-spacing: 1px;
+}
+.cat-header-info {
+  flex: 1;
+  padding: 8px 4px 8px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.cat-header-name {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.cat-header-name h1 {
+  font-size: 20pt;
+  font-weight: 800;
+  line-height: 1;
+  margin: 0;
+  color: white;
+}
+.cat-header-name .cat-ticker {
+  font-size: 12pt;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--cat-gold);
+}
+.cat-header-meta {
+  font-size: 8pt;
+  opacity: 0.55;
+  margin-top: 3px;
+}
+.cat-header-label {
+  position: absolute;
+  left: 50%;
+  top: 3px;
+  transform: translateX(-50%);
+  font-size: 5.5pt;
+  letter-spacing: 2px;
+  opacity: 0.35;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: white;
+}
+.cat-header-right {
+  display: flex;
+  gap: 4px;
+  padding: 6px 6px 6px 0;
+  align-items: stretch;
+}
+.cat-header-stats {
+  background: rgba(255,255,255,0.07);
+  padding: 6px 10px;
+  border-radius: 6px;
+  min-width: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.cat-header-stat {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.5px 0;
+  font-size: 8pt;
+}
+.cat-header-stat-label { opacity: 0.5; }
+.cat-header-stat-value { font-weight: 700; font-size: 9pt; }
+.cat-header-score {
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-align: center;
+  min-width: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.cat-header-score-num {
+  font-size: 28pt;
+  font-weight: 800;
+  line-height: 0.9;
+}
+.cat-header-score-100 {
+  font-size: 5pt;
+  opacity: 0.5;
+}
+.cat-header-score-tier {
+  font-size: 11pt;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-top: 1px;
+}
+.cat-header-score-bar {
+  margin-top: 4px;
+  padding: 2px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.4);
+}
+
+/* ── Navigation Bar ── */
+.cat-nav {
+  background: #1F2937;
+  padding: 4px 8px;
+  display: flex;
+  gap: 3px;
+  border-top: 1px solid #374151;
+}
+.cat-nav-btn {
+  flex: 1;
+  text-align: center;
+  padding: 5px 4px;
+  border-radius: 5px;
+  font-size: 8pt;
+  font-weight: 600;
+  color: #E5E7EB;
+  text-decoration: none;
+  white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.cat-nav-btn .cat-nav-num {
+  font-size: 7pt;
+  font-weight: 800;
+  opacity: 0.5;
+  font-family: 'JetBrains Mono', monospace;
+}
+.cat-nav-btn:hover {
+  background: rgba(255,255,255,0.12);
+}
+.cat-nav-btn.active {
+  color: #111827 !important;
+  border-color: transparent !important;
+}
+
+/* Section-specific nav button colors when active */
+.cat-nav-btn[data-section="scorecard"].active { background: var(--cat-dash) !important; color: white !important; }
+.cat-nav-btn[data-section="executive-brief"].active { background: var(--cat-brief) !important; color: white !important; }
+.cat-nav-btn[data-section="company-operations"].active { background: var(--cat-company) !important; color: white !important; }
+.cat-nav-btn[data-section="stock-market"].active { background: var(--cat-market) !important; color: white !important; }
+.cat-nav-btn[data-section="financial-health"].active { background: var(--cat-financial) !important; color: white !important; }
+.cat-nav-btn[data-section="governance"].active { background: var(--cat-governance) !important; color: white !important; }
+.cat-nav-btn[data-section="litigation"].active { background: var(--cat-litigation) !important; color: white !important; }
+.cat-nav-btn[data-section="forward-looking"].active { background: var(--cat-forward) !important; color: white !important; }
+.cat-nav-btn[data-section="sector-industry"].active { background: var(--cat-industry) !important; color: white !important; }
+.cat-nav-btn[data-section="scoring"].active { background: var(--cat-scoring) !important; color: white !important; }
+.cat-nav-btn[data-section="uw-decision-framework"].active { background: var(--cat-uw) !important; color: white !important; }
+.cat-nav-btn[data-section="meeting-prep"].active { background: var(--cat-meeting) !important; color: white !important; }
+.cat-nav-btn[data-section="audit-trail"].active { background: var(--cat-audit) !important; color: white !important; }
+
+/* Default (inactive) nav button - subtle dark bg */
+.cat-nav-btn:not(.active) {
+  background: #374151;
+  border: 1px solid #4B5563;
+}
+
+/* ── Section Header ── */
+.cat-section-hdr {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 0 8px;
+}
+.cat-section-num {
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1;
+  font-family: 'JetBrains Mono', monospace;
+  opacity: 0.2;
+}
+.cat-section-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--cat-text);
+}
+.cat-section-line {
+  flex: 1;
+  height: 2px;
+  border-radius: 1px;
+  opacity: 0.15;
+}
+
+/* ── Card Frame ── */
+.cat-card {
+  background: var(--cat-card-bg);
+  border: 2px solid var(--cat-border);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.cat-card-hdr {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+}
+.cat-card-num {
+  font-size: 16px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.3);
+  font-family: 'JetBrains Mono', monospace;
+  width: 28px;
+}
+.cat-card-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: white;
+  flex: 1;
+}
+.cat-card-badges {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+.cat-card-badge {
+  font-size: 7px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.cat-card-body {
+  padding: 0;
+}
+
+/* ── Data Source Pills ── */
+.cat-dsrc-panel {
+  padding: 6px 16px;
+  background: #FAFBFC;
+  border-bottom: 1px solid #F1F5F9;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+.cat-dsrc {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 7px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+.cat-dsrc-xbrl { background: #DCFCE7; color: #166534; }
+.cat-dsrc-yfinance { background: #FEF3C7; color: #92400E; }
+.cat-dsrc-llm { background: #F3E8FF; color: #7C3AED; }
+.cat-dsrc-web { background: #DBEAFE; color: #1D4ED8; }
+.cat-dsrc-computed { background: #F1F5F9; color: #475569; }
+.cat-dsrc-sec { background: #FFE4E6; color: #9F1239; }
+.cat-dsrc-supabase { background: #E0F2FE; color: #075985; }
+
+/* ── Sub-block within a card ── */
+.cat-sub {
+  border-bottom: 1px solid #F1F5F9;
+}
+.cat-sub:last-child { border-bottom: none; }
+.cat-sub-hdr {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cat-sub-letter {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+}
+.cat-sub-name {
+  font-size: 11px;
+  font-weight: 700;
+  flex: 1;
+  color: var(--cat-text);
+}
+.cat-sub-type {
+  font-size: 7px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  background: #F1F5F9;
+  color: #475569;
+}
+.cat-sub-body {
+  padding: 0 16px 12px 44px;
+}
+
+/* ── Badge types ── */
+.cat-b-chart { background: #DBEAFE; color: #1D4ED8; }
+.cat-b-table { background: #FEF3C7; color: #92400E; }
+.cat-b-narr { background: #F3E8FF; color: #7C3AED; }
+.cat-b-cards { background: #DCFCE7; color: #166534; }
+.cat-b-alert { background: #FEF2F2; color: #991B1B; }
+.cat-b-viz { background: #EDE9FE; color: #6D28D9; }
+.cat-b-layer { background: #F1F5F9; color: #475569; }
+.cat-b-metric { background: #F0FDF4; color: #166534; }
+
+/* ── Print: catalog elements ── */
+@media print {
+  .cat-header { position: static !important; }
+  .cat-nav { display: none !important; }
+  .cat-card { break-inside: avoid; }
+  .cat-section-hdr { break-after: avoid; }
+  .cat-dsrc-panel { display: none; }
+}

@@ -1,0 +1,42 @@
+{# Temporal Signals — extracted from scoring.html.j2 #}
+{% set real_signals = [] %}
+{% if temporal_signals %}
+  {% for sig in temporal_signals %}
+    {% if sig.type and sig.type != 'Unknown' and sig.direction and sig.direction != 'N/A' %}
+      {% set _ = real_signals.append(sig) %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{% if real_signals %}
+<h3>Temporal Signals</h3>
+<p style="font-size:0.6875rem; color:#64748b; margin:0.25rem 0 0.5rem;">Year-over-year changes in disclosure patterns, financial metrics, and risk indicators. Significant changes may signal evolving risk profile.</p>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Signal</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1">Direction</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Magnitude</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">D&O Relevance</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for sig in real_signals %}
+    {% set sig_type = sig.type | humanize %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold text-xs">{{ sig_type }}</td>
+      <td class="p-1 text-center">
+        {% if 'triggered' in (sig.direction | lower) or sig.direction == 'Triggered' %}
+        <span style="color:#B91C1C; font-weight:700;">▲ Triggered</span>
+        {% else %}
+        <span style="color:#64748b;">{{ sig.direction | humanize }}</span>
+        {% endif %}
+      </td>
+      <td class="p-1 text-right tabular-nums font-semibold">{{ sig.magnitude }}</td>
+      <td class="p-1 text-xs text-gray-600">{{ sig.description | humanize_evidence }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+{# No heading and no gap notice — just silently omit empty temporal signals #}
+{% endif %}

@@ -1,0 +1,67 @@
+{# Peer Benchmarking (SEC Filers) — dual-bar percentile display #}
+{% set pp = fin.get('peer_percentiles', {}) %}
+{% if pp.get('has_data') %}
+<h3>Peer Benchmarking (SEC Filers)</h3>
+{# Check if Position (percentile bar) column has real data #}
+{% set ns_pp = namespace(show_position=false) %}
+{% for m in pp.metrics %}
+  {% if m.overall is not none or m.sector is not none %}{% set ns_pp.show_position = true %}{% endif %}
+{% endfor %}
+<div class="text-xs text-gray-500 mb-2">
+  Percentile position among {{ pp.filer_count | default('—') }} SEC filers
+  {%- if pp.sector_name %} (sector: {{ pp.sector_name }}){% endif %}.
+  {% if ns_pp.show_position %}
+  <span style="display:inline-block;width:10px;height:10px;background:var(--do-navy);border-radius:2px;vertical-align:middle;margin:0 2px;"></span> All filers
+  <span style="display:inline-block;width:10px;height:10px;background:var(--do-gold);opacity:0.6;border-radius:2px;vertical-align:middle;margin:0 2px;"></span> Sector peers
+  {% endif %}
+</div>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase" style="width:25%;">Metric</th>
+      <th class="text-right p-1 border-b font-heading text-xs font-semibold uppercase" style="width:15%;">Value</th>
+      <th class="text-center px-2 py-2 border-b font-heading text-xs font-semibold uppercase" style="width:10%;">Pctl</th>
+      {% if ns_pp.show_position %}<th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase" style="min-width:200px;">Position</th>{% endif %}
+    </tr>
+  </thead>
+  <tbody class="tabular-nums">
+    {% for m in pp.metrics %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-medium text-xs">
+        {{ m.label }}
+        {% if m.favorable_direction == 'high' %}
+        <span class="text-gray-400" title="Higher is better">&uarr;</span>
+        {% elif m.favorable_direction == 'low' %}
+        <span class="text-gray-400" title="Lower is better">&darr;</span>
+        {% endif %}
+      </td>
+      <td class="p-1 text-right text-xs">{{ m.company_value }}</td>
+      <td class="px-2 py-2 text-center font-semibold text-xs">
+        {% if m.overall is not none %}{{ m.overall | int }}{{ 'th' if m.overall | int not in [1, 2, 3] else (['st', 'nd', 'rd'][m.overall | int - 1] if m.overall | int in [1, 2, 3] else 'th') }}{% else %}—{% endif %}
+      </td>
+      {% if ns_pp.show_position %}
+      <td class="px-3 py-1">
+        <div class="percentile-bar" style="min-width:200px;">
+          {# Overall bar (navy or risk-colored) #}
+          {% if m.overall is not none %}
+          <div class="percentile-fill" style="width: {{ m.overall }}%; background: {{ m.risk_color }}; opacity: 0.85;" title="Overall: {{ m.overall | int }}th pctl ({{ m.filer_count }} filers)"></div>
+          {% endif %}
+          {# Sector bar (gold, layered on top at 50% opacity) #}
+          {% if m.sector is not none %}
+          <div class="percentile-fill" style="width: {{ m.sector }}%; background: var(--do-gold); opacity: 0.5; z-index: 2;" title="Sector: {{ m.sector | int }}th pctl ({{ m.sector_filer_count }} filers)"></div>
+          {% endif %}
+        </div>
+      </td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<style>
+@media print {
+  .percentile-fill { opacity: 1 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+{% else %}
+<p class="text-sm text-gray-500 italic my-2">Peer benchmarking data not available. Frames API data may not have been acquired during the benchmark stage.</p>
+{% endif %}

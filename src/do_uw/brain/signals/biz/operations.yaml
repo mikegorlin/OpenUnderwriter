@@ -1,0 +1,462 @@
+# Operational data signals — Phase 94 (OPS-02, OPS-03, OPS-04)
+# Domain: biz/operations.yaml  |  Count: 3
+- id: BIZ.OPS.subsidiary_structure
+  name: Subsidiary Jurisdiction Structure
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F9
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - exhibit_21
+    - item_1_business
+  threshold:
+    type: tiered
+    red: '>20 jurisdictions OR >5 high-regulatory jurisdictions'
+    yellow: '>10 jurisdictions OR >3 high-regulatory jurisdictions'
+    clear: <=10 jurisdictions AND <=3 high-regulatory jurisdictions
+  claims_correlation: 0.6
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - GOVERNMENT
+  v6_subsection_ids:
+  - '1.3'
+  - '1.9'
+  data_strategy:
+    field_key: subsidiary_structure
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_phase_94
+    confidence: high
+    last_validated: '2026-03-10'
+    source_url:
+    source_date:
+    source_author:
+    added_by: phase_94
+    data_source: SEC_10K
+    threshold_provenance:
+      source: underwriting_practice
+      rationale: '>20 jurisdictions creates material regulatory coordination risk; >5 high-regulatory jurisdictions amplifies
+        compliance exposure'
+    render_target: subsidiary_structure
+    formula: jurisdiction_count + regulatory_regime_count
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: Jurisdiction count and regulatory regime complexity
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - company.subsidiary_structure
+  evaluation:
+    formula: jurisdiction_count + regulatory_regime_count
+    thresholds:
+    - op: '>'
+      value: 20.0
+      label: RED
+    - op: '>'
+      value: 5.0
+      label: RED
+    - op: '>'
+      value: 10.0
+      label: YELLOW
+    - op: '>'
+      value: 3.0
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: '{jurisdiction_count} jurisdictions'
+    - level: standard
+      template: '{jurisdiction_count} jurisdictions across {high_reg_count} high-regulatory regimes'
+    - level: deep
+      fields:
+      - jurisdictions
+      - high_reg_count
+      - low_reg_count
+      - tax_haven_count
+    context_templates:
+      TRIGGERED: 'Complex multi-jurisdiction structure: {jurisdiction_count} jurisdictions including {high_reg_count} high-regulatory'
+      CLEAR: Jurisdictional structure within normal range
+    do_context:
+      TRIGGERED_RED: '{company} Subsidiary Jurisdiction Structure at {value} (threshold: >20 jurisdictions OR >5 high-regulatory
+        jurisdictions) signals elevated SEC Enforcement / Regulatory Compliance risk (F9). Multi-jurisdiction subsidiary structure creates FCPA exposure and cross-border regulatory risk. Complex jurisdictional presence increases the probability of regulatory action that triggers D&O disclosure obligations.'
+      TRIGGERED_YELLOW: '{company} Subsidiary Jurisdiction Structure at {value} (threshold: >10 jurisdictions OR >3 high-regulatory
+        jurisdictions) is in the caution zone for SEC Enforcement / Regulatory Compliance (F9). Monitor for deterioration
+        — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Subsidiary Jurisdiction Structure at {value} is within acceptable range for SEC Enforcement / Regulatory
+        Compliance (F9) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  group: operational_complexity
+  signal_class: evaluative
+  field_path: subsidiary_structure
+  depends_on:
+  - signal: BASE.FILING.10K
+    field: exhibit_21
+  epistemology:
+    rule_origin: 'D&O underwriting practice: operational complexity as predictor of regulatory and governance risk'
+    threshold_basis: '>20 jurisdictions creates material regulatory coordination risk; >5 high-regulatory jurisdictions amplifies
+      compliance exposure'
+  rap_class: host
+  rap_subcategory: host.structure
+- id: BIZ.OPS.workforce
+  name: Workforce Distribution
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F9
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - human_capital
+  threshold:
+    type: tiered
+    red: '>60% international OR >40% unionized'
+    yellow: '>40% international OR >20% unionized'
+    clear: <=40% international AND <=20% unionized
+  claims_correlation: 0.5
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - EMPLOYEES
+  v6_subsection_ids:
+  - '1.3'
+  data_strategy:
+    field_key: workforce_distribution
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_phase_94
+    confidence: high
+    last_validated: '2026-03-10'
+    source_url:
+    source_date:
+    source_author:
+    added_by: phase_94
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: High international workforce concentration creates multi-jurisdiction employment law exposure; high 
+        unionization creates collective action and labor dispute risk
+    render_target: workforce_distribution
+    formula: international_pct + unionization_pct
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: International concentration and unionization percentage
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - company.workforce_distribution
+  evaluation:
+    formula: international_pct + unionization_pct
+    thresholds:
+    - op: '>'
+      value: 60.0
+      label: RED
+    - op: '>'
+      value: 40.0
+      label: RED
+    - op: '>'
+      value: 40.0
+      label: YELLOW
+    - op: '>'
+      value: 20.0
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: '{total_employees} employees'
+    - level: standard
+      template: '{domestic_pct}% domestic / {international_pct}% international, {unionization_pct}% unionized'
+    - level: deep
+      fields:
+      - total_employees
+      - domestic_count
+      - international_count
+      - domestic_pct
+      - international_pct
+      - unionized_count
+      - unionized_pct
+    context_templates:
+      TRIGGERED: 'Workforce risk: {detail}'
+      CLEAR: Workforce distribution within normal parameters
+    do_context:
+      TRIGGERED_RED: '{company} Workforce Distribution at {value} (threshold: >60% international OR >40% unionized) signals
+        elevated SEC Enforcement / Regulatory Compliance risk (F9). Workforce distribution creates employment law exposure across multiple jurisdictions. Multi-state workforce creates aggregate employment class action risk that requires disclosure when material.'
+      TRIGGERED_YELLOW: '{company} Workforce Distribution at {value} (threshold: >40% international OR >20% unionized) is
+        in the caution zone for SEC Enforcement / Regulatory Compliance (F9). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Workforce Distribution at {value} is within acceptable range for SEC Enforcement / Regulatory Compliance
+        (F9) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  group: operational_complexity
+  signal_class: evaluative
+  field_path: workforce_distribution
+  depends_on:
+  - signal: BASE.FILING.10K
+    field: item_1_business
+  epistemology:
+    rule_origin: 'D&O underwriting practice: operational complexity as predictor of regulatory and governance risk'
+    threshold_basis: High international workforce concentration creates multi-jurisdiction employment law exposure; high
+      unionization creates collective action and labor dispute risk
+  rap_class: host
+  rap_subcategory: host.structure
+- id: BIZ.OPS.resilience
+  name: Operational Resilience
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F9
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+  threshold:
+    type: tiered
+    red: Geographic concentration >80 OR single facility risk
+    yellow: Geographic concentration >60 OR shallow supply chain
+    clear: Geographic concentration <=60 AND no single facility risk AND non-shallow supply chain
+  claims_correlation: 0.4
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '1.3'
+  - '1.9'
+  data_strategy:
+    field_key: operational_resilience
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_phase_94
+    confidence: high
+    last_validated: '2026-03-10'
+    source_url:
+    source_date:
+    source_author:
+    added_by: phase_94
+    data_source: SEC_10K
+    threshold_provenance:
+      source: underwriting_practice
+      rationale: Geographic concentration and single-facility dependency create catastrophic loss potential; shallow 
+        supply chains amplify disruption risk
+    render_target: operational_resilience
+    formula: geographic_concentration + single_facility_risk + supply_chain_depth
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: Geographic concentration, facility risk, and supply chain depth
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - company.operational_resilience
+  evaluation:
+    formula: geographic_concentration + single_facility_risk + supply_chain_depth
+    thresholds:
+    - op: '>'
+      value: 80.0
+      label: RED
+    - op: ==
+      value: true
+      label: RED
+    - op: '>'
+      value: 60.0
+      label: YELLOW
+    - op: ==
+      value: shallow
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Resilience: {overall_assessment}'
+    - level: standard
+      template: 'Geographic concentration: {geographic_concentration_score}, Facility risk: {single_facility_risk}, Supply
+        chain: {supply_chain_depth}'
+    - level: deep
+      fields:
+      - geographic_concentration_score
+      - primary_geography
+      - single_facility_risk
+      - supply_chain_depth
+      - supply_chain_description
+      - overall_assessment
+    context_templates:
+      TRIGGERED: 'Operational resilience concern: {detail}'
+      CLEAR: Operational resilience adequate
+    do_context:
+      TRIGGERED_RED: '{company} Operational Resilience at {value} (threshold: Geographic concentration >80 OR single facility
+        risk) signals elevated SEC Enforcement / Regulatory Compliance risk (F9). Operational resilience weakness signals vulnerability to disruption events. When disruptions occur, inadequate resilience extends recovery time and amplifies earnings impact, increasing SCA filing probability.'
+      TRIGGERED_YELLOW: '{company} Operational Resilience at {value} (threshold: Geographic concentration >60 OR shallow supply
+        chain) is in the caution zone for SEC Enforcement / Regulatory Compliance (F9). Monitor for deterioration — trend
+        direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Operational Resilience at {value} is within acceptable range for SEC Enforcement / Regulatory Compliance
+        (F9) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  group: operational_complexity
+  signal_class: evaluative
+  field_path: operational_resilience
+  depends_on:
+  - signal: BASE.FILING.10K
+    field: item_1_business
+  - signal: BASE.FILING.10K
+    field: item_1a_risk_factors
+  epistemology:
+    rule_origin: 'D&O underwriting practice: operational complexity as predictor of regulatory and governance risk'
+    threshold_basis: Geographic concentration and single-facility dependency create catastrophic loss potential; shallow
+      supply chains amplify disruption risk
+  rap_class: host
+  rap_subcategory: host.structure
+- id: BIZ.OPS.complexity_score
+  name: Operational Complexity Score
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F9
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - exhibit_21
+    - item_1_business
+  threshold:
+    type: tiered
+    red: Composite score >15 (multi-dimensional operational complexity)
+    yellow: Composite score >8 (moderate operational complexity)
+    clear: Composite score <=8 (operational complexity within normal range)
+  claims_correlation: 0.6
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - GOVERNMENT
+  v6_subsection_ids:
+  - '1.3'
+  - '1.9'
+  data_strategy:
+    field_key: ops_complexity_score
+    primary_source: SEC_10K
+  worksheet_section: company_profile
+  display_when: has_data
+  provenance:
+    origin: v6_phase_99
+    confidence: high
+    last_validated: '2026-03-10'
+    source_url:
+    source_date:
+    source_author:
+    added_by: phase_99
+    data_source: SEC_10K
+    threshold_provenance:
+      source: underwriting_practice
+      rationale: Composite of jurisdiction count, regulatory regime, workforce distribution, segment complexity, and 
+        special structures (VIE, dual-class) weighted to 0-20 scale
+    render_target: ops_complexity_score
+    formula: jurisdiction_weighted + high_reg_weighted + segment_weighted + intl_pct_weighted + vie_present + 
+      dual_class_present + unionization_flag
+  display:
+    value_format: numeric
+    source_type: SEC_10K
+    threshold_context: Weighted composite of operational complexity dimensions (0-20 scale)
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - company.subsidiary_structure
+      - company.workforce_distribution
+      - company.operational_resilience
+    - type: STATE
+      fields:
+      - text_signals.vie_spe
+      - governance.dual_class
+  evaluation:
+    formula: jurisdiction_weighted + high_reg_weighted + segment_weighted + intl_pct_weighted + vie_present + 
+      dual_class_present + unionization_flag
+    thresholds:
+    - op: '>'
+      value: 15.0
+      label: RED
+    - op: '>'
+      value: 8.0
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Complexity: {level}'
+    - level: standard
+      template: '{value}/20 — {detail}'
+    - level: deep
+      fields:
+      - jurisdiction_count
+      - high_reg_count
+      - segment_count
+      - international_pct
+      - vie_present
+      - dual_class_present
+      - unionized_pct
+    context_templates:
+      TRIGGERED: 'Elevated operational complexity: score {value}'
+      CLEAR: Operational complexity within normal range
+    do_context:
+      TRIGGERED_RED: '{company} Operational Complexity Score at {value} (threshold: Composite score >15 (multi-dimensional
+        operational complexity)) signals elevated SEC Enforcement / Regulatory Compliance risk (F9, F10). Operational complexity increases the probability of internal control failures and financial reporting errors. Complex operations create more opportunities for misstatement and make audit verification more difficult.'
+      TRIGGERED_YELLOW: '{company} Operational Complexity Score at {value} (threshold: Composite score >8 (moderate operational
+        complexity)) is in the caution zone for SEC Enforcement / Regulatory Compliance (F9, F10). Monitor for deterioration
+        — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Operational Complexity Score at {value} is within acceptable range for SEC Enforcement / Regulatory
+        Compliance (F9, F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  group: operational_complexity
+  signal_class: evaluative
+  field_path: ops_complexity_score
+  depends_on:
+  - signal: BIZ.OPS.subsidiary_structure
+    field: subsidiary_structure
+  - signal: BIZ.OPS.workforce
+    field: workforce_distribution
+  - signal: BIZ.OPS.resilience
+    field: operational_resilience
+  epistemology:
+    rule_origin: 'D&O underwriting practice: operational complexity as predictor of regulatory and governance risk'
+    threshold_basis: Composite of jurisdiction count, regulatory regime, workforce distribution, segment complexity, and
+      special structures (VIE, dual-class) weighted to 0-20 scale
+  rap_class: host
+  rap_subcategory: host.structure

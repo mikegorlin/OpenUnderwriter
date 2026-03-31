@@ -1,0 +1,35 @@
+# Narrative configuration for Financial Health section
+# 5-layer architecture: Verdict > Thesis > Evidence Grid > Implications > Deep Context
+
+id: financial_health
+name: Financial Health
+
+verdict:
+  thresholds:
+    CRITICAL: CRITICAL
+    ELEVATED: CONCERNING
+    CLEAN: FAVORABLE
+
+thesis_template: >
+  Financial position {{ 'raises significant concerns' if density_level == 'CRITICAL' else 'shows elevated risk indicators' if density_level == 'ELEVATED' else 'appears stable' }}.
+  {% if distress_triggered %}Distress model indicators flagged — heightened securities fraud allegation risk.{% endif %}
+  {% if restatement_risk %}Accounting irregularity signals detected — direct D&O coverage trigger.{% endif %}
+
+evidence_keys:
+  - financials.revenue
+  - financials.net_income
+  - financials.total_assets
+  - financials.total_debt
+  - financials.distress_indicators
+  - financials.key_metrics
+
+implications_template: >
+  {% if density_level == 'CRITICAL' %}Financial distress directly correlates with D&O claim frequency — evaluate financial condition exclusion applicability.{% endif %}
+  {% if density_level == 'ELEVATED' %}Earnings quality concerns may support materiality arguments in securities litigation.{% endif %}
+  {% if density_level == 'CLEAN' %}Stable financial position supports standard underwriting parameters.{% endif %}
+
+deep_context_keys:
+  - financials.quarterly_updates
+  - financials.earnings_quality
+  - financials.audit_profile
+  - financials.peer_matrix

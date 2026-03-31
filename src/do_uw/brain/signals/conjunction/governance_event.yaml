@@ -1,0 +1,50 @@
+- id: CONJ.GOV.governance_event
+  name: Weak Governance + Adverse Event
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: Weak governance indicators combined with material adverse event (restatement, enforcement, executive departure)
+  provenance:
+    origin: phase_110_conjunction
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Conjunction of governance weakness + adverse event signals
+    threshold_provenance:
+      source: calibrated
+      rationale: ISS governance quality research shows 3.1x settlement multiplier when governance failures precede 
+        adverse events
+  signal_class: inference
+  group: structural_governance
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  epistemology:
+    rule_origin: 'ISS governance quality research and D&O claims experience: weak boards amplify adverse event severity'
+    threshold_basis: 3+ of 5 conditions met triggers RED; calibrated from governance-event co-occurrence in SCAC filings
+  evaluation:
+    mechanism: conjunction
+    conjunction_rules:
+      required_signals:
+      - GOV.BOARD.independence
+      - GOV.BOARD.expertise
+      - FIN.ACCT.restatement
+      - LIT.SEC.enforcement
+      - EXEC.TURN.c_suite
+      minimum_matches: 3
+      signal_conditions: {}
+      recommendation_floor: ELEVATED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} weak governance + adverse event at {value} represents agent risk (executive/director actions
+        and decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based on D&O
+        claims experience.'
+      TRIGGERED_YELLOW: '{company} weak governance + adverse event at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} weak governance + adverse event at {value} is within normal parameters for D&O risk assessment — no
+        D&O concern at this level.'

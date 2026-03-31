@@ -1,0 +1,160 @@
+# Derivative & Hedging Signals — XBRL-sourced D&O risk indicators
+# Domain: fin/derivatives.yaml  |  Count: 2
+- id: FIN.DERIV.notional_exposure
+  name: Derivative Notional Exposure
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - derivatives_note
+    - fair_value_note
+  threshold:
+    type: tiered
+    red: Derivative notional > 100% of total assets — massive off-balance-sheet exposure
+    yellow: Derivative notional > 50% of total assets — significant off-balance-sheet risk
+    clear: Derivative notional <= 50% of total assets
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.1'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:DerivativeNotionalAmount
+    - us-gaap:DerivativeFairValueOfDerivativeNet
+    - us-gaap:NotionalAmountOfInterestRateDerivativesInNetInvestmentHedge
+    - us-gaap:Assets
+    expected_type: numeric
+    no_data_sentinel: Derivative notional data not found in XBRL
+    validation_rule: notional_pct >= 0
+  data_strategy:
+    field_key: xbrl_derivative_notional_pct
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Derivative notional >50% of assets indicates significant off-balance-sheet risk per SEC derivatives disclosure rules and bank regulatory capital analysis
+    render_target: key_metrics
+    formula: derivative_notional / total_assets
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_derivative_notional_pct
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Off-balance-sheet risk analysis: derivative notional amounts represent contingent exposure that can produce sudden, material losses when market conditions shift — the complexity of derivative positions also creates disclosure adequacy risk'
+    threshold_basis: 'Notional >50% of assets: significant off-balance-sheet exposure based on SEC derivatives disclosure focus and historical derivative loss events; >100%: massive exposure requiring detailed risk management assessment'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} derivative notional exposure at {value} of total assets (threshold: >100%) signals massive off-balance-sheet risk (F3/F6). Notional amounts of this magnitude create tail risk exposure to market dislocations — when derivative losses materialize, the complexity of these positions often means management failed to adequately disclose risk, supporting scienter allegations in SCA filings.'
+      TRIGGERED_YELLOW: '{company} derivative notional exposure at {value} of total assets (threshold: >50%) indicates significant off-balance-sheet risk (F3/F6). Monitor for changes in fair value and hedge effectiveness — derivative positions of this magnitude require sophisticated risk management and clear disclosure to avoid allegations of concealed risk.'
+      CLEAR: '{company} derivative notional exposure at {value} of total assets is within normal parameters (F3/F6) — derivative positions do not indicate outsized off-balance-sheet risk.'
+
+- id: FIN.DERIV.fair_value_risk
+  name: Derivative Fair Value Risk
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_10Q
+  data_locations:
+    SEC_10K:
+    - derivatives_note
+    - fair_value_note
+    SEC_10Q:
+    - derivatives_note
+  threshold:
+    type: tiered
+    red: Net derivative fair value negative and > 3% of equity — material mark-to-market exposure
+    yellow: Net derivative fair value negative and > 1% of equity — elevated mark-to-market risk
+    clear: Net derivative fair value positive or negative <= 1% of equity
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:DerivativeFairValueOfDerivativeNet
+    - us-gaap:DerivativeFairValueOfDerivativeLiability
+    - us-gaap:DerivativeFairValueOfDerivativeAsset
+    - us-gaap:StockholdersEquity
+    expected_type: numeric
+    no_data_sentinel: Derivative fair value data not found in XBRL
+    validation_rule: fair_value is numeric
+  data_strategy:
+    field_key: xbrl_derivative_fair_value_pct
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Negative net derivative fair value >1% of equity signals mark-to-market losses that may indicate ineffective hedges or speculative positions
+    render_target: key_metrics
+    formula: derivative_fair_value_net / stockholders_equity
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_derivative_fair_value_pct
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Derivatives accounting risk: negative fair values signal mark-to-market losses that may indicate ineffective hedges, speculative positions, or failed hedge accounting — each creates different D&O exposure'
+    threshold_basis: 'Negative FV >1% of equity: material mark-to-market exposure; >3%: significant loss position indicating potential hedge failure or speculative loss'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} net derivative fair value at {value} of equity (threshold: negative >3%) signals material mark-to-market exposure (F3). Significant negative fair value on derivatives indicates either failed hedges or speculative losses — when these losses flow through earnings or OCI, the resulting write-downs create the ''bad news'' catalyst for SCA filings, especially if management represented these positions as risk-reducing.'
+      TRIGGERED_YELLOW: '{company} net derivative fair value at {value} of equity (threshold: negative >1%) indicates elevated mark-to-market risk (F3). Monitor for hedge effectiveness test failures and OCI reclassifications — transitions from hedge accounting to trading accounting can produce sudden earnings volatility.'
+      CLEAR: '{company} derivative fair value position at {value} of equity is within normal parameters (F3) — no indication of material mark-to-market losses on derivative positions.'

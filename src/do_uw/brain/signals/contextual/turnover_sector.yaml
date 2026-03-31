@@ -1,0 +1,52 @@
+- id: CTX.MKT.turnover_sector
+  name: Stock Turnover in Sector Context
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of STOCK.VOL.turnover_rate through sector lens
+    threshold_provenance:
+      source: calibrated
+      rationale: Turnover norms from NYSE/NASDAQ trading data by sector classification
+  signal_class: inference
+  group: stock_performance
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  epistemology:
+    rule_origin: 'D&O underwriting practice: stock turnover baseline varies by sector trading patterns'
+    threshold_basis: Turnover norms from NYSE/NASDAQ trading data by sector classification
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: STOCK.VOL.turnover_rate
+      context_dimensions:
+      - sector
+      context_adjustments:
+        tech:
+          threshold_adjustment: 1.4
+          rationale: 'Tech: higher turnover from retail/momentum traders'
+        utilities:
+          threshold_adjustment: 0.5
+          rationale: 'Utilities: low turnover expected; spikes indicate stress'
+        financial:
+          threshold_adjustment: 1.1
+          rationale: 'Financial: moderate turnover from institutional activity'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} stock turnover in sector context at {value} represents environment risk (external market,
+        regulatory, and industry conditions affecting D&O liability) — this level is associated with D&O risk assessment exposure
+        based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} stock turnover in sector context at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} stock turnover in sector context at {value} is within normal parameters for D&O risk assessment —
+        no D&O concern at this level.'

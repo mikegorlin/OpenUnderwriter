@@ -1,0 +1,51 @@
+{# Executive Risk -- Executive Risk Profiles facet template.
+   Renders EXEC.PROFILE.*, EXEC.CEO.*, EXEC.CFO.*, EXEC.AGGREGATE.* signals.
+   Part of facet dispatch for executive_risk section (Phase 62-01). #}
+
+{% set exec_signals = signal_results_by_section.get('EXEC', []) %}
+{% set profile_signals = [] %}
+{% for sig in exec_signals %}
+  {% if sig.signal_id.startswith('EXEC.PROFILE.') or sig.signal_id.startswith('EXEC.CEO.') or sig.signal_id.startswith('EXEC.CFO.') or sig.signal_id.startswith('EXEC.AGGREGATE.') %}
+    {% set _ = profile_signals.append(sig) %}
+  {% endif %}
+{% endfor %}
+
+{% if profile_signals %}
+<h3>Executive Risk Profiles</h3>
+{% set kv_items = [] %}
+{% for sig in profile_signals %}
+  {% set _ = kv_items.append({
+    'key': sig.signal_name | humanize,
+    'value': sig.formatted_value | default(sig.value | default('—'), true)
+  }) %}
+{% endfor %}
+{{ kv_table(kv_items) }}
+
+{# Aggregate risk summary from analysis context #}
+{% if executive_risk %}
+<div class="bg-bg-alt border border-gray-200 rounded p-4 my-3 page-break-inside-avoid">
+  <p class="font-heading text-sm m-0">
+    Weighted Score: <strong>{{ executive_risk.weighted_score }}</strong> |
+    Risk Level: <strong>{{ executive_risk.risk_level | humanize }}</strong>
+  </p>
+</div>
+{% if executive_risk.findings %}
+<ul class="text-sm space-y-1 my-2">
+  {% for finding in executive_risk.findings %}
+  <li>{% if finding is mapping %}{% if finding.person %}<strong>{{ finding.person }}</strong>: {% endif %}{{ finding.detail }}{% else %}{{ finding }}{% endif %}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endif %}
+{% else %}
+{# No signal data -- show gap notice if executive_risk analysis available #}
+{% if executive_risk %}
+<h3>Executive Risk Profiles</h3>
+<div class="bg-bg-alt border border-gray-200 rounded p-4 my-3 page-break-inside-avoid">
+  <p class="font-heading text-sm m-0">
+    Weighted Score: <strong>{{ executive_risk.weighted_score }}</strong> |
+    Risk Level: <strong>{{ executive_risk.risk_level | humanize }}</strong>
+  </p>
+</div>
+{% endif %}
+{% endif %}

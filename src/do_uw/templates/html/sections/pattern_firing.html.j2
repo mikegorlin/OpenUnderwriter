@@ -1,0 +1,225 @@
+{# Pattern Detection Engine Firing Panel (Phase 109)
+   Renders all 10 items: 4 engines + 6 archetypes as a card grid.
+   Each card shows MATCH (amber/orange) or NOT_FIRED (gray) status.
+   Placed after scoring section, before severity P x S chart. #}
+
+{% if pattern_context is defined and pattern_context.patterns_available %}
+<section class="section pattern-firing-panel" id="pattern-firing">
+  <style>
+    .pf-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .pf-card {
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .pf-card-header {
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .pf-card-header.match {
+      background: linear-gradient(135deg, #e65100, #ff8f00);
+      color: #fff;
+    }
+    .pf-card-header.not-fired {
+      background: #6c757d;
+      color: #fff;
+    }
+    .pf-badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .pf-badge.match {
+      background: rgba(255,255,255,0.25);
+      color: #fff;
+    }
+    .pf-badge.not-fired {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+    }
+    .pf-card-body {
+      padding: 10px 12px;
+      font-size: 0.78rem;
+      color: #495057;
+    }
+    .pf-card-body.not-fired-body {
+      background: #f8f9fa;
+      color: #868e96;
+    }
+    .pf-headline {
+      margin: 0 0 6px;
+      line-height: 1.35;
+    }
+    .pf-confidence-bar {
+      height: 4px;
+      background: #e9ecef;
+      border-radius: 2px;
+      margin: 6px 0;
+      overflow: hidden;
+    }
+    .pf-confidence-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #e65100, #ff8f00);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+    .pf-match-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: #fff3e0;
+      color: #e65100;
+      margin-right: 6px;
+    }
+    .pf-floor-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: #ffecb3;
+      color: #bf360c;
+    }
+    .pf-detail {
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px solid #e9ecef;
+      font-size: 0.72rem;
+      color: #6c757d;
+    }
+    .pf-detail ul {
+      margin: 4px 0 0;
+      padding-left: 16px;
+    }
+    .pf-detail li {
+      margin-bottom: 2px;
+    }
+    .pf-summary {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .pf-summary-stat {
+      font-size: 0.82rem;
+      color: #495057;
+    }
+    .pf-summary-stat strong {
+      color: #212529;
+    }
+    .pf-section-subtitle {
+      font-size: 0.82rem;
+      color: #868e96;
+      margin: 4px 0 8px;
+      font-weight: 400;
+    }
+  </style>
+
+  <h3>Pattern Detection Engines</h3>
+  <p class="pf-section-subtitle">
+    {{ pattern_context.engines_fired }}/4 engines fired &middot;
+    {{ pattern_context.archetypes_fired }}/6 archetypes matched
+    {% if pattern_context.highest_floor %}
+      &middot; Highest floor: <strong>{{ pattern_context.highest_floor }}</strong>
+    {% endif %}
+  </p>
+
+  <div class="pf-grid">
+    {% for item in pattern_context['items'] %}
+    <div class="pf-card">
+      {# Card header #}
+      <div class="pf-card-header {{ 'match' if item.status == 'MATCH' else 'not-fired' }}">
+        <span>{{ item.name }}</span>
+        <span class="pf-badge {{ 'match' if item.status == 'MATCH' else 'not-fired' }}">
+          {{ item.status | replace("_", " ") }}
+        </span>
+      </div>
+
+      {# Card body #}
+      <div class="pf-card-body {{ '' if item.status == 'MATCH' else 'not-fired-body' }}">
+        {% if item.status == 'MATCH' %}
+          {# Confidence bar #}
+          <div class="pf-confidence-bar">
+            <div class="pf-confidence-fill" style="width: {{ item.confidence_pct }}%"></div>
+          </div>
+
+          {# Match badge for archetypes #}
+          {% if item.type == 'archetype' and item.match_badge %}
+            <span class="pf-match-badge">{{ item.match_badge }}</span>
+          {% endif %}
+
+          {# Recommendation floor badge #}
+          {% if item.recommendation_floor %}
+            <span class="pf-floor-badge">Floor: {{ item.recommendation_floor }}</span>
+          {% endif %}
+
+          <p class="pf-headline">{{ item.headline }}</p>
+
+          {# Drill-down details #}
+          {% if item.has_detail %}
+            <div class="pf-detail">
+              {% if item.type == 'engine' and item.findings %}
+                <ul>
+                {% for finding in item.findings[:5] %}
+                  <li>
+                    {% if finding.case_name is defined %}
+                      {{ finding.case_name }}
+                      {% if finding.similarity is defined %}({{ "%.0f" | format(finding.similarity * 100) }}%){% endif %}
+                      {% if finding.outcome is defined %} &mdash; {{ finding.outcome }}{% endif %}
+                      {% if finding.note is defined %} &mdash; {{ finding.note }}{% endif %}
+                    {% elif finding.signal_id is defined %}
+                      {{ finding.signal_id }}
+                      {% if finding.rap_class is defined %}<span style="color:#adb5bd"> [{{ finding.rap_class }}]</span>{% endif %}
+                    {% else %}
+                      {{ finding }}
+                    {% endif %}
+                  </li>
+                {% endfor %}
+                </ul>
+              {% elif item.type == 'archetype' and item.matched_signals %}
+                <ul>
+                {% for sig_id in item.matched_signals[:5] %}
+                  <li>{{ sig_id }}</li>
+                {% endfor %}
+                {% if item.matched_signals | length > 5 %}
+                  <li style="color:#adb5bd">+ {{ item.matched_signals | length - 5 }} more</li>
+                {% endif %}
+                </ul>
+                {% if item.historical_cases %}
+                  <div style="margin-top:4px; font-style:italic; color:#adb5bd;">
+                    Cases: {{ item.historical_cases | join(", ") }}
+                  </div>
+                {% endif %}
+              {% endif %}
+            </div>
+          {% endif %}
+
+        {% else %}
+          {# NOT_FIRED body #}
+          {% if item.type == 'archetype' and item.match_badge %}
+            <span class="pf-match-badge" style="background:#f1f3f5; color:#868e96;">{{ item.match_badge }}</span>
+          {% endif %}
+          <p class="pf-headline">{{ item.headline }}</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}

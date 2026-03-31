@@ -1,0 +1,64 @@
+## Section 4: Market & Trading Signals -- Stock Volatility, Insider Activity & Sentiment
+{{ density_indicator("market") }}
+{% if market %}
+{% if market_narrative %}{{ market_narrative }}
+
+{% endif %}
+### Price Charts
+{% if chart_dir %}
+![Stock Performance (1Y)](images/stock_1y.png)
+
+![Stock Performance (5Y)](images/stock_5y.png)
+{% endif %}
+
+### Stock Performance
+
+| Metric | Value |
+|--------|-------|
+| Current Price | {{ market.current_price or "N/A" }} |
+| 52-Week High / Low | {{ market.high_52w or "N/A" }} / {{ market.low_52w or "N/A" }} |
+| Decline from High | {{ market.pct_off_high or "N/A" }} |
+{% if market.return_1y is defined %}| 1-Year Return | {{ market.return_1y }} |
+{% endif %}{% if market.max_drawdown_1y is defined %}| Max Drawdown (1Y) | {{ market.max_drawdown_1y }} |
+{% endif %}{% if market.volatility_90d is defined %}| 90-Day Volatility | {{ market.volatility_90d }} |
+{% endif %}{% if market.beta is defined %}| Beta (vs S&P 500) | {{ market.beta }} |
+{% endif %}| Short % of Float | {{ market.short_pct or "N/A" }} |
+| Days to Cover | {{ market.days_to_cover or "N/A" }} |
+{% if market.short_trend_6m is defined %}| Short Trend (6M) | {{ market.short_trend_6m }} |
+{% endif %}
+{% if market.worst_drop_pct is defined %}
+### Significant Stock Drop Events
+
+Worst single-day decline: **{{ market.worst_drop_pct }}** on {{ market.worst_drop_date }}{{ market.worst_drop_trigger }}.
+{% endif %}
+{% if market.earnings_guidance is defined %}
+### Earnings Guidance Track Record
+
+| Metric | Value |
+|--------|-------|
+{% if market.earnings_guidance.beat_rate is defined %}| Beat Rate | {{ market.earnings_guidance.beat_rate }} |
+{% endif %}| Consecutive Misses | {{ market.earnings_guidance.consecutive_misses }} |
+| Guidance Withdrawals | {{ market.earnings_guidance.withdrawals }} |
+| Philosophy | {{ market.earnings_guidance.philosophy }} |
+{% endif %}
+{% if market.analyst_consensus is defined %}
+### Analyst Consensus
+
+| Consensus | Upgrades (90d) | Downgrades (90d) |
+|-----------|---------------|-----------------|
+| {{ market.analyst_consensus }} | {{ market.analyst_upgrades }} | {{ market.analyst_downgrades }} |
+{% endif %}
+
+### Insider Trading Activity
+
+{{ market.insider_summary or "*No insider trading data available.*" }}
+{% if insider_narrative %}
+{{ insider_narrative }}
+{% endif %}
+{% if market.pct_off_high and market.pct_off_high != "N/A" %}
+> **Claims-Made Context:** A {{ market.pct_off_high }} decline from 52-week high defines measurable severity exposure. The critical question is *when* a resulting claim is reported relative to the policy period and retro date.
+{% endif %}
+{{ triggered_block(4) }}
+{% else %}
+*Market data not available.*
+{% endif %}

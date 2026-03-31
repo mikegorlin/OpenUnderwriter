@@ -1,0 +1,99 @@
+{# Scoring & Risk Assessment section template.
+   10-factor scoring table, red flag summary, risk type classification,
+   severity scenarios, forensic composites, temporal signals, NLP signals,
+   peril map, and tower recommendation.
+
+   Phase 56-06: Decomposed into 18 fragment templates in sections/scoring/.
+   Facets are dispatched from section_context when available; falls back to
+   legacy inline rendering if section_context is not populated. #}
+
+{% from "macros/dual_voice.html.j2" import dual_voice_block %}
+{% set density = densities.get('scoring', {}) %}
+{% set level = density.level|default('CLEAN') if density else 'CLEAN' %}
+{% set sc = scoring or {} %}
+
+<section id="scoring" class="page-break">
+  <h2>Scoring & Risk Assessment
+    {% if level == 'CRITICAL' %}<span class="section-risk-badge section-risk--critical">Critical</span>
+    {% elif level == 'ELEVATED' %}<span class="section-risk-badge section-risk--elevated">Elevated</span>
+    {% endif %}
+  </h2>
+
+  {{ dual_voice_block(commentary.get('scoring') if commentary else none, 'Scoring & Risk Assessment') }}
+
+  {# --- 5-Layer Narrative Architecture (NARR-01) --- #}
+  {% set sn = section_narratives.get('scoring', {}) if section_narratives is defined else {} %}
+  {% if sn %}
+    {{ narrative_5layer(sn.verdict, sn.thesis, sn.evidence_items, sn.implications, sn.deep_context) }}
+  {% else %}
+    {# Fallback: SCR + pre-computed narrative + D&O Implications #}
+    {% if scr_narratives is defined and scr_narratives.get('scoring') %}
+      {{ scr_narrative(scr_narratives.scoring) }}
+    {% endif %}
+    {% set narr = narratives.scoring if narratives else none %}
+    {{ section_narrative(narr) }}
+    {% if do_implications_data is defined and do_implications_data.get('scoring') %}
+      {{ do_implications(do_implications_data.scoring) }}
+    {% endif %}
+  {% endif %}
+
+  {# --- Bull/Bear Case Framing (NARR-02) --- #}
+  {% if bull_bear_data is defined and bull_bear_data.get('scoring') %}
+    {{ bull_bear_framing(bull_bear_data.scoring) }}
+  {% endif %}
+
+  <div>
+    <div style="font-weight:600;margin-bottom:4px">Scoring Details</div>
+    <div class="collapsible-content">
+      {# --- Facet-driven dispatch (Phase 56-06) --- #}
+      {% if section_context is defined and section_context.get('scoring') %}
+        {% for facet in section_context.scoring.facets %}
+          {% include facet.template %}
+        {% endfor %}
+      {% else %}
+        {# Legacy fallback — inline fragment includes #}
+        {% include "sections/scoring/tier_classification.html.j2" %}
+        {% include "sections/scoring/peril_assessment.html.j2" %}
+        {% include "sections/scoring/hazard_profile.html.j2" %}
+        {% include "sections/scoring/ten_factor_scoring.html.j2" %}
+        {% include "sections/scoring/pattern_detection.html.j2" %}
+        {# Pattern Detection Engines — renders UNDER scoring, not as separate H2 #}
+        {% include "sections/pattern_firing.html.j2" ignore missing %}
+        {% include "sections/scoring/risk_classification.html.j2" %}
+        {% include "sections/scoring/allegation_mapping.html.j2" %}
+        {% include "sections/scoring/claim_probability.html.j2" %}
+        {% include "sections/scoring/severity_scenarios.html.j2" %}
+        {# Score impact scenarios + tornado chart (Phase 131-03) #}
+        {% include "sections/scoring/scenario_analysis.html.j2" %}
+        {% include "sections/scoring/tower_recommendation.html.j2" %}
+        {% include "sections/scoring/forensic_composites.html.j2" %}
+        {% include "sections/scoring/executive_risk_profile.html.j2" %}
+        {% include "sections/scoring/temporal_signals.html.j2" %}
+        {% include "sections/scoring/nlp_dashboard.html.j2" %}
+        {% include "sections/scoring/peril_map.html.j2" %}
+        {% include "sections/scoring/calibration_notes.html.j2" %}
+        {# AI Risk overall score (kept in scoring) #}
+        {% include "sections/ai_risk/overall_score.html.j2" %}
+        {% include "sections/scoring/scoring_checks.html.j2" %}
+        {% include "sections/scoring/scoring_density_alerts.html.j2" %}
+        {# Phase 117 scoring enhancements #}
+        {% include "sections/scoring/underwriting_posture.html.j2" %}
+        {% include "sections/scoring/zero_verification.html.j2" %}
+        {% include "sections/scoring/watch_items.html.j2" %}
+        {# Forward-Looking subsections (merged from standalone section) #}
+        {% include "sections/forward_looking/risk_map.html.j2" %}
+        {% include "sections/forward_looking/credibility.html.j2" %}
+        {% include "sections/forward_looking/catalysts.html.j2" %}
+        {% include "sections/forward_looking/growth_estimates.html.j2" %}
+        {% include "sections/forward_looking/alt_signals.html.j2" %}
+        {% include "sections/forward_looking/monitoring_triggers.html.j2" %}
+        {% include "sections/forward_looking/early_warning.html.j2" %}
+        {% include "sections/forward_looking/event_catalysts.html.j2" %}
+        {% include "sections/forward_looking/disclosure_quality.html.j2" %}
+        {% include "sections/forward_looking/narrative_coherence.html.j2" %}
+        {# Meeting Preparation (moved from audit trail — belongs with scoring) #}
+        {% include "appendices/meeting_prep.html.j2" %}
+      {% endif %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,18 @@
+{
+  "captured": "2026-02-25",
+  "companies": {
+    "AAPL": {
+      "triggered": 24,
+      "skipped": 68,
+      "clear": 110,
+      "info": 201
+    },
+    "RPM": {
+      "triggered": 14,
+      "skipped": 60,
+      "clear": 122,
+      "info": 197
+    }
+  },
+  "note": "Baseline before Phase 47 routing changes. Zero-tolerance: AAPL triggered must not increase."
+}

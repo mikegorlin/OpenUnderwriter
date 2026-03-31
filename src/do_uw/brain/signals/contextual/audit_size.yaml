@@ -1,0 +1,55 @@
+- id: CTX.RISK.audit_size
+  name: Audit Quality Concern by Company Size
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of FIN.ACCT.auditor through size_tier lens
+    threshold_provenance:
+      source: calibrated
+      rationale: Audit quality expectations from PCAOB inspection results by company market cap tier
+  signal_class: inference
+  group: audit_profile
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  epistemology:
+    rule_origin: 'PCAOB inspection data: audit quality concerns scale with company size and visibility'
+    threshold_basis: Audit quality expectations from PCAOB inspection results by company market cap tier
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: FIN.ACCT.auditor
+      context_dimensions:
+      - size_tier
+      context_adjustments:
+        small_cap:
+          threshold_adjustment: 0.7
+          rationale: 'Small-cap: non-Big-4 auditor is common but concerning'
+        mid_cap:
+          threshold_adjustment: 0.9
+          rationale: 'Mid-cap: Big-4 expected; non-Big-4 is signal'
+        large_cap:
+          threshold_adjustment: 1.2
+          rationale: 'Large-cap: Big-4 mandatory; any audit issue is serious'
+        mega_cap:
+          threshold_adjustment: 1.5
+          rationale: 'Mega-cap: audit concerns are material event'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} audit quality concern by company size at {value} represents agent risk (executive/director
+        actions and decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} audit quality concern by company size at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} audit quality concern by company size at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

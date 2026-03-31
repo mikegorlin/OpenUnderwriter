@@ -1,0 +1,34 @@
+# Narrative configuration for Litigation section
+# 5-layer architecture: Verdict > Thesis > Evidence Grid > Implications > Deep Context
+
+id: litigation
+name: Litigation & Regulatory
+
+verdict:
+  thresholds:
+    CRITICAL: CRITICAL
+    ELEVATED: CONCERNING
+    CLEAN: FAVORABLE
+
+thesis_template: >
+  Litigation profile {{ 'indicates critical exposure' if density_level == 'CRITICAL' else 'shows elevated activity' if density_level == 'ELEVATED' else 'presents manageable risk' }}.
+  {% if active_securities %}Active securities litigation directly impacts D&O loss history.{% endif %}
+  {% if regulatory_action %}Regulatory enforcement actions may trigger individual director defense costs.{% endif %}
+
+evidence_keys:
+  - litigation.active_matters
+  - litigation.sec_enforcement
+  - litigation.settlement_history
+  - litigation.sol_analysis
+  - litigation.derivative_suits
+  - litigation.contingent_liabilities
+
+implications_template: >
+  {% if density_level == 'CRITICAL' %}Active litigation requires immediate review of prior/pending exclusion dates and related claims provisions.{% endif %}
+  {% if density_level == 'ELEVATED' %}Elevated litigation activity informs settlement reserve expectations and excess layer pricing.{% endif %}
+  {% if density_level == 'CLEAN' %}Manageable litigation profile supports favorable D&O terms.{% endif %}
+
+deep_context_keys:
+  - litigation.defense_strength
+  - litigation.industry_patterns
+  - litigation.whistleblower

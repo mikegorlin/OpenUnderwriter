@@ -1,0 +1,11 @@
+{# Section-level LLM critical insight — renders the underwriter's interpretation
+   of the section data. Only shows if section_reviews[section_id] exists.
+   Usage: {% with insight_id="company" %}{% include "components/section_insight.html.j2" %}{% endwith %}
+#}
+{% set review_text = section_reviews.get(insight_id, '') if section_reviews is defined else '' %}
+{% if review_text %}
+<div style="background:#F0F4F8;border-left:4px solid #1F3A5C;border-radius:0 4px 4px 0;padding:8px 12px;margin:6px 0 10px;line-height:1.55">
+  <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Underwriting Insight</div>
+  <div style="font-size:9pt;color:#374151">{{ review_text | clean_narrative | safe }}</div>
+</div>
+{% endif %}

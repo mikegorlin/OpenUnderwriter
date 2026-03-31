@@ -1,0 +1,31 @@
+{# Filing Analysis -- MD&A Analysis facet template.
+   Renders NLP.MDA signals: readability score + change, tone score + shift.
+   KV table format with directional indicators for changes.
+   Part of facet dispatch for filing_analysis section. #}
+
+{% set nlp = nlp_signals or {} %}
+<div class="facet-block" id="facet-mda_analysis">
+  <h3>MD&A Analysis</h3>
+  {% if nlp %}
+    {# Handle readability that may be a dict or string #}
+    {% set readability_val = nlp.readability %}
+    {% if readability_val is mapping %}
+      {% set classification = readability_val.get('classification', 'N/A') %}
+      {% set evidence_text = readability_val.get('evidence', '') %}
+      {% set readability_display = classification | humanize %}
+      {% if evidence_text and evidence_text != classification %}
+        {% set readability_display = readability_display ~ ' — ' ~ evidence_text %}
+      {% endif %}
+    {% else %}
+      {% set readability_display = readability_val | default('—') %}
+    {% endif %}
+    {{ kv_table([
+      {'key': 'Readability', 'value': readability_display},
+      {'key': 'Readability Change', 'value': nlp.readability_change | default('—')},
+      {'key': 'Tone Assessment', 'value': nlp.tone | default('—') | humanize},
+      {'key': 'Tone Shift', 'value': nlp.tone_shift | default('—')},
+    ]) }}
+  {% else %}
+    <p class="text-sm text-gray-500">NLP analysis data not available.</p>
+  {% endif %}
+</div>

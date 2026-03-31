@@ -1,0 +1,392 @@
+{
+  "$schema": "signal_classification_schema",
+  "version": "1.0",
+  "description": "Master classification lookup for D&O underwriting checks. Maps check ID prefixes to default category, signal_type, hazard_or_signal, and plaintiff_lenses.",
+  "prefix_defaults": {
+    "BIZ.CLASS": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "STRUCTURAL",
+      "hazard_or_signal": "HAZARD"
+    },
+    "BIZ.SIZE": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "STRUCTURAL",
+      "hazard_or_signal": "HAZARD"
+    },
+    "BIZ.MODEL": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "STRUCTURAL",
+      "hazard_or_signal": "HAZARD"
+    },
+    "BIZ.COMP": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "STRUCTURAL",
+      "hazard_or_signal": "HAZARD"
+    },
+    "BIZ.DEPEND": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "STRUCTURAL",
+      "hazard_or_signal": "HAZARD"
+    },
+    "BIZ.UNI": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "STRUCTURAL",
+      "hazard_or_signal": "HAZARD"
+    },
+    "STOCK.PRICE": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "DELTA",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "STOCK.SHORT": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "DELTA",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "STOCK.INSIDER": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "EVENT",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "STOCK.PATTERN": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "PATTERN",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "STOCK.VALUATION": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "LEVEL",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "STOCK.LIT": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "EVENT",
+      "hazard_or_signal": "PERIL_CONFIRMING"
+    },
+    "STOCK.OWN": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "STRUCTURAL",
+      "hazard_or_signal": "HAZARD"
+    },
+    "STOCK.ANALYST": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "LEVEL",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "STOCK.TRADE": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "LEVEL",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "FIN.ACCT": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "FORENSIC",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "FIN.LIQ": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "LEVEL",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "FIN.DEBT": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "LEVEL",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "FIN.PROFIT": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "LEVEL",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "FIN.GUIDE": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "DELTA",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "FIN.SECTOR": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "STRUCTURAL",
+      "hazard_or_signal": "HAZARD"
+    },
+    "LIT.SCA": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "EVENT",
+      "hazard_or_signal": "PERIL_CONFIRMING"
+    },
+    "LIT.REG": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "EVENT",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "LIT.OTHER": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "EVENT",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "GOV.BOARD": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "STRUCTURAL",
+      "hazard_or_signal": "HAZARD"
+    },
+    "GOV.EXEC": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "STRUCTURAL",
+      "hazard_or_signal": "HAZARD"
+    },
+    "GOV.PAY": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "LEVEL",
+      "hazard_or_signal": "HAZARD"
+    },
+    "GOV.RIGHTS": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "STRUCTURAL",
+      "hazard_or_signal": "HAZARD"
+    },
+    "GOV.INSIDER": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "EVENT",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "GOV.ACTIVIST": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "EVENT",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "GOV.EFFECT": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "PATTERN",
+      "hazard_or_signal": "HAZARD"
+    },
+    "GOV.SECTOR": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "STRUCTURAL",
+      "hazard_or_signal": "HAZARD"
+    },
+    "FWRD.WARN": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "EVENT",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "FWRD.EVENT": {
+      "category": "DECISION_DRIVING",
+      "signal_type": "EVENT",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "FWRD.DISC": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "NLP",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "FWRD.NARRATIVE": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "NLP",
+      "hazard_or_signal": "SIGNAL"
+    },
+    "FWRD.MACRO": {
+      "category": "CONTEXT_DISPLAY",
+      "signal_type": "STRUCTURAL",
+      "hazard_or_signal": "HAZARD"
+    }
+  },
+  "plaintiff_lens_defaults": {
+    "BIZ.CLASS": [
+      "SHAREHOLDERS"
+    ],
+    "BIZ.SIZE": [
+      "SHAREHOLDERS"
+    ],
+    "BIZ.MODEL": [
+      "SHAREHOLDERS"
+    ],
+    "BIZ.COMP": [
+      "SHAREHOLDERS",
+      "COMPETITORS"
+    ],
+    "BIZ.DEPEND": [
+      "SHAREHOLDERS"
+    ],
+    "BIZ.UNI": [
+      "SHAREHOLDERS"
+    ],
+    "BIZ.UNI.cyber": [
+      "CUSTOMERS",
+      "REGULATORS"
+    ],
+    "BIZ.UNI.esg": [
+      "SHAREHOLDERS",
+      "REGULATORS"
+    ],
+    "BIZ.UNI.labor": [
+      "EMPLOYEES"
+    ],
+    "BIZ.UNI.trade": [
+      "GOVERNMENT"
+    ],
+    "BIZ.UNI.dei": [
+      "EMPLOYEES",
+      "REGULATORS"
+    ],
+    "STOCK.PRICE": [
+      "SHAREHOLDERS"
+    ],
+    "STOCK.SHORT": [
+      "SHAREHOLDERS"
+    ],
+    "STOCK.INSIDER": [
+      "SHAREHOLDERS",
+      "REGULATORS"
+    ],
+    "STOCK.PATTERN": [
+      "SHAREHOLDERS"
+    ],
+    "STOCK.VALUATION": [
+      "SHAREHOLDERS"
+    ],
+    "STOCK.LIT": [
+      "SHAREHOLDERS"
+    ],
+    "STOCK.OWN": [
+      "SHAREHOLDERS"
+    ],
+    "STOCK.ANALYST": [
+      "SHAREHOLDERS"
+    ],
+    "STOCK.TRADE": [
+      "SHAREHOLDERS"
+    ],
+    "FIN.ACCT": [
+      "SHAREHOLDERS",
+      "REGULATORS"
+    ],
+    "FIN.LIQ": [
+      "CREDITORS",
+      "SHAREHOLDERS"
+    ],
+    "FIN.DEBT": [
+      "CREDITORS",
+      "SHAREHOLDERS"
+    ],
+    "FIN.PROFIT": [
+      "SHAREHOLDERS"
+    ],
+    "FIN.GUIDE": [
+      "SHAREHOLDERS",
+      "REGULATORS"
+    ],
+    "FIN.SECTOR": [
+      "SHAREHOLDERS"
+    ],
+    "LIT.SCA": [
+      "SHAREHOLDERS"
+    ],
+    "LIT.REG": [
+      "REGULATORS"
+    ],
+    "LIT.OTHER": [
+      "SHAREHOLDERS",
+      "REGULATORS"
+    ],
+    "GOV.BOARD": [
+      "SHAREHOLDERS"
+    ],
+    "GOV.EXEC": [
+      "SHAREHOLDERS",
+      "REGULATORS"
+    ],
+    "GOV.PAY": [
+      "SHAREHOLDERS"
+    ],
+    "GOV.RIGHTS": [
+      "SHAREHOLDERS"
+    ],
+    "GOV.INSIDER": [
+      "SHAREHOLDERS",
+      "REGULATORS"
+    ],
+    "GOV.ACTIVIST": [
+      "SHAREHOLDERS"
+    ],
+    "GOV.EFFECT": [
+      "SHAREHOLDERS"
+    ],
+    "GOV.SECTOR": [
+      "SHAREHOLDERS"
+    ],
+    "FWRD.WARN": [
+      "SHAREHOLDERS",
+      "REGULATORS"
+    ],
+    "FWRD.EVENT": [
+      "SHAREHOLDERS"
+    ],
+    "FWRD.DISC": [
+      "SHAREHOLDERS",
+      "REGULATORS"
+    ],
+    "FWRD.NARRATIVE": [
+      "SHAREHOLDERS",
+      "REGULATORS"
+    ],
+    "FWRD.MACRO": [
+      "SHAREHOLDERS"
+    ]
+  },
+  "override_decision_driving": {
+    "_comment": "Checks that override default prefix classification to DECISION_DRIVING",
+    "checks": [
+      "BIZ.DEPEND.customer_concentration",
+      "BIZ.UNI.cyber_posture",
+      "BIZ.UNI.cyber_business",
+      "BIZ.UNI.ai_claims",
+      "STOCK.OWN.activist",
+      "GOV.BOARD.independence",
+      "GOV.BOARD.ceo_chair",
+      "GOV.PAY.clawback",
+      "GOV.PAY.ceo_total",
+      "GOV.PAY.peer_comparison",
+      "GOV.EXEC.cfo_profile",
+      "GOV.EXEC.departure_context",
+      "FWRD.DISC.disclosure_quality_composite",
+      "FWRD.NARRATIVE.narrative_coherence_composite"
+    ]
+  },
+  "deprecated_signal_ids": [
+    "BIZ.COMP.peer_analysis",
+    "BIZ.MODEL.execution",
+    "BIZ.MODEL.sustainability",
+    "BIZ.MODEL.disruption",
+    "BIZ.SIZE.geographic_scope",
+    "BIZ.SIZE.structure",
+    "BIZ.SIZE.subsidiaries",
+    "BIZ.SIZE.corp_structure",
+    "BIZ.SIZE.material_subs",
+    "BIZ.SIZE.foreign_risk",
+    "BIZ.SIZE.control",
+    "BIZ.UNI.commodity",
+    "BIZ.UNI.trade",
+    "BIZ.UNI.labor",
+    "BIZ.UNI.esg_rating",
+    "BIZ.UNI.esg_commitments",
+    "BIZ.UNI.dei",
+    "BIZ.UNI.intellectual_property",
+    "FIN.SECTOR.biotech",
+    "FIN.SECTOR.tech",
+    "FIN.SECTOR.financials",
+    "FIN.SECTOR.reit",
+    "GOV.SECTOR.biot_governance",
+    "GOV.SECTOR.fins_governance",
+    "GOV.SECTOR.tech_governance",
+    "GOV.SECTOR.hlth_governance",
+    "GOV.SECTOR.engy_governance",
+    "GOV.SECTOR.reit_governance",
+    "GOV.SECTOR.retl_governance",
+    "GOV.SECTOR.indu_governance",
+    "GOV.SECTOR.spac_governance",
+    "FWRD.DISC.restatement_history",
+    "FWRD.NARRATIVE.biot_forward",
+    "FWRD.NARRATIVE.fins_forward",
+    "FWRD.NARRATIVE.tech_forward",
+    "FWRD.NARRATIVE.engy_forward"
+  ]
+}

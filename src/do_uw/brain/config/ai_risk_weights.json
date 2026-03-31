@@ -1,0 +1,45 @@
+{
+  "description": "Industry-specific AI risk scoring weights for 5 sub-dimensions. Each set sums to 1.0.",
+  "default": {
+    "revenue_displacement": 0.25,
+    "cost_structure": 0.2,
+    "competitive_moat": 0.25,
+    "workforce_automation": 0.2,
+    "regulatory_ip": 0.1
+  },
+  "TECH_SAAS": {
+    "revenue_displacement": 0.35,
+    "cost_structure": 0.15,
+    "competitive_moat": 0.3,
+    "workforce_automation": 0.15,
+    "regulatory_ip": 0.05
+  },
+  "BIOTECH_PHARMA": {
+    "revenue_displacement": 0.15,
+    "cost_structure": 0.3,
+    "competitive_moat": 0.2,
+    "workforce_automation": 0.1,
+    "regulatory_ip": 0.25
+  },
+  "FINANCIAL_SERVICES": {
+    "revenue_displacement": 0.2,
+    "cost_structure": 0.25,
+    "competitive_moat": 0.2,
+    "workforce_automation": 0.25,
+    "regulatory_ip": 0.1
+  },
+  "ENERGY_UTILITIES": {
+    "revenue_displacement": 0.1,
+    "cost_structure": 0.3,
+    "competitive_moat": 0.15,
+    "workforce_automation": 0.3,
+    "regulatory_ip": 0.15
+  },
+  "HEALTHCARE": {
+    "revenue_displacement": 0.2,
+    "cost_structure": 0.25,
+    "competitive_moat": 0.15,
+    "workforce_automation": 0.25,
+    "regulatory_ip": 0.15
+  }
+}

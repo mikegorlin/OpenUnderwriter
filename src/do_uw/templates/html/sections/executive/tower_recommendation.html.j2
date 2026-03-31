@@ -1,0 +1,12 @@
+{# Tower Recommendation — extracted from executive.html.j2 #}
+
+  {# --- Tower Recommendation --- #}
+  {% set tower = es.get('tower_recommendation') %}
+  {% if tower %}
+  <h3>Tower Recommendation</h3>
+  {{ kv_table([
+    {'key': 'Recommended Position', 'value': tower.position | humanize},
+    {'key': 'Minimum Attachment', 'value': tower.min_attachment},
+    {'key': 'Side A / DIC', 'value': tower.side_a},
+  ]) }}
+  {% endif %}

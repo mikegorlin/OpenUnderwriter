@@ -1,0 +1,527 @@
+{
+  "$schema": "sic_gics_mapping",
+  "description": "SIC to 8-digit GICS code mapping for industry classification. Used as fallback when yfinance GICS is unavailable.",
+  "version": "1.0",
+  "mappings": {
+    "1311": {
+      "gics": "10102010",
+      "gics_name": "Oil & Gas Exploration & Production"
+    },
+    "1381": {
+      "gics": "10101020",
+      "gics_name": "Oil & Gas Equipment & Services"
+    },
+    "1382": {
+      "gics": "10101020",
+      "gics_name": "Oil & Gas Equipment & Services"
+    },
+    "1389": {
+      "gics": "10101020",
+      "gics_name": "Oil & Gas Equipment & Services"
+    },
+    "2011": {
+      "gics": "30202030",
+      "gics_name": "Packaged Foods & Meats"
+    },
+    "2013": {
+      "gics": "30202030",
+      "gics_name": "Packaged Foods & Meats"
+    },
+    "2020": {
+      "gics": "30202010",
+      "gics_name": "Agricultural Products & Services"
+    },
+    "2030": {
+      "gics": "30202030",
+      "gics_name": "Packaged Foods & Meats"
+    },
+    "2040": {
+      "gics": "30202030",
+      "gics_name": "Packaged Foods & Meats"
+    },
+    "2060": {
+      "gics": "30202030",
+      "gics_name": "Packaged Foods & Meats"
+    },
+    "2080": {
+      "gics": "30201010",
+      "gics_name": "Brewers"
+    },
+    "2082": {
+      "gics": "30201010",
+      "gics_name": "Brewers"
+    },
+    "2086": {
+      "gics": "30201030",
+      "gics_name": "Soft Drinks & Non-alcoholic Beverages"
+    },
+    "2111": {
+      "gics": "30203010",
+      "gics_name": "Tobacco"
+    },
+    "2800": {
+      "gics": "15101010",
+      "gics_name": "Commodity Chemicals"
+    },
+    "2810": {
+      "gics": "30301010",
+      "gics_name": "Household Products"
+    },
+    "2834": {
+      "gics": "35201010",
+      "gics_name": "Pharmaceuticals"
+    },
+    "2835": {
+      "gics": "35201010",
+      "gics_name": "Pharmaceuticals"
+    },
+    "2836": {
+      "gics": "35203010",
+      "gics_name": "Biotechnology"
+    },
+    "2844": {
+      "gics": "30301010",
+      "gics_name": "Household Products"
+    },
+    "2860": {
+      "gics": "15101010",
+      "gics_name": "Commodity Chemicals"
+    },
+    "2911": {
+      "gics": "10102030",
+      "gics_name": "Integrated Oil & Gas"
+    },
+    "3312": {
+      "gics": "15104050",
+      "gics_name": "Steel"
+    },
+    "3411": {
+      "gics": "15104010",
+      "gics_name": "Aluminum"
+    },
+    "3420": {
+      "gics": "20106010",
+      "gics_name": "Aerospace & Defense"
+    },
+    "3559": {
+      "gics": "20106020",
+      "gics_name": "Industrial Machinery & Supplies & Components"
+    },
+    "3571": {
+      "gics": "45202030",
+      "gics_name": "Technology Hardware, Storage & Peripherals"
+    },
+    "3572": {
+      "gics": "45202030",
+      "gics_name": "Technology Hardware, Storage & Peripherals"
+    },
+    "3577": {
+      "gics": "45202030",
+      "gics_name": "Technology Hardware, Storage & Peripherals"
+    },
+    "3579": {
+      "gics": "45202030",
+      "gics_name": "Technology Hardware, Storage & Peripherals"
+    },
+    "3585": {
+      "gics": "20106020",
+      "gics_name": "Industrial Machinery & Supplies & Components"
+    },
+    "3612": {
+      "gics": "20104020",
+      "gics_name": "Electrical Components & Equipment"
+    },
+    "3621": {
+      "gics": "20104020",
+      "gics_name": "Electrical Components & Equipment"
+    },
+    "3651": {
+      "gics": "25301010",
+      "gics_name": "Consumer Electronics"
+    },
+    "3661": {
+      "gics": "45201020",
+      "gics_name": "Communications Equipment"
+    },
+    "3669": {
+      "gics": "45201020",
+      "gics_name": "Communications Equipment"
+    },
+    "3672": {
+      "gics": "45301010",
+      "gics_name": "Semiconductor Materials & Equipment"
+    },
+    "3674": {
+      "gics": "45301020",
+      "gics_name": "Semiconductors"
+    },
+    "3679": {
+      "gics": "45203015",
+      "gics_name": "Electronic Components"
+    },
+    "3711": {
+      "gics": "25102010",
+      "gics_name": "Automobile Manufacturers"
+    },
+    "3714": {
+      "gics": "25102020",
+      "gics_name": "Automobile Parts & Equipment"
+    },
+    "3721": {
+      "gics": "20101010",
+      "gics_name": "Aerospace & Defense"
+    },
+    "3724": {
+      "gics": "20101010",
+      "gics_name": "Aerospace & Defense"
+    },
+    "3728": {
+      "gics": "20101010",
+      "gics_name": "Aerospace & Defense"
+    },
+    "3812": {
+      "gics": "20101010",
+      "gics_name": "Aerospace & Defense"
+    },
+    "3825": {
+      "gics": "45203010",
+      "gics_name": "Electronic Equipment & Instruments"
+    },
+    "3841": {
+      "gics": "35101010",
+      "gics_name": "Health Care Equipment"
+    },
+    "3842": {
+      "gics": "35101010",
+      "gics_name": "Health Care Equipment"
+    },
+    "3845": {
+      "gics": "35101010",
+      "gics_name": "Health Care Equipment"
+    },
+    "4011": {
+      "gics": "20107010",
+      "gics_name": "Railroads"
+    },
+    "4013": {
+      "gics": "20107010",
+      "gics_name": "Railroads"
+    },
+    "4210": {
+      "gics": "20107020",
+      "gics_name": "Trucking"
+    },
+    "4412": {
+      "gics": "20107030",
+      "gics_name": "Marine Transportation"
+    },
+    "4512": {
+      "gics": "20107040",
+      "gics_name": "Airlines"
+    },
+    "4513": {
+      "gics": "20107040",
+      "gics_name": "Airlines"
+    },
+    "4731": {
+      "gics": "20107050",
+      "gics_name": "Air Freight & Logistics"
+    },
+    "4812": {
+      "gics": "50101020",
+      "gics_name": "Integrated Telecommunication Services"
+    },
+    "4813": {
+      "gics": "50101020",
+      "gics_name": "Integrated Telecommunication Services"
+    },
+    "4833": {
+      "gics": "50102010",
+      "gics_name": "Cable & Satellite"
+    },
+    "4841": {
+      "gics": "50102010",
+      "gics_name": "Cable & Satellite"
+    },
+    "4911": {
+      "gics": "55101010",
+      "gics_name": "Electric Utilities"
+    },
+    "4922": {
+      "gics": "55102010",
+      "gics_name": "Gas Utilities"
+    },
+    "4924": {
+      "gics": "55102010",
+      "gics_name": "Gas Utilities"
+    },
+    "4931": {
+      "gics": "55103010",
+      "gics_name": "Multi-Utilities"
+    },
+    "4941": {
+      "gics": "55104010",
+      "gics_name": "Water Utilities"
+    },
+    "5045": {
+      "gics": "45202030",
+      "gics_name": "Technology Hardware, Storage & Peripherals"
+    },
+    "5065": {
+      "gics": "45203015",
+      "gics_name": "Electronic Components"
+    },
+    "5110": {
+      "gics": "30101010",
+      "gics_name": "Drug Retail"
+    },
+    "5141": {
+      "gics": "30101040",
+      "gics_name": "Food Distributors"
+    },
+    "5311": {
+      "gics": "25503030",
+      "gics_name": "General Merchandise Stores"
+    },
+    "5331": {
+      "gics": "25503030",
+      "gics_name": "General Merchandise Stores"
+    },
+    "5411": {
+      "gics": "30101020",
+      "gics_name": "Food Retail"
+    },
+    "5500": {
+      "gics": "25504010",
+      "gics_name": "Automotive Retail"
+    },
+    "5531": {
+      "gics": "25504010",
+      "gics_name": "Automotive Retail"
+    },
+    "5651": {
+      "gics": "25504020",
+      "gics_name": "Apparel Retail"
+    },
+    "5700": {
+      "gics": "25504040",
+      "gics_name": "Home Improvement Retail"
+    },
+    "5731": {
+      "gics": "25504060",
+      "gics_name": "Other Specialty Retail"
+    },
+    "5812": {
+      "gics": "25301040",
+      "gics_name": "Restaurants"
+    },
+    "5912": {
+      "gics": "30101010",
+      "gics_name": "Drug Retail"
+    },
+    "5940": {
+      "gics": "25504060",
+      "gics_name": "Other Specialty Retail"
+    },
+    "5945": {
+      "gics": "25504060",
+      "gics_name": "Other Specialty Retail"
+    },
+    "5961": {
+      "gics": "25502020",
+      "gics_name": "Internet & Direct Marketing Retail"
+    },
+    "6020": {
+      "gics": "40101010",
+      "gics_name": "Diversified Banks"
+    },
+    "6021": {
+      "gics": "40101010",
+      "gics_name": "Diversified Banks"
+    },
+    "6022": {
+      "gics": "40101010",
+      "gics_name": "Diversified Banks"
+    },
+    "6035": {
+      "gics": "40102010",
+      "gics_name": "Thrifts & Mortgage Finance"
+    },
+    "6036": {
+      "gics": "40102010",
+      "gics_name": "Thrifts & Mortgage Finance"
+    },
+    "6099": {
+      "gics": "40101010",
+      "gics_name": "Diversified Banks"
+    },
+    "6141": {
+      "gics": "40202010",
+      "gics_name": "Consumer Finance"
+    },
+    "6153": {
+      "gics": "40202010",
+      "gics_name": "Consumer Finance"
+    },
+    "6159": {
+      "gics": "40202010",
+      "gics_name": "Consumer Finance"
+    },
+    "6162": {
+      "gics": "40102010",
+      "gics_name": "Thrifts & Mortgage Finance"
+    },
+    "6199": {
+      "gics": "40201020",
+      "gics_name": "Diversified Financial Services"
+    },
+    "6211": {
+      "gics": "40203010",
+      "gics_name": "Investment Banking & Brokerage"
+    },
+    "6282": {
+      "gics": "40203020",
+      "gics_name": "Diversified Capital Markets"
+    },
+    "6311": {
+      "gics": "40301010",
+      "gics_name": "Life & Health Insurance"
+    },
+    "6321": {
+      "gics": "40301010",
+      "gics_name": "Life & Health Insurance"
+    },
+    "6324": {
+      "gics": "40301040",
+      "gics_name": "Health Care Services"
+    },
+    "6331": {
+      "gics": "40301020",
+      "gics_name": "Multi-line Insurance"
+    },
+    "6399": {
+      "gics": "40301020",
+      "gics_name": "Multi-line Insurance"
+    },
+    "6411": {
+      "gics": "40301030",
+      "gics_name": "Property & Casualty Insurance"
+    },
+    "6512": {
+      "gics": "60101010",
+      "gics_name": "Real Estate Operating Companies"
+    },
+    "6552": {
+      "gics": "60101010",
+      "gics_name": "Real Estate Operating Companies"
+    },
+    "6726": {
+      "gics": "40201040",
+      "gics_name": "Financial Conglomerates"
+    },
+    "6798": {
+      "gics": "60102040",
+      "gics_name": "Diversified REITs"
+    },
+    "7011": {
+      "gics": "25301020",
+      "gics_name": "Hotels, Resorts & Cruise Lines"
+    },
+    "7200": {
+      "gics": "25301050",
+      "gics_name": "Leisure Facilities"
+    },
+    "7311": {
+      "gics": "50201010",
+      "gics_name": "Advertising"
+    },
+    "7363": {
+      "gics": "20202010",
+      "gics_name": "Human Resource & Employment Services"
+    },
+    "7370": {
+      "gics": "45102010",
+      "gics_name": "IT Consulting & Other Services"
+    },
+    "7371": {
+      "gics": "45102010",
+      "gics_name": "IT Consulting & Other Services"
+    },
+    "7372": {
+      "gics": "45103010",
+      "gics_name": "Application Software"
+    },
+    "7374": {
+      "gics": "45103020",
+      "gics_name": "Systems Software"
+    },
+    "7389": {
+      "gics": "20201010",
+      "gics_name": "Diversified Support Services"
+    },
+    "7812": {
+      "gics": "25401020",
+      "gics_name": "Movies & Entertainment"
+    },
+    "7819": {
+      "gics": "25401020",
+      "gics_name": "Movies & Entertainment"
+    },
+    "7900": {
+      "gics": "25301050",
+      "gics_name": "Leisure Facilities"
+    },
+    "7990": {
+      "gics": "25301050",
+      "gics_name": "Leisure Facilities"
+    },
+    "7997": {
+      "gics": "25301050",
+      "gics_name": "Leisure Facilities"
+    },
+    "8000": {
+      "gics": "35102010",
+      "gics_name": "Health Care Facilities"
+    },
+    "8011": {
+      "gics": "35102010",
+      "gics_name": "Health Care Facilities"
+    },
+    "8050": {
+      "gics": "35102010",
+      "gics_name": "Health Care Facilities"
+    },
+    "8060": {
+      "gics": "35102010",
+      "gics_name": "Health Care Facilities"
+    },
+    "8082": {
+      "gics": "35102020",
+      "gics_name": "Managed Health Care"
+    },
+    "8200": {
+      "gics": "25301050",
+      "gics_name": "Leisure Facilities"
+    },
+    "8711": {
+      "gics": "20202020",
+      "gics_name": "Research & Consulting Services"
+    },
+    "8731": {
+      "gics": "35203010",
+      "gics_name": "Biotechnology"
+    },
+    "8742": {
+      "gics": "45102010",
+      "gics_name": "IT Consulting & Other Services"
+    },
+    "8900": {
+      "gics": "20201010",
+      "gics_name": "Diversified Support Services"
+    },
+    "9995": {
+      "gics": "45103010",
+      "gics_name": "Application Software"
+    }
+  }
+}

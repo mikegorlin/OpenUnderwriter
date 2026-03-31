@@ -1,0 +1,2064 @@
+version: 1
+generated_from: Phase 102-01 taxonomy derivation
+total_signals: 514
+distribution:
+  host: 154
+  agent: 241
+  environment: 119
+mappings:
+- signal_id: BASE.FILING.10K
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.FILING.10Q
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.FILING.8K
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.FILING.DEF14A
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.FORENSIC.balance_sheet
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.FORENSIC.beneish
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.FORENSIC.capital_alloc
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.FORENSIC.debt_tax
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.FORENSIC.earnings
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.FORENSIC.ma
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.FORENSIC.revenue
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.LIT.10k_item3
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.LIT.courtlistener
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.LIT.scac
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.MARKET.insider_trading
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.MARKET.institutional
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.MARKET.stock_price
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.NEWS.blind_spot_post
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.NEWS.blind_spot_pre
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.NEWS.company_news
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.PEER.frames
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.XBRL.balance_sheet
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.XBRL.cash_flow
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.XBRL.derived
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.XBRL.income_statement
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BASE.XBRL.quarterly
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  rationale: Data acquisition signal -- describes what data sources are available for analysis
+- signal_id: BIZ.CLASS.litigation_history
+  rap_class: host
+  rap_subcategory: host.identity
+  rationale: Company classification is a structural identity attribute
+- signal_id: BIZ.CLASS.primary
+  rap_class: host
+  rap_subcategory: host.identity
+  rationale: Company classification is a structural identity attribute
+- signal_id: BIZ.CLASS.secondary
+  rap_class: host
+  rap_subcategory: host.identity
+  rationale: Company classification is a structural identity attribute
+- signal_id: BIZ.COMP.barriers
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Competitive landscape is a structural attribute of the business environment
+- signal_id: BIZ.COMP.barriers_entry
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Competitive landscape is a structural attribute of the business environment
+- signal_id: BIZ.COMP.competitive_advantage
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Competitive landscape is a structural attribute of the business environment
+- signal_id: BIZ.COMP.consolidation
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Competitive landscape is a structural attribute of the business environment
+- signal_id: BIZ.COMP.headwinds
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Competitive landscape is a structural attribute of the business environment
+- signal_id: BIZ.COMP.industry_growth
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Competitive landscape is a structural attribute of the business environment
+- signal_id: BIZ.COMP.market_position
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Competitive landscape is a structural attribute of the business environment
+- signal_id: BIZ.COMP.market_share
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Competitive landscape is a structural attribute of the business environment
+- signal_id: BIZ.COMP.moat
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Competitive landscape is a structural attribute of the business environment
+- signal_id: BIZ.COMP.peer_litigation
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  rationale: Peer litigation patterns are external context from similar companies, not the company's own competitive position
+- signal_id: BIZ.COMP.threat_assessment
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Competitive landscape is a structural attribute of the business environment
+- signal_id: BIZ.DEPEND.capital_dep
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Business dependency is a structural vulnerability of the business model
+- signal_id: BIZ.DEPEND.contract_terms
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Business dependency is a structural vulnerability of the business model
+- signal_id: BIZ.DEPEND.customer_conc
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Business dependency is a structural vulnerability of the business model
+- signal_id: BIZ.DEPEND.distribution
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Business dependency is a structural vulnerability of the business model
+- signal_id: BIZ.DEPEND.key_person
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Business dependency is a structural vulnerability of the business model
+- signal_id: BIZ.DEPEND.labor
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Business dependency is a structural vulnerability of the business model
+- signal_id: BIZ.DEPEND.macro_sensitivity
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Business dependency is a structural vulnerability of the business model
+- signal_id: BIZ.DEPEND.regulatory_dep
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Business dependency is a structural vulnerability of the business model
+- signal_id: BIZ.DEPEND.supplier_conc
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Business dependency is a structural vulnerability of the business model
+- signal_id: BIZ.DEPEND.tech_dep
+  rap_class: host
+  rap_subcategory: host.dependencies
+  rationale: Business dependency is a structural vulnerability of the business model
+- signal_id: BIZ.EVENT.business_changes
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Corporate event is a discrete management decision or action
+- signal_id: BIZ.EVENT.capital_changes
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Corporate event is a discrete management decision or action
+- signal_id: BIZ.EVENT.ipo_exposure
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Corporate event is a discrete management decision or action
+- signal_id: BIZ.EVENT.ma_history
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Corporate event is a discrete management decision or action
+- signal_id: BIZ.EVENT.restatements
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Corporate event is a discrete management decision or action
+- signal_id: BIZ.MODEL.capital_intensity
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business model characteristic is a structural attribute
+- signal_id: BIZ.MODEL.concentration_risk
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business model characteristic is a structural attribute
+- signal_id: BIZ.MODEL.cost_structure
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business model characteristic is a structural attribute
+- signal_id: BIZ.MODEL.description
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business model characteristic is a structural attribute
+- signal_id: BIZ.MODEL.disruption
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business model characteristic is a structural attribute
+- signal_id: BIZ.MODEL.key_person
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business model characteristic is a structural attribute
+- signal_id: BIZ.MODEL.leverage_ops
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business model characteristic is a structural attribute
+- signal_id: BIZ.MODEL.lifecycle
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business model characteristic is a structural attribute
+- signal_id: BIZ.MODEL.regulatory_dep
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business model characteristic is a structural attribute
+- signal_id: BIZ.MODEL.revenue_geo
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business model characteristic is a structural attribute
+- signal_id: BIZ.MODEL.revenue_segment
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business model characteristic is a structural attribute
+- signal_id: BIZ.MODEL.revenue_type
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business model characteristic is a structural attribute
+- signal_id: BIZ.MODEL.segment_margins
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business model characteristic is a structural attribute
+- signal_id: BIZ.OPS.complexity_score
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Operational characteristic is a structural attribute of business complexity
+- signal_id: BIZ.OPS.resilience
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Operational characteristic is a structural attribute of business complexity
+- signal_id: BIZ.OPS.subsidiary_structure
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Operational characteristic is a structural attribute of business complexity
+- signal_id: BIZ.OPS.workforce
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Operational characteristic is a structural attribute of business complexity
+- signal_id: BIZ.SIZE.employees
+  rap_class: host
+  rap_subcategory: host.identity
+  rationale: Company size metric is a fundamental identity attribute
+- signal_id: BIZ.SIZE.growth_trajectory
+  rap_class: host
+  rap_subcategory: host.identity
+  rationale: Company size metric is a fundamental identity attribute
+- signal_id: BIZ.SIZE.market_cap
+  rap_class: host
+  rap_subcategory: host.identity
+  rationale: Company size metric is a fundamental identity attribute
+- signal_id: BIZ.SIZE.public_tenure
+  rap_class: host
+  rap_subcategory: host.identity
+  rationale: Company size metric is a fundamental identity attribute
+- signal_id: BIZ.SIZE.revenue_ttm
+  rap_class: host
+  rap_subcategory: host.identity
+  rationale: Company size metric is a fundamental identity attribute
+- signal_id: BIZ.STRUC.disclosure_complexity
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business structure attribute defines organizational complexity
+- signal_id: BIZ.STRUC.holding_structure
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business structure attribute defines organizational complexity
+- signal_id: BIZ.STRUC.nongaap
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business structure attribute defines organizational complexity
+- signal_id: BIZ.STRUC.obs_exposure
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business structure attribute defines organizational complexity
+- signal_id: BIZ.STRUC.related_parties
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Business structure attribute defines organizational complexity
+- signal_id: BIZ.STRUCT.related_party
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Structural arrangement is an inherent organizational attribute
+- signal_id: BIZ.STRUCT.subsidiary_count
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Structural arrangement is an inherent organizational attribute
+- signal_id: BIZ.STRUCT.vie_spe
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Structural arrangement is an inherent organizational attribute
+- signal_id: BIZ.UNI.ai_claims
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Active AI-related risk claims represent discrete events and management decisions around AI deployment
+- signal_id: BIZ.UNI.cyber_business
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Structural cyber dependency as a business model characteristic
+- signal_id: BIZ.UNI.cyber_posture
+  rap_class: host
+  rap_subcategory: host.structure
+  rationale: Structural cyber risk exposure as an attribute of the business model
+- signal_id: DISC.YOY.controls_changed
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Year-over-year disclosure changes reflect management disclosure decisions
+- signal_id: DISC.YOY.escalated_risk_factors
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Year-over-year disclosure changes reflect management disclosure decisions
+- signal_id: DISC.YOY.legal_proceedings_delta
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Year-over-year disclosure changes reflect management disclosure decisions
+- signal_id: DISC.YOY.material_weakness
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Year-over-year disclosure changes reflect management disclosure decisions
+- signal_id: DISC.YOY.new_risk_factors
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Year-over-year disclosure changes reflect management disclosure decisions
+- signal_id: DISC.YOY.removed_risk_factors
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Year-over-year disclosure changes reflect management disclosure decisions
+- signal_id: ENVR.cyber_risk
+  rap_class: host
+  rap_subcategory: host.environment_exposure
+  rationale: Structural sensitivity to environmental risk factors
+- signal_id: ENVR.esg_gap
+  rap_class: host
+  rap_subcategory: host.environment_exposure
+  rationale: Structural sensitivity to environmental risk factors
+- signal_id: ENVR.geopolitical
+  rap_class: host
+  rap_subcategory: host.environment_exposure
+  rationale: Structural sensitivity to environmental risk factors
+- signal_id: ENVR.macro_sensitivity
+  rap_class: host
+  rap_subcategory: host.environment_exposure
+  rationale: Structural sensitivity to environmental risk factors
+- signal_id: ENVR.regulatory_intensity
+  rap_class: host
+  rap_subcategory: host.environment_exposure
+  rationale: Structural sensitivity to environmental risk factors
+- signal_id: EXEC.AGGREGATE.board_risk
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Composite structural assessment of executive team risk
+- signal_id: EXEC.AGGREGATE.highest_risk_individual
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Composite structural assessment of executive team risk
+- signal_id: EXEC.CEO.risk_score
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Composite heavily weighted by behavioral signals (insider trading, departure timing, prior litigation)
+- signal_id: EXEC.CFO.risk_score
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Composite heavily weighted by behavioral signals (insider trading, departure timing, prior litigation)
+- signal_id: EXEC.DEPARTURE.cao_departure
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Executive departure is a discrete event signaling potential issues
+- signal_id: EXEC.DEPARTURE.cfo_departure_timing
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Executive departure is a discrete event signaling potential issues
+- signal_id: EXEC.INSIDER.ceo_net_selling
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Executive insider trading is behavioral conduct by specific individuals
+- signal_id: EXEC.INSIDER.cfo_net_selling
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Executive insider trading is behavioral conduct by specific individuals
+- signal_id: EXEC.INSIDER.cluster_selling
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Executive insider trading is behavioral conduct by specific individuals
+- signal_id: EXEC.INSIDER.non_10b51
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Executive insider trading is behavioral conduct by specific individuals
+- signal_id: EXEC.PRIOR_LIT.any_officer
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Prior litigation history of officers is a structural risk attribute
+- signal_id: EXEC.PRIOR_LIT.ceo_cfo
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Prior litigation history of officers is a structural risk attribute
+- signal_id: EXEC.PROFILE.avg_tenure
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Executive profile attributes are structural governance characteristics
+- signal_id: EXEC.PROFILE.board_size
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Executive profile attributes are structural governance characteristics
+- signal_id: EXEC.PROFILE.ceo_chair_duality
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Executive profile attributes are structural governance characteristics
+- signal_id: EXEC.PROFILE.independent_ratio
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Executive profile attributes are structural governance characteristics
+- signal_id: EXEC.PROFILE.overboarded_directors
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Executive profile attributes are structural governance characteristics
+- signal_id: EXEC.TENURE.c_suite_turnover
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  rationale: Rate of executive changes is a behavioral pattern indicating organizational instability
+- signal_id: EXEC.TENURE.ceo_new
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Current state attribute -- is the CEO new? Structural fact about current leadership
+- signal_id: EXEC.TENURE.cfo_new
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Current state attribute -- is the CFO new? Structural fact about current leadership
+- signal_id: FIN.ACCT.auditor
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Accounting signal indicates management financial reporting conduct
+- signal_id: FIN.ACCT.auditor_attestation_fail
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Accounting signal indicates management financial reporting conduct
+- signal_id: FIN.ACCT.auditor_disagreement
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Accounting signal indicates management financial reporting conduct
+- signal_id: FIN.ACCT.earnings_manipulation
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Accounting signal indicates management financial reporting conduct
+- signal_id: FIN.ACCT.internal_controls
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Accounting signal indicates management financial reporting conduct
+- signal_id: FIN.ACCT.material_weakness
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Accounting signal indicates management financial reporting conduct
+- signal_id: FIN.ACCT.quality_indicators
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Accounting signal indicates management financial reporting conduct
+- signal_id: FIN.ACCT.restatement
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Accounting signal indicates management financial reporting conduct
+- signal_id: FIN.ACCT.restatement_auditor_link
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Accounting signal indicates management financial reporting conduct
+- signal_id: FIN.ACCT.restatement_magnitude
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Accounting signal indicates management financial reporting conduct
+- signal_id: FIN.ACCT.restatement_pattern
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Accounting signal indicates management financial reporting conduct
+- signal_id: FIN.ACCT.restatement_stock_window
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Accounting signal indicates management financial reporting conduct
+- signal_id: FIN.ACCT.sec_correspondence
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Accounting signal indicates management financial reporting conduct
+- signal_id: FIN.DEBT.covenants
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Debt structure is a balance sheet attribute of the company
+- signal_id: FIN.DEBT.coverage
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Debt structure is a balance sheet attribute of the company
+- signal_id: FIN.DEBT.credit_rating
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Debt structure is a balance sheet attribute of the company
+- signal_id: FIN.DEBT.maturity
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Debt structure is a balance sheet attribute of the company
+- signal_id: FIN.DEBT.operating_lease_burden
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Debt structure is a balance sheet attribute of the company
+- signal_id: FIN.DEBT.pension_underfunded_risk
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Debt structure is a balance sheet attribute of the company
+- signal_id: FIN.DEBT.structure
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Debt structure is a balance sheet attribute of the company
+- signal_id: FIN.FORENSIC.accrual_intensity
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.acquisition_effectiveness
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.acquisition_to_revenue
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.aqi_elevated
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.beneish_dechow_convergence
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.buyback_timing
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.cash_conversion_cycle
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.cash_flow_manipulation
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.channel_stuffing
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.debt_maturity_concentration
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.dechow_f_score
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.deferred_revenue_divergence
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.deferred_tax_growth
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.dividend_sustainability
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.dsri_elevated
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.enhanced_sloan
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.etr_anomaly
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.fis_composite
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.goodwill_deterioration_pattern
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.goodwill_growth_rate
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.goodwill_impairment_risk
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.intangible_concentration
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.interest_coverage_decline
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.level3_fair_value
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.m_score_composite
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.margin_compression
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.montier_c_score
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.non_gaap_gap
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.ocf_revenue_ratio
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.off_balance_sheet
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.pension_underfunding
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.related_party_revenue
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.roic_decline
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.sbc_dilution
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.serial_acquirer
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.sloan_accruals
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.tata_elevated
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.FORENSIC.working_capital_volatility
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Forensic anomaly detection targets behavioral manipulation patterns
+- signal_id: FIN.GUIDE.analyst_consensus
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Guidance is a deliberate management disclosure decision
+- signal_id: FIN.GUIDE.current
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Guidance is a deliberate management disclosure decision
+- signal_id: FIN.GUIDE.earnings_reaction
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Guidance is a deliberate management disclosure decision
+- signal_id: FIN.GUIDE.estimate_revision_pattern
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Guidance is a deliberate management disclosure decision
+- signal_id: FIN.GUIDE.philosophy
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Guidance is a deliberate management disclosure decision
+- signal_id: FIN.GUIDE.track_record
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Guidance is a deliberate management disclosure decision
+- signal_id: FIN.LIQ.cash_burn
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Liquidity position is a current-state financial attribute
+- signal_id: FIN.LIQ.efficiency
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Liquidity position is a current-state financial attribute
+- signal_id: FIN.LIQ.position
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Liquidity position is a current-state financial attribute
+- signal_id: FIN.LIQ.trend
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Liquidity position is a current-state financial attribute
+- signal_id: FIN.LIQ.working_capital
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Liquidity position is a current-state financial attribute
+- signal_id: FIN.PEER.cash_flow_weak
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  rationale: Peer comparison is external context from similar companies
+- signal_id: FIN.PEER.leverage_top_decile
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  rationale: Peer comparison is external context from similar companies
+- signal_id: FIN.PEER.margin_compression
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  rationale: Peer comparison is external context from similar companies
+- signal_id: FIN.PEER.profitability_laggard
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  rationale: Peer comparison is external context from similar companies
+- signal_id: FIN.PEER.revenue_bottom_quartile
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  rationale: Peer comparison is external context from similar companies
+- signal_id: FIN.PEER.size_outlier_small
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  rationale: Peer comparison is external context from similar companies
+- signal_id: FIN.PROFIT.earnings
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Profitability baseline is a current-state financial attribute
+- signal_id: FIN.PROFIT.margins
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Profitability baseline is a current-state financial attribute
+- signal_id: FIN.PROFIT.revenue
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Profitability baseline is a current-state financial attribute
+- signal_id: FIN.PROFIT.segment
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Profitability baseline is a current-state financial attribute
+- signal_id: FIN.PROFIT.trend
+  rap_class: host
+  rap_subcategory: host.financials
+  rationale: Profitability baseline is a current-state financial attribute
+- signal_id: FIN.QUALITY.cash_flow_quality
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Earnings quality issues indicate management reporting decisions
+- signal_id: FIN.QUALITY.deferred_revenue_trend
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Earnings quality issues indicate management reporting decisions
+- signal_id: FIN.QUALITY.dso_ar_divergence
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Earnings quality issues indicate management reporting decisions
+- signal_id: FIN.QUALITY.non_gaap_divergence
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Earnings quality issues indicate management reporting decisions
+- signal_id: FIN.QUALITY.q4_revenue_concentration
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Earnings quality issues indicate management reporting decisions
+- signal_id: FIN.QUALITY.quality_of_earnings
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Earnings quality issues indicate management reporting decisions
+- signal_id: FIN.QUALITY.revenue_quality_score
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Earnings quality issues indicate management reporting decisions
+- signal_id: FIN.QUALITY.revenue_recognition_risk
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Earnings quality issues indicate management reporting decisions
+- signal_id: FIN.QUALITY.stock_comp_dilution_rate
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Earnings quality issues indicate management reporting decisions
+- signal_id: FIN.SECTOR.energy
+  rap_class: host
+  rap_subcategory: host.identity
+  rationale: Sector-specific financial profile is an identity attribute
+- signal_id: FIN.SECTOR.retail
+  rap_class: host
+  rap_subcategory: host.identity
+  rationale: Sector-specific financial profile is an identity attribute
+- signal_id: FIN.TEMPORAL.cash_flow_deterioration
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Financial deterioration trends result from management decisions or inaction
+- signal_id: FIN.TEMPORAL.cfo_ni_divergence
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Financial deterioration trends result from management decisions or inaction
+- signal_id: FIN.TEMPORAL.debt_ratio_increase
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Financial deterioration trends result from management decisions or inaction
+- signal_id: FIN.TEMPORAL.dso_expansion
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Financial deterioration trends result from management decisions or inaction
+- signal_id: FIN.TEMPORAL.earnings_quality_divergence
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Financial deterioration trends result from management decisions or inaction
+- signal_id: FIN.TEMPORAL.margin_compression
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Financial deterioration trends result from management decisions or inaction
+- signal_id: FIN.TEMPORAL.operating_margin_compression
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Financial deterioration trends result from management decisions or inaction
+- signal_id: FIN.TEMPORAL.profitability_trend
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Financial deterioration trends result from management decisions or inaction
+- signal_id: FIN.TEMPORAL.revenue_deceleration
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Financial deterioration trends result from management decisions or inaction
+- signal_id: FIN.TEMPORAL.working_capital_deterioration
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  rationale: Financial deterioration trends result from management decisions or inaction
+- signal_id: FWRD.DISC.disclosure_quality_composite
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Disclosure quality assessment reflects management disclosure choices
+- signal_id: FWRD.DISC.guidance_methodology
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Disclosure quality assessment reflects management disclosure choices
+- signal_id: FWRD.DISC.mda_depth
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Disclosure quality assessment reflects management disclosure choices
+- signal_id: FWRD.DISC.metric_consistency
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Disclosure quality assessment reflects management disclosure choices
+- signal_id: FWRD.DISC.non_gaap_reconciliation
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Disclosure quality assessment reflects management disclosure choices
+- signal_id: FWRD.DISC.related_party_completeness
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Disclosure quality assessment reflects management disclosure choices
+- signal_id: FWRD.DISC.risk_factor_evolution
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Disclosure quality assessment reflects management disclosure choices
+- signal_id: FWRD.DISC.sec_comment_letters
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Disclosure quality assessment reflects management disclosure choices
+- signal_id: FWRD.DISC.segment_consistency
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Disclosure quality assessment reflects management disclosure choices
+- signal_id: FWRD.EVENT.catalyst_dates
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.contract_renewal
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.covenant_test
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.customer_retention
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.debt_maturity
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.earnings_calendar
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.employee_retention
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.guidance_risk
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.integration
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.litigation_milestone
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.lockup_expiry
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.ma_closing
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.ma_integration_risk
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.proxy_deadline
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.regulatory_decision
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.shareholder_mtg
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.synergy
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.EVENT.warrant_expiry
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  rationale: Forward-looking event represents upcoming management-driven activity
+- signal_id: FWRD.MACRO.climate_transition_risk
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Macro condition is an external factor affecting the company's environment
+- signal_id: FWRD.MACRO.commodity_impact
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Macro condition is an external factor affecting the company's environment
+- signal_id: FWRD.MACRO.disruptive_tech
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Macro condition is an external factor affecting the company's environment
+- signal_id: FWRD.MACRO.fx_exposure
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Macro condition is an external factor affecting the company's environment
+- signal_id: FWRD.MACRO.geopolitical_exposure
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Macro condition is an external factor affecting the company's environment
+- signal_id: FWRD.MACRO.industry_consolidation
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Macro condition is an external factor affecting the company's environment
+- signal_id: FWRD.MACRO.inflation_impact
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Macro condition is an external factor affecting the company's environment
+- signal_id: FWRD.MACRO.interest_rate_sensitivity
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Macro condition is an external factor affecting the company's environment
+- signal_id: FWRD.MACRO.labor_market
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Macro condition is an external factor affecting the company's environment
+- signal_id: FWRD.MACRO.legislative_risk
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Macro condition is an external factor affecting the company's environment
+- signal_id: FWRD.MACRO.peer_issues
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Macro condition is an external factor affecting the company's environment
+- signal_id: FWRD.MACRO.regulatory_changes
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Macro condition is an external factor affecting the company's environment
+- signal_id: FWRD.MACRO.sector_performance
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Macro condition is an external factor affecting the company's environment
+- signal_id: FWRD.MACRO.supply_chain_disruption
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Macro condition is an external factor affecting the company's environment
+- signal_id: FWRD.MACRO.trade_policy
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Macro condition is an external factor affecting the company's environment
+- signal_id: FWRD.NARRATIVE.10k_vs_earnings
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Third-party narrative analysis provides external perspective on the company
+- signal_id: FWRD.NARRATIVE.analyst_skepticism
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Third-party narrative analysis provides external perspective on the company
+- signal_id: FWRD.NARRATIVE.auditor_cams
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Third-party narrative analysis provides external perspective on the company
+- signal_id: FWRD.NARRATIVE.investor_vs_sec
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Third-party narrative analysis provides external perspective on the company
+- signal_id: FWRD.NARRATIVE.narrative_coherence_composite
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Third-party narrative analysis provides external perspective on the company
+- signal_id: FWRD.NARRATIVE.short_thesis
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: Third-party narrative analysis provides external perspective on the company
+- signal_id: FWRD.WARN.ai_revenue_concentration
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.app_ratings
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.blind_posts
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.capex_discipline
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.cfpb_complaints
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.compliance_hiring
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.contract_disputes
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.customer_churn_signals
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.data_center_risk
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.fda_medwatch
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.g2_reviews
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.glassdoor_sentiment
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.goodwill_risk
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.gpu_allocation
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.hyperscaler_dependency
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.impairment_risk
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.indeed_reviews
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.job_posting_patterns
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.journalism_activity
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.legal_hiring
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.linkedin_departures
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.linkedin_headcount
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.margin_pressure
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.nhtsa_complaints
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.partner_stability
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.revenue_quality
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.social_sentiment
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.trustpilot_trend
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.vendor_payment_delays
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.whistleblower_exposure
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.working_capital_trends
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: FWRD.WARN.zone_of_insolvency
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  rationale: External early warning signal from third-party sources
+- signal_id: GOV.ACTIVIST.13d_filings
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Activist campaign is initiated by external shareholder, not management
+- signal_id: GOV.ACTIVIST.board_seat
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Activist campaign is initiated by external shareholder, not management
+- signal_id: GOV.ACTIVIST.campaigns
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Activist campaign is initiated by external shareholder, not management
+- signal_id: GOV.ACTIVIST.consent
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Activist campaign is initiated by external shareholder, not management
+- signal_id: GOV.ACTIVIST.demands
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Activist campaign is initiated by external shareholder, not management
+- signal_id: GOV.ACTIVIST.dissident
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Activist campaign is initiated by external shareholder, not management
+- signal_id: GOV.ACTIVIST.proposal
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Activist campaign is initiated by external shareholder, not management
+- signal_id: GOV.ACTIVIST.proxy_contests
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Activist campaign is initiated by external shareholder, not management
+- signal_id: GOV.ACTIVIST.schedule_13g
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Activist campaign is initiated by external shareholder, not management
+- signal_id: GOV.ACTIVIST.settle_agree
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Activist campaign is initiated by external shareholder, not management
+- signal_id: GOV.ACTIVIST.short_activism
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Activist campaign is initiated by external shareholder, not management
+- signal_id: GOV.ACTIVIST.standstill
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Activist campaign is initiated by external shareholder, not management
+- signal_id: GOV.ACTIVIST.withhold
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Activist campaign is initiated by external shareholder, not management
+- signal_id: GOV.ACTIVIST.wolf_pack
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Activist campaign is initiated by external shareholder, not management
+- signal_id: GOV.BOARD.attendance
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Board composition attribute is a structural governance characteristic
+- signal_id: GOV.BOARD.ceo_chair
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Board composition attribute is a structural governance characteristic
+- signal_id: GOV.BOARD.character_conduct
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  rationale: Director character and conduct issues are behavioral, not structural
+- signal_id: GOV.BOARD.committees
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Board composition attribute is a structural governance characteristic
+- signal_id: GOV.BOARD.departures
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  rationale: Board departures are events that change governance -- discrete actions/events, not structure
+- signal_id: GOV.BOARD.diversity
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Board composition attribute is a structural governance characteristic
+- signal_id: GOV.BOARD.expertise
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Board composition attribute is a structural governance characteristic
+- signal_id: GOV.BOARD.independence
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Board composition attribute is a structural governance characteristic
+- signal_id: GOV.BOARD.meetings
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Board composition attribute is a structural governance characteristic
+- signal_id: GOV.BOARD.overboarding
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Board composition attribute is a structural governance characteristic
+- signal_id: GOV.BOARD.prior_litigation
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Board composition attribute is a structural governance characteristic
+- signal_id: GOV.BOARD.qualifications
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Board composition attribute is a structural governance characteristic
+- signal_id: GOV.BOARD.refresh_activity
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  rationale: Board refresh is an action taken to change governance composition
+- signal_id: GOV.BOARD.size
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Board composition attribute is a structural governance characteristic
+- signal_id: GOV.BOARD.succession
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Board composition attribute is a structural governance characteristic
+- signal_id: GOV.BOARD.tenure
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Board composition attribute is a structural governance characteristic
+- signal_id: GOV.EFFECT.audit_committee
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Audit committee effectiveness is a structural governance attribute
+- signal_id: GOV.EFFECT.audit_opinion
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Audit opinion type is a structural assessment of financial reporting
+- signal_id: GOV.EFFECT.auditor_change
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  rationale: Auditor change is a discrete decision -- especially significant mid-audit
+- signal_id: GOV.EFFECT.iss_score
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: ISS governance score is a structural assessment of governance quality
+- signal_id: GOV.EFFECT.late_filing
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  rationale: Late filing is a discrete event indicating internal control breakdown
+- signal_id: GOV.EFFECT.material_weakness
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  rationale: Material weakness finding is a discrete event indicating control failure
+- signal_id: GOV.EFFECT.nt_filing
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  rationale: NT (Non-Timely) filing is a discrete event indicating reporting problems
+- signal_id: GOV.EFFECT.proxy_advisory
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Proxy advisory recommendations reflect structural governance assessment
+- signal_id: GOV.EFFECT.sig_deficiency
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  rationale: Significant deficiency finding is a discrete event from auditors
+- signal_id: GOV.EFFECT.sox_404
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: SOX 404 compliance framework is a structural governance control
+- signal_id: GOV.EXEC.ceo_profile
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Structural assessment of CEO background, qualifications, and experience
+- signal_id: GOV.EXEC.cfo_profile
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Structural assessment of CFO background, qualifications, and experience
+- signal_id: GOV.EXEC.character_conduct
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  rationale: Executive character and conduct issues are behavioral signals
+- signal_id: GOV.EXEC.departure_context
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  rationale: Departure circumstances reveal behavioral dynamics -- why they left
+- signal_id: GOV.EXEC.founder
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Founder status is a structural attribute of the company's leadership
+- signal_id: GOV.EXEC.key_person
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Key person dependency is a structural governance attribute
+- signal_id: GOV.EXEC.officer_litigation
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  rationale: Officer involvement in litigation is an event/finding, not structure
+- signal_id: GOV.EXEC.other_officers
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Structural assessment of other officers in the leadership team
+- signal_id: GOV.EXEC.stability
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Executive stability is a structural attribute of governance continuity
+- signal_id: GOV.EXEC.succession_status
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  rationale: Succession planning status reflects current governance decisions
+- signal_id: GOV.EXEC.turnover_analysis
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  rationale: Analysis of executive turnover events and their patterns
+- signal_id: GOV.EXEC.turnover_pattern
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  rationale: Turnover pattern detection reveals behavioral dynamics in leadership
+- signal_id: GOV.INSIDER.10b5_plans
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Insider trading is behavioral conduct by directors and officers
+- signal_id: GOV.INSIDER.cluster_sales
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Insider trading is behavioral conduct by directors and officers
+- signal_id: GOV.INSIDER.executive_sales
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Insider trading is behavioral conduct by directors and officers
+- signal_id: GOV.INSIDER.exercise_sell
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Insider trading is behavioral conduct by directors and officers
+- signal_id: GOV.INSIDER.form4_filings
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Insider trading is behavioral conduct by directors and officers
+- signal_id: GOV.INSIDER.net_selling
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Insider trading is behavioral conduct by directors and officers
+- signal_id: GOV.INSIDER.option_exercise_sell_pattern
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Insider trading is behavioral conduct by directors and officers
+- signal_id: GOV.INSIDER.ownership_concentration
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Insider trading is behavioral conduct by directors and officers
+- signal_id: GOV.INSIDER.ownership_pct
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Insider trading is behavioral conduct by directors and officers
+- signal_id: GOV.INSIDER.plan_adoption
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Insider trading is behavioral conduct by directors and officers
+- signal_id: GOV.INSIDER.timing_suspect
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Insider trading is behavioral conduct by directors and officers
+- signal_id: GOV.INSIDER.trading_pattern_deviation
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Insider trading is behavioral conduct by directors and officers
+- signal_id: GOV.INSIDER.unusual_timing
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Insider trading is behavioral conduct by directors and officers
+- signal_id: GOV.PAY.401k_match
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  rationale: Compensation design is a deliberate board and committee decision
+- signal_id: GOV.PAY.ceo_structure
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  rationale: Compensation design is a deliberate board and committee decision
+- signal_id: GOV.PAY.ceo_total
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  rationale: Compensation design is a deliberate board and committee decision
+- signal_id: GOV.PAY.clawback
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  rationale: Compensation design is a deliberate board and committee decision
+- signal_id: GOV.PAY.deferred_comp
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  rationale: Compensation design is a deliberate board and committee decision
+- signal_id: GOV.PAY.equity_burn
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  rationale: Compensation design is a deliberate board and committee decision
+- signal_id: GOV.PAY.exec_loans
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  rationale: Compensation design is a deliberate board and committee decision
+- signal_id: GOV.PAY.golden_para
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  rationale: Compensation design is a deliberate board and committee decision
+- signal_id: GOV.PAY.hedging
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  rationale: Compensation design is a deliberate board and committee decision
+- signal_id: GOV.PAY.incentive_metrics
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  rationale: Compensation design is a deliberate board and committee decision
+- signal_id: GOV.PAY.peer_comparison
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  rationale: Compensation design is a deliberate board and committee decision
+- signal_id: GOV.PAY.pension
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  rationale: Compensation design is a deliberate board and committee decision
+- signal_id: GOV.PAY.perks
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  rationale: Compensation design is a deliberate board and committee decision
+- signal_id: GOV.PAY.related_party
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  rationale: Compensation design is a deliberate board and committee decision
+- signal_id: GOV.PAY.say_on_pay
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  rationale: Compensation design is a deliberate board and committee decision
+- signal_id: GOV.RIGHTS.action_consent
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Shareholder rights provisions are structural governance features
+- signal_id: GOV.RIGHTS.bylaws
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Shareholder rights provisions are structural governance features
+- signal_id: GOV.RIGHTS.classified
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Shareholder rights provisions are structural governance features
+- signal_id: GOV.RIGHTS.dual_class
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Shareholder rights provisions are structural governance features
+- signal_id: GOV.RIGHTS.forum_select
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Shareholder rights provisions are structural governance features
+- signal_id: GOV.RIGHTS.proxy_access
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Shareholder rights provisions are structural governance features
+- signal_id: GOV.RIGHTS.special_mtg
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Shareholder rights provisions are structural governance features
+- signal_id: GOV.RIGHTS.supermajority
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Shareholder rights provisions are structural governance features
+- signal_id: GOV.RIGHTS.takeover
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Shareholder rights provisions are structural governance features
+- signal_id: GOV.RIGHTS.voting_rights
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  rationale: Shareholder rights provisions are structural governance features
+- signal_id: LIT.DEFENSE.contingent_liabilities
+  rap_class: environment
+  rap_subcategory: environment.defense_posture
+  rationale: Legal defense environment defines available protections against claims
+- signal_id: LIT.DEFENSE.forum_selection
+  rap_class: environment
+  rap_subcategory: environment.defense_posture
+  rationale: Legal defense environment defines available protections against claims
+- signal_id: LIT.DEFENSE.pslra_safe_harbor
+  rap_class: environment
+  rap_subcategory: environment.defense_posture
+  rationale: Legal defense environment defines available protections against claims
+- signal_id: LIT.OTHER.aggregate
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Active litigation is the crystallized outcome of prior conduct
+- signal_id: LIT.OTHER.antitrust
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Active litigation is the crystallized outcome of prior conduct
+- signal_id: LIT.OTHER.bankruptcy
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Active litigation is the crystallized outcome of prior conduct
+- signal_id: LIT.OTHER.class_action
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Active litigation is the crystallized outcome of prior conduct
+- signal_id: LIT.OTHER.contract
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Active litigation is the crystallized outcome of prior conduct
+- signal_id: LIT.OTHER.cyber_breach
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Active litigation is the crystallized outcome of prior conduct
+- signal_id: LIT.OTHER.employment
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Active litigation is the crystallized outcome of prior conduct
+- signal_id: LIT.OTHER.environmental
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Active litigation is the crystallized outcome of prior conduct
+- signal_id: LIT.OTHER.foreign_suit
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Active litigation is the crystallized outcome of prior conduct
+- signal_id: LIT.OTHER.gov_contract
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Active litigation is the crystallized outcome of prior conduct
+- signal_id: LIT.OTHER.ip
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Active litigation is the crystallized outcome of prior conduct
+- signal_id: LIT.OTHER.product
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Active litigation is the crystallized outcome of prior conduct
+- signal_id: LIT.OTHER.trade_secret
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Active litigation is the crystallized outcome of prior conduct
+- signal_id: LIT.OTHER.whistleblower
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Active litigation is the crystallized outcome of prior conduct
+- signal_id: LIT.PATTERN.industry_theories
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  rationale: Litigation patterns across peers provide external context
+- signal_id: LIT.PATTERN.peer_contagion
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  rationale: Litigation patterns across peers provide external context
+- signal_id: LIT.PATTERN.sol_windows
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  rationale: Litigation patterns across peers provide external context
+- signal_id: LIT.PATTERN.temporal_correlation
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  rationale: Litigation patterns across peers provide external context
+- signal_id: LIT.REG.cease_desist
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.cfpb_action
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.civil_penalty
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.comment_letters
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.consent_order
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.deferred_pros
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.doj_investigation
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.dol_audit
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.epa_action
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.fda_warning
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.fdic_order
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.foreign_gov
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.ftc_investigation
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.industry_reg
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.osha_citation
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.sec_active
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.sec_investigation
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.sec_severity
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.state_action
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.state_ag
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.subpoena
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.REG.wells_notice
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Regulatory enforcement action is a response to company conduct
+- signal_id: LIT.SCA.active
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.allegations
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.case_status
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.class_period
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.demand
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.derivative
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.dismiss_basis
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.erisa
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.exposure
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.filing_date
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.historical
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.lead_plaintiff
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.merger_obj
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.policy_status
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.prefiling
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.prior_dismiss
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.prior_settle
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.search
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.settle_amount
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SCA.settle_date
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Securities class action is a legal consequence of alleged misconduct
+- signal_id: LIT.SECTOR.industry_patterns
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  rationale: Sector litigation patterns provide external industry context
+- signal_id: LIT.SECTOR.regulatory_databases
+  rap_class: environment
+  rap_subcategory: environment.peer_context
+  rationale: Sector litigation patterns provide external industry context
+- signal_id: NLP.CAM.changes
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Filing language analysis detects management disclosure behavior changes
+- signal_id: NLP.DISCLOSURE.forward_looking_decrease
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Filing language analysis detects management disclosure behavior changes
+- signal_id: NLP.DISCLOSURE.hedging_language_increase
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Filing language analysis detects management disclosure behavior changes
+- signal_id: NLP.FILING.filing_timing_change
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Filing language analysis detects management disclosure behavior changes
+- signal_id: NLP.FILING.late_filing
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Filing language analysis detects management disclosure behavior changes
+- signal_id: NLP.MDA.readability_absolute
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Filing language analysis detects management disclosure behavior changes
+- signal_id: NLP.MDA.readability_change
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Filing language analysis detects management disclosure behavior changes
+- signal_id: NLP.MDA.tone_absolute
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Filing language analysis detects management disclosure behavior changes
+- signal_id: NLP.MDA.tone_shift
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Filing language analysis detects management disclosure behavior changes
+- signal_id: NLP.RISK.factor_count_change
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Filing language analysis detects management disclosure behavior changes
+- signal_id: NLP.RISK.litigation_risk_factor_new
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Filing language analysis detects management disclosure behavior changes
+- signal_id: NLP.RISK.new_risk_factors
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Filing language analysis detects management disclosure behavior changes
+- signal_id: NLP.RISK.regulatory_risk_factor_new
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Filing language analysis detects management disclosure behavior changes
+- signal_id: NLP.WHISTLE.internal_investigation
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Filing language analysis detects management disclosure behavior changes
+- signal_id: NLP.WHISTLE.language_detected
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  rationale: Filing language analysis detects management disclosure behavior changes
+- signal_id: SECT.claim_patterns
+  rap_class: host
+  rap_subcategory: host.identity
+  rationale: Sector classification and risk overlay is a structural identity attribute
+- signal_id: SECT.hazard_tier
+  rap_class: host
+  rap_subcategory: host.identity
+  rationale: Sector classification and risk overlay is a structural identity attribute
+- signal_id: SECT.peer_comparison
+  rap_class: host
+  rap_subcategory: host.identity
+  rationale: Sector classification and risk overlay is a structural identity attribute
+- signal_id: SECT.regulatory_overlay
+  rap_class: host
+  rap_subcategory: host.identity
+  rationale: Sector classification and risk overlay is a structural identity attribute
+- signal_id: STOCK.ANALYST.coverage
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Analyst coverage and sentiment are external market assessments
+- signal_id: STOCK.ANALYST.momentum
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Analyst coverage and sentiment are external market assessments
+- signal_id: STOCK.INSIDER.cluster_timing
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Insider trading activity detected from market data is behavioral conduct
+- signal_id: STOCK.INSIDER.notable_activity
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Insider trading activity detected from market data is behavioral conduct
+- signal_id: STOCK.INSIDER.summary
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  rationale: Insider trading activity detected from market data is behavioral conduct
+- signal_id: STOCK.LIT.existing_action
+  rap_class: agent
+  rap_subcategory: agent.litigation_actions
+  rationale: Existing litigation action detected from market data sources
+- signal_id: STOCK.OWN.activist
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Ownership structure is determined by external investors
+- signal_id: STOCK.OWN.concentration
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Ownership structure is determined by external investors
+- signal_id: STOCK.OWN.structure
+  rap_class: environment
+  rap_subcategory: environment.ownership
+  rationale: Ownership structure is determined by external investors
+- signal_id: STOCK.PATTERN.cascade
+  rap_class: environment
+  rap_subcategory: environment.market_patterns
+  rationale: Market microstructure pattern from external actor behavior
+- signal_id: STOCK.PATTERN.death_spiral
+  rap_class: environment
+  rap_subcategory: environment.market_patterns
+  rationale: Market microstructure pattern from external actor behavior
+- signal_id: STOCK.PATTERN.event_collapse
+  rap_class: environment
+  rap_subcategory: environment.market_patterns
+  rationale: Market microstructure pattern from external actor behavior
+- signal_id: STOCK.PATTERN.informed_trading
+  rap_class: environment
+  rap_subcategory: environment.market_patterns
+  rationale: Market microstructure pattern from external actor behavior
+- signal_id: STOCK.PATTERN.peer_divergence
+  rap_class: environment
+  rap_subcategory: environment.market_patterns
+  rationale: Market microstructure pattern from external actor behavior
+- signal_id: STOCK.PATTERN.peer_valuation_gap
+  rap_class: environment
+  rap_subcategory: environment.market_patterns
+  rationale: Market microstructure pattern from external actor behavior
+- signal_id: STOCK.PATTERN.short_attack
+  rap_class: environment
+  rap_subcategory: environment.market_patterns
+  rationale: Market microstructure pattern from external actor behavior
+- signal_id: STOCK.PRICE.attribution
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Stock price is determined by external market participants
+- signal_id: STOCK.PRICE.beta_ratio_elevated
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Stock price is determined by external market participants
+- signal_id: STOCK.PRICE.chart_comparison
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Stock price is determined by external market participants
+- signal_id: STOCK.PRICE.delisting_risk
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Stock price is determined by external market participants
+- signal_id: STOCK.PRICE.drawdown_duration
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Stock price is determined by external market participants
+- signal_id: STOCK.PRICE.idiosyncratic_vol
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Stock price is determined by external market participants
+- signal_id: STOCK.PRICE.peer_relative
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Stock price is determined by external market participants
+- signal_id: STOCK.PRICE.position
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Stock price is determined by external market participants
+- signal_id: STOCK.PRICE.recent_drop_alert
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Stock price is determined by external market participants
+- signal_id: STOCK.PRICE.recovery
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Stock price is determined by external market participants
+- signal_id: STOCK.PRICE.returns_multi_horizon
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Stock price is determined by external market participants
+- signal_id: STOCK.PRICE.single_day_events
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Stock price is determined by external market participants
+- signal_id: STOCK.PRICE.technical
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Stock price is determined by external market participants
+- signal_id: STOCK.PRICE.unexplained_drops
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Stock price is determined by external market participants
+- signal_id: STOCK.SHORT.position
+  rap_class: environment
+  rap_subcategory: environment.market_patterns
+  rationale: Short seller activity is external actor behavior targeting the company
+- signal_id: STOCK.SHORT.report
+  rap_class: environment
+  rap_subcategory: environment.market_patterns
+  rationale: Short seller activity is external actor behavior targeting the company
+- signal_id: STOCK.SHORT.trend
+  rap_class: environment
+  rap_subcategory: environment.market_patterns
+  rationale: Short seller activity is external actor behavior targeting the company
+- signal_id: STOCK.TRADE.liquidity
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Trading volume and liquidity are external market characteristics
+- signal_id: STOCK.TRADE.options
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Trading volume and liquidity are external market characteristics
+- signal_id: STOCK.TRADE.volume_patterns
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Trading volume and liquidity are external market characteristics
+- signal_id: STOCK.VALUATION.ev_ebitda
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Valuation ratios reflect external market assessment of the company
+- signal_id: STOCK.VALUATION.pe_ratio
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Valuation ratios reflect external market assessment of the company
+- signal_id: STOCK.VALUATION.peg_ratio
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Valuation ratios reflect external market assessment of the company
+- signal_id: STOCK.VALUATION.premium_discount
+  rap_class: environment
+  rap_subcategory: environment.market_signals
+  rationale: Valuation ratios reflect external market assessment of the company

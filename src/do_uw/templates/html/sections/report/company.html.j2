@@ -1,0 +1,544 @@
+{# ═══════════════════════════════════════════════════════════════════════════
+   MANIFEST SECTION 2: THE COMPANY — Business model, operations, risk factors
+   ═══════════════════════════════════════════════════════════════════════════ #}
+{% set co = b.comp %}
+{% if co %}
+<div id="company-operations" style="margin-top:14px">
+  <div style="background:#1F3A5C;color:white;padding:6px 10px;border-radius:4px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+    <div><span style="font-size:10pt;font-weight:800;letter-spacing:0.3px">Company Operations & Profile</span><br><span style="font-size:7.5pt;color:rgba(255,255,255,0.6)">Business model, operations, risk factors</span></div>
+    {% if co.revenue_model_type %}<span style="padding:3px 10px;border-radius:12px;font-size:8pt;font-weight:700;background:#7C3AED;color:white">{{ co.revenue_model_type }}</span>{% endif %}
+  </div>
+
+  {# ── LLM Company Profile (primary analytical content) ── #}
+  {% set cp = company_profile if company_profile is defined else {} %}
+  {% if cp and cp.get('overview') %}
+  <div style="background:white;border:1px solid #E2E8F0;border-radius:5px;padding:12px 14px;margin-bottom:8px;line-height:1.6">
+    <div style="font-size:10pt;color:#374151;margin-bottom:8px">{{ cp.overview | clean_narrative | safe }}</div>
+    {% if cp.get('risk_landscape') %}
+    <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;margin-top:10px">Risk Landscape</div>
+    <div style="font-size:10pt;color:#374151;margin-bottom:8px">{{ cp.risk_landscape | clean_narrative | safe }}</div>
+    {% endif %}
+    {% if cp.get('structural_risk') %}
+    <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;margin-top:10px">Structural & Concentration Risk</div>
+    <div style="font-size:10pt;color:#374151;margin-bottom:8px">{{ cp.structural_risk | clean_narrative | safe }}</div>
+    {% endif %}
+    {% if cp.get('do_implications') %}
+    <div style="font-size:7pt;font-weight:700;color:#DC2626;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;margin-top:10px">D&O Underwriting Implications</div>
+    <div style="font-size:10pt;color:#374151;border-left:3px solid #DC2626;padding-left:10px">{{ cp.do_implications | clean_narrative | safe }}</div>
+    {% endif %}
+  </div>
+  {% else %}
+  {# Fallback: original section insight #}
+  {% with insight_id="company" %}{% include "components/section_insight.html.j2" %}{% endwith %}
+  {% endif %}
+
+  {# ── Section Summary Card ── #}
+  <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:4px">
+    {% for card in [
+      {"label":"Filer Category","value":co.filer_category},
+      {"label":"Exchange","value":co.exchange},
+      {"label":"Years Public","value":co.years_public},
+      {"label":"Revenue Model","value":co.revenue_model_type},
+      {"label":"Disruption Risk","value":co.disruption_risk.level if co.disruption_risk else None},
+      {"label":"Key Person Risk","value":co.key_person.risk_score if co.key_person else None}
+    ] %}
+    {% if card.value and card.value != 'N/A' %}
+    <div style="flex:1;min-width:14%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px;text-align:center">
+      <div style="font-size:12pt;font-weight:800;color:#374151">{{ card.value }}</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:1px">{{ card.label }}</div>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+  {# Section verdict #}
+  {% if co.risk_classification %}
+  <div style="font-size:8.5pt;color:#374151;background:#F9FAFB;border-left:3px solid #1F3A5C;padding:4px 10px;margin-bottom:6px;line-height:1.4">
+    {% if co.risk_classification == 'BINARY_EVENT' %}Risk profile driven by binary catalysts (FDA, litigation, M&A) — stock price may not decline gradually.
+    {% elif co.risk_classification == 'GROWTH_DARLING' %}High-growth expectations create elevated SCA exposure on any revenue deceleration or guidance miss.
+    {% elif co.risk_classification == 'GUIDANCE_DEPENDENT' %}Market pricing relies heavily on forward guidance — withdrawals or reductions are primary D&O triggers.
+    {% elif co.risk_classification == 'REGULATORY_SENSITIVE' %}Regulatory actions represent the dominant D&O exposure vector for this company.
+    {% elif co.risk_classification == 'TRANSFORMATION' %}Undergoing strategic transformation — execution risk creates elevated disclosure liability.
+    {% elif co.risk_classification == 'MATURE_STABLE' %}Stable operating profile with conventional D&O exposure vectors.
+    {% elif co.risk_classification == 'FINANCIAL_ENGINEERING' %}Financial complexity and leverage create elevated restatement and disclosure risk.
+    {% else %}Risk classification: {{ co.risk_classification }}.
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {# Badge row: state of incorporation + additional context #}
+  {% if co.state_of_incorporation %}
+  <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px">
+    {% if co.state_of_incorporation %}<span style="padding:3px 10px;border-radius:12px;font-size:7.5pt;font-weight:600;background:#F3F4F6;border:1px solid #E5E7EB;color:#374151">Incorporated: {{ co.state_of_incorporation }}</span>{% endif %}
+  </div>
+  {% endif %}
+
+  {# Company Risk Profile — at-a-glance analytical opener #}
+  {% if co.risk_profile and co.risk_profile.what %}
+  <div style="background:white;border:1px solid #E5E7EB;border-radius:5px;padding:10px 12px;margin-bottom:8px;border-left:4px solid #1F3A5C">
+    <div style="font-size:11pt;font-weight:700;color:#1F3A5C;margin-bottom:6px">Company Risk Profile</div>
+    {% if co.risk_profile.what %}
+    <div style="font-size:10.5pt;color:#374151;line-height:1.55;margin-bottom:5px"><b style="color:#1F3A5C">Business:</b> {{ co.risk_profile.what }}</div>
+    {% endif %}
+    {% if co.risk_profile.how %}
+    <div style="font-size:10.5pt;color:#374151;line-height:1.55;margin-bottom:5px"><b style="color:#1F3A5C">Revenue Model:</b> {{ co.risk_profile.how }}</div>
+    {% endif %}
+    {% if co.risk_profile.concentration %}
+    <div style="font-size:10.5pt;color:#374151;line-height:1.55;margin-bottom:5px"><b style="color:#D97706">Concentration Risk:</b>
+      <ul style="margin:2px 0 0;padding-left:14px;font-size:8pt;line-height:1.5">
+        {% for c in co.risk_profile.concentration %}<li>{{ c }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    {% if co.risk_profile.triggers %}
+    <div style="font-size:10.5pt;color:#374151;line-height:1.55"><b style="color:#DC2626">D&O Triggers:</b>
+      <span style="font-size:8pt">{{ co.risk_profile.triggers | join(' · ') }}</span>
+    </div>
+    {% endif %}
+    {% if co.risk_profile.litigation_target %}
+    <div style="font-size:10.5pt;color:#374151;line-height:1.55;margin-top:5px"><b style="color:#7F1D1D">Litigation Target Profile:</b>
+      <ul style="margin:2px 0 0;padding-left:14px;font-size:8pt;line-height:1.5">
+        {% for lt in co.risk_profile.litigation_target %}<li style="margin-bottom:1px"><span style="font-weight:600;color:#991B1B">{{ lt }}</span></li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {# Structured Company Narrative — overview, revenue model, D&O risk profile #}
+  {% set ns = co.narrative_structured if co.narrative_structured is defined else {} %}
+  {% if ns and (ns.overview or ns.revenue_model or ns.risk_profile) %}
+  <div style="background:white;border:1px solid #D1D5DB;border-radius:5px;padding:10px 14px;margin-bottom:8px;border-left:4px solid #1F3A5C">
+    {% if ns.overview %}
+    <div style="font-size:10.5pt;color:#374151;line-height:1.6;margin-bottom:8px">
+      <b style="color:#1F3A5C;font-size:11pt">Company Overview</b><br>
+      {{ ns.overview | strip_md }}
+    </div>
+    {% endif %}
+    {% if ns.revenue_model %}
+    <div style="font-size:10.5pt;color:#374151;line-height:1.6;margin-bottom:8px">
+      <b style="color:#1F3A5C;font-size:11pt">Revenue Model</b><br>
+      {{ ns.revenue_model | strip_md }}
+    </div>
+    {% endif %}
+    {% if ns.risk_profile %}
+    <div style="font-size:10.5pt;color:#374151;line-height:1.6">
+      <b style="color:#DC2626;font-size:11pt">D&O Risk Profile</b><br>
+      {{ ns.risk_profile | strip_md }}
+    </div>
+    {% endif %}
+  </div>
+  {% elif co.narrative %}
+  {# Fallback: plain narrative #}
+  <div style="font-size:10.5pt;color:#1F3A5C;line-height:1.6;margin:4px 0 8px;padding:10px 14px;background:#F0F4F8;border:1px solid #1F3A5C;border-radius:5px;border-left:4px solid #1F3A5C">
+    {{ co.narrative | strip_md }}
+  </div>
+  {% endif %}
+
+  {# 2.1.1 Business description — REMOVED: duplicates "What the Company Does" dossier
+       section which includes D&O exposure callout. See what_company_does.html.j2 #}
+
+  {# D&O Exposure Factors badge row #}
+  {% if co.do_exposure_factors %}
+  <div style="margin-bottom:6px">
+    <div style="font-size:8pt;color:#DC2626;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:3px">D&O Exposure Factors</div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap">
+      {% for ef in co.do_exposure_factors %}
+      <span style="font-size:7pt;font-weight:600;padding:2px 8px;border-radius:10px;background:#FEF2F2;border:1px solid #FECACA;color:#991B1B" title="{{ ef.reason }}">{{ ef.factor | humanize_factor }}</span>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# Customer Concentration + Supplier Concentration + Geographic Footprint #}
+  {% if co.customer_concentration or co.supplier_concentration or co.geographic_footprint %}
+  <table style="width:100%;border-collapse:separate;border-spacing:4px 0;margin-bottom:6px"><tr>
+    {% if co.geographic_footprint and co.geographic_footprint[0].get('region') %}
+    <td style="width:{% if co.customer_concentration or co.supplier_concentration %}50{% else %}100{% endif %}%;vertical-align:top">
+      <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Geographic Footprint</span></div>
+      <table style="width:100%;border-collapse:collapse;font-size:9pt">
+        <tr style="background:#F9FAFB;border-bottom:1px solid #E5E7EB">
+          <th style="text-align:left;padding:3px 4px;font-weight:600;color:#6B7280;font-size:8pt;text-transform:uppercase">Region</th>
+          <th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:8pt;text-transform:uppercase">Detail</th>
+        </tr>
+        {% for g in co.geographic_footprint %}
+        <tr style="border-bottom:1px solid #F3F4F6">
+          <td style="padding:3px 4px;font-weight:600;color:#111827">{{ g.region }}</td>
+          <td style="padding:3px 4px;text-align:right;color:#374151">{{ g.percentage if g.percentage else (g.detail if g.detail else '') }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </td>
+    {% endif %}
+    {% if co.customer_concentration or co.supplier_concentration %}
+    <td style="width:{% if co.geographic_footprint %}50{% else %}100{% endif %}%;vertical-align:top">
+      {% if co.customer_concentration %}
+      <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:5px;padding:6px 8px;margin-bottom:4px">
+        <div style="font-size:8pt;color:#92400E;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:3px">Customer Concentration</div>
+        {% for cc in co.customer_concentration %}
+        <div style="font-size:9.5pt;color:#374151;padding:1px 0;line-height:1.4">{{ cc.customer }}{% if cc.revenue_pct %} <span style="font-weight:700;color:#92400E">({{ cc.revenue_pct }}%)</span>{% endif %}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% if co.supplier_concentration %}
+      <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:5px;padding:6px 8px">
+        <div style="font-size:8pt;color:#991B1B;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:3px">Supplier Concentration</div>
+        {% for sc in co.supplier_concentration %}
+        <div style="font-size:9.5pt;color:#374151;padding:1px 0;line-height:1.4">{{ sc.supplier }}{% if sc.cost_pct %} <span style="font-weight:700;color:#991B1B">({{ sc.cost_pct }}%)</span>{% endif %}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </td>
+    {% endif %}
+  </tr></table>
+  {% endif %}
+
+  {# Revenue Model Split visual bar #}
+  {% if co.revenue_model_split %}
+  <div style="margin-bottom:6px">
+    <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Revenue Mix</div>
+    <div style="display:flex;height:22px;border-radius:4px;overflow:hidden;border:1px solid #E5E7EB">
+      {% set split_colors = ['#1D4ED8','#7C3AED','#D97706','#DC2626','#16A34A'] %}
+      {% for s in co.revenue_model_split %}
+      <div style="width:{{ s.pct }}%;background:{{ split_colors[loop.index0 % split_colors|length] }};display:flex;align-items:center;justify-content:center;gap:4px" title="{{ s.label }}: {{ s.pct }}%">
+        <span style="font-size:7pt;color:white;font-weight:700">{{ s.label }}</span>
+        <span style="font-size:7pt;color:rgba(255,255,255,0.8);font-weight:600">{{ s.pct }}%</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# ── Segment Growth Rate Chart (inline SVG) ── #}
+  {% if co.seg_lifecycle and co.seg_lifecycle | length > 0 %}
+  {% set _sgc = co.seg_lifecycle | length %}
+  {% set _bh = 18 %}{% set _gp = 4 %}{% set _lw = 160 %}{% set _cw = 400 %}
+  {% set _sw = _lw + _cw + 60 %}{% set _sh = _sgc * (_bh + _gp) + 4 %}{% set _mx = _lw + (_cw / 2) %}
+  <div style="background:white;border:1px solid #E5E7EB;border-radius:5px;padding:8px 10px;margin-bottom:6px">
+    <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Segment Growth Rates (YoY)</div>
+    <svg width="100%" viewBox="0 0 {{ _sw }} {{ _sh }}" xmlns="http://www.w3.org/2000/svg" style="font-family:Inter,system-ui,sans-serif">
+      <line x1="{{ _mx }}" y1="0" x2="{{ _mx }}" y2="{{ _sh }}" stroke="#D1D5DB" stroke-width="0.5" stroke-dasharray="2,2"/>
+      {% for seg in co.seg_lifecycle %}{% set _y = loop.index0 * (_bh + _gp) + 2 %}{% set _gr = seg.growth_rate if seg.growth_rate is not none else 0 %}{% set _ab = _gr if _gr >= 0 else (0 - _gr) %}{% set _bl = [_ab * (_cw / 2 / 40), _cw / 2 - 2] | min %}
+      <text x="{{ _lw - 6 }}" y="{{ _y + _bh / 2 + 1 }}" text-anchor="end" font-size="8" font-weight="600" fill="#374151" dominant-baseline="middle">{{ seg.name }}</text>
+      <rect x="{{ _lw }}" y="{{ _y }}" width="{{ _cw }}" height="{{ _bh }}" rx="2" fill="#F9FAFB"/>
+      {% if _gr >= 0 %}<rect x="{{ _mx }}" y="{{ _y + 2 }}" width="{{ _bl }}" height="{{ _bh - 4 }}" rx="2" fill="#16A34A" opacity="0.85"/>
+      <text x="{{ _mx + _bl + 4 }}" y="{{ _y + _bh / 2 + 1 }}" font-size="8" font-weight="700" fill="#16A34A" dominant-baseline="middle">+{{ _gr }}%</text>
+      {% else %}<rect x="{{ _mx - _bl }}" y="{{ _y + 2 }}" width="{{ _bl }}" height="{{ _bh - 4 }}" rx="2" fill="#DC2626" opacity="0.85"/>
+      <text x="{{ _mx - _bl - 4 }}" y="{{ _y + _bh / 2 + 1 }}" text-anchor="end" font-size="8" font-weight="700" fill="#DC2626" dominant-baseline="middle">{{ _gr }}%</text>
+      {% endif %}
+      {% if seg.stage %}<text x="{{ _lw + _cw + 55 }}" y="{{ _y + _bh / 2 + 1 }}" text-anchor="end" font-size="6" font-weight="600" fill="{% if seg.stage == 'DECLINING' %}#DC2626{% elif seg.stage == 'MATURE' %}#92400E{% else %}#1D4ED8{% endif %}" dominant-baseline="middle">{{ seg.stage }}</text>{% endif %}
+      {% endfor %}
+    </svg>
+  </div>
+  {% endif %}
+
+  {# 2.3.5 + 2.3.6 Segment lifecycle + margins side by side #}
+  {% if co.seg_lifecycle or co.seg_margins %}
+  <table style="width:100%;border-collapse:separate;border-spacing:4px 0;margin-bottom:6px"><tr>
+    {% if co.seg_lifecycle %}
+    {% set has_revenue = co.seg_lifecycle | selectattr('revenue_amount') | list | length > 0 %}
+    <td style="width:{% if co.seg_margins %}50{% else %}100{% endif %}%;vertical-align:top">
+      <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Revenue by Product Segment</span></div>
+      <table style="width:100%;border-collapse:collapse;font-size:8pt">
+        <tr style="background:#F9FAFB;border-bottom:1px solid #E5E7EB">
+          <th style="text-align:left;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Segment</th>
+          {% if has_revenue %}<th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Revenue</th>{% endif %}
+          <th style="text-align:center;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Stage</th>
+          <th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase;width:120px">Growth</th>
+        </tr>
+        {% for seg in co.seg_lifecycle %}
+        <tr style="border-bottom:1px solid #F3F4F6{% if seg.stage == 'DECLINING' %};background:#FEF2F280{% endif %}">
+          <td style="padding:3px 4px;font-weight:600;color:#111827">{{ seg.name }}</td>
+          {% if has_revenue %}<td style="padding:3px 4px;text-align:right;color:#374151;font-variant-numeric:tabular-nums">{{ seg.revenue_amount if seg.revenue_amount and seg.revenue_amount != 'N/A' else '—' }}</td>{% endif %}
+          <td style="padding:3px 4px;text-align:center"><span style="font-size:7pt;font-weight:600;padding:1px 6px;border-radius:8px;{% if seg.stage == 'DECLINING' %}background:#FEF2F2;color:#DC2626{% elif seg.stage == 'MATURE' %}background:#FFFBEB;color:#92400E{% else %}background:#EFF6FF;color:#1D4ED8{% endif %}">{{ seg.stage }}</span></td>
+          <td style="padding:3px 4px;text-align:right">
+            {% if seg.growth_rate is not none %}
+            <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px">
+              {# Visual growth bar — width proportional to absolute growth, capped at 50% display width #}
+              {% set abs_growth = seg.growth_rate if seg.growth_rate >= 0 else (0 - seg.growth_rate) %}
+              {% set bar_width = [abs_growth * 1.5, 60] | min %}
+              <div style="width:60px;height:10px;background:#F3F4F6;border-radius:2px;overflow:hidden;position:relative">
+                <div style="height:100%;width:{{ bar_width }}%;background:{% if seg.growth_rate < 0 %}#DC2626{% elif seg.growth_rate > 10 %}#16A34A{% else %}#3B82F6{% endif %};border-radius:2px;{% if seg.growth_rate < 0 %}margin-left:auto{% endif %}"></div>
+              </div>
+              <span style="font-weight:600;font-size:8pt;color:{% if seg.growth_rate < 0 %}#DC2626{% elif seg.growth_rate > 10 %}#16A34A{% else %}#374151{% endif %};font-variant-numeric:tabular-nums;min-width:35px;text-align:right">{{ seg.growth_rate }}%</span>
+            </div>
+            {% else %}
+            <span style="color:#9CA3AF">—</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </td>
+    {% endif %}
+    {% if co.seg_margins %}
+    <td style="width:{% if co.seg_lifecycle %}50{% else %}100{% endif %}%;vertical-align:top">
+      <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Operating Margin by Geographic Segment</span></div>
+      <table style="width:100%;border-collapse:collapse;font-size:8pt">
+        <tr style="background:#F9FAFB;border-bottom:1px solid #E5E7EB">
+          <th style="text-align:left;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Segment</th>
+          <th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Margin</th>
+          <th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Prior</th>
+          <th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Change</th>
+        </tr>
+        {% for seg in co.seg_margins %}
+        <tr style="border-bottom:1px solid #F3F4F6">
+          <td style="padding:3px 4px;font-weight:600;color:#111827">{{ seg.name }}</td>
+          <td style="padding:3px 4px;text-align:right;font-weight:700;color:#111827">{{ seg.margin_pct if seg.margin_pct and seg.margin_pct != 'N/A' else '—' }}</td>
+          <td style="padding:3px 4px;text-align:right;color:#6B7280">{{ seg.prior_margin_pct if seg.prior_margin_pct and seg.prior_margin_pct != 'N/A' else '—' }}</td>
+          <td style="padding:3px 4px;text-align:right;color:#374151">{{ seg.change_bps if seg.change_bps and seg.change_bps != 'N/A' else '—' }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </td>
+    {% endif %}
+  </tr></table>
+  {% endif %}
+
+  {# 2.5.4 Disruption risk alert card #}
+  {% if co.disruption_risk and co.disruption_risk.level %}
+  <div style="background:{% if co.disruption_risk.level == 'HIGH' %}#FEF2F2{% elif co.disruption_risk.level == 'MODERATE' %}#FFFBEB{% else %}#F0FDF4{% endif %};border:1px solid {% if co.disruption_risk.level == 'HIGH' %}#FECACA{% elif co.disruption_risk.level == 'MODERATE' %}#FDE68A{% else %}#BBF7D0{% endif %};border-radius:5px;padding:6px 10px;margin-bottom:6px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+      <span style="font-size:9pt;font-weight:700;color:{{ co.disruption_risk.color }}">Disruption Risk</span>
+      <span style="padding:2px 8px;border-radius:10px;font-size:7.5pt;font-weight:700;background:{{ co.disruption_risk.color }};color:white">{{ co.disruption_risk.level }}</span>
+    </div>
+    {% if co.disruption_risk.threats %}
+    <div style="display:flex;flex-wrap:wrap;gap:4px">
+      {% for threat in co.disruption_risk.threats %}
+      <span style="font-size:9pt;padding:2px 6px;background:rgba(0,0,0,0.05);border-radius:8px;color:#374151">{{ threat }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {# Operations detail cards: 2 rows #}
+  <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px">
+
+    {# 2.8.1 Subsidiary structure #}
+    {% if co.subsidiary_structure and co.subsidiary_structure.count %}
+    <div style="flex:1;min-width:23%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px">
+      <div style="font-size:8pt;color:#7C3AED;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:3px">Subsidiary Structure</div>
+      <div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">Subsidiaries</span><span style="font-size:8pt;font-weight:700">{{ co.subsidiary_structure.count }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">Jurisdictions</span><span style="font-size:8pt;font-weight:700">{{ co.subsidiary_structure.jurisdictions }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">High-Reg</span><span style="font-size:8pt;font-weight:700">{{ co.subsidiary_structure.high_reg }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">Low-Reg</span><span style="font-size:8pt;font-weight:700">{{ co.subsidiary_structure.low_reg }}</span></div>
+    </div>
+    {% endif %}
+
+    {# 2.8.2 Workforce distribution #}
+    {% if co.workforce and co.workforce.total != 'N/A' %}
+    <div style="flex:1;min-width:23%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px">
+      <div style="font-size:8pt;color:#0891B2;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:3px">Workforce</div>
+      <div style="font-size:15pt;font-weight:800;color:#374151;line-height:1">{{ co.workforce.total }}</div>
+      {% if co.workforce.domestic and co.workforce.domestic != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1.5px 0;margin-top:4px"><span style="font-size:7.5pt;color:#6B7280">Domestic</span><span style="font-size:8pt;font-weight:700">{{ co.workforce.domestic }}</span></div>{% endif %}
+      {% if co.workforce.international and co.workforce.international != 'N/A' %}<div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">International</span><span style="font-size:8pt;font-weight:700">{{ co.workforce.international }}</span></div>{% endif %}
+    </div>
+    {% endif %}
+
+    {# 2.8.3 Operational complexity (pill badges) #}
+    {% if co.op_complexity %}
+    <div style="flex:1;min-width:23%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px">
+      <div style="font-size:8pt;color:#D97706;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:3px">Complexity Flags</div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-top:4px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:9.5pt;color:#374151">VIE Structures</span><span style="font-size:7pt;font-weight:700;padding:1px 6px;border-radius:8px;background:{% if co.op_complexity.has_vie %}#FEF2F2;color:#DC2626{% else %}#F0FDF4;color:#16A34A{% endif %}">{% if co.op_complexity.has_vie %}Yes{% else %}No{% endif %}</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:9.5pt;color:#374151">SPE Structures</span><span style="font-size:7pt;font-weight:700;padding:1px 6px;border-radius:8px;background:{% if co.op_complexity.has_spe %}#FEF2F2;color:#DC2626{% else %}#F0FDF4;color:#16A34A{% endif %}">{% if co.op_complexity.has_spe %}Yes{% else %}No{% endif %}</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:9.5pt;color:#374151">Dual-Class Stock</span><span style="font-size:7pt;font-weight:700;padding:1px 6px;border-radius:8px;background:{% if co.op_complexity.has_dual_class %}#FEF2F2;color:#DC2626{% else %}#F0FDF4;color:#16A34A{% endif %}">{% if co.op_complexity.has_dual_class %}Yes{% else %}No{% endif %}</span></div>
+      </div>
+    </div>
+    {% endif %}
+
+    {# 2.8.5 Key person risk #}
+    {% if co.key_person and co.key_person.risk_score != 'N/A' %}
+    <div style="flex:1;min-width:23%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px;border-left:3px solid {{ co.key_person.color }}">
+      <div style="font-size:8pt;color:#DC2626;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:3px">Key Person Risk</div>
+      <div style="font-size:15pt;font-weight:800;color:{{ co.key_person.color }};line-height:1">{{ co.key_person.risk_score }}<span style="font-size:8pt;color:#6B7280">/10</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1.5px 0;margin-top:4px"><span style="font-size:7.5pt;color:#6B7280">Founder-Led</span><span style="font-size:8pt;font-weight:700">{% if co.key_person.is_founder_led %}Yes{% else %}No{% endif %}</span></div>
+      {% if co.key_person.ceo_tenure %}<div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">CEO Tenure</span><span style="font-size:8pt;font-weight:700">{{ co.key_person.ceo_tenure }}yr</span></div>{% endif %}
+      <div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">Succession Plan</span><span style="font-size:8pt;font-weight:700">{% if co.key_person.has_succession_plan %}Yes{% elif co.key_person.has_succession_plan is sameas false %}No{% else %}<span style="color:#9CA3AF">Not disclosed</span>{% endif %}</span></div>
+    </div>
+    {% endif %}
+  </div>
+
+  {# 2.8.4 Operational resilience (compact KV table) #}
+  {% if co.op_resilience and (co.op_resilience.geographic_concentration != 'N/A' or co.op_resilience.supply_chain_depth != 'N/A') %}
+  <div style="background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 10px;margin-bottom:6px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+      <span style="font-size:8pt;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;font-weight:700">Operational Resilience</span>
+      {% if co.op_resilience.overall_assessment and co.op_resilience.overall_assessment != 'N/A' %}<span style="font-size:7pt;font-weight:600;padding:1px 6px;border-radius:8px;background:{% if co.op_resilience.overall_assessment == 'STRONG' %}#F0FDF4;color:#16A34A{% elif co.op_resilience.overall_assessment == 'ADEQUATE' %}#EFF6FF;color:#1D4ED8{% else %}#FEF2F2;color:#DC2626{% endif %}">{{ co.op_resilience.overall_assessment }}</span>{% endif %}
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      {% if co.op_resilience.geographic_concentration != 'N/A' %}<div><span style="font-size:7.5pt;color:#6B7280">Geography: </span><span style="font-size:8pt;font-weight:600;color:#111827">{{ co.op_resilience.geographic_concentration }}</span></div>{% endif %}
+      {% if co.op_resilience.supply_chain_depth != 'N/A' %}<div><span style="font-size:7.5pt;color:#6B7280">Supply Chain: </span><span style="font-size:8pt;font-weight:600;color:#111827">{{ co.op_resilience.supply_chain_depth }}</span></div>{% endif %}
+      {% if co.op_resilience.facility_risk != 'N/A' %}<div><span style="font-size:7.5pt;color:#6B7280">Facilities: </span><span style="font-size:8pt;font-weight:600;color:#111827">{{ co.op_resilience.facility_risk }}</span></div>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# 2.10.1 + 2.10.5 M&A + Event Timeline #}
+  {% if co.events or co.ma_amount != 'N/A' %}
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:11pt;font-weight:700;color:#1F3A5C">Event Timeline</span>
+    {% if co.ma_amount != 'N/A' %}<span style="font-size:7.5pt;color:#6B7280">M&A Net Cash: {{ co.ma_amount }}</span>{% endif %}
+  </div>
+  {% if co.events %}
+  <table style="width:100%;border-collapse:collapse;font-size:8pt;margin-bottom:6px">
+    <tr style="background:#F9FAFB;border-bottom:1px solid #E5E7EB">
+      <th style="text-align:left;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase;width:80px">Date</th>
+      <th style="text-align:left;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase;width:70px">Type</th>
+      <th style="text-align:left;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Event</th>
+      <th style="text-align:center;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase;width:60px">D&O Flag</th>
+    </tr>
+    {% for ev in co.events %}
+    {# Classify D&O risk by event type and content #}
+    {% set ev_type = ev.type | lower %}
+    {% set ev_text = ev.event | lower %}
+    {% if ev_type == 'officer_change' or 'departing' in ev_text or 'resignation' in ev_text or 'terminated' in ev_text %}
+      {% set flag_color = '#DC2626' %}
+      {% set flag_label = 'FLAG' %}
+      {% set flag_tip = 'Executive departure — Side A exposure, scienter inference' %}
+      {% set row_bg = '#FEF2F2' %}
+    {% elif ev_type == 'agreement' or 'convertible' in ev_text or 'debt' in ev_text or 'notes' in ev_text %}
+      {% set flag_color = '#D97706' %}
+      {% set flag_label = 'WATCH' %}
+      {% set flag_tip = 'Capital structure change — Section 11 offering exposure' %}
+      {% set row_bg = '#FFFBEB' %}
+    {% elif ev_type == 'shareholder_vote' and ('say-on-pay' in ev_text or 'compensation' in ev_text) %}
+      {% set flag_color = '#D97706' %}
+      {% set flag_label = 'WATCH' %}
+      {% set flag_tip = 'Compensation vote — derivative suit risk if failed' %}
+      {% set row_bg = '#FFFBEB' %}
+    {% elif ev_type == 'material_event' %}
+      {% set flag_color = '#D97706' %}
+      {% set flag_label = 'REVIEW' %}
+      {% set flag_tip = '8-K material event — review for disclosure implications' %}
+      {% set row_bg = '#FFFBEB' %}
+    {% elif ev_type == 'earnings' and ('miss' in ev_text or 'decline' in ev_text or 'loss' in ev_text) %}
+      {% set flag_color = '#DC2626' %}
+      {% set flag_label = 'FLAG' %}
+      {% set flag_tip = 'Earnings miss — potential 10b-5 trigger event' %}
+      {% set row_bg = '#FEF2F2' %}
+    {% else %}
+      {% set flag_color = '#16A34A' %}
+      {% set flag_label = '—' %}
+      {% set flag_tip = '' %}
+      {% set row_bg = 'white' %}
+    {% endif %}
+    <tr style="border-bottom:1px solid #F3F4F6;background:{{ row_bg }}">
+      <td style="padding:3px 4px;color:#6B7280;white-space:nowrap">{{ ev.date }}</td>
+      <td style="padding:3px 4px"><span style="font-size:7pt;font-weight:600;padding:1px 4px;border-radius:6px;background:{% if flag_label == 'FLAG' %}#FEE2E2;color:#991B1B{% elif flag_label in ('WATCH', 'REVIEW') %}#FEF3C7;color:#92400E{% else %}#EFF6FF;color:#1D4ED8{% endif %}">{{ ev.type }}</span></td>
+      <td style="padding:3px 4px;color:#111827">{{ ev.event }}{% if flag_tip %}<br><span style="font-size:7pt;color:{{ flag_color }};font-style:italic">{{ flag_tip }}</span>{% endif %}</td>
+      <td style="text-align:center;padding:3px 4px">{% if flag_label != '—' %}<span style="font-size:7pt;font-weight:700;padding:1px 6px;border-radius:8px;background:{{ flag_color }};color:white">{{ flag_label }}</span>{% else %}<span style="color:#D1D5DB">—</span>{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+  {% endif %}
+
+  {% include "sections/company/ma_profile.html.j2" ignore missing %}
+
+  {# How This Company Makes Money — rich infographic (Phase 118+) #}
+  {% include "sections/dossier/money_flows.html.j2" ignore missing %}
+
+  {% if co.commentary_factual %}
+  <div style="margin:6px 0">
+    <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">What Was Said</div>
+    <div style="font-size:10.5pt;color:#374151;line-height:1.55;padding:6px 10px;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:4px">{{ co.commentary_factual | strip_md }}</div>
+  </div>
+  {% endif %}
+  {% if co.commentary_bullets %}
+  <div style="margin:6px 0">
+    <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Underwriting Commentary</div>
+    <div style="font-size:10.5pt;color:#374151;line-height:1.55;padding:6px 10px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;border-left:3px solid #2563EB">{{ co.commentary_bullets | strip_md }}</div>
+  </div>
+  {% endif %}
+
+  {# Full company detail from existing sub-templates #}
+  {# Sub-templates use 'co' from the OLD company context — switch binding #}
+  {% set co = company %}
+  <div style="margin-top:12px">
+
+  {# ── LAYER 1: Revenue & Business Model ── #}
+  <div style="border:1px solid #BFDBFE;border-radius:6px;padding:10px;margin-bottom:12px;background:#F8FBFF">
+    <div style="font-size:8pt;font-weight:700;color:#1E40AF;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #2563EB;padding-bottom:4px">Revenue & Business Model — Segments, Concentration & Money Flows</div>
+    {% include "sections/company/business_model.html.j2" %}
+    {% include "sections/company/revenue_segments.html.j2" %}
+    {# geographic_footprint.html.j2 removed — data format mismatch
+       (jurisdiction/subsidiary_count vs region/revenue%). Geographic data
+       already displayed in the card section above with correct format. #}
+    {% include "sections/company/customer_concentration.html.j2" %}
+    {% include "sections/company/supplier_concentration.html.j2" %}
+    {% include "sections/investigative/revenue_at_risk.html.j2" ignore missing %}
+    {# Dossier deep-dives — detailed company intelligence #}
+    {% include "sections/dossier/what_company_does.html.j2" ignore missing %}
+    {% include "sections/dossier/revenue_model_card.html.j2" ignore missing %}
+    {% include "sections/dossier/unit_economics.html.j2" ignore missing %}
+    {% include "sections/dossier/revenue_waterfall.html.j2" ignore missing %}
+    {% include "sections/dossier/competitive_landscape.html.j2" ignore missing %}
+    {% include "sections/dossier/emerging_risk_radar.html.j2" ignore missing %}
+    {% include "sections/dossier/asc_606.html.j2" ignore missing %}
+  </div>
+
+  {# ── LAYER 2: Operations ── #}
+  <div style="border:1px solid #1F3A5C;border-radius:6px;padding:10px;margin-bottom:12px;background:#FAFAFA">
+    <div style="font-size:8pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #1F3A5C;padding-bottom:4px">Operations — Subsidiaries, Workforce, Complexity & Resilience</div>
+    {% include "sections/company/subsidiary_structure.html.j2" %}
+    {% include "sections/company/workforce_distribution.html.j2" %}
+    {% include "sections/company/operational_complexity.html.j2" %}
+    {% include "sections/company/operational_resilience.html.j2" %}
+    {% include "sections/company/exposure_factors.html.j2" %}
+  </div>
+
+  {# ── LAYER 3: Risk Environment ── #}
+  <div style="border:1px solid #FECACA;border-radius:6px;padding:10px;margin-bottom:12px;background:#FFFBFB">
+    <div style="font-size:8pt;font-weight:700;color:#991B1B;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #DC2626;padding-bottom:4px">Risk Environment — Risk Factors, YoY Changes & Concentration Assessment</div>
+    {% include "sections/company/risk_factors.html.j2" %}
+    {% include "sections/company/ten_k_yoy.html.j2" %}
+    {# Phase 134: Company Intelligence sub-sections — unpack company context for template access #}
+    {% set risk_factor_review = company.get('risk_factor_review', []) %}
+    {% set has_risk_factor_review = company.get('has_risk_factor_review', false) %}
+    {% set risk_factor_summary = company.get('risk_factor_summary', {}) %}
+    {% set peer_sca_records = company.get('peer_sca_records', []) %}
+    {% set peer_profiles = company.get('peer_profiles', []) %}
+    {% set has_peer_sca = company.get('has_peer_sca', false) %}
+    {% set concentration_dims = company.get('concentration_dims', []) %}
+    {% set has_concentration = company.get('has_concentration', false) %}
+    {% set concentration_risk_level = company.get('concentration_risk_level', '') %}
+    {% set supply_chain_deps = company.get('supply_chain_deps', []) %}
+    {% set has_supply_chain = company.get('has_supply_chain', false) %}
+    {% set sector_concerns = company.get('sector_concerns', []) %}
+    {% set has_sector_concerns = company.get('has_sector_concerns', false) %}
+    {% set matched_sector = company.get('matched_sector', '') %}
+    {% set regulatory_map = company.get('regulatory_map', []) %}
+    {% set has_regulatory_map = company.get('has_regulatory_map', false) %}
+    {% set regulatory_count = company.get('regulatory_count', 0) %}
+    {% include "sections/company/risk_factor_review.html.j2" ignore missing %}
+    {% include "sections/company/peer_sca_contagion.html.j2" ignore missing %}
+    {% include "sections/company/concentration_assessment.html.j2" ignore missing %}
+    {% include "sections/company/supply_chain.html.j2" ignore missing %}
+    {% include "sections/company/sector_concerns.html.j2" ignore missing %}
+    {% include "sections/company/regulatory_map.html.j2" ignore missing %}
+    {% include "sections/investigative/risk_factor_analysis.html.j2" ignore missing %}
+    {# Environment & structural risk — manifest groups #}
+    {% include "sections/company/environment_assessment.html.j2" ignore missing %}
+    {% include "sections/company/sector_risk.html.j2" ignore missing %}
+    {% include "sections/company/structural_complexity.html.j2" ignore missing %}
+  </div>
+
+  {# ── LAYER 4: Events & News ── #}
+  <div style="border:1px solid #FDE68A;border-radius:6px;padding:10px;margin-bottom:12px;background:#FFFEF5">
+    <div style="font-size:8pt;font-weight:700;color:#92400E;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #D97706;padding-bottom:4px">Events & News — Corporate Events, News Articles & M&A Activity</div>
+    {% include "sections/company/corporate_events.html.j2" %}
+    {# Key Events & News — moved from Market to Company section, needs mkt binding #}
+    {% set mkt = market or {} %}
+    {% include "sections/market/news_articles.html.j2" %}
+  </div>
+
+  {# ── LAYER 5: Checks ── #}
+  <div style="border:1px solid #BBF7D0;border-radius:6px;padding:10px;margin-bottom:12px;background:#F7FFF9">
+    <div style="font-size:8pt;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #16A34A;padding-bottom:4px">Company Checks — Data Quality & Completeness</div>
+    {% include "sections/company/company_checks.html.j2" %}
+  </div>
+
+  </div>
+</div>
+{% endif %}

@@ -1,0 +1,38 @@
+{# Litigation Density Alerts — extracted from litigation.html.j2 #}
+
+  {# --- ELEVATED concerns --- #}
+  {% if level == "ELEVATED" %}
+    {% set concerns = density.concerns|default([]) if density else [] %}
+    {% for concern in concerns %}
+      {{ warning_box(concern, "Active litigation increases both frequency and severity of D&O claims.") }}
+    {% endfor %}
+  {% endif %}
+
+  {# --- CRITICAL deep dive: theory mapping and cross-references --- #}
+  {% if level == "CRITICAL" %}
+  <h3>Litigation Risk -- Deep Dive</h3>
+  <div class="border-l-4 border-red-700 bg-red-50 pl-4 py-3 my-3">
+    <p class="text-sm text-red-800 font-semibold m-0 mb-2">
+      Critical litigation exposure identified. Review theory mapping and
+      cross-reference with Financial (Section 3) for restatement risk
+      and Governance (Section 5) for board liability.
+    </p>
+    {% set evidence = density.critical_evidence|default([]) if density else [] %}
+    {% if evidence %}
+    {{ evidence_chain(evidence) }}
+    {% endif %}
+  </div>
+
+  {# --- Legal Theory Mapping (CRITICAL only) --- #}
+  {% set theories = lit.get('legal_theories', []) %}
+  {% if theories %}
+  <h4>Legal Theory Mapping</h4>
+  {{ data_table(
+    ['Theory', 'Basis', 'Exposure'],
+    theories|map(attribute='theory')|list|zip(
+      theories|map(attribute='basis')|list,
+      theories|map(attribute='exposure')|list
+    )|list
+  ) }}
+  {% endif %}
+  {% endif %}

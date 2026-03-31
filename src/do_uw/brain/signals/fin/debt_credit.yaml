@@ -1,0 +1,245 @@
+# Debt & Credit Signals — XBRL-sourced D&O risk indicators
+# Domain: fin/debt_credit.yaml  |  Count: 3
+- id: FIN.DEBT.commercial_paper
+  name: Commercial Paper Dependency
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    distress_to_bankruptcy: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_10Q
+  data_locations:
+    SEC_10K:
+    - balance_sheet
+    - debt_note
+    SEC_10Q:
+    - balance_sheet
+  threshold:
+    type: tiered
+    red: Commercial paper > 20% of total debt — heavy short-term funding dependency with rollover risk
+    yellow: Commercial paper > 10% of total debt — material short-term funding dependency
+    clear: Commercial paper <= 10% of total debt or none outstanding
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - CREDITORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:CommercialPaper
+    - us-gaap:ShortTermBorrowings
+    - us-gaap:LongTermDebt
+    - us-gaap:DebtCurrent
+    - us-gaap:LongTermDebtNoncurrent
+    expected_type: numeric
+    no_data_sentinel: Commercial paper data not found in XBRL
+    validation_rule: cp_pct >= 0
+  data_strategy:
+    field_key: xbrl_commercial_paper_pct
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Commercial paper >10% of total debt indicates material reliance on short-term wholesale funding markets that can seize during credit stress per 2008 financial crisis experience
+    render_target: key_metrics
+    formula: commercial_paper / (short_term_debt + long_term_debt)
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_commercial_paper_pct
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Financial distress analysis: commercial paper dependency creates rollover risk — when CP markets freeze (as in 2008, 2020), companies dependent on short-term funding face sudden liquidity crises that trigger going-concern events and SCA filings'
+    threshold_basis: 'CP >10% of total debt: material short-term funding dependency based on credit crisis rollover failure rates; >20%: heavy dependency with elevated crisis vulnerability'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} commercial paper at {value} of total debt (threshold: >20%) signals heavy short-term funding dependency (F3). Reliance on CP rollover creates acute vulnerability to credit market disruptions — when CP markets freeze, the resulting liquidity crisis and emergency credit facility draws trigger the going-concern disclosures that are among the strongest SCA catalysts.'
+      TRIGGERED_YELLOW: '{company} commercial paper at {value} of total debt (threshold: >10%) indicates material short-term funding dependency (F3). Monitor credit spreads and CP market conditions — deterioration in the company''s credit profile can rapidly escalate rollover risk and trigger covenant violations.'
+      CLEAR: '{company} commercial paper at {value} of total debt is within normal parameters (F3) — limited reliance on short-term wholesale funding markets.'
+
+- id: FIN.DEBT.facility_utilization
+  name: Credit Facility Utilization
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    distress_to_bankruptcy: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_10Q
+  data_locations:
+    SEC_10K:
+    - debt_note
+    SEC_10Q:
+    - debt_note
+  threshold:
+    type: tiered
+    red: Credit facility utilization > 90% — near-exhausted borrowing capacity
+    yellow: Credit facility utilization > 80% — limited borrowing headroom
+    clear: Credit facility utilization <= 80%
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - CREDITORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:LineOfCreditFacilityMaximumBorrowingCapacity
+    - us-gaap:LineOfCreditFacilityRemainingBorrowingCapacity
+    - us-gaap:LineOfCredit
+    - us-gaap:LongTermLineOfCredit
+    expected_type: numeric
+    no_data_sentinel: Credit facility utilization data not found in XBRL
+    validation_rule: utilization_pct between 0 and 100
+  data_strategy:
+    field_key: xbrl_facility_utilization
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Facility utilization >80% signals limited liquidity buffer per credit analysis standards; >90% indicates near-exhaustion and potential covenant issues
+    render_target: key_metrics
+    formula: (credit_facility_max - credit_facility_available) / credit_facility_max
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_facility_utilization
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Credit analysis: high facility utilization signals depleted liquidity reserves — companies drawing heavily on revolvers often face covenant compliance pressure and reduced financial flexibility'
+    threshold_basis: 'Utilization >80%: limited headroom based on banking practice that covenant triggers typically activate at 80-90% utilization; >90%: near-exhaustion signals imminent covenant or capacity concerns'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} credit facility utilization at {value} (threshold: >90%) signals near-exhausted borrowing capacity (F3). Near-full utilization of credit facilities indicates the company has limited liquidity reserves — any additional stress may trigger covenant violations, facility amendment negotiations, or going-concern disclosures that catalyze SCA filings.'
+      TRIGGERED_YELLOW: '{company} credit facility utilization at {value} (threshold: >80%) indicates limited borrowing headroom (F3). High utilization reduces financial flexibility and signals the company may be approaching covenant thresholds — monitor for facility amendments, waiver requests, or supplemental financing.'
+      CLEAR: '{company} credit facility utilization at {value} is within comfortable range (F3) — adequate borrowing capacity provides a liquidity buffer against operational stress.'
+
+- id: FIN.DEBT.maturity_concentration
+  name: Debt Maturity Concentration
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    distress_to_bankruptcy: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - debt_note
+    - balance_sheet
+  threshold:
+    type: tiered
+    red: Short-term debt > 50% of total debt — acute refinancing risk
+    yellow: Short-term debt > 30% of total debt — elevated refinancing concentration
+    clear: Short-term debt <= 30% of total debt
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - CREDITORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:DebtCurrent
+    - us-gaap:LongTermDebtCurrent
+    - us-gaap:ShortTermBorrowings
+    - us-gaap:LongTermDebtNoncurrent
+    - us-gaap:LongTermDebt
+    expected_type: numeric
+    no_data_sentinel: Debt maturity data not found in XBRL
+    validation_rule: st_debt_pct between 0 and 100
+  data_strategy:
+    field_key: xbrl_short_term_debt_pct
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_111_xbrl_signals
+    confidence: HIGH
+    last_validated:
+    source_url:
+    source_date:
+    source_author:
+    added_by:
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Short-term debt >30% of total debt signals refinancing concentration risk; >50% indicates acute near-term maturity wall
+    render_target: key_metrics
+    formula: (debt_current + short_term_borrowings) / (debt_current + short_term_borrowings + long_term_debt_noncurrent)
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_short_term_debt_pct
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'Credit analysis: maturity concentration creates refinancing walls — companies with heavy near-term maturities face elevated distress risk when credit conditions tighten'
+    threshold_basis: 'Short-term >30% of total debt: elevated refinancing concentration per credit rating agency maturity analysis; >50%: acute near-term maturity wall'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} short-term debt at {value} of total debt (threshold: >50%) signals acute refinancing risk (F3). Concentrated near-term maturities create a refinancing wall — in tightening credit markets, inability to roll over maturing debt triggers the liquidity crises and going-concern disclosures that are primary SCA catalysts.'
+      TRIGGERED_YELLOW: '{company} short-term debt at {value} of total debt (threshold: >30%) indicates elevated refinancing concentration (F3). Monitor upcoming maturity schedule and credit market conditions — bunched maturities amplify the impact of any credit rating downgrade or market disruption.'
+      CLEAR: '{company} short-term debt at {value} of total debt is within normal parameters (F3) — well-distributed maturity profile reduces refinancing risk.'

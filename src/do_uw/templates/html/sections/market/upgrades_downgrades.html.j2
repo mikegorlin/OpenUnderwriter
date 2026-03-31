@@ -1,0 +1,33 @@
+{# Analyst Upgrades & Downgrades — recent analyst actions.
+   Data from mkt.upgrades_downgrades (built from acquired_data.market_data.upgrades_downgrades). #}
+
+{% set ud = mkt.get('upgrades_downgrades', []) %}
+{% if ud %}
+  <h3>Recent Analyst Actions</h3>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Date</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Firm</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1">Action</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">From</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">To</th>
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for row in ud %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 whitespace-nowrap">{{ row.date }}</td>
+        <td class="p-1 font-semibold">{{ row.firm }}</td>
+        <td class="p-1 text-center">
+          {% if row.is_upgrade %}<span style="color:#16A34A;font-weight:600">{{ row.action }}</span>
+          {% elif row.is_downgrade %}<span style="color:#DC2626;font-weight:600">{{ row.action }}</span>
+          {% else %}<span style="color:#6B7280">{{ row.action }}</span>{% endif %}
+        </td>
+        <td class="p-1">{{ row.from_grade }}</td>
+        <td class="p-1 font-semibold">{{ row.to_grade }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}

@@ -1,0 +1,1226 @@
+- id: FIN.LIQ.position
+  name: Liquidity Position
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    distress_to_bankruptcy: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10Q
+  data_locations:
+    SEC_10Q:
+    - balance_sheet
+  threshold:
+    type: tiered
+    red: <1.0 current ratio (inadequate liquidity)
+    yellow: <1.5 current ratio (tight liquidity)
+    clear: Current ratio at or above 1.5
+  tier: 1
+  depth: 2
+  plaintiff_lenses:
+  - CREDITORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:AssetsCurrent
+    - us-gaap:LiabilitiesCurrent
+    expected_type: numeric
+    no_data_sentinel: XBRL facts missing for current assets or current liabilities
+    validation_rule: ratio > 0
+  data_strategy:
+    field_key: xbrl_current_ratio
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10Q
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: key_metrics
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10Q
+    threshold_context: ''
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10Q
+      fields:
+      - extracted.financials.liquidity
+      fallback_to: SEC_10K
+    - type: SEC_10K
+      fields:
+      - extracted.financials.liquidity
+  evaluation:
+    formula: current_ratio
+    thresholds:
+    - op: <
+      value: 1.0
+      label: RED
+    - op: <
+      value: 1.5
+      label: YELLOW
+    window_years: 1
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Current ratio: {value}'
+    - level: standard
+      template: Liquidity ({current_ratio}x) — {status_label}
+    - level: deep
+      fields:
+      - current_ratio
+      - quick_ratio
+      - cash_ratio
+    context_templates:
+      TRIGGERED: 'Liquidity concern: current ratio {value} is below {threshold}'
+      CLEAR: Adequate liquidity with current ratio of {value}
+    do_context:
+      TRIGGERED_RED: '{company} Liquidity Position at {value} (threshold: <1.0 current ratio (inadequate liquidity)) signals
+        elevated Financial Irregularities / Restatement Risk risk (F3). Liquidity deterioration at this level triggers covenant
+        monitoring and increases probability of going-concern qualification -- the single strongest SCA catalyst, present
+        in 78% of distressed-company securities class actions.'
+      TRIGGERED_YELLOW: '{company} Liquidity Position at {value} (threshold: <1.5 current ratio (tight liquidity)) is in the
+        caution zone for Financial Irregularities / Restatement Risk (F3). Monitor for deterioration — trend direction and
+        peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Liquidity Position at {value} is within acceptable range for Financial Irregularities / Restatement
+        Risk (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_current_ratio
+  depends_on: []
+  epistemology:
+    rule_origin: 'Financial analysis: balance sheet metrics as indicators of financial health and solvency risk'
+    threshold_basis: 'Thresholds (RED: <1.0 current ratio (inadequate liquidity); YELLOW: <1.5 current ratio (tight liquidity))
+      from D&O underwriting practice and claims experience'
+  rap_class: host
+  rap_subcategory: host.financials
+- id: FIN.LIQ.working_capital
+  name: Working Capital Analysis
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    distress_to_bankruptcy: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10Q
+  data_locations:
+    SEC_10Q:
+    - balance_sheet
+  threshold:
+    type: tiered
+    red: Current ratio <1.0 OR WC declining >30% YoY
+    yellow: Current ratio <1.5 OR below sector median
+    clear: Otherwise
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - CREDITORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:AssetsCurrent
+    - us-gaap:LiabilitiesCurrent
+    expected_type: numeric
+    no_data_sentinel: XBRL facts missing for current assets or current liabilities
+    validation_rule: value is positive or negative integer
+  data_strategy:
+    field_key: xbrl_working_capital
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10Q
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: key_metrics
+    formula: ''
+  display:
+    value_format: currency
+    source_type: SEC_10Q
+    threshold_context: ''
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10Q
+      fields:
+      - extracted.financials.liquidity
+      fallback_to: SEC_10K
+    - type: SEC_10K
+      fields:
+      - extracted.financials.liquidity
+  evaluation:
+    formula: current_ratio
+    thresholds:
+    - op: <
+      value: 1.0
+      label: RED
+    - op: <
+      value: 1.5
+      label: YELLOW
+    window_years: 1
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Working capital: {value}'
+    - level: standard
+      template: Working capital adequacy ({current_ratio}x) — {status_label}
+    context_templates:
+      TRIGGERED: 'Working capital concern: current ratio {value} below adequate levels'
+      CLEAR: Working capital adequate with current ratio of {value}
+    do_context:
+      TRIGGERED_RED: '{company} Working Capital Analysis at {value} (threshold: Current ratio <1.0 OR WC declining >30% YoY)
+        signals elevated Financial Irregularities / Restatement Risk risk (F3). Liquidity deterioration at this level triggers
+        covenant monitoring and increases probability of going-concern qualification -- the single strongest SCA catalyst,
+        present in 78% of distressed-company securities class actions.'
+      TRIGGERED_YELLOW: '{company} Working Capital Analysis at {value} (threshold: Current ratio <1.5 OR below sector median)
+        is in the caution zone for Financial Irregularities / Restatement Risk (F3). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Working Capital Analysis at {value} is within acceptable range for Financial Irregularities / Restatement
+        Risk (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_working_capital
+  depends_on: []
+  epistemology:
+    rule_origin: 'Financial analysis: balance sheet metrics as indicators of financial health and solvency risk'
+    threshold_basis: 'Thresholds (RED: Current ratio <1.0 OR WC declining >30% YoY; YELLOW: Current ratio <1.5 OR below sector
+      median) from D&O underwriting practice and claims experience'
+  rap_class: host
+  rap_subcategory: host.financials
+- id: FIN.LIQ.efficiency
+  name: Liquidity Efficiency
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10Q
+  - SEC_10K
+  data_locations:
+    SEC_10Q:
+    - balance_sheet
+    - income_statement
+    SEC_10K:
+    - cash_flow_statement
+  threshold:
+    type: tiered
+    red: Cash Ratio <0.2 OR OCF Ratio <0.4 OR Defensive Interval <30 days
+    yellow: Cash Ratio <0.5 OR OCF Ratio <0.8 OR CCC >sector 75th percentile
+    clear: Otherwise
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - CREDITORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  data_strategy:
+    field_key: xbrl_cash_ratio
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: key_metrics
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10Q
+      fields:
+      - extracted.financials.liquidity
+      fallback_to: SEC_10K
+    - type: SEC_10K
+      fields:
+      - extracted.financials.liquidity
+  evaluation:
+    formula: cash_ratio
+    thresholds:
+    - op: <
+      value: 0.2
+      label: RED
+    - op: <
+      value: 0.5
+      label: YELLOW
+    window_years: 1
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Cash ratio: {value}'
+    - level: standard
+      template: Liquidity efficiency ({cash_ratio}x) — {status_label}
+    context_templates:
+      TRIGGERED: 'Liquidity efficiency concern: cash ratio {value}'
+      CLEAR: Adequate liquidity efficiency with cash ratio of {value}
+    do_context:
+      TRIGGERED_RED: '{company} Liquidity Efficiency at {value} (threshold: Cash Ratio <0.2 OR OCF Ratio <0.4 OR Defensive
+        Interval <30 days) signals elevated Financial Irregularities / Restatement Risk risk (F3). Severe cash efficiency
+        deterioration signals inability to meet near-term obligations without asset liquidation, creating going-concern risk
+        that triggers automatic SCA filing when auditors issue qualified opinions.'
+      TRIGGERED_YELLOW: '{company} Liquidity Efficiency at {value} (threshold: Cash Ratio <0.5 OR OCF Ratio <0.8 OR CCC >sector
+        75th percentile) is in the caution zone for Financial Irregularities / Restatement Risk (F3). Monitor for deterioration
+        — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Liquidity Efficiency at {value} is within acceptable range for Financial Irregularities / Restatement
+        Risk (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_cash_ratio
+  depends_on: []
+  epistemology:
+    rule_origin: 'Financial analysis: balance sheet metrics as indicators of financial health and solvency risk'
+    threshold_basis: 'Thresholds (RED: Cash Ratio <0.2 OR OCF Ratio <0.4 OR Defensive Interval <30 days; YELLOW: Cash Ratio
+      <0.5 OR OCF Ratio <0.8 OR CCC >sector 75th percentile) from D&O underwriting practice and claims experience'
+  rap_class: host
+  rap_subcategory: host.financials
+- id: FIN.LIQ.trend
+  name: Liquidity Trend
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10Q
+  data_locations:
+    SEC_10Q:
+    - balance_sheet
+    - cash_flow_statement
+  threshold:
+    type: tiered
+    red: 'DETERIORATING: 3+ consecutive quarters declining in majority of metrics'
+    yellow: 'WEAKENING: 2 consecutive quarters declining'
+    clear: 'STABLE/IMPROVING: No sustained decline pattern'
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - CREDITORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  data_strategy:
+    field_key: xbrl_current_ratio
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10Q
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: key_metrics
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10Q
+    threshold_context: ''
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10Q
+      fields:
+      - extracted.financials.liquidity
+      fallback_to: SEC_10K
+    - type: SEC_10K
+      fields:
+      - extracted.financials.liquidity
+  evaluation:
+    formula: current_ratio
+    thresholds:
+    - op: <
+      value: 1.0
+      label: RED
+    - op: <
+      value: 1.5
+      label: YELLOW
+    window_years: 1
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Liquidity trend: {value}'
+    - level: standard
+      template: Liquidity trend ({current_ratio}x) — {status_label}
+    context_templates:
+      TRIGGERED: 'Liquidity trend concern: current ratio {value}'
+      CLEAR: Stable liquidity trend with current ratio {value}
+    do_context:
+      TRIGGERED_RED: '{company} Liquidity Trend at {value} (threshold: DETERIORATING: 3+ consecutive quarters declining in
+        majority of metrics) signals elevated Financial Irregularities / Restatement Risk risk (F3). Sustained liquidity deterioration
+        across consecutive quarters creates a disclosure timeline that plaintiffs reconstruct as evidence management knew
+        about worsening conditions before public disclosure.'
+      TRIGGERED_YELLOW: '{company} Liquidity Trend at {value} (threshold: WEAKENING: 2 consecutive quarters declining) is
+        in the caution zone for Financial Irregularities / Restatement Risk (F3). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Liquidity Trend at {value} is within acceptable range for Financial Irregularities / Restatement Risk
+        (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_current_ratio
+  depends_on: []
+  epistemology:
+    rule_origin: 'Financial analysis: balance sheet metrics as indicators of financial health and solvency risk'
+    threshold_basis: 'Thresholds (RED: DETERIORATING: 3+ consecutive quarters declining in majority of metrics; YELLOW: WEAKENING:
+      2 consecutive quarters declining) from D&O underwriting practice and claims experience'
+  rap_class: host
+  rap_subcategory: host.financials
+- id: FIN.LIQ.cash_burn
+  execution_mode: AUTO
+  name: Cash Burn Analysis
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    distress_to_bankruptcy: trigger
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10Q
+  - SEC_10K
+  data_locations:
+    SEC_10Q:
+    - cash_flow_statement
+    - balance_sheet
+    SEC_10K:
+    - going_concern
+  threshold:
+    type: tiered
+    red: Runway <12 months with no clear funding path
+    yellow: Runway 12-18 months
+    clear: Runway >18 months or company is cash flow positive
+  tier: 1
+  depth: 2
+  plaintiff_lenses:
+  - CREDITORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.1'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:CashAndCashEquivalentsAtCarryingValue
+    - us-gaap:NetCashProvidedByUsedInOperatingActivities
+    expected_type: numeric
+    no_data_sentinel: Cash balance or operating cash flow missing from XBRL
+    validation_rule: months > 0 when OCF is negative
+  data_strategy:
+    field_key: xbrl_cash_burn_months
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: key_metrics
+    formula: ''
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10Q
+      fields:
+      - extracted.financials.earnings_quality
+      fallback_to: SEC_10K
+    - type: SEC_10K
+      fields:
+      - extracted.financials.earnings_quality
+  evaluation:
+    formula: cash_burn_months
+    thresholds:
+    - op: <
+      value: 12
+      label: RED
+    - op: <
+      value: 18
+      label: YELLOW
+    clear_conditions:
+    - type: qualitative_value
+      pattern: Profitable
+      result: CLEAR
+    window_years: 1
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Cash runway: {value}'
+    - level: standard
+      template: Cash burn ({cash_burn_months} months) — {status_label}
+    context_templates:
+      TRIGGERED: 'Cash runway concern: {value} months remaining'
+      CLEAR: Company is cash flow positive
+    do_context:
+      TRIGGERED_RED: '{company} Cash Burn Analysis at {value} (threshold: Runway <12 months with no clear funding path) signals
+        elevated Financial Irregularities / Restatement Risk risk (F3). Cash runway below 12 months without clear funding
+        forces going-concern disclosure -- the disclosure event itself becomes the corrective disclosure in SCA complaints,
+        with plaintiffs alleging management concealed the cash crisis. Cash position thresholds based on operating expense
+        coverage (months of runway) from financial distress research.'
+      TRIGGERED_YELLOW: '{company} Cash Burn Analysis at {value} (threshold: Runway 12-18 months) is in the caution zone for
+        Financial Irregularities / Restatement Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Cash Burn Analysis at {value} is within acceptable range for Financial Irregularities / Restatement
+        Risk (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  group: key_metrics
+  signal_class: evaluative
+  field_path: xbrl_cash_burn_months
+  depends_on: []
+  epistemology:
+    rule_origin: 'Financial distress research: cash position and burn rate as indicators of runway and liquidity risk'
+    threshold_basis: Cash position thresholds based on operating expense coverage (months of runway) from financial distress
+      research
+  rap_class: host
+  rap_subcategory: host.financials
+- id: FIN.DEBT.structure
+  execution_mode: AUTO
+  name: Debt Structure
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    distress_to_bankruptcy: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10Q
+  data_locations:
+    SEC_10Q:
+    - balance_sheet
+    - debt_footnote
+  threshold:
+    type: tiered
+    red: Debt/EBITDA >6x OR Debt/Equity >3x
+    yellow: Debt/EBITDA >4x OR Debt/Equity >2x
+    clear: Otherwise
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - CREDITORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.2'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:LongTermDebt
+    - us-gaap:ShortTermBorrowings
+    - us-gaap:DebtCurrent
+    expected_type: numeric
+    no_data_sentinel: Debt line items not found in XBRL balance sheet
+    validation_rule: debt_to_ebitda >= 0
+  data_strategy:
+    field_key: xbrl_debt_to_ebitda
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10Q
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: distress_indicators
+    formula: ''
+  display:
+    value_format: currency
+    source_type: SEC_10Q
+    threshold_context: ''
+  group: distress_indicators
+  signal_class: evaluative
+  field_path: xbrl_debt_to_ebitda
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: 'Thresholds (RED: Debt/EBITDA >6x OR Debt/Equity >3x; YELLOW: Debt/EBITDA >4x OR Debt/Equity >2x) from
+      D&O underwriting practice and claims experience'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Debt Structure at {value} (threshold: Debt/EBITDA >6x OR Debt/Equity >3x) signals elevated
+        Financial Irregularities / Restatement Risk risk (F3). Elevated leverage creates covenant breach risk; covenant violations
+        force disclosure events that plaintiffs cite as corrective disclosures in Section 10(b) complaints.'
+      TRIGGERED_YELLOW: '{company} Debt Structure at {value} (threshold: Debt/EBITDA >4x OR Debt/Equity >2x) is in the caution
+        zone for Financial Irregularities / Restatement Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Debt Structure at {value} is within acceptable range for Financial Irregularities / Restatement Risk
+        (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.DEBT.coverage
+  execution_mode: AUTO
+  name: Debt Service Coverage
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    distress_to_bankruptcy: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10Q
+  data_locations:
+    SEC_10Q:
+    - income_statement
+  threshold:
+    type: tiered
+    red: Interest coverage <1.5x OR fixed charge coverage <1.0x
+    yellow: Interest coverage <2.5x OR below sector 25th percentile
+    clear: Otherwise
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - CREDITORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.2'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:InterestExpense
+    - us-gaap:OperatingIncomeLoss
+    expected_type: numeric
+    no_data_sentinel: Interest expense or operating income not in XBRL income statement
+    validation_rule: coverage ratio is real number
+  data_strategy:
+    field_key: xbrl_interest_coverage
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10Q
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: distress_indicators
+    formula: ''
+  display:
+    value_format: currency
+    source_type: SEC_10Q
+    threshold_context: ''
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_10Q
+      fields:
+      - extracted.financials.leverage
+      fallback_to: SEC_10K
+    - type: SEC_10K
+      fields:
+      - extracted.financials.leverage
+  evaluation:
+    formula: interest_coverage
+    thresholds:
+    - op: <
+      value: 1.5
+      label: RED
+    - op: <
+      value: 2.5
+      label: YELLOW
+    window_years: 1
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Interest coverage: {value}x'
+    - level: standard
+      template: Debt service coverage ({interest_coverage}x) — {status_label}
+    - level: deep
+      fields:
+      - interest_coverage
+      - debt_to_ebitda
+      - debt_to_equity
+    context_templates:
+      TRIGGERED: 'Debt coverage concern: interest coverage {value}x below threshold'
+      CLEAR: Adequate debt service coverage at {value}x
+    do_context:
+      TRIGGERED_RED: '{company} Debt Service Coverage at {value} (threshold: Interest coverage <1.5x OR fixed charge coverage
+        <1.0x) signals elevated Financial Irregularities / Restatement Risk risk (F3). Inadequate debt service coverage signals
+        imminent covenant breach risk, forcing accelerated disclosure of financial distress that becomes the corrective disclosure
+        event in securities fraud complaints.'
+      TRIGGERED_YELLOW: '{company} Debt Service Coverage at {value} (threshold: Interest coverage <2.5x OR below sector 25th
+        percentile) is in the caution zone for Financial Irregularities / Restatement Risk (F3). Monitor for deterioration
+        — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Debt Service Coverage at {value} is within acceptable range for Financial Irregularities / Restatement
+        Risk (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  group: distress_indicators
+  signal_class: evaluative
+  field_path: xbrl_interest_coverage
+  depends_on: []
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: 'Thresholds (RED: Interest coverage <1.5x OR fixed charge coverage <1.0x; YELLOW: Interest coverage <2.5x
+      OR below sector 25th percentile) from D&O underwriting practice and claims experience'
+  rap_class: host
+  rap_subcategory: host.financials
+- id: FIN.DEBT.maturity
+  name: Debt Maturity Profile
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    distress_to_bankruptcy: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - debt_footnote
+  threshold:
+    type: tiered
+    red: '>30% due within 24 months OR any material maturity <12 months'
+    yellow: '>20% due within 24 months OR maturity <24 months'
+    clear: Otherwise
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - CREDITORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.2'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:LongTermDebtMaturitiesRepaymentsOfPrincipalInNextTwelveMonths
+    - us-gaap:LongTermDebtMaturitiesRepaymentsOfPrincipalInYearTwo
+    expected_type: dict
+    no_data_sentinel: Debt maturity schedule not disclosed in 10-K notes
+    validation_rule: at least one maturity year present
+  data_strategy:
+    field_key: xbrl_debt_maturity
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: distress_indicators
+    formula: ''
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  group: distress_indicators
+  signal_class: evaluative
+  field_path: xbrl_debt_maturity
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: 'Thresholds (RED: >30% due within 24 months OR any material maturity <12 months; YELLOW: >20% due within
+      24 months OR maturity <24 months) from D&O underwriting practice and claims experience'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Debt Maturity Profile at {value} (threshold: >30% due within 24 months OR any material maturity
+        <12 months) signals elevated Financial Irregularities / Restatement Risk risk (F3). Concentrated debt maturities create
+        refinancing risk windows where failure to secure replacement financing forces material adverse disclosure -- a classic
+        corrective disclosure trigger in 10b-5 actions.'
+      TRIGGERED_YELLOW: '{company} Debt Maturity Profile at {value} (threshold: >20% due within 24 months OR maturity <24
+        months) is in the caution zone for Financial Irregularities / Restatement Risk (F3). Monitor for deterioration — trend
+        direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Debt Maturity Profile at {value} is within acceptable range for Financial Irregularities / Restatement
+        Risk (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.DEBT.credit_rating
+  name: Credit Ratings
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    distress_to_bankruptcy: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_8K
+  data_locations:
+    SEC_10K:
+    - item_7_mda
+    - debt_footnote
+    SEC_8K:
+    - item_8_01
+  threshold:
+    type: tiered
+    red: CCC/Caa or below OR downgraded in last 12 months
+    yellow: B rating OR negative outlook OR high yield
+    clear: BBB/Baa or above with stable/positive outlook
+  execution_mode: FALLBACK_ONLY
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - CREDITORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.2'
+  data_strategy:
+    field_key: xbrl_credit_rating
+    narrative_key: credit_rating_narrative
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: distress_indicators
+    formula: ''
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  group: distress_indicators
+  signal_class: evaluative
+  field_path: xbrl_credit_rating
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: 'Thresholds (RED: CCC/Caa or below OR downgraded in last 12 months; YELLOW: B rating OR negative outlook
+      OR high yield) from D&O underwriting practice and claims experience'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Credit Ratings at {value} (threshold: CCC/Caa or below OR downgraded in last 12 months) signals
+        elevated Financial Irregularities / Restatement Risk risk (F3). Credit deterioration forces accelerated debt disclosure
+        that creates the ''material omission'' element plaintiffs need for securities fraud claims, as rating agencies often
+        act on information ahead of public markets.'
+      TRIGGERED_YELLOW: '{company} Credit Ratings at {value} (threshold: B rating OR negative outlook OR high yield) is in
+        the caution zone for Financial Irregularities / Restatement Risk (F3). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Credit Ratings at {value} is within acceptable range for Financial Irregularities / Restatement Risk
+        (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.DEBT.covenants
+  name: Covenant Analysis
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    distress_to_bankruptcy: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10Q
+  - SEC_10K
+  - SEC_8K
+  data_locations:
+    SEC_10Q:
+    - debt_footnote
+    SEC_10K:
+    - debt_footnote
+    SEC_8K:
+    - item_1_01
+    - item_2_03
+  threshold:
+    type: tiered
+    red: Breach/default OR <10% headroom OR multiple waivers
+    yellow: <20% headroom OR any waiver/amendment in 12 months
+    clear: Otherwise
+  tier: 1
+  depth: 2
+  plaintiff_lenses:
+  - CREDITORS
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.2'
+  data_strategy:
+    field_key: xbrl_covenant_headroom
+    narrative_key: covenant_narrative
+    primary_source: SEC_10Q
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: distress_indicators
+    formula: ''
+  display:
+    value_format: currency
+    source_type: SEC_10K
+    threshold_context: ''
+  group: distress_indicators
+  signal_class: evaluative
+  field_path: xbrl_covenant_headroom
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: 'Thresholds (RED: Breach/default OR <10% headroom OR multiple waivers; YELLOW: <20% headroom OR any waiver/amendment
+      in 12 months) from D&O underwriting practice and claims experience'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Covenant Analysis at {value} (threshold: Breach/default OR <10% headroom OR multiple waivers)
+        signals elevated Financial Irregularities / Restatement Risk risk (F3). Covenant breach or near-breach forces immediate
+        disclosure under Item 2.04 of Form 8-K, creating the corrective disclosure event that initiates SCA filings and establishes
+        the scienter timeline.'
+      TRIGGERED_YELLOW: '{company} Covenant Analysis at {value} (threshold: <20% headroom OR any waiver/amendment in 12 months)
+        is in the caution zone for Financial Irregularities / Restatement Risk (F3). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Covenant Analysis at {value} is within acceptable range for Financial Irregularities / Restatement
+        Risk (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.SECTOR.energy
+  name: Energy
+  work_type: extract
+  layer: hazard
+  factors:
+  - F9
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_10Q
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+    SEC_10Q:
+    - financial_statements
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.8'
+  data_strategy:
+    field_key: financial_health_narrative
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: key_metrics
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: financial_health_narrative
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: Informational signal -- no threshold scoring; provides qualitative or quantitative context for underwriting
+      assessment
+  rap_class: host
+  rap_subcategory: host.identity
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} energy at {value} represents host risk (company-level characteristics that attract or deter
+        D&O claims) (scoring factor F9) — this level is associated with SEC Enforcement / Regulatory Compliance exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} energy at {value} is a moderate indicator for SEC Enforcement / Regulatory Compliance (scoring
+        factor F9), warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} energy at {value} is within normal parameters for SEC Enforcement / Regulatory Compliance (scoring
+        factor F9) — no D&O concern at this level.'
+- id: FIN.SECTOR.retail
+  name: Retail
+  work_type: extract
+  layer: hazard
+  factors:
+  - F9
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_10Q
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+    SEC_10Q:
+    - financial_statements
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.8'
+  data_strategy:
+    field_key: financial_health_narrative
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: key_metrics
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: financial_health_narrative
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: Informational signal -- no threshold scoring; provides qualitative or quantitative context for underwriting
+      assessment
+  rap_class: host
+  rap_subcategory: host.identity
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} retail at {value} represents host risk (company-level characteristics that attract or deter
+        D&O claims) (scoring factor F9) — this level is associated with SEC Enforcement / Regulatory Compliance exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} retail at {value} is a moderate indicator for SEC Enforcement / Regulatory Compliance (scoring
+        factor F9), warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} retail at {value} is within normal parameters for SEC Enforcement / Regulatory Compliance (scoring
+        factor F9) — no D&O concern at this level.'
+- id: FIN.ASSET.goodwill_equity_ratio
+  name: Goodwill/Intangible as % of Equity
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    acquisition_impairment: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - balance_sheet
+  threshold:
+    type: tiered
+    red: Goodwill > 100% of stockholders' equity — goodwill exceeds equity, impairment would eliminate book value
+    yellow: Goodwill > 50% of stockholders' equity — material impairment exposure
+    clear: Goodwill <= 50% of stockholders' equity
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - CREDITORS
+  v6_subsection_ids:
+  - '3.1'
+  extraction_hints:
+    field_patterns:
+    - us-gaap:Goodwill
+    - us-gaap:IntangibleAssetsNetExcludingGoodwill
+    - us-gaap:StockholdersEquity
+    expected_type: numeric
+    no_data_sentinel: Goodwill or equity data not found in XBRL
+    validation_rule: goodwill_equity_pct >= 0
+  data_strategy:
+    field_key: computed_goodwill_equity_pct
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_tier_a_computable
+    confidence: HIGH
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: tier_a_build
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: Goodwill >100% of equity means impairment would eliminate book value entirely, triggering going-concern and
+        SCA risk; >50% creates material exposure per FASB ASC 350 impairment testing requirements
+    render_target: balance_sheet_health
+    formula: goodwill / stockholders_equity * 100
+  display:
+    value_format: percent
+    source_type: SEC_10K
+    threshold_context: ''
+  group: key_metrics
+  signal_class: evaluative
+  field_path: computed_goodwill_equity_pct
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: Acquisition-heavy companies accumulate goodwill that may exceed equity. FASB ASC 350 requires annual impairment
+      testing — large write-downs destroy book value, trigger covenant violations, and are among the most common SCA catalysts
+      in acquisition-driven industries
+    threshold_basis: 'Goodwill >100% of equity: impairment eliminates book value per balance sheet analysis; >50%: material
+      exposure per accounting research on goodwill impairment frequency'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} goodwill at {value} of stockholders'' equity (threshold: >100%) signals severe impairment
+        exposure (F3). Goodwill exceeding equity means any material impairment write-down eliminates book value — the resulting
+        covenant violations and going-concern disclosures are primary SCA catalysts in acquisition-heavy industries.'
+      TRIGGERED_YELLOW: '{company} goodwill at {value} of stockholders'' equity (threshold: >50%) indicates material impairment
+        exposure (F3). A significant goodwill write-down could materially erode book value — monitor acquisition integration
+        performance and annual impairment testing disclosures.'
+      CLEAR: '{company} goodwill at {value} of stockholders'' equity is within manageable range (F3) — limited impairment
+        exposure relative to equity base.'

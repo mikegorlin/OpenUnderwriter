@@ -1,0 +1,236 @@
+{# Badge macros for Bloomberg-quality D&O worksheet HTML output.
+   Traffic lights, density indicators, confidence markers, and tier badges. #}
+
+
+{# Traffic light badge for check results.
+   Maps check status to colored pill badges.
+   TRIGGERED=red, CLEAR=emerald, SKIPPED=gray, INFO=blue, ELEVATED=amber. #}
+{% macro traffic_light(status, label="") %}
+{%- set status_upper = status | upper -%}
+{%- if status_upper == "TRIGGERED" -%}
+  <span class="badge-pill bg-red-700 text-white">
+    {{ label if label else "Flagged" }}
+  </span>
+{%- elif status_upper == "CLEAR" -%}
+  <span class="badge-pill bg-emerald-600 text-white">
+    {{ label if label else "Clear" }}
+  </span>
+{%- elif status_upper == "DEFERRED" -%}
+  <span class="badge-pill bg-amber-400 text-white">
+    {{ label if label else "Pending" }}
+  </span>
+{%- elif status_upper == "SKIPPED" -%}
+  <span class="badge-pill bg-gray-400 text-white">
+    {{ label if label else "N/A" }}
+  </span>
+{%- elif status_upper == "INFO" -%}
+  <span class="badge-pill bg-blue-600 text-white">
+    {{ label if label else "Note" }}
+  </span>
+{%- elif status_upper == "ELEVATED" -%}
+  <span class="badge-pill bg-amber-500 text-white">
+    {{ label if label else "Watch" }}
+  </span>
+{%- else -%}
+  <span class="badge-pill bg-gray-400 text-white">
+    {{ label if label else status }}
+  </span>
+{%- endif -%}
+{% endmacro %}
+
+
+{# Density indicator for section risk level.
+   CRITICAL = red left border with "Critical Risk" label.
+   ELEVATED = amber left border with "Elevated Concern" label.
+   CLEAN = renders nothing (no visual noise for clean sections). #}
+{% macro density_indicator(level) %}
+{%- set level_upper = level | upper -%}
+{%- if level_upper == "CRITICAL" -%}
+  <div class="density-indicator density-indicator--critical">
+    <span class="density-indicator-label">⚠ Critical Risk</span>
+  </div>
+{%- elif level_upper == "ELEVATED" -%}
+  <div class="density-indicator density-indicator--elevated">
+    <span class="density-indicator-label">◈ Elevated Concern</span>
+  </div>
+{%- endif -%}
+{% endmacro %}
+
+
+{# Confidence marker for data quality.
+   Only renders for LOW confidence -- a small italic grey marker.
+   MEDIUM and HIGH produce no visible marker (per user decision). #}
+{% macro confidence_marker(confidence) %}
+{%- set conf_upper = confidence | upper if confidence else "" -%}
+{%- if conf_upper == "LOW" -%}
+  <span class="text-xs italic text-gray-400 ml-1" title="Low confidence data">(low conf.)</span>
+{%- endif -%}
+{% endmacro %}
+
+
+{# Tier badge for underwriting recommendation.
+   WIN=emerald, WANT=blue, WRITE=amber, WATCH=orange, WALK=red, NO_TOUCH=red-900. #}
+{% macro tier_badge(tier) %}
+{%- set tier_upper = tier | upper | replace(" ", "_") -%}
+{%- if tier_upper == "WIN" -%}
+  <span class="badge-tier bg-emerald-600 text-white tracking-wide">WIN</span>
+{%- elif tier_upper == "WANT" -%}
+  <span class="badge-tier bg-blue-600 text-white tracking-wide">WANT</span>
+{%- elif tier_upper == "WRITE" -%}
+  <span class="badge-tier bg-amber-500 text-white tracking-wide">WRITE</span>
+{%- elif tier_upper == "WATCH" -%}
+  <span class="badge-tier bg-orange-500 text-white tracking-wide">WATCH</span>
+{%- elif tier_upper == "WALK" -%}
+  <span class="badge-tier bg-red-600 text-white tracking-wide">WALK</span>
+{%- elif tier_upper == "NO_TOUCH" -%}
+  <span class="badge-tier bg-red-900 text-white tracking-wide">NO TOUCH</span>
+{%- else -%}
+  <span class="badge-tier bg-gray-500 text-white tracking-wide">{{ tier }}</span>
+{%- endif -%}
+{% endmacro %}
+
+
+{# Verdict badge for section-level narrative verdict (NARR-01 Layer 1).
+   Color-coded inline pill: FAVORABLE=emerald, NEUTRAL=blue, CONCERNING=amber, CRITICAL=red.
+   Used at the top of 5-layer narrative architecture. #}
+{% macro verdict_badge(verdict) %}
+{%- set v_upper = verdict | upper if verdict else "" -%}
+{%- if v_upper == "FAVORABLE" -%}
+  <span class="verdict-badge verdict-favorable">FAVORABLE</span>
+{%- elif v_upper == "NEUTRAL" -%}
+  <span class="verdict-badge verdict-neutral">NEUTRAL</span>
+{%- elif v_upper == "CONCERNING" -%}
+  <span class="verdict-badge verdict-concerning">CONCERNING</span>
+{%- elif v_upper == "CRITICAL" -%}
+  <span class="verdict-badge verdict-critical">CRITICAL</span>
+{%- else -%}
+  <span class="verdict-badge verdict-neutral">{{ verdict if verdict else "N/A" }}</span>
+{%- endif -%}
+{% endmacro %}
+
+
+{# Check results summary macro.
+   Replaces per-check badge dumps with a compact TRIGGERED/ELEVATED table
+   plus a one-line summary of all check counts. Saves ~15 pages of noise.
+   Includes collapsible Checks Passed and Data Gaps sections for thoroughness. #}
+{% macro check_summary(checks) %}
+{%- set ns = namespace(triggered=[], elevated=[], clear_list=[], skipped_list=[], info=0, clear=0, skipped=0, deferred=0) -%}
+{%- for check in checks -%}
+  {%- if check.data_status is defined and check.data_status == 'DEFERRED' -%}
+    {%- set ns.deferred = ns.deferred + 1 -%}
+  {%- elif check.status == 'TRIGGERED' -%}
+    {%- set _ = ns.triggered.append(check) -%}
+  {%- elif check.status == 'ELEVATED' -%}
+    {%- set _ = ns.elevated.append(check) -%}
+  {%- elif check.status == 'INFO' -%}
+    {%- set ns.info = ns.info + 1 -%}
+  {%- elif check.status == 'CLEAR' -%}
+    {%- set ns.clear = ns.clear + 1 -%}
+    {%- set _ = ns.clear_list.append(check) -%}
+  {%- elif check.status == 'SKIPPED' -%}
+    {%- set ns.skipped = ns.skipped + 1 -%}
+    {%- set _ = ns.skipped_list.append(check) -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if ns.triggered or ns.elevated -%}
+<table class="w-full border-collapse my-2 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left px-2 py-1 border-b font-heading text-xs font-semibold uppercase">Status</th>
+      <th class="text-left px-2 py-1 border-b font-heading text-xs font-semibold uppercase">Check</th>
+      <th class="text-left px-2 py-1 border-b font-heading text-xs font-semibold uppercase">Evidence &amp; Source</th>
+      {# D&O Risk column removed — generic brain YAML do_context boilerplate replaced by evidence column #}
+    </tr>
+  </thead>
+  <tbody>
+    {%- for check in ns.triggered -%}
+    <tr class="bg-red-50">
+      <td class="px-2 py-1 align-top">{{ traffic_light("TRIGGERED") }}</td>
+      <td class="px-2 py-1 align-top">
+        <div class="font-semibold text-sm">{{ check.signal_name }}</div>
+        {%- if check.factors -%}
+        <div class="mt-0.5">
+          {%- for f in check.factors -%}
+          <span class="inline-block px-1.5 py-0 rounded text-[10px] font-semibold bg-navy-900 text-white mr-0.5">{{ f | humanize_factor }}</span>
+          {%- endfor -%}
+        </div>
+        {%- endif -%}
+      </td>
+      <td class="px-2 py-1 text-xs text-gray-600 align-top">
+        <div>{{ check.evidence | humanize_evidence if check.evidence else '' }}</div>
+        {%- if check.filing_ref -%}
+        <div class="mt-0.5 text-[10px] text-gray-400 italic">Source: {{ check.filing_ref }}</div>
+        {%- endif -%}
+      </td>
+    </tr>
+    {%- endfor -%}
+    {%- for check in ns.elevated -%}
+    <tr class="bg-amber-50">
+      <td class="px-2 py-1 align-top">{{ traffic_light("ELEVATED") }}</td>
+      <td class="px-2 py-1 align-top">
+        <div class="font-semibold text-sm">{{ check.signal_name }}</div>
+        {%- if check.factors -%}
+        <div class="mt-0.5">
+          {%- for f in check.factors -%}
+          <span class="inline-block px-1.5 py-0 rounded text-[10px] font-semibold bg-amber-600 text-white mr-0.5">{{ f }}</span>
+          {%- endfor -%}
+        </div>
+        {%- endif -%}
+      </td>
+      <td class="px-2 py-1 text-xs text-gray-600 align-top">
+        <div>{{ check.evidence | humanize_evidence if check.evidence else '' }}</div>
+        {%- if check.filing_ref -%}
+        <div class="mt-0.5 text-[10px] text-gray-400 italic">Source: {{ check.filing_ref }}</div>
+        {%- endif -%}
+      </td>
+    </tr>
+    {%- endfor -%}
+  </tbody>
+</table>
+{%- endif -%}
+
+<p class="text-xs text-gray-400 my-1">
+  {{ checks|length }} checks evaluated:
+  {{ ns.triggered|length }} triggered, {{ ns.elevated|length }} elevated,
+  {{ ns.clear }} clear, {{ ns.info }} info, {{ ns.skipped }} skipped{% if ns.deferred > 0 %}, {{ ns.deferred }} deferred{% endif %}
+</p>
+
+{# Checks Passed: collapsible list of CLEAR signals proving thoroughness #}
+{%- if ns.clear_list -%}
+<div>
+  <div style="font-weight:600;margin-bottom:4px">
+    {{ ns.clear }} Checks Passed
+  </div>
+  <div class="mt-1 pl-2 border-l-2 border-emerald-200">
+    <ul class="text-xs text-gray-500 space-y-0.5 list-none pl-0">
+      {%- for check in ns.clear_list -%}
+      <li class="flex items-start gap-1">
+        <span class="text-emerald-500 mt-0.5 flex-shrink-0">&#10003;</span>
+        <span>{{ check.signal_name }}{% if check.filing_ref %} <span class="text-gray-400 italic">({{ check.filing_ref }})</span>{% endif %}</span>
+      </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+{%- endif -%}
+
+{# Data Gaps: collapsible list of SKIPPED signals showing blind spots #}
+{%- if ns.skipped_list -%}
+<div>
+  <div style="font-weight:600;margin-bottom:4px">
+    {{ ns.skipped }} Could Not Evaluate (Data Gaps)
+  </div>
+  <div class="mt-1 pl-2 border-l-2 border-gray-200">
+    <ul class="text-xs text-gray-400 space-y-0.5 list-none pl-0">
+      {%- for check in ns.skipped_list -%}
+      <li class="flex items-start gap-1">
+        <span class="text-gray-400 mt-0.5 flex-shrink-0">&#9711;</span>
+        <span>{{ check.signal_name }}{% if check.data_status_reason %} &mdash; <span class="italic">{{ check.data_status_reason }}</span>{% endif %}</span>
+      </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+{%- endif -%}
+{% endmacro %}

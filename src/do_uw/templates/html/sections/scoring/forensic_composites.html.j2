@@ -1,0 +1,47 @@
+{# Forensic Composite Scores — extracted from scoring.html.j2 #}
+{% if forensic_composites %}
+<h3>Forensic Composite Scores</h3>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Composite</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Score</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Zone</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Sub-Components</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in forensic_composites.composites %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ c.name }}</td>
+      <td class="p-1 text-right tabular-nums font-bold
+        {% if c.score != 'N/A' %}
+          {% set score_num = c.score|replace('/100', '')|int(default=50) %}
+          {% if score_num < 50 %} text-risk-red
+          {% elif score_num < 65 %} text-risk-amber
+          {% else %} text-navy
+          {% endif %}
+        {% endif %}
+      ">{{ c.score }}</td>
+      <td class="p-1 text-gray-600">{{ c.interpretation | humanize_evidence }}</td>
+      <td class="p-1 text-xs text-gray-500">
+        {% if c.sub_scores %}
+          {% for sub_name, sub_val in c.sub_scores.items() %}
+            {{ sub_name }}: {{ sub_val }}{% if not loop.last %}, {% endif %}
+          {% endfor %}
+        {% else %}—{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc pl-4 space-y-0.5">
+  <li>Forensic composites combine multiple financial metrics into manipulation and distress indicators relevant to D&amp;O claims</li>
+  <li>Beneish M-Score detects earnings manipulation — a key predictor of securities class actions</li>
+  <li>Altman Z-Score measures financial distress — low scores correlate with increased breach of fiduciary duty claims</li>
+  <li>Sub-components show individual metric contributions to each composite score</li>
+</ul>
+{% else %}
+<h3>Forensic Composite Scores</h3>
+{{ gap_notice("Forensic Composites", "Forensic composite scores not available") }}
+{% endif %}

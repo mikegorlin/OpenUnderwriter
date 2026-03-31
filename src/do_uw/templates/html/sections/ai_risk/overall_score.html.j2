@@ -1,0 +1,23 @@
+{# Overall AI Risk Score — extracted from ai_risk.html.j2 #}
+{% if ai is not defined %}{% set ai = (ai_risk if ai_risk is defined and ai_risk else {}) %}{% endif %}
+
+  {# --- Overall AI Risk Score --- #}
+  {% if ai.get('overall_score') is not none %}
+  <div class="flex items-center gap-4 my-4">
+    <div class="bg-bg-alt border border-gray-200 rounded p-4 text-center page-break-inside-avoid">
+      <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">AI Risk Score</p>
+      <p class="text-3xl font-bold text-navy m-0">{{ ai.overall_score }}</p>
+    </div>
+    {% if ai.get('threat_level') %}
+    <div>
+      {{ traffic_light(
+        ai.threat_level|replace('HIGH', 'TRIGGERED')|replace('MEDIUM', 'ELEVATED')|replace('LOW', 'CLEAR'),
+        "Threat: " ~ ai.threat_level
+      ) }}
+    </div>
+    {% endif %}
+    {% if ai.get('model') %}
+    <span class="font-heading text-sm text-gray-500">Model: {{ ai.model }}</span>
+    {% endif %}
+  </div>
+  {% endif %}

@@ -1,0 +1,117 @@
+{
+  "version": "1.0",
+  "named_interactions": [
+    {
+      "id": "ROOKIE_ROCKET",
+      "name": "Rookie Rocket",
+      "description": "High-growth company with inexperienced management and recent IPO -- compounding inexperience hazard",
+      "required_dimensions": {
+        "H1-09": {
+          "min_score_pct": 60
+        },
+        "H2-01": {
+          "min_score_pct": 60
+        },
+        "H5-01": {
+          "min_score_pct": 50
+        }
+      },
+      "multiplier_range": [
+        1.3,
+        1.5
+      ],
+      "category": "compounding_inexperience"
+    },
+    {
+      "id": "BLACK_BOX",
+      "name": "Black Box",
+      "description": "Complex business model with weak earnings quality and heavy non-GAAP reliance -- opacity risk",
+      "required_dimensions": {
+        "H1-02": {
+          "min_score_pct": 60
+        },
+        "H3-04": {
+          "min_score_pct": 50
+        },
+        "H1-11": {
+          "min_score_pct": 50
+        }
+      },
+      "multiplier_range": [
+        1.2,
+        1.4
+      ],
+      "category": "opacity_risk"
+    },
+    {
+      "id": "IMPERIAL_FOUNDER",
+      "name": "Imperial Founder",
+      "description": "Founder CEO with dual-class control and weak board oversight -- concentration of power",
+      "required_dimensions": {
+        "H2-05": {
+          "min_score_pct": 70
+        },
+        "H1-10": {
+          "min_score_pct": 50
+        },
+        "H4-02": {
+          "min_score_pct": 50
+        }
+      },
+      "multiplier_range": [
+        1.2,
+        1.5
+      ],
+      "category": "concentration_of_power"
+    },
+    {
+      "id": "ACQUISITION_MACHINE",
+      "name": "Acquisition Machine",
+      "description": "Serial acquirer with goodwill-heavy balance sheet and integration risk",
+      "required_dimensions": {
+        "H1-08": {
+          "min_score_pct": 60
+        },
+        "H3-03": {
+          "min_score_pct": 50
+        }
+      },
+      "multiplier_range": [
+        1.15,
+        1.35
+      ],
+      "category": "acquisition_risk"
+    },
+    {
+      "id": "CASH_BURN_CLIFF",
+      "name": "Cash Burn Cliff",
+      "description": "Pre-revenue cash burn with recent IPO and rapid growth -- existential funding risk",
+      "required_dimensions": {
+        "H3-06": {
+          "min_score_pct": 70
+        },
+        "H5-01": {
+          "min_score_pct": 50
+        },
+        "H1-09": {
+          "min_score_pct": 40
+        }
+      },
+      "multiplier_range": [
+        1.25,
+        1.45
+      ],
+      "category": "funding_risk"
+    }
+  ],
+  "dynamic_detection": {
+    "min_elevated_dimensions": 5,
+    "elevated_threshold_pct": 60,
+    "co_occurrence_multiplier": [
+      1.05,
+      1.15
+    ],
+    "category_concentration_min": 3,
+    "category_concentration_multiplier": 1.05
+  }
+}

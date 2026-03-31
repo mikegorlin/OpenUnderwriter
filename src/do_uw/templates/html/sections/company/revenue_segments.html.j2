@@ -1,0 +1,9 @@
+{# Revenue Segments — extracted from company.html.j2 #}
+{% set segments = co.get('revenue_segments', []) %}
+{% if segments %}
+<h3>Revenue Segments</h3>
+{{ data_table(
+  ['Segment', 'Percentage'],
+  segments|map(attribute='name')|list|zip(segments|map(attribute='pct')|list)|list
+) }}
+{% endif %}

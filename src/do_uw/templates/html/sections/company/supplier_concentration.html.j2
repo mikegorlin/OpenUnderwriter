@@ -1,0 +1,21 @@
+{# Supplier Concentration — extracted from company.html.j2 #}
+{% set suppliers = co.get('supplier_concentration', []) %}
+{% if suppliers %}
+<h3>Supplier Concentration</h3>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Supplier</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Cost %</th>
+    </tr>
+  </thead>
+  <tbody class="tabular-nums">
+    {% for s in suppliers %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1">{{ s.description }}</td>
+      <td class="p-1 text-right font-semibold">{{ s.pct | default('—') }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}

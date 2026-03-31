@@ -1,0 +1,47 @@
+{# Liquidity & Solvency detail card — compact colored metric cards #}
+{% set liq_detail = fin.get('liquidity_detail', {}) %}
+{% set liq_metrics = liq_detail.get('metrics', []) %}
+{% if liq_metrics %}
+<h3>Liquidity &amp; Solvency</h3>
+<div style="display:grid; grid-template-columns:repeat({{ liq_metrics|length }}, 1fr); gap:0.4rem; margin-bottom:0.75rem;">
+  {% for m in liq_metrics %}
+  {% set border_color = '#DC2626' if m.color == 'red' else ('#D97706' if m.color == 'amber' else '#16A34A') %}
+  {% set bg_color = '#FEF2F2' if m.color == 'red' else ('#FFFBEB' if m.color == 'amber' else '#F0FDF4') %}
+  {% set text_color = '#991B1B' if m.color == 'red' else ('#92400E' if m.color == 'amber' else '#166534') %}
+  <div style="padding:6px 8px; border-radius:5px; background:{{ bg_color }}; border:1.5px solid {{ border_color }}; text-align:center;">
+    <div style="font-size:12pt; font-weight:800; color:{{ text_color }}; font-variant-numeric:tabular-nums; line-height:1;">{{ m.value }}</div>
+    <div style="font-size:6pt; color:#6B7280; font-weight:600; margin-top:2px; text-transform:uppercase; letter-spacing:0.3px;">{{ m.label }}</div>
+  </div>
+  {% endfor %}
+</div>
+{# Metric-specific D&O context annotations #}
+<ul class="text-xs text-gray-500 mt-0 mb-2 leading-relaxed list-disc ml-4 space-y-0.5">
+  {% for m in liq_metrics %}
+  {% if m.label|lower|replace(' ', '_') in ['current_ratio', 'current ratio'] or 'current' in m.label|lower %}
+    {% set cr_str = m.value|string|replace('x', '') %}
+    {% set cr_val = cr_str|float(default=-1) %}
+    {% if cr_val >= 0 and cr_val < 1.0 %}
+      {# Check if mega-cap by looking for market_cap in scorecard #}
+      {% set mcap_str = (scorecard.metrics_strip.market_cap if scorecard is defined and scorecard.get('metrics_strip') and scorecard.metrics_strip.get('market_cap') else '')|string %}
+      {% if 'T' in mcap_str or 'B' in mcap_str %}
+      <li>Current ratio of {{ m.value }} is below 1.0 but typical for large companies with strong cash collection cycles and supplier payment leverage &mdash; not a distress indicator at this scale</li>
+      {% else %}
+      <li>Current ratio of {{ m.value }} below 1.0 signals potential liquidity concern &mdash; monitor debt maturity schedule and credit facility covenants, as covenant violations trigger disclosure obligations and SCA risk</li>
+      {% endif %}
+    {% elif cr_val > 3.0 %}
+    <li>Current ratio of {{ m.value }} indicates very strong liquidity &mdash; provides robust defense against insolvency-driven D&amp;O claims</li>
+    {% endif %}
+  {% endif %}
+  {% if 'debt' in m.label|lower and 'equity' in m.label|lower %}
+    {% set de_str = m.value|string|replace('x', '') %}
+    {% set de_val = de_str|float(default=-1) %}
+    {% if de_val > 3.0 %}
+    <li>Debt-to-equity of {{ m.value }} is elevated &mdash; high leverage amplifies earnings volatility and increases exposure to going-concern and covenant breach allegations in SCA complaints</li>
+    {% elif de_val >= 0 and de_val < 0.5 %}
+    <li>Low leverage ratio of {{ m.value }} is favorable for D&amp;O &mdash; minimal refinancing risk and no near-term covenant pressure</li>
+    {% endif %}
+  {% endif %}
+  {% endfor %}
+</ul>
+{# do_context removed — generic brain YAML boilerplate #}
+{% endif %}

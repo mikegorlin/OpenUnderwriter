@@ -1,0 +1,429 @@
+# Sector D&O Claim Theory Patterns
+# Top 3 claim theories per GICS industry group (4-digit code)
+# Provenance from SCAC database analysis and Cornerstone Research settlement studies
+
+metadata:
+  sources:
+    - "Stanford Law School SCAC Annual Reports 2020-2023"
+    - "Cornerstone Research: Securities Class Action Settlements — 2023 Review"
+    - "NERA Economic Consulting: Recent Trends in Securities Class Action Litigation — 2023"
+    - "D&O Diary (Kevin LaCroix) sector analysis compilations"
+  data_year: 2023
+  methodology: >
+    Top 3 claim theories ranked by frequency of appearance in SCA complaints
+    filed 2020-2023 within each GICS industry group. Frequency labels:
+    Most common (>40% of filings), Common (20-40%), Notable (10-20%).
+    Legal basis codes: 10b-5 (Exchange Act fraud), Section_11 (Securities Act
+    registration), Section_14a (proxy fraud), antitrust, FCPA, environmental.
+
+patterns:
+  # Energy
+  "1010":  # Energy Equipment & Services
+    industry_group: "Energy Equipment & Services"
+    claim_theories:
+      - theory: "Safety incident concealment"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Failure to disclose known safety risks or incidents before major accidents (e.g., Deepwater Horizon pattern)"
+      - theory: "Revenue and backlog inflation"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Overstating equipment order backlog or service revenue during cyclical downturns"
+      - theory: "Environmental liability understatement"
+        frequency: "Notable"
+        legal_basis: "environmental"
+        description: "Understating environmental remediation obligations and decommissioning costs"
+
+  "1020":  # Oil, Gas & Consumable Fuels
+    industry_group: "Oil, Gas & Consumable Fuels"
+    claim_theories:
+      - theory: "Reserve overstatement"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Overstating proved reserves or understating decline rates to inflate asset valuations"
+      - theory: "Climate risk disclosure failure"
+        frequency: "Common"
+        legal_basis: "Section_14a"
+        description: "Inadequate disclosure of climate transition risks and stranded asset exposure"
+      - theory: "Environmental liability concealment"
+        frequency: "Common"
+        legal_basis: "environmental"
+        description: "Understating environmental remediation costs and regulatory compliance obligations"
+
+  # Materials
+  "1510":  # Chemicals
+    industry_group: "Chemicals"
+    claim_theories:
+      - theory: "Environmental remediation concealment"
+        frequency: "Most common"
+        legal_basis: "environmental"
+        description: "Understating PFAS, chemical contamination, and Superfund remediation liabilities"
+      - theory: "Price fixing"
+        frequency: "Common"
+        legal_basis: "antitrust"
+        description: "Participation in chemical pricing cartels or customer allocation schemes"
+      - theory: "Product safety misrepresentation"
+        frequency: "Notable"
+        legal_basis: "10b-5"
+        description: "Concealing known product hazards or toxicity data from regulators and investors"
+
+  "1520":  # Construction Materials
+    industry_group: "Construction Materials"
+    claim_theories:
+      - theory: "Asbestos liability understatement"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Understating known asbestos-related liability reserves and future claim exposure"
+      - theory: "Acquisition goodwill impairment"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Overpaying for acquisitions and failing to timely write down goodwill"
+      - theory: "Environmental compliance violations"
+        frequency: "Notable"
+        legal_basis: "environmental"
+        description: "Concealing EPA violations at quarry and manufacturing operations"
+
+  # Industrials
+  "2010":  # Capital Goods
+    industry_group: "Capital Goods"
+    claim_theories:
+      - theory: "Government contract fraud"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "False Claims Act violations, cost overruns, and defective product delivery on defense/government contracts"
+      - theory: "Product defect concealment"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Concealing known product defects affecting safety (especially aerospace components)"
+      - theory: "FCPA violations"
+        frequency: "Notable"
+        legal_basis: "FCPA"
+        description: "Bribery of foreign government officials to secure contracts in international markets"
+
+  "2020":  # Commercial & Professional Services
+    industry_group: "Commercial & Professional Services"
+    claim_theories:
+      - theory: "Revenue recognition manipulation"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Premature recognition of long-term service contract revenue or inflated project completion"
+      - theory: "Employee misclassification"
+        frequency: "Common"
+        legal_basis: "employment_discrimination"
+        description: "Classifying employees as independent contractors to reduce costs and liabilities"
+      - theory: "Data security failures"
+        frequency: "Notable"
+        legal_basis: "10b-5"
+        description: "Failure to protect client data in outsourcing and consulting operations"
+
+  "2030":  # Transportation
+    industry_group: "Transportation"
+    claim_theories:
+      - theory: "Safety record concealment"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Concealing safety violations, maintenance deferrals, or accident patterns from investors"
+      - theory: "Capacity metric manipulation"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Inflating load factors, on-time performance, or fleet utilization metrics"
+      - theory: "Environmental compliance failures"
+        frequency: "Notable"
+        legal_basis: "environmental"
+        description: "Emissions violations, hazmat transport incidents, and environmental spill concealment"
+
+  # Consumer Discretionary
+  "2510":  # Automobiles & Components
+    industry_group: "Automobiles & Components"
+    claim_theories:
+      - theory: "Safety defect concealment"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Concealing known safety defects from NHTSA and consumers (airbag, ignition switch patterns)"
+      - theory: "Emissions fraud"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Emissions testing manipulation or non-compliance with EPA standards (Dieselgate pattern)"
+      - theory: "EV production guidance miss"
+        frequency: "Notable"
+        legal_basis: "10b-5"
+        description: "Overstating EV production capacity, delivery timelines, or autonomous driving capabilities"
+
+  "2530":  # Consumer Durables & Apparel / Consumer Services
+    industry_group: "Consumer Services"
+    claim_theories:
+      - theory: "Same-store sales inflation"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Manipulating comparable store sales metrics through store reclassification or timing"
+      - theory: "Product safety concealment"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Concealing product safety issues, CPSC recalls, or quality defects from investors"
+      - theory: "Franchise fraud"
+        frequency: "Notable"
+        legal_basis: "10b-5"
+        description: "Misrepresenting franchise unit economics, default rates, or expansion prospects"
+
+  "2550":  # Retailing
+    industry_group: "Retailing"
+    claim_theories:
+      - theory: "Growth metric inflation"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Inflating e-commerce growth rates, active customer counts, or average order values"
+      - theory: "Inventory and margin manipulation"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Overstating inventory values, understating markdowns, or vendor rebate manipulation"
+      - theory: "Data breach concealment"
+        frequency: "Notable"
+        legal_basis: "10b-5"
+        description: "Delayed disclosure of customer data breaches affecting payment card or PII data"
+
+  # Consumer Staples
+  "3010":  # Food & Staples Retailing
+    industry_group: "Food & Staples Retailing"
+    claim_theories:
+      - theory: "Opioid distribution liability"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Pharmacy chains: failure to maintain adequate controlled substance monitoring systems"
+      - theory: "Food safety violations"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Concealing food safety issues, contamination events, or supply chain health risks"
+      - theory: "Labor practice violations"
+        frequency: "Notable"
+        legal_basis: "employment_discrimination"
+        description: "Wage theft, scheduling abuse, and employee misclassification across retail operations"
+
+  "3020":  # Food, Beverage & Tobacco
+    industry_group: "Food, Beverage & Tobacco"
+    claim_theories:
+      - theory: "Labeling and marketing fraud"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Misleading product labeling, health benefit claims, or organic/natural certifications"
+      - theory: "Food safety recalls"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Failure to timely disclose contamination events, FDA warning letters, or product recalls"
+      - theory: "Supply chain labor violations"
+        frequency: "Notable"
+        legal_basis: "employment_discrimination"
+        description: "Child labor, forced labor, or unsafe conditions in agricultural supply chains"
+
+  "3030":  # Household & Personal Products
+    industry_group: "Household & Personal Products"
+    claim_theories:
+      - theory: "Product safety concealment"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Concealing known product safety issues (talc/asbestos, PFAS contamination)"
+      - theory: "Marketing misrepresentation"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "False advertising claims about product efficacy, safety, or environmental impact"
+      - theory: "Supply chain disruption concealment"
+        frequency: "Notable"
+        legal_basis: "10b-5"
+        description: "Failure to disclose material supply chain disruptions affecting production capacity"
+
+  # Health Care
+  "3510":  # Health Care Equipment & Services
+    industry_group: "Health Care Equipment & Services"
+    claim_theories:
+      - theory: "FDA recall concealment"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Concealing device defects, adverse event reports, or impending FDA recalls from investors"
+      - theory: "Medicare/Medicaid fraud"
+        frequency: "Common"
+        legal_basis: "FCPA"
+        description: "False claims, upcoding, kickback schemes, and Stark Law violations in billing practices"
+      - theory: "Patient data breach"
+        frequency: "Notable"
+        legal_basis: "10b-5"
+        description: "HIPAA violations and failure to disclose patient data security incidents"
+
+  "3520":  # Pharmaceuticals, Biotechnology & Life Sciences
+    industry_group: "Pharmaceuticals, Biotechnology & Life Sciences"
+    claim_theories:
+      - theory: "Clinical trial failure concealment"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Failure to disclose adverse clinical trial data, endpoint misses, or safety signals before stock decline"
+      - theory: "Drug pricing manipulation"
+        frequency: "Common"
+        legal_basis: "antitrust"
+        description: "Price gouging, anti-competitive pay-for-delay agreements, and formulary manipulation"
+      - theory: "Off-label promotion"
+        frequency: "Notable"
+        legal_basis: "FCPA"
+        description: "Off-label marketing leading to DOJ/FTC enforcement, False Claims Act liability, and SEC investigation"
+
+  # Financials
+  "4010":  # Banks
+    industry_group: "Banks"
+    claim_theories:
+      - theory: "Loan loss reserve understatement"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Understating allowance for credit losses to inflate reported earnings and capital ratios"
+      - theory: "BSA/AML compliance failures"
+        frequency: "Common"
+        legal_basis: "FCPA"
+        description: "Bank Secrecy Act and anti-money laundering violations resulting in DOJ/FinCEN enforcement"
+      - theory: "Consumer lending abuse"
+        frequency: "Notable"
+        legal_basis: "10b-5"
+        description: "Predatory or discriminatory lending practices leading to CFPB enforcement and class actions"
+
+  "4020":  # Diversified Financials
+    industry_group: "Diversified Financials"
+    claim_theories:
+      - theory: "Market manipulation"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Trading manipulation, front-running, spoofing, and benchmark rate rigging"
+      - theory: "Conflicts of interest"
+        frequency: "Common"
+        legal_basis: "Section_14a"
+        description: "Self-dealing in advisory roles, undisclosed conflicts in M&A transactions"
+      - theory: "Risk management failure"
+        frequency: "Notable"
+        legal_basis: "10b-5"
+        description: "Concealing excessive risk concentrations leading to material trading losses"
+
+  "4030":  # Insurance
+    industry_group: "Insurance"
+    claim_theories:
+      - theory: "Reserve adequacy manipulation"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Understating loss reserves to inflate reported earnings and surplus"
+      - theory: "Sales practice violations"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Churning, twisting, and misleading policy illustrations in life/annuity sales"
+      - theory: "Claims handling bad faith"
+        frequency: "Notable"
+        legal_basis: "10b-5"
+        description: "Systematic bad faith claims denial or delay practices affecting reported loss ratios"
+
+  # Information Technology
+  "4510":  # Software & Services
+    industry_group: "Software & Services"
+    claim_theories:
+      - theory: "Revenue recognition fraud"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Premature SaaS revenue recognition, channel stuffing, and inflated annual recurring revenue"
+      - theory: "Subscriber/user metric inflation"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Inflating monthly active users, paying subscribers, or engagement metrics"
+      - theory: "Data privacy violations"
+        frequency: "Notable"
+        legal_basis: "10b-5"
+        description: "GDPR/CCPA violations, unauthorized data monetization, and data breach concealment"
+
+  "4520":  # Technology Hardware & Equipment
+    industry_group: "Technology Hardware & Equipment"
+    claim_theories:
+      - theory: "Supply chain disruption concealment"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Failure to disclose material supply chain constraints affecting production and revenue"
+      - theory: "Product defect concealment"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Concealing known hardware defects, thermal issues, or safety hazards"
+      - theory: "Export control violations"
+        frequency: "Notable"
+        legal_basis: "FCPA"
+        description: "Violations of export restrictions to sanctioned countries or controlled technology transfers"
+
+  "4530":  # Semiconductors & Semiconductor Equipment
+    industry_group: "Semiconductors & Semiconductor Equipment"
+    claim_theories:
+      - theory: "Revenue guidance miss"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Failure to disclose declining demand signals before earnings miss in cyclical downturns"
+      - theory: "Inventory channel stuffing"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Shipping excess inventory to distributors to inflate reported revenue before demand decline"
+      - theory: "Export control and sanctions violations"
+        frequency: "Notable"
+        legal_basis: "FCPA"
+        description: "Prohibited sales to sanctioned entities or countries (China chip restrictions)"
+
+  # Communication Services
+  "5010":  # Telecommunication Services
+    industry_group: "Telecommunication Services"
+    claim_theories:
+      - theory: "Subscriber metric manipulation"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Inflating subscriber counts, understating churn rates, or misrepresenting ARPU trends"
+      - theory: "Spectrum asset overvaluation"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Overstating spectrum license values or expected 5G deployment returns"
+      - theory: "Anti-competitive merger effects"
+        frequency: "Notable"
+        legal_basis: "antitrust"
+        description: "Anti-competitive practices post-merger or misleading merger benefit projections"
+
+  "5020":  # Media & Entertainment
+    industry_group: "Media & Entertainment"
+    claim_theories:
+      - theory: "Streaming subscriber inflation"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Inflating streaming subscriber counts, ARPU, or engagement metrics"
+      - theory: "Content asset writedowns"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Failure to timely write down overvalued content libraries or production investments"
+      - theory: "Executive misconduct concealment"
+        frequency: "Notable"
+        legal_basis: "Section_14a"
+        description: "Concealing executive misconduct, harassment claims, or related-party transactions"
+
+  # Utilities
+  "5510":  # Utilities
+    industry_group: "Utilities"
+    claim_theories:
+      - theory: "Infrastructure safety failure"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Concealing known infrastructure safety issues causing wildfire, explosion, or contamination"
+      - theory: "Rate case misrepresentation"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Misleading rate case filings or misrepresenting capital expenditure requirements"
+      - theory: "Environmental remediation understatement"
+        frequency: "Notable"
+        legal_basis: "environmental"
+        description: "Understating decommissioning, coal ash, or nuclear waste remediation obligations"
+
+  # Real Estate
+  "6010":  # Equity REITs / Real Estate
+    industry_group: "Real Estate"
+    claim_theories:
+      - theory: "Asset valuation manipulation"
+        frequency: "Most common"
+        legal_basis: "10b-5"
+        description: "Overstating property valuations or FFO/AFFO metrics through aggressive capitalization"
+      - theory: "Occupancy metric inflation"
+        frequency: "Common"
+        legal_basis: "10b-5"
+        description: "Inflating occupancy rates through lease concessions or reclassification of vacant space"
+      - theory: "Related-party transaction concealment"
+        frequency: "Notable"
+        legal_basis: "Section_14a"
+        description: "Undisclosed conflicts of interest in property acquisitions or management agreements"

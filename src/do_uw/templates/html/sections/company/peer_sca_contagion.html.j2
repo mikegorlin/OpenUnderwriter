@@ -1,0 +1,61 @@
+{# Peer SCA Contagion -- peer companies with active securities class actions #}
+{# Phase 134: COMP-03, D-06, D-08 #}
+{% if has_peer_sca is defined %}
+<h3>Peer SCA Contagion</h3>
+<p class="text-sm text-gray-600 my-1">{{ peer_sca_summary | default('') }}</p>
+
+{% if peer_sca_records %}
+<table class="data-table w-full text-sm my-2">
+  <thead>
+    <tr>
+      <th class="text-left">Company</th>
+      <th class="text-left">Ticker</th>
+      <th class="text-left" style="min-width:200px">Case Caption</th>
+      <th class="text-center">Filing Date</th>
+      <th class="text-center">Status</th>
+      <th class="text-left">Allegations</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for rec in peer_sca_records %}
+    <tr style="{% if rec.is_active %}border-left:3px solid #DC2626{% endif %}">
+      <td class="font-medium">{{ rec.company_name }}</td>
+      <td class="tabular-nums">{{ rec.ticker }}</td>
+      <td class="text-xs">{{ rec.case_caption }}</td>
+      <td class="text-center tabular-nums">{{ rec.filing_date }}</td>
+      <td class="text-center">
+        <span class="inline-block px-2 py-0.5 rounded text-xs font-semibold
+          {% if rec.is_active %}bg-red-100 text-red-800
+          {% elif rec.status == 'settled' %}bg-amber-100 text-amber-800
+          {% else %}bg-gray-100 text-gray-600{% endif %}">
+          {{ rec.status }}
+        </span>
+      </td>
+      <td class="text-xs">{{ rec.allegation_type }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="bg-green-50 border border-green-200 rounded p-3 my-2">
+  <p class="text-sm text-green-800 m-0 font-medium">No active SCAs detected among analyzed peers -- positive contagion signal</p>
+</div>
+{% endif %}
+
+{% if peer_profiles %}
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+  {% for p in peer_profiles %}
+  <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:6px;padding:6px 10px;min-width:120px">
+    <div style="font-size:9pt;font-weight:700;color:#111827">{{ p.ticker }}</div>
+    <div style="font-size:8pt;color:#6B7280">{{ p.name }}</div>
+    {% if p.market_cap_fmt %}<div style="font-size:8pt;color:#374151" class="tabular-nums">{{ p.market_cap_fmt }}</div>{% endif %}
+    {% if p.sca_count > 0 %}
+    <div style="font-size:7pt;font-weight:600;color:#DC2626;margin-top:2px">{{ p.sca_count }} SCA{{ 's' if p.sca_count != 1 }}</div>
+    {% else %}
+    <div style="font-size:7pt;color:#059669;margin-top:2px">No SCAs</div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endif %}

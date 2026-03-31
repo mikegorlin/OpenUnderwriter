@@ -1,0 +1,120 @@
+{# Data Audit appendix (Phase 92 -- REND-01/REND-02).
+   Shows render coverage audit: excluded-by-policy fields and
+   unrendered fields. Collapsed by default -- diagnostic appendix. #}
+
+<section id="data-audit" class="page-break">
+  <div>
+    <div style="font-weight:600;margin-bottom:4px">
+      Appendix: Data Audit
+      ({{ audit_excluded_count|default(0) }} excluded,
+       {{ audit_unrendered_count|default(0) }} unrendered)
+    </div>
+
+    <p class="text-xs text-gray-500 mb-3">
+      {{ audit_total_extracted|default(0) }} total extracted fields &middot;
+      {{ audit_coverage_pct|default(0) }}% render coverage
+    </p>
+
+    {# --- Excluded by Policy --- #}
+    {% set excluded = audit_excluded_fields|default([]) %}
+    {% if excluded %}
+    <div>
+      <div style="font-weight:600;margin-bottom:4px">
+        Excluded by Policy ({{ excluded|length }} fields)
+      </div>
+      <table class="w-full border-collapse my-2 text-sm">
+        <thead>
+          <tr class="bg-bg-alt">
+            <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Field Path</th>
+            <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in excluded %}
+          <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }} page-break-inside-avoid">
+            <td class="px-3 py-1.5 text-xs font-mono text-gray-600">{{ item.path }}</td>
+            <td class="px-3 py-1.5 text-xs text-gray-700">{{ item.reason }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    {# --- Unrendered Fields --- #}
+    {% set unrendered = audit_unrendered_fields|default([]) %}
+    {% if unrendered %}
+    <div>
+      <div style="font-weight:600;margin-bottom:4px">
+        Unrendered ({{ unrendered|length }} fields)
+      </div>
+      {% set max_show = 200 %}
+      <table class="w-full border-collapse my-2 text-sm">
+        <thead>
+          <tr class="bg-bg-alt">
+            <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Field Path</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for path in unrendered[:max_show] %}
+          <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }} page-break-inside-avoid">
+            <td class="px-3 py-1.5 text-xs font-mono text-risk-amber">{{ path }}</td>
+          </tr>
+          {% endfor %}
+          {% if unrendered|length > max_show %}
+          <tr class="bg-bg-alt">
+            <td class="px-3 py-1.5 text-xs font-mono text-gray-500">... and {{ unrendered|length - max_show }} more fields (showing first {{ max_show }})</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    {# --- Health Warnings --- #}
+    {% set health_issues = audit_health_issues|default([]) %}
+    {% set health_count = audit_health_count|default(0) %}
+    {% if health_issues %}
+    <div>
+      <div style="font-weight:600;margin-bottom:4px">
+        Health Warnings ({{ health_count }} issue{{ 's' if health_count != 1 else '' }})
+      </div>
+      <table class="w-full border-collapse my-2 text-sm">
+        <thead>
+          <tr class="bg-bg-alt">
+            <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300" style="width:80px">Severity</th>
+            <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300" style="width:100px">Category</th>
+            <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300" style="width:140px">Location</th>
+            <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300">Message</th>
+            <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1 border-b border-gray-300" style="width:200px">Snippet</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for hi in health_issues %}
+          <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }} page-break-inside-avoid">
+            <td class="px-3 py-1.5 text-xs">
+              {% if hi.severity == 'HIGH' %}
+              <span class="badge" style="background:#c92a2a;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px">HIGH</span>
+              {% elif hi.severity == 'MEDIUM' %}
+              <span class="badge" style="background:#e67700;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px">MEDIUM</span>
+              {% else %}
+              <span class="badge" style="background:#868e96;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px">LOW</span>
+              {% endif %}
+            </td>
+            <td class="px-3 py-1.5 text-xs font-mono text-gray-600">{{ hi.category }}</td>
+            <td class="px-3 py-1.5 text-xs text-gray-600">{{ hi.location }}</td>
+            <td class="px-3 py-1.5 text-xs text-gray-700">{{ hi.message }}</td>
+            <td class="px-3 py-1.5 text-xs font-mono text-gray-500" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ hi.snippet }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    {% if not excluded and not unrendered and not health_issues %}
+    <p class="text-xs text-gray-400 italic my-2">No audit findings -- all fields rendered or explicitly excluded.</p>
+    {% endif %}
+
+  </div>
+</section>

@@ -1,0 +1,884 @@
+- id: EXEC.AGGREGATE.board_risk
+  execution_mode: AUTO
+  name: Board Aggregate Risk Score
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F9
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  - SEC_FORM4
+  data_locations:
+    SEC_DEF14A:
+    - executive_profiles
+    - board_composition
+    SEC_FORM4:
+    - insider_transactions
+  threshold:
+    type: tiered
+    red: Score >= 50 (elevated)
+    yellow: Score >= 35 (moderate)
+    clear: Score < 35
+  claims_correlation: 0.7
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: executive_risk_profiles
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: executive_risk_profiles
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Executive liability research: executive characteristics as D&O risk predictors from SCAC database analysis'
+    threshold_basis: Executive risk threshold from D&O claims experience and SCAC defendant analysis
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Board Aggregate Risk Score at {value} (threshold: Score >= 50 (elevated)) signals elevated
+        SEC Enforcement / Regulatory Compliance risk (F9). Elevated aggregate board risk score indicates systemic governance
+        weakness across multiple directors. Systemic board risk supports Caremark failure-of-monitoring claims and demand
+        futility arguments in derivative actions. Executive risk threshold from D&O claims experience and SCAC defendant analysis.'
+      TRIGGERED_YELLOW: '{company} Board Aggregate Risk Score at {value} (threshold: Score >= 35 (moderate)) is in the caution
+        zone for SEC Enforcement / Regulatory Compliance (F9). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Board Aggregate Risk Score at {value} is within acceptable range for SEC Enforcement / Regulatory
+        Compliance (F9) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: EXEC.AGGREGATE.highest_risk_individual
+  execution_mode: AUTO
+  name: Highest Individual Risk Score Exceeds Threshold
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F9
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  - SEC_FORM4
+  data_locations:
+    SEC_DEF14A:
+    - executive_profiles
+    SEC_FORM4:
+    - insider_transactions
+  threshold:
+    type: tiered
+    red: Individual score >= 40
+    yellow: Individual score >= 25
+    clear: Below 25
+  claims_correlation: 0.8
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.1'
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: executive_profiles
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: executive_risk_profiles
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Executive liability research: executive characteristics as D&O risk predictors from SCAC database analysis'
+    threshold_basis: Executive risk threshold from D&O claims experience and SCAC defendant analysis
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Highest Individual Risk Score Exceeds Threshold at {value} (threshold: Individual score >=
+        40) signals elevated SEC Enforcement / Regulatory Compliance risk (F9). Individual director risk score exceeding threshold
+        concentrates D&O exposure on a single board member. High-risk individuals face personal liability theories and may
+        compromise the entire board''s independence assessment. Executive risk threshold from D&O claims experience and SCAC
+        defendant analysis.'
+      TRIGGERED_YELLOW: '{company} Highest Individual Risk Score Exceeds Threshold at {value} (threshold: Individual score
+        >= 25) is in the caution zone for SEC Enforcement / Regulatory Compliance (F9). Monitor for deterioration — trend
+        direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Highest Individual Risk Score Exceeds Threshold at {value} is within acceptable range for SEC Enforcement
+        / Regulatory Compliance (F9) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: EXEC.CEO.risk_score
+  execution_mode: DEFERRED
+  name: CEO Individual Risk Score
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F9
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  - SEC_FORM4
+  data_locations:
+    SEC_DEF14A:
+    - ceo_profile
+    SEC_FORM4:
+    - ceo_transactions
+  threshold:
+    type: tiered
+    red: Score >= 30
+    yellow: Score >= 15
+    clear: Below 15
+  claims_correlation: 0.85
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.1'
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: executive_profiles
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+    deprecation_note: 'Requires proprietary executive risk scoring service (e.g., Kroll Executive Risk Scores) not available
+      via SEC filings or standard web search. Consider reformulating as: "Has the CEO been named in SEC enforcement or class
+      action filings?" (answerable from public court and EDGAR data).
+
+      '
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  group: executive_risk_profiles
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Executive liability research: executive characteristics as D&O risk predictors from SCAC database analysis'
+    threshold_basis: Executive risk threshold from D&O claims experience and SCAC defendant analysis
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} CEO Individual Risk Score at {value} (threshold: Score >= 30) signals elevated SEC Enforcement
+        / Regulatory Compliance risk (F9, F10). CEO individual risk profile directly determines the company''s primary D&O
+        exposure. CEOs are named in virtually every SCA complaint and face personal liability under SOX certification requirements.
+        Executive risk threshold from D&O claims experience and SCAC defendant analysis.'
+      TRIGGERED_YELLOW: '{company} CEO Individual Risk Score at {value} (threshold: Score >= 15) is in the caution zone for
+        SEC Enforcement / Regulatory Compliance (F9, F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} CEO Individual Risk Score at {value} is within acceptable range for SEC Enforcement / Regulatory Compliance
+        (F9, F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: EXEC.CFO.risk_score
+  execution_mode: DEFERRED
+  name: CFO Individual Risk Score
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F9
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  - SEC_FORM4
+  data_locations:
+    SEC_DEF14A:
+    - cfo_profile
+    SEC_FORM4:
+    - cfo_transactions
+  threshold:
+    type: tiered
+    red: Score >= 30
+    yellow: Score >= 15
+    clear: Below 15
+  claims_correlation: 0.85
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.1'
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: executive_profiles
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+    deprecation_note: 'Requires proprietary executive risk scoring service (e.g., Kroll Executive Risk Scores) not available
+      via SEC filings or standard web search. Consider reformulating as: "Has the CFO been named in SEC enforcement or class
+      action filings?" (answerable from public court and EDGAR data).
+
+      '
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  group: executive_risk_profiles
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Executive liability research: executive characteristics as D&O risk predictors from SCAC database analysis'
+    threshold_basis: Executive risk threshold from D&O claims experience and SCAC defendant analysis
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} CFO Individual Risk Score at {value} (threshold: Score >= 30) signals elevated SEC Enforcement
+        / Regulatory Compliance risk (F9, F10). CFO individual risk profile determines financial reporting exposure. CFOs
+        face personal SOX 302/906 certification liability and are named individually in every restatement-driven SCA complaint.
+        Executive risk threshold from D&O claims experience and SCAC defendant analysis.'
+      TRIGGERED_YELLOW: '{company} CFO Individual Risk Score at {value} (threshold: Score >= 15) is in the caution zone for
+        SEC Enforcement / Regulatory Compliance (F9, F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} CFO Individual Risk Score at {value} is within acceptable range for SEC Enforcement / Regulatory Compliance
+        (F9, F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: EXEC.TENURE.ceo_new
+  name: CEO Tenure Less Than 2 Years
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - ceo_tenure
+  threshold:
+    type: tiered
+    red: <1 year CEO tenure
+    yellow: <2 years CEO tenure
+    clear: Tenure >= 2 years
+  claims_correlation: 0.5
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: tenure_stability
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: executive_tenure_stability
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Executive liability research: executive characteristics as D&O risk predictors from SCAC database analysis'
+    threshold_basis: Executive risk threshold from D&O claims experience and SCAC defendant analysis
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} CEO Tenure Less Than 2 Years at {value} (threshold: <1 year CEO tenure) signals elevated Emerging
+        Risk / Forward-Looking Exposure risk (F10). Short CEO tenure increases transition risk and reduces institutional knowledge
+        continuity. New CEOs face heightened SCA exposure as they may make statements about company condition without full
+        operational understanding. Executive risk threshold from D&O claims experience and SCAC defendant analysis.'
+      TRIGGERED_YELLOW: '{company} CEO Tenure Less Than 2 Years at {value} (threshold: <2 years CEO tenure) is in the caution
+        zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} CEO Tenure Less Than 2 Years at {value} is within acceptable range for Emerging Risk / Forward-Looking
+        Exposure (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: EXEC.TENURE.cfo_new
+  name: CFO Tenure Less Than 2 Years
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - cfo_tenure
+  threshold:
+    type: tiered
+    red: <1 year CFO tenure
+    yellow: <2 years CFO tenure
+    clear: Tenure >= 2 years
+  claims_correlation: 0.55
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.1'
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: tenure_stability
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: executive_tenure_stability
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Executive liability research: executive characteristics as D&O risk predictors from SCAC database analysis'
+    threshold_basis: Executive risk threshold from D&O claims experience and SCAC defendant analysis
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} CFO Tenure Less Than 2 Years at {value} (threshold: <1 year CFO tenure) signals elevated Emerging
+        Risk / Forward-Looking Exposure risk (F10). Short CFO tenure signals financial reporting continuity risk. New CFOs
+        inherit prior-period financial statements they must certify, creating personal liability for accounting judgments
+        they did not make. Executive risk threshold from D&O claims experience and SCAC defendant analysis.'
+      TRIGGERED_YELLOW: '{company} CFO Tenure Less Than 2 Years at {value} (threshold: <2 years CFO tenure) is in the caution
+        zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} CFO Tenure Less Than 2 Years at {value} is within acceptable range for Emerging Risk / Forward-Looking
+        Exposure (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: EXEC.TENURE.c_suite_turnover
+  name: Multiple C-Suite Departures in 12 Months
+  work_type: infer
+  layer: signal
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles:
+    governance_to_derivative: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_8K
+  - SEC_DEF14A
+  data_locations:
+    SEC_8K:
+    - officer_changes
+    SEC_DEF14A:
+    - executive_profiles
+  threshold:
+    type: tiered
+    red: 3+ C-suite departures in 12mo
+    yellow: 2 C-suite departures in 12mo
+    clear: 0-1 departures
+  claims_correlation: 0.8
+  tier: 1
+  depth: 3
+  pattern_ref: C_SUITE_TURNOVER
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.1'
+  worksheet_section: litigation
+  display_when: fired
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: tenure_stability
+    formula: ''
+  display:
+    value_format: count
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: executive_tenure_stability
+  signal_class: inference
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Executive liability research: executive characteristics as D&O risk predictors from SCAC database analysis'
+    threshold_basis: Executive risk threshold from D&O claims experience and SCAC defendant analysis
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Multiple C-Suite Departures in 12 Months at {value} (threshold: 3+ C-suite departures in 12mo)
+        signals elevated Emerging Risk / Forward-Looking Exposure risk (F10). Board departures during the relevant period
+        signal potential disagreement with management direction. Plaintiffs cite director resignations as evidence that informed
+        insiders lost confidence in the company''s disclosures. Executive risk threshold from D&O claims experience and SCAC
+        defendant analysis.'
+      TRIGGERED_YELLOW: '{company} Multiple C-Suite Departures in 12 Months at {value} (threshold: 2 C-suite departures in
+        12mo) is in the caution zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration — trend
+        direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Multiple C-Suite Departures in 12 Months at {value} is within acceptable range for Emerging Risk /
+        Forward-Looking Exposure (F10) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: EXEC.PROFILE.board_size
+  execution_mode: AUTO
+  name: Board Size (Number of Members)
+  work_type: extract
+  layer: hazard
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - board_composition
+  threshold:
+    type: display
+    display: Number of board members
+  claims_correlation: 0.3
+  tier: 3
+  depth: 1
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  data_strategy:
+    field_key: board_size
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: executive_profiles
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: executive_risk_profiles
+  signal_class: evaluative
+  field_path: board_size
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Executive liability research: executive characteristics as D&O risk predictors from SCAC database analysis'
+    threshold_basis: Executive risk threshold from D&O claims experience and SCAC defendant analysis
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} board size (number of members) at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} board size (number of members) at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} board size (number of members) at {value} is within normal parameters for D&O risk assessment — no
+        D&O concern at this level.'
+- id: EXEC.PROFILE.avg_tenure
+  execution_mode: AUTO
+  name: Average Executive Tenure
+  work_type: extract
+  layer: hazard
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_profiles
+  threshold:
+    type: display
+    display: Average tenure in years
+  claims_correlation: 0.3
+  tier: 3
+  depth: 1
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  data_strategy:
+    field_key: avg_board_tenure
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: executive_risk_profiles
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: executive_risk_profiles
+  signal_class: evaluative
+  field_path: avg_board_tenure
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Executive liability research: executive characteristics as D&O risk predictors from SCAC database analysis'
+    threshold_basis: Executive risk threshold from D&O claims experience and SCAC defendant analysis
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} average executive tenure at {value} represents host risk (company-level characteristics that
+        attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} average executive tenure at {value} is a moderate indicator for D&O risk assessment, warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} average executive tenure at {value} is within normal parameters for D&O risk assessment — no D&O concern
+        at this level.'
+- id: EXEC.PROFILE.ceo_chair_duality
+  name: CEO Also Chairs Board
+  work_type: extract
+  layer: hazard
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - board_composition
+  threshold:
+    type: boolean
+    triggered: CEO is also board chair
+  claims_correlation: 0.4
+  tier: 3
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  worksheet_section: litigation
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: executive_risk_profiles
+    formula: ''
+  display:
+    value_format: boolean
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: executive_risk_profiles
+  signal_class: evaluative
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Executive liability research: executive characteristics as D&O risk predictors from SCAC database analysis'
+    threshold_basis: Executive risk threshold from D&O claims experience and SCAC defendant analysis
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} triggered CEO Also Chairs Board — this host risk (company-level characteristics that attract
+        or deter D&O claims) indicates D&O risk assessment. Evidence: {evidence}.'
+      TRIGGERED_YELLOW: '{company} shows moderate signal on CEO Also Chairs Board at {value} — review recommended for D&O
+        risk assessment implications.'
+      CLEAR: '{company} clear on CEO Also Chairs Board — no D&O risk assessment concern identified at this level.'
+- id: EXEC.PROFILE.independent_ratio
+  execution_mode: AUTO
+  name: Board Independence Percentage
+  work_type: extract
+  layer: hazard
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - board_composition
+  threshold:
+    type: display
+    display: Percentage of independent directors
+  claims_correlation: 0.35
+  tier: 3
+  depth: 1
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  data_strategy:
+    field_key: board_independence
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: executive_profiles
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: executive_risk_profiles
+  signal_class: evaluative
+  field_path: board_independence
+  depends_on:
+  - signal: BASE.FILING.DEF14A
+    field: board_independence
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Executive liability research: executive characteristics as D&O risk predictors from SCAC database analysis'
+    threshold_basis: Executive risk threshold from D&O claims experience and SCAC defendant analysis
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} board independence percentage at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} board independence percentage at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} board independence percentage at {value} is within normal parameters for D&O risk assessment — no
+        D&O concern at this level.'
+- id: EXEC.PROFILE.overboarded_directors
+  execution_mode: AUTO
+  name: Directors Serving on 4+ Boards
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F9
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - director_profiles
+  threshold:
+    type: tiered
+    red: 2+ directors overboarded
+    yellow: 1 director overboarded
+    clear: No overboarding
+  claims_correlation: 0.45
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  data_strategy:
+    field_key: overboarded_directors
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: executive_risk_profiles
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: executive_risk_profiles
+  signal_class: evaluative
+  field_path: overboarded_directors
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Executive liability research: executive characteristics as D&O risk predictors from SCAC database analysis'
+    threshold_basis: Executive risk threshold from D&O claims experience and SCAC defendant analysis
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Directors Serving on 4+ Boards at {value} (threshold: 2+ directors overboarded) signals elevated
+        SEC Enforcement / Regulatory Compliance risk (F9). Directors on 4+ boards face attention allocation challenges that
+        compromise oversight effectiveness. Overboarded directors are more likely to miss management misconduct, supporting
+        Caremark monitoring failure claims. Executive risk threshold from D&O claims experience and SCAC defendant analysis.'
+      TRIGGERED_YELLOW: '{company} Directors Serving on 4+ Boards at {value} (threshold: 1 director overboarded) is in the
+        caution zone for SEC Enforcement / Regulatory Compliance (F9). Monitor for deterioration — trend direction and peer
+        comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Directors Serving on 4+ Boards at {value} is within acceptable range for SEC Enforcement / Regulatory
+        Compliance (F9) — this level is a protective factor in D&O risk assessment, reducing claim probability.'

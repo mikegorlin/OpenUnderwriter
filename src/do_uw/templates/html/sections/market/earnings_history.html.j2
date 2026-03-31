@@ -1,0 +1,41 @@
+{# Earnings History — 4 quarters actual vs estimate with surprise %.
+   Data from mkt.earnings_history (built from acquired_data.market_data.earnings_history). #}
+
+{% set eh = mkt.get('earnings_history', []) %}
+{% if eh %}
+  <h3>Earnings Beat/Miss History</h3>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Quarter</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Est. EPS</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Actual EPS</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1">Result</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Surprise %</th>
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for q in eh %}
+      <tr class="{{ 'bg-red-50' if q.result == 'MISS' else 'bg-blue-50' if q.result == 'BEAT' else ('bg-bg-alt' if loop.index is odd else 'bg-white') }}">
+        <td class="p-1 font-semibold">{{ q.quarter }}</td>
+        <td class="p-1 text-right">{{ q.eps_estimate }}</td>
+        <td class="p-1 text-right font-semibold">{{ q.eps_actual }}</td>
+        <td class="p-1 text-center">
+          {% if q.result == 'MISS' %}<span class="text-risk-red font-semibold">MISS</span>
+          {% elif q.result == 'BEAT' %}<span style="color:#16A34A" class="font-semibold">BEAT</span>
+          {% else %}<span class="text-gray-500">MEET</span>{% endif %}
+        </td>
+        <td class="p-1 text-right {% if q.result == 'BEAT' %}text-green-700{% elif q.result == 'MISS' %}text-risk-red{% endif %}">{{ q.surprise_pct }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    {% set miss_count = eh|selectattr('result', 'equalto', 'MISS')|list|length %}
+    {% if miss_count >= 2 %}
+    <li>{{ miss_count }} earnings misses in the last 4 quarters&mdash;companies with repeated misses face SCA filing rates 4.1x the industry baseline</li>
+    {% elif miss_count == 0 %}
+    <li>Clean earnings beat record across all 4 reported quarters&mdash;reduces earnings-related SCA trigger risk</li>
+    {% endif %}
+  </ul>
+{% endif %}

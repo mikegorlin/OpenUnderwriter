@@ -1,0 +1,20 @@
+id: COMP.STOCK.drop_analysis
+name: Stock Drop Analysis
+description: Evaluates all stock drop signals together to produce composite conclusion about drop patterns, attribution, and recovery
+evaluator: stock_drop_analysis
+member_signals:
+  - STOCK.PRICE.single_day_events
+  - STOCK.PRICE.attribution
+  - STOCK.PATTERN.peer_divergence
+  - STOCK.PATTERN.event_collapse
+  - STOCK.PRICE.recovery
+  - STOCK.INSIDER.cluster_timing
+conclusion_schema:
+  events_by_pattern: "Drop events grouped by pattern type (earnings, litigation, sector, company-specific)"
+  attribution_summary: "Count of company-specific vs sector-wide events"
+  recovery_assessment: "Recovery status for company-specific drops"
+  insider_correlation: "Whether insider selling preceded company-specific drops"
+severity_rules:
+  red: "Company-specific drop without recovery AND insider correlation"
+  yellow: "Any company-specific drop event"
+  clear: "All drops are sector-wide or no significant drops"

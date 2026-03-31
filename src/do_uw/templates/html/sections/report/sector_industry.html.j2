@@ -1,0 +1,154 @@
+{# ═══════════════════════════════════════════════════════════════════════════
+   MANIFEST SECTION 7: SECTOR & INDUSTRY — Competitive position, sector risk
+   ═══════════════════════════════════════════════════════════════════════════ #}
+{% set si = b.sector_industry %}
+{% if si %}
+<div id="sector-industry" style="margin-top:14px">
+  <div style="background:#1F3A5C;color:white;padding:6px 10px;border-radius:4px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+    <div><span style="font-size:10pt;font-weight:800;letter-spacing:0.3px">Sector & Industry</span><br><span style="font-size:7.5pt;color:rgba(255,255,255,0.6)">Competitive position, sector claim profile, industry risk</span></div>
+    {% if si.sector_name %}<span style="padding:3px 10px;border-radius:12px;font-size:8pt;font-weight:700;background:#6366F1;color:white">{{ si.sector_name }}</span>{% endif %}
+  </div>
+
+  {# 7.1 Sector Claim Profile #}
+  {% if si.filing_rate or si.dismissal_rate or si.median_settlement %}
+  <div style="display:flex;gap:3px;margin-bottom:6px">
+    {% if si.filing_rate %}<div style="flex:1;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:8px 10px;text-align:center"><div style="font-size:13pt;font-weight:800;color:#374151">{{ si.filing_rate }}</div><div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;margin-top:2px">SCA Filing Rate</div></div>{% endif %}
+    {% if si.dismissal_rate %}<div style="flex:1;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:8px 10px;text-align:center"><div style="font-size:13pt;font-weight:800;color:#374151">{{ si.dismissal_rate }}</div><div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;margin-top:2px">MTD Dismissal Rate</div></div>{% endif %}
+    {% if si.median_settlement %}<div style="flex:1;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:8px 10px;text-align:center"><div style="font-size:13pt;font-weight:800;color:#374151">{{ si.median_settlement }}</div><div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;margin-top:2px">Median Settlement</div></div>{% endif %}
+  </div>
+  {% endif %}
+
+  {# ── INDUSTRY-SPECIFIC ANALYSIS MODULE ── #}
+  {# Biotech & Life Sciences four-pillar framework #}
+  {% set biotech_industry = si.get('biotech_industry') if si is mapping else None %}
+  {% include "sections/industry/biotech.html.j2" ignore missing %}
+
+  {# 7.2 Competitive Position #}
+  {% if si.competitive_narrative %}
+  <div style="font-size:10.5pt;color:#374151;line-height:1.55;padding:6px 10px;background:white;border:1px solid #E5E7EB;border-radius:5px;margin-bottom:6px">{{ si.competitive_narrative | strip_md }}</div>
+  {% endif %}
+
+  {# Narrative + Commentary #}
+  {% if si.narrative %}
+  <div style="font-size:10.5pt;color:#374151;line-height:1.6;margin:8px 0;padding:8px 12px;background:#F8FAFC;border-left:3px solid #1F3A5C;border-radius:0 4px 4px 0">{{ si.narrative | strip_md }}</div>
+  {% endif %}
+  {% if si.commentary_factual %}
+  <div style="margin:6px 0"><div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">What Was Said</div><div style="font-size:10.5pt;color:#374151;line-height:1.55;padding:6px 10px;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:4px">{{ si.commentary_factual | strip_md }}</div></div>
+  {% endif %}
+  {% if si.commentary_bullets %}
+  <div style="margin:6px 0"><div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Underwriting Commentary</div><div style="font-size:10.5pt;color:#374151;line-height:1.55;padding:6px 10px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;border-left:3px solid #2563EB">{{ si.commentary_bullets | strip_md }}</div></div>
+  {% endif %}
+
+  {# 7.3 Regulatory Environment (critical for regulated industries) #}
+  {% if si.regulatory_environment %}
+  <div style="margin:6px 0;padding:8px 10px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:5px">
+    <div style="font-size:7pt;font-weight:700;color:#92400E;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Regulatory Environment</div>
+    <div style="font-size:10.5pt;color:#78350F;line-height:1.55">{{ si.regulatory_environment }}</div>
+  </div>
+  {% endif %}
+
+  {# 7.4 Geographic Exposure #}
+  {% if si.geographic_exposure %}
+  <div style="margin:6px 0">
+    <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Geographic Revenue Distribution</div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px">
+      {% for geo in si.geographic_exposure %}
+      <span style="font-size:8pt;padding:3px 8px;border-radius:4px;background:#F3F4F6;color:#374151;border:1px solid #E5E7EB">{{ geo }}</span>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# 7.5 Related Party Transactions (governance red flag) #}
+  {% if si.related_party_transactions %}
+  <div style="margin:6px 0;padding:8px 10px;background:#FEF2F2;border:1px solid #FECACA;border-radius:5px">
+    <div style="font-size:7pt;font-weight:700;color:#991B1B;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Related Party Transactions</div>
+    <ul style="margin:0;padding-left:16px;font-size:10.5pt;color:#7F1D1D;line-height:1.55">
+      {% for rpt in si.related_party_transactions %}
+      <li style="margin-bottom:3px">{{ rpt }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {# 7.6 Disruption Threats #}
+  {% if si.disruption_threats %}
+  <div style="margin:6px 0">
+    <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Disruption Threats</div>
+    <ul style="margin:0;padding-left:16px;font-size:10.5pt;color:#374151;line-height:1.55">
+      {% for threat in si.disruption_threats %}
+      <li style="margin-bottom:3px">{{ threat }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {# 7.7 Key Financial Concerns (from management) #}
+  {% if si.key_financial_concerns %}
+  <div style="margin:6px 0">
+    <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Key Financial Concerns</div>
+    <ul style="margin:0;padding-left:16px;font-size:10.5pt;color:#374151;line-height:1.55">
+      {% for concern in si.key_financial_concerns %}
+      <li style="margin-bottom:3px">{{ concern }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {# 7.8 Critical Accounting Estimates (audit risk) #}
+  {% if si.critical_accounting_estimates %}
+  <div style="margin:6px 0">
+    <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Critical Accounting Estimates</div>
+    <ul style="margin:0;padding-left:16px;font-size:10.5pt;color:#6B7280;line-height:1.55">
+      {% for est in si.critical_accounting_estimates %}
+      <li style="margin-bottom:3px">{{ est }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {# Full sector detail from existing sub-templates #}
+  <div style="margin-top:12px">
+
+  {# ── LAYER 1: Industry Analysis ── #}
+  <div style="border:1px solid #BFDBFE;border-radius:6px;padding:10px;margin-bottom:12px;background:#F8FBFF">
+    <div style="font-size:8pt;font-weight:700;color:#1E40AF;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #2563EB;padding-bottom:4px">Industry Analysis — Competitive Position & Forward Assessment</div>
+    {% include "sections/ai_risk/competitive_position.html.j2" ignore missing %}
+    {% include "sections/ai_risk/forward_assessment.html.j2" ignore missing %}
+    {% include "sections/ai_risk/dimension_breakdown.html.j2" ignore missing %}
+    {# macro_risks.html.j2 REMOVED — was duplicating truncated text in both
+       columns with raw "Management Display:" prefixes. Needs redesign before
+       re-adding. #}
+    {% include "sections/ai_risk/ai_risk_density_alerts.html.j2" ignore missing %}
+  </div>
+
+  {# ── LAYER 2: Reference ── #}
+  {% set dec = decision|default({}) %}
+  {% if dec.get('decision_available', false) %}
+    {% set tiers = dec.get('tier_distribution', {}) %}
+    {% if tiers %}
+  <div style="border:1px solid #1F3A5C;border-radius:6px;padding:10px;margin-bottom:12px;background:#FAFAFA">
+    <div style="font-size:8pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #1F3A5C;padding-bottom:4px">Reference — Industry D&O Tier Distribution</div>
+    <div style="margin-top:4px">
+      <div style="font-size:7.5pt;color:#6B7280;margin-bottom:4px">Based on SCAC/Cornerstone historical data. For context only — not a recommendation.</div>
+      {% set tier_order = ['PREFERRED', 'STANDARD', 'ELEVATED', 'HIGH_RISK', 'PROHIBITED'] %}
+      {% set tier_labels = {'PREFERRED': 'Preferred', 'STANDARD': 'Standard', 'ELEVATED': 'Elevated', 'HIGH_RISK': 'High Risk', 'PROHIBITED': 'Prohibited'} %}
+      {% set tier_colors = {'PREFERRED': '#10b981', 'STANDARD': '#3b82f6', 'ELEVATED': '#f59e0b', 'HIGH_RISK': '#ef4444', 'PROHIBITED': '#7c3aed'} %}
+      <div style="display:flex;height:24px;border-radius:6px;overflow:hidden;border:1px solid #E5E7EB">
+        {% for tier_key in tier_order %}
+          {% set pct = tiers.get(tier_key, 0) %}
+          {% if pct > 0 %}
+          <div style="width:{{ pct }}%;background:{{ tier_colors[tier_key] }};display:flex;align-items:center;justify-content:center">
+            <span style="font-size:7pt;font-weight:700;color:white;white-space:nowrap">{{ tier_labels[tier_key] }} {{ pct }}%</span>
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+    {% endif %}
+  {% endif %}
+
+  </div>
+</div>
+{% endif %}

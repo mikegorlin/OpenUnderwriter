@@ -1,0 +1,18 @@
+id: COMP.STOCK.short_analysis
+name: Short Interest Analysis
+description: Evaluates short interest position, trend, and attack indicators together
+evaluator: stock_short_analysis
+member_signals:
+  - STOCK.SHORT.position
+  - STOCK.SHORT.trend
+  - STOCK.SHORT.report
+  - STOCK.PATTERN.short_attack
+conclusion_schema:
+  position_level: "Current short interest as % of float"
+  trend_direction: "Increasing, decreasing, or stable over recent periods"
+  attack_indicators: "Whether coordinated short attack pattern is present"
+  report_presence: "Whether published short seller report exists"
+severity_rules:
+  red: "High short interest + increasing trend + short attack pattern"
+  yellow: "Elevated short interest or increasing trend"
+  clear: "Normal short interest levels"

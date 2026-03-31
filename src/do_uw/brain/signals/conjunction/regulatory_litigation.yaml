@@ -1,0 +1,47 @@
+- id: CONJ.REG.litigation
+  name: Regulatory Action + New Material Litigation
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: Active regulatory action combined with new material litigation filing
+  provenance:
+    origin: phase_110_conjunction
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Conjunction of regulatory enforcement + litigation signals
+    threshold_provenance:
+      source: calibrated
+      rationale: SEC enforcement followed by private litigation occurs in 67% of cases (NERA 2023)
+  signal_class: inference
+  group: active_matters
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  epistemology:
+    rule_origin: 'NERA Economic Consulting data: SEC enforcement actions frequently followed by private securities litigation'
+    threshold_basis: 2+ of 3 conditions met triggers RED; regulatory + litigation compound exposure
+  evaluation:
+    mechanism: conjunction
+    conjunction_rules:
+      required_signals:
+      - LIT.SEC.enforcement
+      - LIT.SCA.active_cases
+      - LIT.DERIV.derivative_actions
+      minimum_matches: 2
+      signal_conditions: {}
+      recommendation_floor: ELEVATED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} regulatory action + new material litigation at {value} represents environment risk (external
+        market, regulatory, and industry conditions affecting D&O liability) — this level is associated with D&O risk assessment
+        exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} regulatory action + new material litigation at {value} is a moderate indicator for D&O
+        risk assessment, warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} regulatory action + new material litigation at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

@@ -1,0 +1,94 @@
+{# Signal Coverage Summary -- actionable table replacing raw heatmap grid.
+   Shows per-subcategory signal counts and coverage, grouped by H/A/E dimension.
+   Underwriter sees: where are the triggered signals, where are the gaps.
+   Phase 114 rewrite. #}
+
+{% set hm = heatmap if heatmap is defined else {} %}
+{% if hm.get('heatmap_available', false) %}
+<div class="signal-summary" id="signal-summary">
+  <h3 class="scorecard-section-title">Signal Coverage</h3>
+
+  {# Grand totals bar #}
+  <div class="signal-grand-totals">
+    <span class="signal-grand-stat">
+      <strong>{{ hm.grand_total_signals }}</strong> signals
+    </span>
+    <span class="signal-grand-stat signal-stat--triggered">
+      {{ hm.grand_totals.triggered }} triggered
+    </span>
+    <span class="signal-grand-stat signal-stat--clear">
+      {{ hm.grand_totals['clear'] }} clear
+    </span>
+    <span class="signal-grand-stat signal-stat--info">
+      {{ hm.grand_totals.info }} info
+    </span>
+    <span class="signal-grand-stat signal-stat--skipped">
+      {{ hm.grand_totals.skipped }} skipped
+    </span>
+    <span class="signal-grand-stat">
+      Coverage: <strong>{{ hm.grand_coverage }}%</strong>
+    </span>
+  </div>
+
+  {# Per-dimension tables #}
+  {% for dim in hm.dimensions %}
+  <div class="signal-dim-group">
+    <div class="signal-dim-header signal-dim--{{ dim.dimension_key }}">
+      <span class="signal-dim-name">{{ dim.dimension }}</span>
+      <span class="signal-dim-summary">
+        {{ dim.totals.triggered }} triggered / {{ dim.total_signals }} signals / {{ dim.coverage }}% coverage
+      </span>
+    </div>
+
+    <table class="signal-table">
+      <thead>
+        <tr>
+          <th class="signal-th-category">Category</th>
+          <th class="signal-th-num">Triggered</th>
+          <th class="signal-th-num">Clear</th>
+          <th class="signal-th-num">Info</th>
+          <th class="signal-th-num">Skipped</th>
+          <th class="signal-th-num">Coverage</th>
+          <th class="signal-th-bar">Distribution</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in dim.rows %}
+        <tr class="{{ 'signal-row--risk' if row.has_risk else '' }}">
+          <td class="signal-td-category">{{ row.subcategory }}</td>
+          <td class="signal-td-num {{ 'signal-num--triggered' if row.triggered > 0 else '' }}">
+            {{ row.triggered if row.triggered > 0 else '—' }}
+          </td>
+          <td class="signal-td-num">{{ row['clear'] }}</td>
+          <td class="signal-td-num">{{ row.info }}</td>
+          <td class="signal-td-num {{ 'signal-num--skipped' if row.skipped > 5 else '' }}">
+            {{ row.skipped if row.skipped > 0 else '—' }}
+          </td>
+          <td class="signal-td-num">{{ row.coverage }}%</td>
+          <td class="signal-td-bar">
+            <div class="signal-bar-track">
+              {% if row.total > 0 %}
+              <div class="signal-bar-seg signal-bar--triggered" style="width: {{ (row.triggered / row.total * 100) | round }}%"></div>
+              <div class="signal-bar-seg signal-bar--clear" style="width: {{ (row['clear'] / row.total * 100) | round }}%"></div>
+              <div class="signal-bar-seg signal-bar--info" style="width: {{ (row.info / row.total * 100) | round }}%"></div>
+              <div class="signal-bar-seg signal-bar--skipped" style="width: {{ (row.skipped / row.total * 100) | round }}%"></div>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% if row.top_triggered %}
+        <tr class="signal-detail-row">
+          <td colspan="7" class="signal-detail-cell">
+            {% for t in row.top_triggered %}
+            <span class="signal-detail-tag" title="{{ t.evidence | truncate(200) }}">{{ t.id }}</span>
+            {% endfor %}
+          </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

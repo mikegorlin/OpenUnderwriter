@@ -1,0 +1,46 @@
+{# Key Dates & Monitoring Calendar — urgency-coded timeline (Phase 136, FWD-02) #}
+{% if b.forward_calendar and b.forward_calendar.calendar_available %}
+<div style="margin-top:10px">
+  <div style="font-size:9.5pt;font-weight:700;color:#1F3A5C;margin-bottom:6px">Key Dates & Monitoring Calendar</div>
+
+  <div style="background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 10px">
+    {% for d in b.forward_calendar.dates %}
+    <div style="display:flex;align-items:flex-start;gap:8px;padding:5px 0;{% if not loop.last %}border-bottom:1px solid #F3F4F6;{% endif %}">
+      {# Urgency dot #}
+      <div style="flex:0 0 8px;margin-top:4px">
+        <div style="width:8px;height:8px;border-radius:4px;background:{{ d.urgency_color | default('#9CA3AF') }}"></div>
+      </div>
+
+      {# Date + event #}
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <div>
+            <span style="font-size:8.5pt;font-weight:700;color:#111827;font-variant-numeric:tabular-nums">{{ d.date_display | default('TBD') }}</span>
+            <span style="font-size:8.5pt;font-weight:600;color:#374151;margin-left:6px">{{ d.event | default('Event') }}</span>
+          </div>
+          <span style="font-size:7pt;color:#9CA3AF;white-space:nowrap">{{ d.source | default('') }}</span>
+        </div>
+        <div style="font-size:7.5pt;color:#6B7280;line-height:1.35;margin-top:1px">{{ d.do_relevance | default('') }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {# Monitoring triggers #}
+  {% if b.forward_calendar.monitoring_triggers %}
+  <div style="margin-top:6px;padding:5px 10px;background:#FEF2F2;border:1px solid #FECACA;border-radius:4px">
+    <span style="font-size:7.5pt;font-weight:700;color:#DC2626">Re-underwriting Triggers:</span>
+    {% for mt in b.forward_calendar.monitoring_triggers %}
+    <span style="font-size:7.5pt;color:#374151;margin-left:4px">{{ mt.event }}{% if mt.date_display %} ({{ mt.date_display }}){% endif %}{% if not loop.last %},{% endif %}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div style="font-size:7pt;color:#9CA3AF;margin-top:3px">{{ b.forward_calendar.date_count }} upcoming dates tracked</div>
+</div>
+{% elif b.forward_calendar and not b.forward_calendar.calendar_available %}
+<div style="margin-top:10px">
+  <div style="font-size:9.5pt;font-weight:700;color:#1F3A5C;margin-bottom:4px">Key Dates & Monitoring Calendar</div>
+  <div style="font-size:8pt;color:#9CA3AF;padding:8px 10px;background:#F9FAFB;border-radius:4px">No upcoming dates identified for this company.</div>
+</div>
+{% endif %}

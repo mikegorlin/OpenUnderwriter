@@ -1,0 +1,50 @@
+{# Regulatory Environment Map -- per-regulator table #}
+{# Phase 134: COMP-07, D-12, D-13 #}
+{% if has_regulatory_map %}
+<h3>Regulatory Environment
+  <span style="font-size:8pt;font-weight:400;color:#6B7280;margin-left:8px">{{ regulatory_count }} proceeding{{ 's' if regulatory_count != 1 }}</span>
+</h3>
+
+<table class="data-table w-full text-sm my-2">
+  <thead>
+    <tr>
+      <th class="text-left">Agency</th>
+      <th class="text-left">Jurisdiction</th>
+      <th class="text-center">Exposure Level</th>
+      <th class="text-center">Status</th>
+      <th class="text-center">Risk Level</th>
+      <th class="text-left" style="min-width:150px">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for reg in regulatory_map %}
+    <tr>
+      <td class="font-medium">{{ reg.agency }}</td>
+      <td>{{ reg.jurisdiction }}</td>
+      <td class="text-center">
+        <span class="text-xs font-semibold
+          {% if reg.exposure_level == 'HIGH' %}text-red-600
+          {% else %}text-amber-600{% endif %}">
+          {{ reg.exposure_level }}
+        </span>
+      </td>
+      <td class="text-center">
+        <span class="inline-block px-2 py-0.5 rounded text-xs font-semibold
+          {% if reg.current_status | lower in ['active', 'ongoing', 'pending'] %}bg-red-100 text-red-800
+          {% else %}bg-gray-100 text-gray-600{% endif %}">
+          {{ reg.current_status }}
+        </span>
+      </td>
+      <td class="text-center">
+        <span class="inline-block px-2 py-0.5 rounded text-xs font-semibold
+          {% if reg.risk_level == 'HIGH' %}bg-red-100 text-red-800
+          {% else %}bg-amber-100 text-amber-800{% endif %}">
+          {{ reg.risk_level }}
+        </span>
+      </td>
+      <td class="text-xs text-gray-700">{{ reg.description }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}

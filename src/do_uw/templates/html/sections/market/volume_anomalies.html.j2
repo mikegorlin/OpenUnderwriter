@@ -1,0 +1,43 @@
+{# Volume Anomalies — days where volume exceeds 2x average with event cross-reference.
+   Data from mkt.volume_anomalies (built by build_volume_anomalies).
+   Phase 133-02: STOCK-07/08. #}
+
+{% set va = mkt.get('volume_anomalies', []) %}
+{% if va %}
+  <h3>Volume Anomalies</h3>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Date</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Volume</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Multiple</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Price Chg</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Catalyst</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1">Type</th>
+      </tr>
+    </thead>
+    <tbody class="tabular-nums">
+      {% for row in va %}
+      <tr class="{{ 'bg-red-50' if row.severity == 'high' else 'bg-amber-50' if row.severity == 'medium' else ('bg-bg-alt' if loop.index is odd else 'bg-white') }}">
+        <td class="p-1 font-semibold whitespace-nowrap">{{ row.date }}</td>
+        <td class="p-1 text-right">{{ row.volume }}</td>
+        <td class="p-1 text-right font-semibold {{ 'text-risk-red' if row.severity == 'high' else 'text-amber-700' if row.severity == 'medium' else '' }}">{{ row.multiple }}</td>
+        <td class="p-1 text-right {{ 'text-green-700' if row.price_change_pct and row.price_change_pct.startswith('+') else 'text-risk-red' if row.price_change_pct and row.price_change_pct.startswith('-') else '' }}">{{ row.price_change_pct }}</td>
+        <td class="p-1 text-xs max-w-xs">{{ row.catalyst }}</td>
+        <td class="p-1 text-center text-xs">
+          {% if row.event_type == '8-K' %}<span class="px-1 py-0.5 bg-blue-100 text-blue-800 rounded">8-K</span>
+          {% elif row.event_type == 'News' %}<span class="px-1 py-0.5 bg-green-100 text-green-800 rounded">News</span>
+          {% else %}<span class="px-1 py-0.5 bg-gray-100 text-gray-600 rounded">Unknown</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if va|length >= 15 %}
+  <p class="text-xs text-gray-400 mt-1">Showing top 15 volume anomalies. Additional events available in raw data.</p>
+  {% endif %}
+  <p class="text-xs text-gray-500 mt-1">
+    Volume multiple = day volume / 20-day moving average. High severity = >3x volume AND >3% price decline.
+    8-K cross-reference: filings within +/- 2 business days. News: articles within +/- 1 day.
+  </p>
+{% endif %}

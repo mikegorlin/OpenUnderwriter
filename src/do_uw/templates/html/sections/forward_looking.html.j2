@@ -1,0 +1,23 @@
+{# Forward-Looking Indicators section -- includes all forward-looking subsections.
+   Phase 117: Added risk map, credibility, catalysts, growth, alt signals, monitoring.
+   This parent template can be included directly for standalone rendering,
+   or the subsections are dispatched individually through the scoring manifest. #}
+
+<section class="section-block page-break-inside-avoid" id="section-forward-looking">
+<h2 class="section-heading">Forward-Looking Indicators</h2>
+
+{# Phase 117 new subsections #}
+{% include "sections/forward_looking/risk_map.html.j2" %}
+{% include "sections/forward_looking/credibility.html.j2" %}
+{% include "sections/forward_looking/catalysts.html.j2" %}
+{% include "sections/forward_looking/growth_estimates.html.j2" %}
+{% include "sections/forward_looking/alt_signals.html.j2" %}
+{% include "sections/forward_looking/monitoring_triggers.html.j2" %}
+
+{# Existing facet-driven subsections #}
+{% include "sections/forward_looking/early_warning.html.j2" %}
+{% include "sections/forward_looking/event_catalysts.html.j2" %}
+{% include "sections/forward_looking/macro_risks.html.j2" %}
+{% include "sections/forward_looking/disclosure_quality.html.j2" %}
+{% include "sections/forward_looking/narrative_coherence.html.j2" %}
+</section>

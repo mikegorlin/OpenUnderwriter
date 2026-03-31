@@ -1,0 +1,150 @@
+{# Structural Governance — extracted from governance.html.j2 #}
+
+  {# --- 4.2 Structural Governance --- #}
+  <h3>Structural Governance</h3>
+
+  {% set gov_score = gov.get('governance_score') %}
+  {# --- ISS Governance Risk Scores --- #}
+  {% set iss = gov.get('iss_scores') %}
+  {% if gov_score or iss %}
+  <h4>Governance Risk Scores</h4>
+  {% if iss %}
+  <p class="text-xs text-gray-500 mb-2">ISS scale: 1 (low risk) to 10 (high risk)</p>
+  {% endif %}
+  <div class="kv-grid-2">
+    {% if gov_score %}
+    {{ kv_table([
+      {'key': 'Governance Score', 'value': gov_score},
+    ], title="Internal") }}
+    {% endif %}
+    {% if iss %}
+    {% set iss_items = [] %}
+    {% if iss.get('overall') and iss.get('overall') != 'N/A' %}{% set _ = iss_items.append({'key': 'Overall Risk', 'value': iss.overall}) %}{% endif %}
+    {% if iss.get('audit') and iss.get('audit') != 'N/A' %}{% set _ = iss_items.append({'key': 'Audit Risk', 'value': iss.audit}) %}{% endif %}
+    {% if iss.get('board') and iss.get('board') != 'N/A' %}{% set _ = iss_items.append({'key': 'Board Risk', 'value': iss.board}) %}{% endif %}
+    {% if iss.get('compensation') and iss.get('compensation') != 'N/A' %}{% set _ = iss_items.append({'key': 'Compensation Risk', 'value': iss.compensation}) %}{% endif %}
+    {% if iss.get('shareholder_rights') and iss.get('shareholder_rights') != 'N/A' %}{% set _ = iss_items.append({'key': 'Shareholder Rights Risk', 'value': iss.shareholder_rights}) %}{% endif %}
+    {% if iss_items %}{{ kv_table(iss_items, title="ISS Proxy Scores") }}{% endif %}
+    {% endif %}
+  </div>
+  {% if iss %}
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    {% if iss.get('overall') and iss.get('overall')|int(default=0) >= 7 %}
+    <li>ISS overall risk score of {{ iss.overall }}/10 is elevated&mdash;proxy advisory firms may recommend against management proposals</li>
+    {% elif iss.get('overall') and iss.get('overall')|int(default=0) >= 4 %}
+    <li>ISS overall risk score of {{ iss.overall }}/10 is moderate; individual category scores should be reviewed for specific concerns</li>
+    {% elif iss.get('overall') %}
+    <li>ISS overall risk score of {{ iss.overall }}/10 indicates low governance risk from a proxy advisory perspective</li>
+    {% endif %}
+  </ul>
+  {% endif %}
+  {% endif %}
+
+  {% set provisions = gov.get('anti_takeover_provisions', []) %}
+  {% if provisions %}
+  <h4>Anti-Takeover Provisions</h4>
+  <ul class="list-disc ml-5 text-sm text-gray-700 space-y-1">
+    {% for prov in provisions %}
+    <li>{{ prov }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {# --- Governance Bylaws & Charter Detail (5.6.5-9) --- #}
+  {% set bylaws = gov.get('bylaws_provisions', []) %}
+  {% if bylaws %}
+  <h4>Bylaws &amp; Charter Provisions</h4>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Provision</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2">Status</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">D&amp;O Relevance</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for prov in bylaws %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 font-semibold text-navy">{{ prov.provision }}</td>
+        <td class="px-2 py-2 text-center">
+          {% if prov.status == 'Yes' %}
+            <span class="inline-block px-1.5 py-0.5 text-xs rounded bg-blue-100 border border-blue-200 font-semibold text-blue-800">Yes</span>
+          {% elif prov.status == 'No' %}
+            <span class="inline-block px-1.5 py-0.5 text-xs rounded bg-gray-100 border border-gray-200 text-gray-600">No</span>
+          {% else %}
+            <span class="inline-block px-1.5 py-0.5 text-xs rounded bg-amber-100 border border-amber-200 text-amber-700" title="Not available in current extraction">Not extracted</span>
+          {% endif %}
+        </td>
+        <td class="p-1 text-xs text-gray-600">{{ prov.description }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>Charter and bylaw provisions directly affect shareholder lawsuit venue, shareholder rights, and hostile takeover defenses</li>
+    <li>Exclusive forum clauses channel shareholder litigation to incorporation state court (e.g., Delaware Chancery), generally favorable to defendants</li>
+  </ul>
+  {% endif %}
+
+  {# --- Board Meeting Attendance (Caremark duty assessment) --- #}
+  {% set meetings = gov.get('board_meetings_held') %}
+  {% set attendance = gov.get('board_attendance_pct') %}
+  {% set below75 = gov.get('directors_below_75_pct') %}
+  {% if meetings or attendance %}
+  <h4>Board Meeting Attendance</h4>
+  <div class="kv-grid-2">
+    {{ kv_table([
+      {'key': 'Meetings Held', 'value': meetings if meetings else 'N/A'},
+      {'key': 'Avg Attendance', 'value': attendance if attendance and attendance != 'N/A' else 'N/A'},
+      {'key': 'Directors Below 75%', 'value': below75 if below75 else 'None'},
+    ]) }}
+  </div>
+  {% if below75 and below75 != 'None' and below75 != '0' %}
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>{{ below75 }} director{{ 's' if below75|int > 1 else '' }} attended fewer than 75% of meetings&mdash;proxy advisory firms (ISS/Glass Lewis) flag this as a governance concern and may recommend withhold votes</li>
+    <li>Low board attendance is relevant to Caremark duty claims: directors who miss meetings may face heightened personal liability for oversight failures</li>
+  </ul>
+  {% endif %}
+  {% endif %}
+
+  {# --- Shareholder Proposals --- #}
+  {% set proposals = gov.get('shareholder_proposal_count') %}
+  {% if proposals and proposals != '0' %}
+  <h4>Shareholder Proposals</h4>
+  <p class="text-sm text-gray-700 my-2">{{ proposals }} shareholder proposal{{ 's' if proposals|int > 1 else '' }} submitted at most recent annual meeting.</p>
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>Multiple shareholder proposals indicate governance dissatisfaction and may presage activist campaigns or derivative litigation</li>
+  </ul>
+  {% endif %}
+
+  {# --- Recent Departures --- #}
+  {% set departures = gov.get('departures_18mo', []) %}
+  {% if departures %}
+  <h4>Recent Departures (18 Months)</h4>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Name</th>
+        <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Title</th>
+        <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Departure Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for dep in departures %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 font-semibold">{{ dep.name }}</td>
+        <td class="p-1">{{ dep.title }}</td>
+        <td class="p-1
+          {% if dep.type in ['TERMINATED', 'FORCED'] %} text-risk-red font-semibold
+          {% elif dep.type == 'RESIGNED' %} text-risk-amber
+          {% endif %}
+        ">{{ dep.type | humanize }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>Executive departures within 18 months are a key D&amp;O risk indicator</li>
+    <li>Forced or unexpected departures, especially of CFO/CAO roles, frequently precede financial restatements and securities litigation</li>
+  </ul>
+  {% endif %}

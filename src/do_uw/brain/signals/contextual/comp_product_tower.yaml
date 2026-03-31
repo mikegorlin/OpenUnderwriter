@@ -1,0 +1,53 @@
+- id: CTX.COMP.product_tower
+  name: Compensation Severity by Product/Tower
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of EXEC.COMP.ceo_total_comp through tower_position, product_type lens
+    threshold_provenance:
+      source: calibrated
+      rationale: 'Liberty calibration adjustments: Side A increases agent weight, high attachment reduces frequency relevance'
+  signal_class: inference
+  group: compensation_analysis
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  epistemology:
+    rule_origin: 'D&O underwriting practice: compensation relevance varies by product type and tower position'
+    threshold_basis: 'Liberty calibration adjustments: Side A increases agent weight, high attachment reduces frequency relevance'
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: EXEC.COMP.ceo_total_comp
+      context_dimensions:
+      - tower_position
+      - product_type
+      context_adjustments:
+        primary:
+          threshold_adjustment: 1.0
+          rationale: 'Primary layer: full comp scrutiny'
+        high_excess:
+          threshold_adjustment: 1.5
+          rationale: 'High excess: comp matters less for severity'
+        side_a:
+          threshold_adjustment: 0.7
+          rationale: 'Side A: personal liability focus increases comp relevance'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} compensation severity by product/tower at {value} represents agent risk (executive/director
+        actions and decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} compensation severity by product/tower at {value} is a moderate indicator for D&O risk
+        assessment, warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} compensation severity by product/tower at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

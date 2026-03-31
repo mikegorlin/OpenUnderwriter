@@ -1,0 +1,84 @@
+{# Risk Factors (D&O-Relevant) — grouped by D&O relevance, HIGH first #}
+{% if risk_factors %}
+<h3>Risk Factors (D&O-Relevant)</h3>
+<div style="margin:6px 0">
+  {# Group by D&O relevance: HIGH, MEDIUM, LOW #}
+  {% set relevance_groups = {'HIGH': [], 'MEDIUM': [], 'LOW': []} %}
+  {% for rf in risk_factors %}
+    {% if rf.do_relevance == 'HIGH' %}
+      {% if relevance_groups.update({'HIGH': relevance_groups.HIGH + [rf]}) %}{% endif %}
+    {% elif rf.do_relevance == 'MEDIUM' %}
+      {% if relevance_groups.update({'MEDIUM': relevance_groups.MEDIUM + [rf]}) %}{% endif %}
+    {% else %}
+      {% if relevance_groups.update({'LOW': relevance_groups.LOW + [rf]}) %}{% endif %}
+    {% endif %}
+  {% endfor %}
+
+  {# HIGH D&O Relevance — bold, prominent #}
+  {% if relevance_groups.HIGH %}
+  <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:5px;padding:6px 10px;margin-bottom:8px">
+    <div style="font-size:8pt;font-weight:700;color:#DC2626;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">High D&O Relevance</div>
+    {% for rf in relevance_groups.HIGH %}
+    <div style="padding:5px 0;{% if not loop.last %}border-bottom:1px solid #FEE2E2;{% endif %}">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        {% if rf.is_new %}<span style="background:#2563EB;color:white;font-size:7pt;font-weight:700;padding:1px 6px;border-radius:8px;letter-spacing:0.3px">NEW</span>{% endif %}
+        {% if rf.classification is defined and rf.classification != 'STANDARD' %}<span style="font-size:7pt;font-weight:700;padding:1px 6px;border-radius:8px;background:{% if rf.classification == 'ELEVATED' %}#DC2626{% else %}#2563EB{% endif %};color:white">{{ rf.classification }}</span>{% endif %}
+        <span style="font-size:9.5pt;font-weight:700;color:#991B1B">{{ rf.title }}</span>
+        <span style="font-size:7pt;font-weight:600;padding:1px 6px;border-radius:8px;background:{% if rf.severity == 'HIGH' %}#DC2626{% else %}#F59E0B{% endif %};color:white">{{ rf.severity }}</span>
+        <span style="font-size:7pt;color:#6B7280">{{ rf.category }}</span>
+      </div>
+      {% if rf.do_explanation %}
+      <div style="font-size:8pt;color:#991B1B;line-height:1.4;margin:3px 0 0 0;font-style:italic;font-weight:500">D&O Impact: {{ rf.do_explanation }}</div>
+      {% endif %}
+      {% if rf.do_implication is defined and rf.do_implication %}
+      <div style="font-size:7.5pt;color:#6B7280;line-height:1.3;margin-top:2px;font-style:italic">{{ rf.do_implication }}</div>
+      {% endif %}
+      {% if rf.source_passage and 'may in the future be' not in rf.source_passage and 'subject to various' not in rf.source_passage and 'arising in the ordinary course' not in rf.source_passage and 'from time to time' not in rf.source_passage %}
+      <div style="font-size:8pt;color:#4B5563;line-height:1.4;margin-top:2px">{{ rf.source_passage | strip_jargon }}</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# MEDIUM D&O Relevance #}
+  {% if relevance_groups.MEDIUM %}
+  <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:5px;padding:6px 10px;margin-bottom:8px">
+    <div style="font-size:8pt;font-weight:700;color:#D97706;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Medium D&O Relevance</div>
+    {% for rf in relevance_groups.MEDIUM %}
+    <div style="padding:4px 0;{% if not loop.last %}border-bottom:1px solid #FEF3C7;{% endif %}">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        {% if rf.is_new %}<span style="background:#2563EB;color:white;font-size:7pt;font-weight:700;padding:1px 6px;border-radius:8px;letter-spacing:0.3px">NEW</span>{% endif %}
+        {% if rf.classification is defined and rf.classification != 'STANDARD' %}<span style="font-size:7pt;font-weight:700;padding:1px 6px;border-radius:8px;background:{% if rf.classification == 'ELEVATED' %}#DC2626{% else %}#2563EB{% endif %};color:white">{{ rf.classification }}</span>{% endif %}
+        <span style="font-size:9pt;font-weight:600;color:#92400E">{{ rf.title }}</span>
+        <span style="font-size:7pt;font-weight:600;padding:1px 6px;border-radius:8px;background:{% if rf.severity == 'HIGH' %}#DC2626{% else %}#F59E0B{% endif %};color:white">{{ rf.severity }}</span>
+        <span style="font-size:7pt;color:#6B7280">{{ rf.category }}</span>
+      </div>
+      {% if rf.source_passage and 'may in the future be' not in rf.source_passage and 'subject to various' not in rf.source_passage and 'arising in the ordinary course' not in rf.source_passage and 'from time to time' not in rf.source_passage %}
+      <div style="font-size:8pt;color:#4B5563;line-height:1.4;margin-top:2px">{{ rf.source_passage | strip_jargon }}</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# LOW D&O Relevance — compact #}
+  {% if relevance_groups.LOW %}
+  <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:5px;padding:6px 10px;margin-bottom:8px">
+    <div style="font-size:8pt;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Lower D&O Relevance</div>
+    {% for rf in relevance_groups.LOW %}
+    <div style="padding:3px 0;{% if not loop.last %}border-bottom:1px solid #F3F4F6;{% endif %}">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        {% if rf.is_new %}<span style="background:#2563EB;color:white;font-size:7pt;font-weight:700;padding:1px 6px;border-radius:8px;letter-spacing:0.3px">NEW</span>{% endif %}
+        <span style="font-size:8.5pt;font-weight:500;color:#374151">{{ rf.title }}</span>
+        <span style="font-size:7pt;font-weight:600;padding:1px 6px;border-radius:8px;background:{% if rf.severity == 'HIGH' %}#DC2626{% else %}#F59E0B{% endif %};color:white">{{ rf.severity }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% else %}
+<h3>Risk Factors (D&O-Relevant)</h3>
+{{ gap_notice("Risk Factors", "No D&O-relevant risk factors identified") }}
+{% endif %}

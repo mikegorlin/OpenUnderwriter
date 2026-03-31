@@ -1,0 +1,61 @@
+{# Settlement History — extracted from litigation.html.j2 #}
+
+  {# --- Settlement History --- #}
+  {% set hist_cases = lit.get('historical_cases', []) %}
+  {% if hist_cases %}
+  <h3>Settlement History</h3>
+  <table class="w-full border-collapse my-3 text-sm">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Case</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Coverage</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Status</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Class Period</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Settlement</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for hc in hist_cases %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 align-top font-semibold">
+          {{ hc.name|default(hc.case_name|default('—')) }}
+          {% if hc.detail_completeness %}<span class="text-xs text-gray-400 ml-1" title="Data fields populated: {{ hc.detail_completeness }}">({{ hc.detail_completeness }})</span>{% endif %}
+        </td>
+        <td class="p-1 align-top">{{ hc.coverage|default('—') }}</td>
+        <td class="p-1 align-top">{{ hc.status|default('Resolved') | humanize }}</td>
+        <td class="p-1 align-top text-xs tabular-nums">
+          {% if hc.class_period_start and hc.class_period_start != 'N/A' %}
+            {{ hc.class_period_start }} &ndash; {{ hc.class_period_end|default('—') }}
+          {% else %}<span class="text-gray-400 italic">Not available</span>{% endif %}
+        </td>
+        <td class="p-1 align-top text-right tabular-nums font-semibold">{{ hc.settlement|default('—') }}</td>
+      </tr>
+      {# Detail row for historical cases too #}
+      {% if (hc.court and hc.court != 'N/A') or (hc.allegations and hc.allegations != 'N/A') or hc.case_number or hc.legal_theories %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td colspan="5" class="px-3 py-1 text-xs text-gray-500">
+          {% if hc.court and hc.court != 'N/A' %}<strong>Court:</strong> {{ hc.court }}{% endif %}
+          {% if hc.case_number %} &bull; <strong>Case No:</strong> {{ hc.case_number }}{% endif %}
+          {% if hc.filing_date and hc.filing_date != 'N/A' %} &bull; <strong>Filed:</strong> {{ hc.filing_date }}{% endif %}
+          {% if hc.allegations and hc.allegations != 'N/A' %} &bull; <strong>Claims:</strong> {{ hc.allegations }}{% endif %}
+          {% if hc.legal_theories %} &bull; <strong>Theories:</strong> {{ hc.legal_theories }}{% endif %}
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  {% set settlements = lit.get('settlements', []) %}
+  {% if settlements %}
+  <h3>Settlement History</h3>
+  {{ data_table(
+    ['Case', 'Amount', 'Year', 'Type'],
+    settlements|map(attribute='case_name')|list|zip(
+      settlements|map(attribute='amount')|list,
+      settlements|map(attribute='year')|list,
+      settlements|map(attribute='type')|list
+    )|list
+  ) }}
+  {% endif %}
+  {% endif %}

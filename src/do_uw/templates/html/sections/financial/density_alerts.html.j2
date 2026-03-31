@@ -1,0 +1,26 @@
+{# Density Alerts (ELEVATED/CRITICAL deep dives) — extracted from financial.html.j2 #}
+{# --- ELEVATED concerns --- #}
+{% if level == "ELEVATED" %}
+  {% set concerns = density.concerns|default([]) if density else [] %}
+  {% for concern in concerns %}
+    {{ warning_box(concern, "Financial deterioration increases D&O claim frequency and severity.") }}
+  {% endfor %}
+{% endif %}
+
+{# --- CRITICAL deep dive: distress cross-references --- #}
+{% if level == "CRITICAL" %}
+<h3>Financial Distress -- Deep Dive</h3>
+<div class="border-l-4 border-red-700 bg-red-50 pl-4 py-3 my-3">
+  <p class="text-sm text-red-800 font-semibold m-0 mb-2">
+    Financial indicators show critical distress signals requiring enhanced underwriting scrutiny.
+  </p>
+  <p class="text-sm text-red-700 m-0">
+    Cross-reference with Governance (Section 4) for audit committee effectiveness
+    and Litigation (Section 6) for securities class action exposure.
+  </p>
+  {% set evidence = density.critical_evidence|default([]) if density else [] %}
+  {% if evidence %}
+  {{ evidence_chain(evidence) }}
+  {% endif %}
+</div>
+{% endif %}

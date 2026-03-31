@@ -1,0 +1,53 @@
+{# Defense Strength Assessment — extracted from litigation.html.j2 #}
+
+  {# --- Defense Strength & Litigation Reserve --- #}
+  {% set defense = lit.get('defense', {}) %}
+  {% if defense and (defense.get('overall') or defense.get('federal_forum') is not none or defense.get('pslra_safe_harbor')) %}
+  <h3>Defense Strength Assessment</h3>
+  {% set defense_items = [
+    {'key': 'Overall Defense Strength', 'value': defense.get('overall', 'N/A') | humanize},
+    {'key': 'Litigation Reserve', 'value': lit.get('litigation_reserve', 'N/A')},
+  ] %}
+  {% if defense.get('federal_forum') is not none %}
+    {% set ff_val = defense.federal_forum %}
+    {% if defense.get('federal_forum_detail') %}{% set ff_val = ff_val ~ ' — ' ~ defense.federal_forum_detail %}{% endif %}
+    {% set _ = defense_items.append({'key': 'Federal Forum Provision', 'value': ff_val}) %}
+  {% endif %}
+  {% if defense.get('exclusive_forum') is not none %}
+    {% set ef_val = defense.exclusive_forum %}
+    {% if defense.get('exclusive_forum_detail') %}{% set ef_val = ef_val ~ ' — ' ~ defense.exclusive_forum_detail %}{% endif %}
+    {% set _ = defense_items.append({'key': 'Exclusive Forum Provision', 'value': ef_val}) %}
+  {% endif %}
+  {% if defense.get('pslra_safe_harbor') %}
+    {% set _ = defense_items.append({'key': 'PSLRA Safe Harbor', 'value': defense.pslra_safe_harbor | humanize}) %}
+  {% endif %}
+  {% if defense.get('truth_on_market') %}
+    {% set _ = defense_items.append({'key': 'Truth-on-the-Market', 'value': defense.truth_on_market | humanize}) %}
+  {% endif %}
+  {% if defense.get('judge_track_record') %}
+    {% set _ = defense_items.append({'key': 'Judge Track Record', 'value': defense.judge_track_record | humanize}) %}
+  {% endif %}
+  {% if defense.get('prior_dismissal') %}
+    {% set _ = defense_items.append({'key': 'Prior Dismissal Success', 'value': defense.prior_dismissal | humanize}) %}
+  {% endif %}
+  {{ kv_table(defense_items) }}
+  {% if defense.get('narrative') %}
+  <p class="text-sm text-gray-700 my-2 italic">{{ defense.narrative }}</p>
+  {% endif %}
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    <li>Defense strength reflects available legal defenses including forum selection provisions, PSLRA safe harbor, and judicial track record in the relevant jurisdiction</li>
+    <li>Strong defenses reduce expected loss severity but do not eliminate claim frequency</li>
+    {% if defense.get('federal_forum') == 'Yes' %}
+    <li>Federal forum provision channels Securities Act claims to federal court where PSLRA protections apply&mdash;a significant defense advantage</li>
+    {% endif %}
+    {% if defense.get('pslra_safe_harbor') and defense.pslra_safe_harbor|upper in ['STRONG', 'MODERATE'] %}
+    <li>PSLRA safe harbor protects forward-looking statements accompanied by meaningful cautionary language from Section 10(b) liability</li>
+    {% endif %}
+  </ul>
+  {% elif lit.get('defense_strength') and lit.defense_strength != 'N/A' %}
+  <h3>Defense Strength Assessment</h3>
+  {{ kv_table([
+    {'key': 'Overall Defense Strength', 'value': lit.defense_strength | humanize},
+    {'key': 'Litigation Reserve', 'value': lit.get('litigation_reserve', 'N/A')},
+  ]) }}
+  {% endif %}

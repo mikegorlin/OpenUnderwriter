@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+node_modules/
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+.venv/
+
+# Dev tooling caches
+.ruff_cache/
+.pytest_cache/
+.pyright/
+.mypy_cache/
+
+# Database and cache files
+*.db
+.cache/
+
+# knowledge.db -- SQLite store, superseded by brain.duckdb
+src/do_uw/knowledge/knowledge.db
+
+# brain.duckdb -- too large for GitHub (370MB+), kept local only
+src/do_uw/brain/brain.duckdb
+
+# GSD operational state — tracked for cross-machine continuity
+# .planning/STATE.md
+
+# Secrets
+.env
+
+# Output test data (scratch)
+output_test/
+pricing/
+
+# Test artifacts -- MagicMock leak from unmocked get_brain_db_path()
+<MagicMock*
+
+# OS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Generated output files
+output/
+
+# Local Claude/GSD tooling
+.agents/
+skills/
+skills-lock.json
+
+# Reference snapshot baselines (machine-specific, not version controlled)
+.planning/baselines/*.json
+
+# Scratch planning docs
+Phase 7/
+.claude/worktrees/

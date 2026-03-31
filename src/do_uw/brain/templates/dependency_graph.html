@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brain Signal Dependency Graph</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  :root {
+    --bg: #1a1b26;
+    --surface: #24283b;
+    --surface-hover: #2f3350;
+    --border: #3b4261;
+    --text: #c0caf5;
+    --text-dim: #565f89;
+    --text-bright: #ffffff;
+    --primary: #7aa2f7;
+    --danger: #f7768e;
+    --warning: #e0af68;
+    --success: #9ece6a;
+    --info: #7dcfff;
+    --foundational: #4A90D9;
+    --evaluative: #50C878;
+    --inference: #FF8C42;
+    --edge: #3b4261;
+    --edge-highlight: #7aa2f7;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+    --radius: 6px;
+    --shadow: 0 2px 8px rgba(0,0,0,.3);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text);
+    background: var(--bg);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* -- Layout -------------------------------------------------- */
+  .layout {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 260px 1fr 320px;
+    grid-template-areas:
+      "header header header"
+      "left   main   right";
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* -- Header -------------------------------------------------- */
+  .header {
+    grid-area: header;
+    background: var(--surface);
+    border-bottom: 2px solid var(--primary);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    box-shadow: var(--shadow);
+    z-index: 10;
+  }
+  .header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-bright);
+    white-space: nowrap;
+  }
+  .stats-bar {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 4px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .stat-card .label { color: var(--text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-card .value { font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums; }
+  .stat-card .value.foundational { color: var(--foundational); }
+  .stat-card .value.evaluative { color: var(--evaluative); }
+  .stat-card .value.inference { color: var(--inference); }
+
+  /* -- Left sidebar (filters) ---------------------------------- */
+  .sidebar-left {
+    grid-area: left;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 16px;
+    overflow-y: auto;
+    z-index: 5;
+  }
+  .sidebar-left h2 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .filter-group { margin-bottom: 20px; }
+  .filter-group h3 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .filter-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .filter-group label:hover { color: var(--text-bright); }
+  .filter-group input[type="checkbox"] { accent-color: var(--primary); }
+  .filter-group select {
+    width: 100%;
+    padding: 6px 8px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 12px;
+    font-family: var(--font-sans);
+  }
+  .filter-group select:focus { outline: 1px solid var(--primary); }
+  .color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  button.reset-btn {
+    width: 100%;
+    padding: 8px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 12px;
+    font-family: var(--font-sans);
+    margin-top: 8px;
+  }
+  button.reset-btn:hover { background: var(--surface-hover); border-color: var(--primary); }
+
+  /* -- Main (SVG canvas) --------------------------------------- */
+  .main-canvas {
+    grid-area: main;
+    position: relative;
+    overflow: hidden;
+  }
+  .main-canvas svg { display: block; width: 100%; height: 100%; }
+
+  .zoom-controls {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 5;
+  }
+  .zoom-controls button {
+    width: 32px;
+    height: 32px;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .zoom-controls button:hover { background: var(--surface-hover); border-color: var(--primary); }
+
+  /* -- Tooltip ------------------------------------------------- */
+  .tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 6px 10px;
+    font-size: 12px;
+    color: var(--text);
+    box-shadow: var(--shadow);
+    z-index: 20;
+    max-width: 300px;
+    display: none;
+  }
+  .tooltip .tt-name { font-weight: 600; color: var(--text-bright); }
+  .tooltip .tt-id { color: var(--text-dim); font-family: var(--font-mono); font-size: 11px; }
+
+  /* -- Right sidebar (details) --------------------------------- */
+  .sidebar-right {
+    grid-area: right;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    padding: 16px;
+    overflow-y: auto;
+    z-index: 5;
+    display: none;
+  }
+  .sidebar-right.open { display: block; }
+  .sidebar-right h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 12px;
+  }
+  .detail-close {
+    float: right;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+  }
+  .detail-close:hover { color: var(--text-bright); }
+  .detail-row {
+    margin-bottom: 10px;
+  }
+  .detail-row .detail-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+    margin-bottom: 2px;
+  }
+  .detail-row .detail-value {
+    font-size: 13px;
+    color: var(--text);
+    word-break: break-word;
+  }
+  .detail-row .detail-value.mono {
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .dep-list { list-style: none; padding: 0; }
+  .dep-list li {
+    padding: 2px 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--info);
+    cursor: pointer;
+  }
+  .dep-list li:hover { text-decoration: underline; }
+  .tier-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .tier-badge.foundational { background: rgba(74,144,217,0.2); color: var(--foundational); }
+  .tier-badge.evaluative { background: rgba(80,200,120,0.2); color: var(--evaluative); }
+  .tier-badge.inference { background: rgba(255,140,66,0.2); color: var(--inference); }
+
+  /* -- Print --------------------------------------------------- */
+  @media print {
+    .sidebar-left, .sidebar-right, .zoom-controls, .tooltip { display: none !important; }
+    .layout { grid-template-columns: 1fr; grid-template-areas: "header" "main"; }
+    .main-canvas { height: 100vh; }
+  }
+
+  /* -- Responsive ---------------------------------------------- */
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; grid-template-areas: "header" "main"; }
+    .sidebar-left, .sidebar-right { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- Header -->
+  <div class="header">
+    <h1>Brain Signal Dependency Graph</h1>
+    <div class="stats-bar" id="statsBar">
+      <div class="stat-card"><span class="label">Signals</span><span class="value" id="statTotal">0</span></div>
+      <div class="stat-card"><span class="label">Edges</span><span class="value" id="statEdges">0</span></div>
+      <div class="stat-card"><span class="label">Foundational</span><span class="value foundational" id="statFound">0</span></div>
+      <div class="stat-card"><span class="label">Evaluative</span><span class="value evaluative" id="statEval">0</span></div>
+      <div class="stat-card"><span class="label">Inference</span><span class="value inference" id="statInf">0</span></div>
+    </div>
+  </div>
+
+  <!-- Left sidebar: filters -->
+  <div class="sidebar-left">
+    <h2>Filters</h2>
+
+    <div class="filter-group">
+      <h3>Signal Class</h3>
+      <label><input type="checkbox" class="filter-class" value="foundational" checked>
+        <span class="color-dot" style="background:var(--foundational)"></span> Foundational</label>
+      <label><input type="checkbox" class="filter-class" value="evaluative" checked>
+        <span class="color-dot" style="background:var(--evaluative)"></span> Evaluative</label>
+      <label><input type="checkbox" class="filter-class" value="inference" checked>
+        <span class="color-dot" style="background:var(--inference)"></span> Inference</label>
+    </div>
+
+    <div class="filter-group">
+      <h3>Section</h3>
+      <select id="filterSection">
+        <option value="">All Sections</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <h3>Group</h3>
+      <select id="filterGroup">
+        <option value="">All Groups</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <h3>Connections</h3>
+      <label><input type="checkbox" id="filterConnected"> Only connected nodes</label>
+    </div>
+
+    <button class="reset-btn" id="resetFilters">Reset Filters</button>
+  </div>
+
+  <!-- Main canvas -->
+  <div class="main-canvas" id="canvas">
+    <div class="tooltip" id="tooltip">
+      <div class="tt-name"></div>
+      <div class="tt-id"></div>
+    </div>
+    <div class="zoom-controls">
+      <button id="zoomIn" title="Zoom in">+</button>
+      <button id="zoomOut" title="Zoom out">&minus;</button>
+      <button id="zoomReset" title="Reset zoom">R</button>
+    </div>
+  </div>
+
+  <!-- Right sidebar: signal details -->
+  <div class="sidebar-right" id="detailPanel">
+    <button class="detail-close" id="detailClose">&times;</button>
+    <h2 id="detailName">Signal Details</h2>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<script>
+// -- Data injection (Jinja2) --
+const graphData = {{ graph_data }};
+
+// -- Color map --
+const COLOR = {
+  foundational: '#4A90D9',
+  evaluative: '#50C878',
+  inference: '#FF8C42',
+};
+
+// -- Populate filter dropdowns --
+const sectionSelect = document.getElementById('filterSection');
+const groupSelect = document.getElementById('filterGroup');
+
+graphData.stats.sections.forEach(s => {
+  const opt = document.createElement('option');
+  opt.value = s; opt.textContent = s;
+  sectionSelect.appendChild(opt);
+});
+graphData.stats.groups.forEach(g => {
+  const opt = document.createElement('option');
+  opt.value = g; opt.textContent = g;
+  groupSelect.appendChild(opt);
+});
+
+// -- Build node/link lookup --
+const nodeById = {};
+graphData.nodes.forEach(n => { nodeById[n.id] = n; n._visible = true; });
+
+// -- SVG setup --
+const canvas = document.getElementById('canvas');
+const width = canvas.clientWidth;
+const height = canvas.clientHeight;
+
+const svg = d3.select('#canvas')
+  .append('svg')
+  .attr('width', width)
+  .attr('height', height);
+
+// Arrow marker for directed edges
+svg.append('defs').append('marker')
+  .attr('id', 'arrowhead')
+  .attr('viewBox', '0 -5 10 10')
+  .attr('refX', 18)
+  .attr('refY', 0)
+  .attr('markerWidth', 6)
+  .attr('markerHeight', 6)
+  .attr('orient', 'auto')
+  .append('path')
+  .attr('d', 'M0,-4L10,0L0,4')
+  .attr('fill', 'var(--edge)');
+
+const g = svg.append('g');
+
+// -- Zoom --
+const zoomBehavior = d3.zoom()
+  .scaleExtent([0.1, 8])
+  .on('zoom', (event) => { g.attr('transform', event.transform); });
+
+svg.call(zoomBehavior);
+
+document.getElementById('zoomIn').addEventListener('click', () => {
+  svg.transition().duration(300).call(zoomBehavior.scaleBy, 1.5);
+});
+document.getElementById('zoomOut').addEventListener('click', () => {
+  svg.transition().duration(300).call(zoomBehavior.scaleBy, 0.67);
+});
+document.getElementById('zoomReset').addEventListener('click', () => {
+  svg.transition().duration(500).call(zoomBehavior.transform, d3.zoomIdentity);
+});
+
+// -- Initial positions by tier --
+const tierY = { foundational: height * 0.2, evaluative: height * 0.5, inference: height * 0.8 };
+graphData.nodes.forEach(n => {
+  n.x = width * 0.1 + Math.random() * width * 0.8;
+  n.y = (tierY[n.signal_class] || height * 0.5) + (Math.random() - 0.5) * height * 0.15;
+});
+
+// -- Force simulation --
+const simulation = d3.forceSimulation(graphData.nodes)
+  .force('link', d3.forceLink(graphData.links).id(d => d.id).distance(80).strength(0.5))
+  .force('charge', d3.forceManyBody().strength(-60))
+  .force('center', d3.forceCenter(width / 2, height / 2))
+  .force('collide', d3.forceCollide().radius(12))
+  .force('y', d3.forceY(d => tierY[d.signal_class] || height / 2).strength(0.04))
+  .on('tick', ticked);
+
+// Stop simulation after settling
+simulation.on('end', () => {});
+setTimeout(() => { if (simulation.alpha() < 0.05) simulation.stop(); }, 8000);
+
+// -- Draw edges --
+const linkG = g.append('g').attr('class', 'links');
+let linkElements = linkG.selectAll('line')
+  .data(graphData.links)
+  .join('line')
+  .attr('stroke', 'var(--edge)')
+  .attr('stroke-width', 1)
+  .attr('stroke-opacity', 0.5)
+  .attr('marker-end', 'url(#arrowhead)');
+
+// -- Draw nodes --
+const nodeG = g.append('g').attr('class', 'nodes');
+let nodeElements = nodeG.selectAll('circle')
+  .data(graphData.nodes)
+  .join('circle')
+  .attr('r', d => d.has_deps ? 7 : 5)
+  .attr('fill', d => COLOR[d.signal_class] || COLOR.evaluative)
+  .attr('stroke', 'var(--bg)')
+  .attr('stroke-width', 1.5)
+  .attr('cursor', 'pointer')
+  .call(d3.drag()
+    .on('start', dragStarted)
+    .on('drag', dragged)
+    .on('end', dragEnded))
+  .on('mouseover', showTooltip)
+  .on('mousemove', moveTooltip)
+  .on('mouseout', hideTooltip)
+  .on('click', showDetails);
+
+function ticked() {
+  linkElements
+    .attr('x1', d => d.source.x)
+    .attr('y1', d => d.source.y)
+    .attr('x2', d => d.target.x)
+    .attr('y2', d => d.target.y);
+  nodeElements
+    .attr('cx', d => d.x)
+    .attr('cy', d => d.y);
+}
+
+// -- Drag --
+function dragStarted(event, d) {
+  if (!event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x; d.fy = d.y;
+}
+function dragged(event, d) { d.fx = event.x; d.fy = event.y; }
+function dragEnded(event, d) {
+  if (!event.active) simulation.alphaTarget(0);
+  d.fx = null; d.fy = null;
+}
+
+// -- Tooltip --
+const tooltip = document.getElementById('tooltip');
+function showTooltip(event, d) {
+  tooltip.querySelector('.tt-name').textContent = d.name;
+  tooltip.querySelector('.tt-id').textContent = d.id;
+  tooltip.style.display = 'block';
+}
+function moveTooltip(event) {
+  const rect = canvas.getBoundingClientRect();
+  tooltip.style.left = (event.clientX - rect.left + 12) + 'px';
+  tooltip.style.top = (event.clientY - rect.top - 10) + 'px';
+}
+function hideTooltip() { tooltip.style.display = 'none'; }
+
+// -- Detail panel --
+const detailPanel = document.getElementById('detailPanel');
+const detailName = document.getElementById('detailName');
+const detailContent = document.getElementById('detailContent');
+
+document.getElementById('detailClose').addEventListener('click', () => {
+  detailPanel.classList.remove('open');
+  nodeElements.attr('stroke', 'var(--bg)').attr('stroke-width', 1.5);
+});
+
+function showDetails(event, d) {
+  // Highlight selected node
+  nodeElements.attr('stroke', 'var(--bg)').attr('stroke-width', 1.5);
+  d3.select(this).attr('stroke', 'var(--text-bright)').attr('stroke-width', 3);
+
+  detailName.textContent = d.name;
+
+  let html = '';
+  html += detailRow('ID', d.id, true);
+  html += detailRow('Signal Class', `<span class="tier-badge ${d.signal_class}">${d.signal_class}</span>`);
+  html += detailRow('Group', d.group || 'N/A');
+  html += detailRow('Section', d.section || 'N/A');
+  html += detailRow('Field Path', d.field_path || 'N/A', true);
+  html += detailRow('Category', d.category || 'N/A');
+
+  if (d.threshold) {
+    const th = typeof d.threshold === 'object' ? JSON.stringify(d.threshold, null, 2) : String(d.threshold);
+    html += detailRow('Threshold', th, true);
+  }
+
+  if (d.description) {
+    html += detailRow('Description', d.description);
+  }
+
+  if (d.depends_on && d.depends_on.length > 0) {
+    let depHtml = '<ul class="dep-list">';
+    d.depends_on.forEach(dep => {
+      depHtml += `<li onclick="focusNode('${dep}')">${dep}</li>`;
+    });
+    depHtml += '</ul>';
+    html += detailRow('Dependencies', depHtml);
+  }
+
+  // Find dependents (signals that depend on this one)
+  const dependents = graphData.nodes.filter(n =>
+    n.depends_on && n.depends_on.includes(d.id)
+  );
+  if (dependents.length > 0) {
+    let depHtml = '<ul class="dep-list">';
+    dependents.forEach(dep => {
+      depHtml += `<li onclick="focusNode('${dep.id}')">${dep.id}</li>`;
+    });
+    depHtml += '</ul>';
+    html += detailRow('Dependents', depHtml);
+  }
+
+  detailContent.innerHTML = html;
+  detailPanel.classList.add('open');
+}
+
+function detailRow(label, value, mono) {
+  const cls = mono ? ' mono' : '';
+  return `<div class="detail-row"><div class="detail-label">${label}</div><div class="detail-value${cls}">${value}</div></div>`;
+}
+
+// Focus on a node by ID (called from dep list clicks)
+window.focusNode = function(id) {
+  const node = graphData.nodes.find(n => n.id === id);
+  if (!node) return;
+  // Pan to node
+  const transform = d3.zoomTransform(svg.node());
+  const x = -node.x * transform.k + width / 2;
+  const y = -node.y * transform.k + height / 2;
+  svg.transition().duration(500).call(
+    zoomBehavior.transform,
+    d3.zoomIdentity.translate(x, y).scale(transform.k)
+  );
+  // Trigger detail view
+  const circle = nodeElements.filter(d => d.id === id);
+  if (!circle.empty()) {
+    showDetails.call(circle.node(), {}, node);
+  }
+};
+
+// -- Filtering --
+function applyFilters() {
+  const activeClasses = new Set();
+  document.querySelectorAll('.filter-class:checked').forEach(cb => activeClasses.add(cb.value));
+  const sectionVal = sectionSelect.value;
+  const groupVal = groupSelect.value;
+  const connectedOnly = document.getElementById('filterConnected').checked;
+
+  // Determine connected node IDs
+  const connectedIds = new Set();
+  if (connectedOnly) {
+    graphData.links.forEach(l => {
+      const sid = typeof l.source === 'object' ? l.source.id : l.source;
+      const tid = typeof l.target === 'object' ? l.target.id : l.target;
+      connectedIds.add(sid);
+      connectedIds.add(tid);
+    });
+  }
+
+  // Update visibility
+  let visibleCount = 0, visibleEdges = 0;
+  const classCounts = { foundational: 0, evaluative: 0, inference: 0 };
+
+  graphData.nodes.forEach(n => {
+    let vis = activeClasses.has(n.signal_class);
+    if (vis && sectionVal && n.section !== sectionVal) vis = false;
+    if (vis && groupVal && n.group !== groupVal) vis = false;
+    if (vis && connectedOnly && !connectedIds.has(n.id)) vis = false;
+    n._visible = vis;
+    if (vis) {
+      visibleCount++;
+      classCounts[n.signal_class] = (classCounts[n.signal_class] || 0) + 1;
+    }
+  });
+
+  nodeElements.attr('display', d => d._visible ? null : 'none');
+
+  linkElements.attr('display', d => {
+    const sid = typeof d.source === 'object' ? d.source.id : d.source;
+    const tid = typeof d.target === 'object' ? d.target.id : d.target;
+    const srcNode = nodeById[sid];
+    const tgtNode = nodeById[tid];
+    const vis = srcNode && srcNode._visible && tgtNode && tgtNode._visible;
+    if (vis) visibleEdges++;
+    return vis ? null : 'none';
+  });
+
+  // Update stats
+  document.getElementById('statTotal').textContent = visibleCount;
+  document.getElementById('statEdges').textContent = visibleEdges;
+  document.getElementById('statFound').textContent = classCounts.foundational;
+  document.getElementById('statEval').textContent = classCounts.evaluative;
+  document.getElementById('statInf').textContent = classCounts.inference;
+}
+
+// Bind filter events
+document.querySelectorAll('.filter-class').forEach(cb => cb.addEventListener('change', applyFilters));
+sectionSelect.addEventListener('change', applyFilters);
+groupSelect.addEventListener('change', applyFilters);
+document.getElementById('filterConnected').addEventListener('change', applyFilters);
+
+document.getElementById('resetFilters').addEventListener('click', () => {
+  document.querySelectorAll('.filter-class').forEach(cb => { cb.checked = true; });
+  sectionSelect.value = '';
+  groupSelect.value = '';
+  document.getElementById('filterConnected').checked = false;
+  applyFilters();
+});
+
+// Initial stats
+applyFilters();
+</script>
+</body>
+</html>

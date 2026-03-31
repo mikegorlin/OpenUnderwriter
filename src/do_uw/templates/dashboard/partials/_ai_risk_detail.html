@@ -1,0 +1,83 @@
+{# AI Transformation Risk drill-down partial.
+   Shows overall score, sub-dimension table, peer comparison,
+   industry narrative, and forward indicators.
+   Loaded via hx-get into the section detail panel.
+#}
+
+<div class="space-y-6">
+  <!-- Overall Score -->
+  {% if section.overall_score is defined %}
+  <div class="stats shadow">
+    <div class="stat">
+      <div class="stat-title">AI Risk Score</div>
+      <div class="stat-value">{{ section.overall_score | round(0) }}/100</div>
+      <div class="stat-desc">{{ section.industry_model_id }} | Trend: {{ section.disclosure_trend }}</div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Sub-Dimensions Table -->
+  {% if section.sub_dimensions %}
+  <div class="overflow-x-auto">
+    <table class="table table-zebra">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>Score</th>
+          <th>Weight</th>
+          <th>Threat Level</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for dim in section.sub_dimensions %}
+        <tr>
+          <td>{{ dim.dimension | replace("_", " ") | title }}</td>
+          <td>
+            <span class="{% if dim.score >= 7 %}text-error{% elif dim.score >= 4 %}text-warning{% else %}text-info{% endif %}">
+              {{ dim.score | round(1) }}/10
+            </span>
+          </td>
+          <td>{{ (dim.weight * 100) | round(0) }}%</td>
+          <td>
+            <span class="badge {% if dim.threat_level == 'HIGH' %}badge-error{% elif dim.threat_level == 'MEDIUM' %}badge-warning{% else %}badge-info{% endif %}">
+              {{ dim.threat_level }}
+            </span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  <!-- Peer Comparison -->
+  {% if section.peer_comparison_available %}
+  <div class="card bg-base-200">
+    <div class="card-body">
+      <h3 class="card-title text-sm">Peer AI Comparison</h3>
+      <p>Adoption Stance: <strong>{{ section.competitive_position.adoption_stance }}</strong></p>
+      <p>Company Mentions: {{ section.competitive_position.company_ai_mentions }} | Peer Avg: {{ section.competitive_position.peer_avg_mentions | round(1) }}</p>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Narrative -->
+  {% if section.narrative %}
+  <div class="prose max-w-none">
+    <h3>Industry Assessment</h3>
+    <p>{{ section.narrative }}</p>
+  </div>
+  {% endif %}
+
+  <!-- Forward Indicators -->
+  {% if section.forward_indicators %}
+  <div>
+    <h3 class="font-bold text-sm mb-2">Forward Indicators</h3>
+    <ul class="list-disc list-inside">
+      {% for indicator in section.forward_indicators %}
+      <li>{{ indicator }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</div>

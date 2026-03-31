@@ -1,0 +1,28 @@
+{
+  "known_activists": [
+    "Elliott Management",
+    "Elliott Investment Management",
+    "Carl Icahn",
+    "Icahn Enterprises",
+    "ValueAct Capital",
+    "Trian Fund Management",
+    "Starboard Value",
+    "Third Point",
+    "Jana Partners",
+    "Pershing Square",
+    "Corvex Management",
+    "Engine Capital",
+    "Land & Buildings",
+    "Ancora Advisors",
+    "Cruiser Capital Advisors",
+    "Sachem Head Capital",
+    "D.E. Shaw",
+    "Point72 Asset Management",
+    "Barington Capital",
+    "GAMCO Investors",
+    "Cevian Capital",
+    "Amber Capital",
+    "Bluebell Capital Partners"
+  ],
+  "description": "Known activist investors for 13D and institutional holder matching"
+}

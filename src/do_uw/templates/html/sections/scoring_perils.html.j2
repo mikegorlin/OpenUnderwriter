@@ -1,0 +1,68 @@
+{# D&O Peril Assessment — split from scoring.html.j2 per CLAUDE.md 500-line rule.
+   Renders the peril summary table and per-peril deep dive cards.
+   Included by scoring.html.j2 after the Tier Classification block. #}
+{% set sc = scoring or {} %}
+
+{# --- D&O Peril Assessment (Phase 42) --- #}
+{% set ps = sc.get('peril_scoring', {}) %}
+{% if ps and ps.get('all_perils') %}
+<h3>D&O Claim Peril Assessment</h3>
+<p class="text-sm text-gray-600 mb-2">
+  {{ ps.active_count }} of {{ ps.all_perils|length }} D&amp;O claim perils show active risk signals.
+</p>
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1" style="width:25%">Peril</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1" style="width:15%">Risk Level</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1" style="width:15%">Active Chains</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1" style="width:45%">Key Evidence</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for peril in ps.all_perils %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ peril.name }}</td>
+      <td class="p-1">
+        {{ traffic_light(peril.risk_level, peril.risk_level|humanize) }}
+      </td>
+      <td class="p-1 text-center tabular-nums">{{ peril.active_chain_count }}/{{ peril.total_chain_count }}</td>
+      <td class="p-1 text-xs text-gray-600">{{ peril.key_evidence|map('humanize_evidence')|join('; ') }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{# Per-peril deep dives for active perils #}
+{% for peril in ps.get('perils', []) %}
+<div class="border-l-4 {{ 'border-red-700' if peril.risk_level == 'HIGH' else 'border-amber-500' if peril.risk_level == 'ELEVATED' else 'border-blue-400' }} bg-bg-alt pl-4 py-3 my-3 page-break-inside-avoid">
+  <h4 class="text-sm font-bold m-0">{{ peril.name }}: {{ peril.risk_level }}</h4>
+  <p class="text-xs text-gray-500 m-0 mt-1">
+    Frequency: {{ peril.frequency }} | Severity: {{ peril.severity }}
+    {% if peril.typical_settlement_range %} | Range: {{ peril.typical_settlement_range }}{% endif %}
+  </p>
+  {% for chain in peril.chains if chain.active %}
+  <div class="mt-2 ml-2">
+    <p class="text-sm font-semibold m-0">{{ chain.name }}</p>
+    {% if chain.triggered_triggers %}
+    <p class="text-xs m-0 mt-1"><span class="text-red-700 font-semibold">Triggers:</span>
+      {% for t in chain.triggered_triggers %}{{ t }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
+    {% endif %}
+    {% if chain.active_amplifiers %}
+    <p class="text-xs m-0"><span class="text-amber-700 font-semibold">Amplifiers:</span>
+      {% for a in chain.active_amplifiers %}{{ a }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
+    {% endif %}
+    {% if chain.active_mitigators %}
+    <p class="text-xs m-0"><span class="text-green-700 font-semibold">Mitigators:</span>
+      {% for m in chain.active_mitigators %}{{ m }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endfor %}
+<ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc pl-4 space-y-0.5">
+  <li>Peril assessment maps check engine results to 8 D&amp;O claim types using brain causal chain framework</li>
+  <li>Active chains indicate specific risk pathways with supporting evidence from automated checks</li>
+  <li>Risk level derived from trigger count, amplifier activation, and red flag association</li>
+</ul>
+{% endif %}

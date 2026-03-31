@@ -1,0 +1,1349 @@
+- id: GOV.BOARD.size
+  name: Board Size
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - board_members
+  threshold:
+    type: info
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  extraction_hints:
+    field_patterns:
+    - board_composition
+    - board_size
+    - number_of_directors
+    expected_type: numeric
+    no_data_sentinel: Board size not extractable from DEF 14A
+    validation_rule: board_size is positive integer
+  data_strategy:
+    field_key: board_size
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: board_composition
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: board_composition
+  signal_class: evaluative
+  field_path: board_size
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'ISS Governance QualityScore methodology: board size assessment per
+      governance best practice research'
+    threshold_basis: Board size is informational context; no empirical threshold --
+      optimal size varies by company complexity per governance research
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} board size at {value} represents host risk (company-level
+        characteristics that attract or deter D&O claims) (scoring factor F10) — this
+        level is associated with Emerging Risk / Forward-Looking Exposure exposure
+        based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} board size at {value} is a moderate indicator for
+        Emerging Risk / Forward-Looking Exposure (scoring factor F10), warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} board size at {value} is within normal parameters for Emerging
+        Risk / Forward-Looking Exposure (scoring factor F10) — no D&O concern at this
+        level.'
+- id: GOV.BOARD.independence
+  name: Board Independence
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles:
+    governance_to_derivative: trigger
+    activist_to_derivative: amplifier
+    product_to_do: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - board_members
+    - independence_status
+    - committee_composition
+  threshold:
+    type: percentage
+    red: <50% independent
+    yellow: <67% independent
+    clear: '>67% independent'
+  claims_correlation: 0.1
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  extraction_hints:
+    field_patterns:
+    - board_composition
+    - independent_directors
+    - board_size
+    expected_type: numeric
+    no_data_sentinel: DEF 14A not filed or board composition not parseable
+    validation_rule: independence_ratio between 0 and 1
+  data_strategy:
+    field_key: xbrl_board_independence
+    narrative_key: board_independence_narrative
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: board_composition
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: pct_1dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_DEF14A
+      fields:
+      - extracted.governance.board.independence_ratio
+  evaluation:
+    formula: board_independence
+    thresholds:
+    - op: <
+      value: 50.0
+      label: RED
+    - op: <
+      value: 67.0
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Board independence: {value}%'
+    - level: standard
+      template: Board independence at {value}% — {status_label}
+    - level: deep
+      fields:
+      - board_independence
+      - board_size
+      - ceo_chair_duality
+    context_templates:
+      TRIGGERED: 'Governance concern: board independence {value}% below threshold'
+      CLEAR: Board independence adequate at {value}%
+    do_context:
+      TRIGGERED_RED: '{company} Board Independence at {value} (threshold: <50% independent)
+        signals elevated Emerging Risk / Forward-Looking Exposure risk (F10). Low
+        board independence reduces the effectiveness of oversight and increases the
+        probability that management self-dealing goes unchecked -- a failure that
+        supports demand futility arguments in derivative actions against directors.
+        Board independence <50% = RED: NYSE/NASDAQ listing requirement minimum; <67%
+        = YELLOW: ISS policy trigger threshold.'
+      TRIGGERED_YELLOW: '{company} Board Independence at {value} (threshold: <67%
+        independent) is in the caution zone for Emerging Risk / Forward-Looking Exposure
+        (F10). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Board Independence at {value} is within acceptable range for
+        Emerging Risk / Forward-Looking Exposure (F10) — this level is a protective
+        factor in D&O risk assessment, reducing claim probability.'
+  group: board_composition
+  signal_class: evaluative
+  field_path: xbrl_board_independence
+  depends_on: []
+  epistemology:
+    rule_origin: 'NYSE/NASDAQ listing requirements and ISS Governance QualityScore:
+      board independence is a primary governance quality indicator'
+    threshold_basis: 'Board independence <50% = RED: NYSE/NASDAQ listing requirement
+      minimum; <67% = YELLOW: ISS policy trigger threshold'
+  rap_class: host
+  rap_subcategory: host.governance_structure
+- id: GOV.BOARD.ceo_chair
+  name: CEO Chair Separation
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles:
+    governance_to_derivative: trigger
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - board_leadership
+  threshold:
+    type: boolean
+    red: CEO and Chair roles are combined (duality present)
+    clear: CEO and Chair roles are separated
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  data_strategy:
+    field_key: ceo_chair_duality
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  display:
+    value_format: boolean
+    source_type: SEC_DEF14A
+    threshold_context: ''
+    deprecation_note: ''
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: board_composition
+    formula: ''
+  group: board_composition
+  signal_class: evaluative
+  field_path: ceo_chair_duality
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS Governance QualityScore methodology and SEC proxy disclosure
+      requirements (Regulation 14A)
+    threshold_basis: 'Boolean check -- presence/absence determination; triggered:
+      CEO and Chair roles are combined (duality present)'
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} triggered CEO Chair Separation (F10) — this host risk
+        (company-level characteristics that attract or deter D&O claims) indicates
+        Emerging Risk / Forward-Looking Exposure. Evidence: {evidence}.'
+      TRIGGERED_YELLOW: '{company} shows moderate signal on CEO Chair Separation (F10)
+        at {value} — review recommended for Emerging Risk / Forward-Looking Exposure
+        implications.'
+      CLEAR: '{company} clear on CEO Chair Separation (F10) — no Emerging Risk / Forward-Looking
+        Exposure concern identified at this level.'
+- id: GOV.BOARD.diversity
+  name: Board Diversity
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles:
+    governance_to_derivative: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - board_diversity
+  threshold:
+    type: info
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  data_strategy:
+    field_key: board_diversity
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: board_composition
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: board_composition
+  signal_class: evaluative
+  field_path: board_diversity
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC Regulation S-K Item 407 and NASDAQ Board Diversity Rule (2021):
+      board diversity disclosure and composition requirements'
+    threshold_basis: 'Zero diversity = RED: NASDAQ Rule 5605(f) compliance concern;
+      <2 diverse directors = YELLOW per ISS voting guidelines'
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} board diversity at {value} represents host risk (company-level
+        characteristics that attract or deter D&O claims) (scoring factor F10) — this
+        level is associated with Emerging Risk / Forward-Looking Exposure exposure
+        based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} board diversity at {value} is a moderate indicator
+        for Emerging Risk / Forward-Looking Exposure (scoring factor F10), warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} board diversity at {value} is within normal parameters for
+        Emerging Risk / Forward-Looking Exposure (scoring factor F10) — no D&O concern
+        at this level.'
+- id: GOV.BOARD.tenure
+  name: Tenure
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles:
+    governance_to_derivative: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: Average tenure >15 years (entrenchment risk)
+    yellow: Average tenure >10 years
+    clear: Average tenure <10 years
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  data_strategy:
+    field_key: avg_board_tenure
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: board_composition
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: board_composition
+  signal_class: evaluative
+  field_path: avg_board_tenure
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS Governance QualityScore methodology and SEC proxy disclosure
+      requirements (Regulation 14A)
+    threshold_basis: 'Thresholds (RED: Average tenure >15 years (entrenchment risk);
+      YELLOW: Average tenure >10 years) from D&O underwriting practice and claims
+      experience'
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Tenure at {value} (threshold: Average tenure >15 years
+        (entrenchment risk)) signals elevated Emerging Risk / Forward-Looking Exposure
+        risk (F10). Extended board tenure creates entrenchment risk and raises questions
+        about director independence from management. Entrenched boards are statistically
+        more likely to face derivative claims alleging failure of oversight duty.'
+      TRIGGERED_YELLOW: '{company} Tenure at {value} (threshold: Average tenure >10
+        years) is in the caution zone for Emerging Risk / Forward-Looking Exposure
+        (F10). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Tenure at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.BOARD.overboarding
+  execution_mode: AUTO
+  name: Overboarding
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles:
+    governance_to_derivative: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: '>2 directors on 4+ boards OR CEO on 2+ outside boards'
+    yellow: 1-2 directors on 4+ boards
+    clear: No overboarded directors
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  data_strategy:
+    field_key: overboarded_directors
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: board_forensics
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: board_forensics
+  signal_class: evaluative
+  field_path: overboarded_directors
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'ISS proxy voting guidelines: director overboarding limits -- excessive
+      outside commitments reduce oversight quality'
+    threshold_basis: 'CEO on >2 outside boards or non-CEO on >4 = RED: ISS overboarding
+      policy trigger; approaching limits = YELLOW'
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Overboarding at {value} (threshold: >2 directors on
+        4+ boards OR CEO on 2+ outside boards) signals elevated Emerging Risk / Forward-Looking
+        Exposure risk (F10). Directors serving on excessive boards face attention
+        allocation risk. Overboarded directors are less likely to detect management
+        misconduct, supporting Caremark claims that the board failed in its monitoring
+        obligations. CEO on >2 outside boards or non-CEO on >4 = RED: ISS overboarding
+        policy trigger; approaching limits = YELLOW.'
+      TRIGGERED_YELLOW: '{company} Overboarding at {value} (threshold: 1-2 directors
+        on 4+ boards) is in the caution zone for Emerging Risk / Forward-Looking Exposure
+        (F10). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Overboarding at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.BOARD.departures
+  name: Departures
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: '>3 departures in 18 months OR sudden resignation'
+    yellow: 2-3 departures in 18 months
+    clear: 0-1 departures (normal refresh)
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  data_strategy:
+    field_key: departures_18mo
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: board_composition
+    formula: ''
+  display:
+    value_format: count
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: board_composition
+  signal_class: evaluative
+  field_path: departures_18mo
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS Governance QualityScore methodology and SEC proxy disclosure
+      requirements (Regulation 14A)
+    threshold_basis: 'Thresholds (RED: >3 departures in 18 months OR sudden resignation;
+      YELLOW: 2-3 departures in 18 months) from D&O underwriting practice and claims
+      experience'
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Departures at {value} (threshold: >3 departures in
+        18 months OR sudden resignation) signals elevated Emerging Risk / Forward-Looking
+        Exposure risk (F10). Board departures during the relevant period signal potential
+        disagreement with management direction. Plaintiffs cite director resignations
+        as evidence that informed insiders lost confidence in the company''s disclosures.'
+      TRIGGERED_YELLOW: '{company} Departures at {value} (threshold: 2-3 departures
+        in 18 months) is in the caution zone for Emerging Risk / Forward-Looking Exposure
+        (F10). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Departures at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.BOARD.attendance
+  execution_mode: AUTO
+  name: Attendance
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: Any director <75% attendance
+    yellow: Any director <85% attendance
+    clear: All directors >85% attendance
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  data_strategy:
+    field_key: board_attendance
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: board_composition
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: board_composition
+  signal_class: evaluative
+  field_path: board_attendance
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS Governance QualityScore methodology and SEC proxy disclosure
+      requirements (Regulation 14A)
+    threshold_basis: 'Thresholds (RED: Any director <75% attendance; YELLOW: Any director
+      <85% attendance) from D&O underwriting practice and claims experience'
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Attendance at {value} (threshold: Any director <75%
+        attendance) signals elevated Emerging Risk / Forward-Looking Exposure risk
+        (F10). Low board meeting attendance demonstrates a governance culture that
+        tolerates disengaged oversight -- directly supporting Caremark failure-of-monitoring
+        claims in derivative actions.'
+      TRIGGERED_YELLOW: '{company} Attendance at {value} (threshold: Any director
+        <85% attendance) is in the caution zone for Emerging Risk / Forward-Looking
+        Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Attendance at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.BOARD.expertise
+  name: Expertise
+  work_type: extract
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  data_strategy:
+    field_key: board_expertise
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: board_composition
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: board_composition
+  signal_class: evaluative
+  field_path: board_expertise
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS Governance QualityScore methodology and SEC proxy disclosure
+      requirements (Regulation 14A)
+    threshold_basis: Informational signal -- no threshold scoring; provides qualitative
+      or quantitative context for underwriting assessment
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} expertise at {value} represents host risk (company-level
+        characteristics that attract or deter D&O claims) (scoring factor F10) — this
+        level is associated with Emerging Risk / Forward-Looking Exposure exposure
+        based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} expertise at {value} is a moderate indicator for
+        Emerging Risk / Forward-Looking Exposure (scoring factor F10), warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} expertise at {value} is within normal parameters for Emerging
+        Risk / Forward-Looking Exposure (scoring factor F10) — no D&O concern at this
+        level.'
+- id: GOV.BOARD.prior_litigation
+  name: Board Member Prior Litigation
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F7
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  - SCAC_SEARCH
+  data_locations:
+    SEC_DEF14A:
+    - board_members
+    SCAC_SEARCH:
+    - officer_cases
+  threshold:
+    type: tiered
+    red: '> 3 prior litigation instances across board'
+    yellow: '> 0 prior litigation instances'
+    clear: No prior litigation for directors
+  claims_correlation: 0.6
+  tier: 1
+  depth: 4
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.1'
+  extraction_hints:
+    field_patterns:
+    - board_forensics
+    - prior_litigation
+    expected_type: list
+    no_data_sentinel: Board member prior litigation not searched — requires SCAC cross-reference
+      for each director
+    validation_rule: search performed for each board member
+  data_strategy:
+    field_key: board_prior_litigation_count
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: board_forensics
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: board_forensics
+  signal_class: evaluative
+  field_path: board_prior_litigation_count
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS Governance QualityScore methodology and SEC proxy disclosure
+      requirements (Regulation 14A)
+    threshold_basis: 'Thresholds (RED: > 3 prior litigation instances across board;
+      YELLOW: > 0 prior litigation instances) from D&O underwriting practice and claims
+      experience'
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Board Member Prior Litigation at {value} (threshold:
+        > 3 prior litigation instances across board) signals elevated Insider Selling
+        / Director Trading risk (F7, F10). Directors with prior litigation history
+        carry proven exposure patterns. Prior D&O claims against current directors
+        increase both the probability of new claims and the difficulty of settling
+        them.'
+      TRIGGERED_YELLOW: '{company} Board Member Prior Litigation at {value} (threshold:
+        > 0 prior litigation instances) is in the caution zone for Insider Selling
+        / Director Trading (F7, F10). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Board Member Prior Litigation at {value} is within acceptable
+        range for Insider Selling / Director Trading (F7, F10) — this level is a protective
+        factor in D&O risk assessment, reducing claim probability.'
+- id: GOV.BOARD.qualifications
+  name: Board Member Qualifications & Experience
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - board_members
+    - director_qualifications
+  threshold:
+    type: tiered
+    red: Qualifications available for < 50% of directors
+    yellow: Qualifications available for < 80% of directors
+    clear: Qualifications available for >= 80% of directors
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  extraction_hints:
+    field_patterns:
+    - qualifications
+    - background
+    - experience
+    - expertise
+    expected_type: dict
+    no_data_sentinel: Director qualifications not extracted from proxy bio
+    validation_rule: each director has qualifications summary
+  data_strategy:
+    field_key: board_qualifications_pct
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: board_forensics
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: board_forensics
+  signal_class: evaluative
+  field_path: board_qualifications_pct
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS Governance QualityScore methodology and SEC proxy disclosure
+      requirements (Regulation 14A)
+    threshold_basis: 'Thresholds (RED: Qualifications available for < 50% of directors;
+      YELLOW: Qualifications available for < 80% of directors) from D&O underwriting
+      practice and claims experience'
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Board Member Qualifications & Experience at {value}
+        (threshold: Qualifications available for < 50% of directors) signals elevated
+        Emerging Risk / Forward-Looking Exposure risk (F10). Director qualification
+        gaps increase the probability of oversight failures. Directors lacking relevant
+        expertise are less likely to detect management misconduct, supporting Caremark
+        failure-of-monitoring claims.'
+      TRIGGERED_YELLOW: '{company} Board Member Qualifications & Experience at {value}
+        (threshold: Qualifications available for < 80% of directors) is in the caution
+        zone for Emerging Risk / Forward-Looking Exposure (F10). Monitor for deterioration
+        — trend direction and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Board Member Qualifications & Experience at {value} is within
+        acceptable range for Emerging Risk / Forward-Looking Exposure (F10) — this
+        level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: GOV.BOARD.character_conduct
+  name: Board Member Character & Conduct Issues
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F7
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L3
+  required_data:
+  - SEC_DEF14A
+  - WEB_SEARCH
+  data_locations:
+    SEC_DEF14A:
+    - board_members
+    WEB_SEARCH:
+    - director_background
+  threshold:
+    type: tiered
+    red: '> 2 character/conduct issues identified'
+    yellow: '> 0 character/conduct issues'
+    clear: No character concerns identified
+  claims_correlation: 0.5
+  tier: 2
+  depth: 4
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '4.1'
+  extraction_hints:
+    field_patterns:
+    - relationship_flags
+    - true_independence_concerns
+    - interlocks
+    expected_type: list
+    no_data_sentinel: Board member character screening not performed — requires web
+      search for personal history
+    validation_rule: background screening completed for all directors
+  data_strategy:
+    field_key: board_character_issues
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: board_composition
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: board_composition
+  signal_class: evaluative
+  field_path: board_character_issues
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS Governance QualityScore methodology and SEC proxy disclosure
+      requirements (Regulation 14A)
+    threshold_basis: 'Thresholds (RED: > 2 character/conduct issues identified; YELLOW:
+      > 0 character/conduct issues) from D&O underwriting practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Board Member Character & Conduct Issues at {value}
+        (threshold: > 2 character/conduct issues identified) signals elevated Insider
+        Selling / Director Trading risk (F7, F10). Director character and conduct
+        issues create direct personal liability exposure and compromise board credibility.
+        Courts give less deference to boards where individual directors have proven
+        integrity concerns.'
+      TRIGGERED_YELLOW: '{company} Board Member Character & Conduct Issues at {value}
+        (threshold: > 0 character/conduct issues) is in the caution zone for Insider
+        Selling / Director Trading (F7, F10). Monitor for deterioration — trend direction
+        and peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Board Member Character & Conduct Issues at {value} is within
+        acceptable range for Insider Selling / Director Trading (F7, F10) — this level
+        is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: GOV.BOARD.refresh_activity
+  name: Refresh Activity
+  work_type: extract
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  data_strategy:
+    field_key: board_refresh
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: board_composition
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: board_composition
+  signal_class: evaluative
+  field_path: board_refresh
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS Governance QualityScore methodology and SEC proxy disclosure
+      requirements (Regulation 14A)
+    threshold_basis: Informational signal -- no threshold scoring; provides qualitative
+      or quantitative context for underwriting assessment
+  rap_class: agent
+  rap_subcategory: agent.governance_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} refresh activity at {value} represents agent risk
+        (executive/director actions and decisions that create D&O exposure) (scoring
+        factor F10) — this level is associated with Emerging Risk / Forward-Looking
+        Exposure exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} refresh activity at {value} is a moderate indicator
+        for Emerging Risk / Forward-Looking Exposure (scoring factor F10), warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} refresh activity at {value} is within normal parameters for
+        Emerging Risk / Forward-Looking Exposure (scoring factor F10) — no D&O concern
+        at this level.'
+- id: GOV.BOARD.meetings
+  execution_mode: AUTO
+  name: Meetings
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: <4 meetings per year
+    yellow: 4-6 meetings per year
+    clear: '>6 meetings per year'
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  data_strategy:
+    field_key: board_meeting_count
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: board_composition
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: board_composition
+  signal_class: evaluative
+  field_path: board_meeting_count
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'ISS Governance QualityScore: board meeting frequency as indicator
+      of engagement and oversight quality'
+    threshold_basis: 'Board meetings <4 per year = RED: inadequate oversight per ISS
+      governance standards; <6 = YELLOW: below best practice'
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Meetings at {value} (threshold: <4 meetings per year)
+        signals elevated Emerging Risk / Forward-Looking Exposure risk (F10). Inadequate
+        board meeting frequency signals governance culture that tolerates infrequent
+        oversight. Courts evaluate meeting frequency as evidence of whether the board
+        fulfilled its Caremark monitoring duties. Board meetings <4 per year = RED:
+        inadequate oversight per ISS governance standards; <6 = YELLOW: below best
+        practice.'
+      TRIGGERED_YELLOW: '{company} Meetings at {value} (threshold: 4-6 meetings per
+        year) is in the caution zone for Emerging Risk / Forward-Looking Exposure
+        (F10). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Meetings at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.BOARD.committees
+  name: Committees
+  work_type: extract
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  data_strategy:
+    field_key: board_committees
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: board_composition
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: board_composition
+  signal_class: evaluative
+  field_path: board_committees
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'NYSE/NASDAQ listing requirements: audit, compensation, and nominating
+      committee independence requirements'
+    threshold_basis: 'Missing required independent committees = RED: NYSE/NASDAQ listing
+      standard violation; committee composition issues = YELLOW'
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} committees at {value} represents host risk (company-level
+        characteristics that attract or deter D&O claims) (scoring factor F10) — this
+        level is associated with Emerging Risk / Forward-Looking Exposure exposure
+        based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} committees at {value} is a moderate indicator for
+        Emerging Risk / Forward-Looking Exposure (scoring factor F10), warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} committees at {value} is within normal parameters for Emerging
+        Risk / Forward-Looking Exposure (scoring factor F10) — no D&O concern at this
+        level.'
+- id: GOV.BOARD.succession
+  execution_mode: AUTO
+  name: Succession
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: No succession plan AND CEO >65 OR tenured >15 years
+    yellow: No disclosed succession plan
+    clear: Succession plan disclosed
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.1'
+  data_strategy:
+    field_key: ceo_succession_plan
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: board_composition
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: board_composition
+  signal_class: evaluative
+  field_path: ceo_succession_plan
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: ISS Governance QualityScore methodology and SEC proxy disclosure
+      requirements (Regulation 14A)
+    threshold_basis: 'Thresholds (RED: No succession plan AND CEO >65 OR tenured >15
+      years; YELLOW: No disclosed succession plan) from D&O underwriting practice
+      and claims experience'
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Succession at {value} (threshold: No succession plan
+        AND CEO >65 OR tenured >15 years) signals elevated Emerging Risk / Forward-Looking
+        Exposure risk (F10). Inadequate succession planning creates key-person dependency
+        that amplifies stock decline risk on unexpected departures. Departure-triggered
+        drops produce SCAs alleging the company failed to disclose leadership vulnerability.'
+      TRIGGERED_YELLOW: '{company} Succession at {value} (threshold: No disclosed
+        succession plan) is in the caution zone for Emerging Risk / Forward-Looking
+        Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Succession at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'

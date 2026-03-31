@@ -1,0 +1,98 @@
+{# Stock Performance — extracted from market.html.j2 #}
+  {% from "components/sparkline.html.j2" import sparkline %}
+  {# --- Stock Performance Summary (3-column data grid — Label | Value | Context) --- #}
+  {# Wire primary market data source as footnote for data tracing (Plan 43-04) #}
+  {% set mkt_src_key = mkt.get('source', mkt.get('data_source', mkt.get('filing_ref', ''))) %}
+  {% set mkt_fn = footnote_registry.get(mkt_src_key) if footnote_registry and mkt_src_key else 0 %}
+  <h3>Stock Performance{% if mkt.get('stock_sparkline') %} {{ sparkline(mkt.stock_sparkline, "12-month price trend") }}{% endif %}</h3>
+  {% call data_grid("Stock Performance") %}
+    {{ data_row("Current Price", mkt.current_price|default(''), context_text="", footnote_num=mkt_fn) }}
+    {{ data_row("52-Week High", mkt.high_52w|default(''), context_text="", footnote_num=mkt_fn) }}
+    {{ data_row("52-Week Low", mkt.low_52w|default(''), context_text="", footnote_num=mkt_fn) }}
+    {{ data_row("% Off High", mkt.pct_off_high|default(''), context_text="30%+ off high = primary SCA trigger", footnote_num=mkt_fn) }}
+    {{ data_row("1-Year Return", mkt.get('return_1y', ''), context_text=mkt.get('sector_1y', ''), footnote_num=mkt_fn) }}
+    {{ data_row("Max Drawdown (1Y)", mkt.get('max_drawdown_1y', ''), context_text="", footnote_num=mkt_fn) }}
+    {{ data_row("90-Day Volatility", mkt.get('volatility_90d', ''), context_text="", footnote_num=mkt_fn) }}
+    {{ data_row("Beta", mkt.get('beta', ''), context_text="vs. S&P 500", footnote_num=mkt_fn) }}
+  {% endcall %}
+  {# --- Next Earnings Badge --- #}
+  {% if mkt.get('next_earnings') and mkt.next_earnings != '' %}
+  <div style="display:inline-flex; align-items:center; gap:6px; padding:5px 10px; border-radius:5px; background:#FEF3C7; border:1px solid #FDE68A; margin-bottom:0.5rem;">
+    <span style="font-size:7pt; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#92400E;">Next Earnings</span>
+    <span style="font-size:10pt; font-weight:800; color:#78350F; font-variant-numeric:tabular-nums;">{{ mkt.next_earnings }}</span>
+  </div>
+  {% endif %}
+
+  {# --- Valuation Ratios --- #}
+  {% if mkt.get('valuation') %}
+  {% set val = mkt.valuation %}
+  {% call data_grid("Valuation Ratios") %}
+    {% if val.get('pe_ratio') %}{{ data_row("P/E (Trailing)", val.pe_ratio, context_text="", footnote_num=mkt_fn) }}{% endif %}
+    {% if val.get('forward_pe') %}{{ data_row("P/E (Forward)", val.forward_pe, context_text="", footnote_num=mkt_fn) }}{% endif %}
+    {% if val.get('price_to_book') %}{{ data_row("Price / Book", val.price_to_book, context_text="", footnote_num=mkt_fn) }}{% endif %}
+    {% if val.get('ev_ebitda') %}{{ data_row("EV / EBITDA", val.ev_ebitda, context_text="", footnote_num=mkt_fn) }}{% endif %}
+    {% if val.get('peg_ratio') %}{{ data_row("PEG Ratio", val.peg_ratio, context_text="<1 undervalued, >2 expensive", footnote_num=mkt_fn) }}{% endif %}
+    {% if val.get('price_to_sales') %}{{ data_row("Price / Sales", val.price_to_sales, context_text="", footnote_num=mkt_fn) }}{% endif %}
+    {% if val.get('enterprise_to_revenue') %}{{ data_row("EV / Revenue", val.enterprise_to_revenue, context_text="", footnote_num=mkt_fn) }}{% endif %}
+  {% endcall %}
+  {# Valuation D&O interpretation #}
+  {% set pe_str = val.get('pe_ratio', '')|string %}
+  {% set pe_val = pe_str|float(default=-1) %}
+  {% set fwd_pe_str = val.get('forward_pe', '')|string %}
+  {% set fwd_pe_val = fwd_pe_str|float(default=-1) %}
+  <ul class="text-xs text-gray-500 mt-1 mb-2 leading-relaxed list-disc ml-4 space-y-0.5">
+    {% if pe_val > 0 and fwd_pe_val > 0 and pe_val > fwd_pe_val * 1.3 %}
+    <li>Trailing P/E ({{ val.pe_ratio }}) significantly exceeds forward P/E ({{ val.forward_pe }}) &mdash; market prices in substantial earnings growth, increasing severity of guidance miss SCA claims</li>
+    {% elif pe_val > 50 %}
+    <li>Elevated P/E of {{ val.pe_ratio }} reflects high growth expectations &mdash; richly valued companies face larger stock drops on earnings disappointments, increasing SCA claim severity</li>
+    {% endif %}
+    {% set pb_str = val.get('price_to_book', '')|string %}
+    {% set pb_val = pb_str|float(default=-1) %}
+    {% if pb_val > 10 %}
+    <li>Price/Book of {{ val.price_to_book }} indicates significant intangible value &mdash; impairment of goodwill or IP could trigger material stock drops and subsequent SCA claims</li>
+    {% endif %}
+  </ul>
+  {% endif %}
+
+  {# --- Profitability --- #}
+  {% if mkt.get('profitability') %}
+  {% set prof = mkt.profitability %}
+  {% call data_grid("Profitability") %}
+    {% if prof.get('gross_margin') %}{{ data_row("Gross Margin", prof.gross_margin, context_text="", footnote_num=mkt_fn) }}{% endif %}
+    {% if prof.get('operating_margin') %}{{ data_row("Operating Margin", prof.operating_margin, context_text="", footnote_num=mkt_fn) }}{% endif %}
+    {% if prof.get('profit_margin') %}{{ data_row("Net Profit Margin", prof.profit_margin, context_text="", footnote_num=mkt_fn) }}{% endif %}
+    {% if prof.get('roe') %}{{ data_row("Return on Equity", prof.roe, context_text="", footnote_num=mkt_fn) }}{% endif %}
+    {% if prof.get('roa') %}{{ data_row("Return on Assets", prof.roa, context_text="", footnote_num=mkt_fn) }}{% endif %}
+  {% endcall %}
+  {% endif %}
+
+  {# --- Growth Metrics --- #}
+  {% if mkt.get('growth') %}
+  {% set gr = mkt.growth %}
+  {% call data_grid("Growth") %}
+    {% if gr.get('revenue_growth') %}{{ data_row("Revenue Growth (YoY)", gr.revenue_growth, context_text="", footnote_num=mkt_fn) }}{% endif %}
+    {% if gr.get('earnings_growth') %}{{ data_row("Earnings Growth (YoY)", gr.earnings_growth, context_text="", footnote_num=mkt_fn) }}{% endif %}
+  {% endcall %}
+  {% endif %}
+
+  {# Stock performance interpretation — thresholds from signal YAML (Phase 91 — DISP-01) #}
+  {% set t_perf = thresholds if thresholds is defined else {} %}
+  {% set t_dfh = t_perf.get('decline_from_high', {'red': 30.0, 'yellow': 15.0}) %}
+  {% set t_bp = t_perf.get('beta_performance', {'red': 1.5, 'yellow': 1.3}) %}
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    {% if mkt.get('pct_off_high') and mkt.get('pct_off_high') != 'N/A' %}
+    {% set off_high_str = mkt.get('pct_off_high', '')|string|replace('%', '')|replace('-', '') %}
+    {% if off_high_str|float(default=0) >= t_dfh.red %}
+    <li>Decline of {{ mkt.pct_off_high }} from 52-week high is a significant D&amp;O risk indicator&mdash;stock drops exceeding {{ '{:.0f}'.format(t_dfh.red) }}% are the primary trigger for securities class action filings</li>
+    {% elif off_high_str|float(default=0) >= t_dfh.yellow %}
+    <li>Decline of {{ mkt.pct_off_high }} from 52-week high is moderate; below the typical SCA filing threshold but continued deterioration increases exposure</li>
+    {% else %}
+    <li>Stock trading near 52-week highs reduces immediate securities litigation risk, though does not eliminate exposure from other factors</li>
+    {% endif %}
+    {% endif %}
+    {% if mkt.get('beta') and mkt.get('beta') != 'N/A' %}
+    {% if mkt.get('beta')|float(default=1) > t_bp.red %}
+    <li>Beta of {{ mkt.beta }} indicates above-average stock price volatility, which correlates with higher D&amp;O claim frequency</li>
+    {% endif %}
+    {% endif %}
+  </ul>

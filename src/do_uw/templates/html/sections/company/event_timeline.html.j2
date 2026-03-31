@@ -1,0 +1,52 @@
+{# Company Event Timeline — visual vertical timeline of key corporate events #}
+{% set evt_timeline = company.event_timeline if company.event_timeline is defined else [] %}
+{% if evt_timeline %}
+<div class="subsection" id="company-event-timeline">
+  <h4>Company Event Timeline</h4>
+  <div style="position:relative; padding-left:24px; margin:0.5rem 0 1rem;">
+    {# Vertical line #}
+    <div style="position:absolute; left:7px; top:0; bottom:0; width:2px; background:#D1D5DB;"></div>
+    {% for evt in evt_timeline %}
+    {% set etype = evt.type | default('event') | lower %}
+    {# Color by type #}
+    {% if etype in ('acquisition', 'merger', 'ma') %}
+      {% set dot_color = '#7C3AED' %}
+      {% set dot_border = '#C4B5FD' %}
+      {% set badge_bg = '#F5F3FF' %}
+      {% set badge_border = '#DDD6FE' %}
+      {% set badge_text = '#5B21B6' %}
+    {% elif etype in ('ipo', 'offering', 'capital') %}
+      {% set dot_color = '#2563EB' %}
+      {% set dot_border = '#93C5FD' %}
+      {% set badge_bg = '#EFF6FF' %}
+      {% set badge_border = '#BFDBFE' %}
+      {% set badge_text = '#1E40AF' %}
+    {% elif etype in ('restructuring', 'layoff', 'reorganization') %}
+      {% set dot_color = '#DC2626' %}
+      {% set dot_border = '#FCA5A5' %}
+      {% set badge_bg = '#FEF2F2' %}
+      {% set badge_border = '#FECACA' %}
+      {% set badge_text = '#991B1B' %}
+    {% elif etype in ('leadership', 'executive_change', 'ceo', 'cfo') %}
+      {% set dot_color = '#D97706' %}
+      {% set dot_border = '#FCD34D' %}
+      {% set badge_bg = '#FFFBEB' %}
+      {% set badge_border = '#FDE68A' %}
+      {% set badge_text = '#92400E' %}
+    {% else %}
+      {% set dot_color = '#6B7280' %}
+      {% set dot_border = '#D1D5DB' %}
+      {% set badge_bg = '#F9FAFB' %}
+      {% set badge_border = '#E5E7EB' %}
+      {% set badge_text = '#374151' %}
+    {% endif %}
+    <div style="position:relative; margin-bottom:0.6rem; padding-left:12px;">
+      <div style="position:absolute; left:-20px; top:2px; width:10px; height:10px; border-radius:50%; background:{{ dot_color }}; border:2px solid {{ dot_border }};"></div>
+      <span style="font-size:7pt; font-weight:700; color:#6B7280; font-variant-numeric:tabular-nums; margin-right:6px;">{{ evt.date | default('N/A') }}</span>
+      <span style="display:inline-block; font-size:6pt; font-weight:600; padding:1px 4px; border-radius:3px; background:{{ badge_bg }}; border:1px solid {{ badge_border }}; color:{{ badge_text }}; vertical-align:middle;">{{ etype | replace('_', ' ') | title }}</span>
+      <div style="font-size:8pt; color:#374151; margin-top:1px; line-height:1.4;">{{ evt.description | default('') }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

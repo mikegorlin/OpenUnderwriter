@@ -1,0 +1,155 @@
+{# Company & Operations section template.
+   Merged from business_profile + intelligence_dossier (Phase 122-02).
+   Business overview, D&O exposure factors, geographic footprint,
+   revenue segments, classification, hazard profile, risk factors,
+   plus intelligence dossier groups (what company does, money flows,
+   revenue model, competitive landscape, emerging risks).
+
+   Phase 56: Decomposed into fragment templates in sections/company/.
+   Phase 118: Dossier sub-templates in sections/dossier/.
+   Phase 122-02: Merged into single company_operations section.
+   Facets are dispatched from section_context when available; falls back to
+   legacy inline rendering if section_context is not populated. #}
+
+{% from "macros/dual_voice.html.j2" import dual_voice_block %}
+{% set density = densities.get('company', {}) %}
+{% set level = density.level|default('CLEAN') if density else 'CLEAN' %}
+{% set co = company or {} %}
+
+<section id="company-operations">
+  <h2>Company &amp; Operations
+    {% if level == 'CRITICAL' %}<span class="section-risk-badge section-risk--critical">Critical</span>
+    {% elif level == 'ELEVATED' %}<span class="section-risk-badge section-risk--elevated">Elevated</span>
+    {% endif %}
+  </h2>
+
+  {{ dual_voice_block(commentary.get('company') if commentary else none, 'Company & Operations') }}
+
+  {# KPI Summary Cards (INFO-06) -- company snapshot at a glance #}
+  {# Market Cap and Revenue removed — homes are Decision Dashboard and Financial section (DEDUP-04) #}
+  {% from "components/kpi_cards.html.j2" import kpi_strip %}
+  {% set co_cards = [] %}
+  {% set ms = scorecard.metrics_strip if scorecard is defined and scorecard.get('metrics_strip') else {} %}
+  {% if ms.get('employees') %}{% set _ = co_cards.append({"value": ms.employees, "label": "Employees", "sub_label": "", "severity": "", "trend_svg": ""}) %}{% endif %}
+  {% if ms.get('years_public') %}{% set _ = co_cards.append({"value": ms.years_public ~ " yrs", "label": "Years Public", "sub_label": "", "severity": "", "trend_svg": ""}) %}{% endif %}
+  {% if co_cards %}
+  {{ kpi_strip({"cards": co_cards, "count": co_cards | length}) }}
+  {% endif %}
+
+  {# --- 5-Layer Narrative Architecture (NARR-01) --- #}
+  {% set sn = section_narratives.get('company', {}) if section_narratives is defined else {} %}
+  {% if sn %}
+    {{ narrative_5layer(sn.verdict, sn.thesis, sn.evidence_items, sn.implications, sn.deep_context) }}
+  {% else %}
+    {# Fallback: SCR + pre-computed narrative + D&O Implications #}
+    {% if scr_narratives is defined and scr_narratives.get('company') %}
+      {% set clean_scr = scr_narratives.company.copy() if scr_narratives.company is mapping else scr_narratives.company %}
+      {{ scr_narrative(clean_scr) }}
+    {% endif %}
+    {% set narr = narratives.company if narratives else none %}
+    {% if narr is string %}
+      {{ section_narrative(narr | clean_narrative) }}
+    {% else %}
+      {{ section_narrative(narr) }}
+    {% endif %}
+    {% if do_implications_data is defined and do_implications_data.get('company') %}
+      {{ do_implications(do_implications_data.company) }}
+    {% endif %}
+  {% endif %}
+
+  {# --- D&O Risk Signature: What makes this company unique --- #}
+  {% set ks = key_stats if key_stats is defined else {} %}
+  {% if ks.get('available') %}
+  {% set sig_items = [] %}
+  {% if ks.get('subsidiary_count') and ks.subsidiary_count is number and ks.subsidiary_count > 50 %}
+    {% set _ = sig_items.append(ks.subsidiary_count ~ " subsidiaries across " ~ ks.get('jurisdiction_count', 'multiple') ~ " jurisdictions") %}
+  {% endif %}
+  {% if ks.get('is_recent_ipo') %}
+    {% set _ = sig_items.append("Recent IPO (" ~ ks.get('ipo_months', '?') ~ " months public) — elevated Section 11/12 exposure") %}
+  {% endif %}
+  {% if ks.get('revenue_model', '').startswith('Hybrid') %}
+    {% set _ = sig_items.append("Hybrid revenue model — multiple D&O exposure vectors") %}
+  {% endif %}
+  {% if ks.get('geo_breakdown') and ks.geo_breakdown | length > 1 %}
+    {% set intl_pct = ks.geo_breakdown | selectattr('region', 'ne', 'United States') | map(attribute='pct') | first | default('') %}
+    {% if intl_pct %}
+      {% set _ = sig_items.append("International operations (" ~ intl_pct ~ ") — multi-jurisdiction regulatory exposure") %}
+    {% endif %}
+  {% endif %}
+  {% if ks.get('litigation_summary') and ks.litigation_summary.get('sca_status', '') != 'None on record' %}
+    {% set _ = sig_items.append("Active SCA history — established plaintiff interest") %}
+  {% endif %}
+
+  {% if sig_items %}
+  <div class="risk-signature">
+    <div class="risk-signature-title">D&O Risk Signature — What Makes This Company Different</div>
+    <ul class="risk-signature-list">
+      {% for item in sig_items %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  {# Company Identity moved to Section 1: Company Profile card.
+     Size metrics with spectrums are also in Section 1. #}
+
+  <div>
+    <div style="font-weight:600;margin-bottom:4px">Company &amp; Operations Details</div>
+    <div class="collapsible-content">
+      {# --- Facet-driven dispatch (Phase 56, updated Phase 122-02) --- #}
+      {% if section_context is defined and section_context.get('company_operations') %}
+        {% for facet in section_context.company_operations.facets %}
+          {% include facet.template %}
+        {% endfor %}
+      {% else %}
+        {# Legacy fallback — inline fragment includes (matches manifest group order) #}
+
+        {# ---- Business Profile groups (structured data) ---- #}
+        {# Identity #}
+        {% include "sections/company/business_description.html.j2" %}
+        {# Business Model #}
+        {% include "sections/company/business_model.html.j2" %}
+        {% include "sections/company/revenue_segments.html.j2" %}
+
+        {# ---- Intelligence Dossier groups (narrative/intelligence) ---- #}
+        {% include "sections/dossier/what_company_does.html.j2" %}
+        {% include "sections/dossier/money_flows.html.j2" %}
+        {% include "sections/dossier/revenue_model_card.html.j2" %}
+        {% include "sections/dossier/revenue_segments.html.j2" %}
+        {% include "sections/dossier/unit_economics.html.j2" %}
+        {% include "sections/dossier/revenue_waterfall.html.j2" %}
+        {% include "sections/dossier/competitive_landscape.html.j2" %}
+        {% include "sections/dossier/emerging_risk_radar.html.j2" %}
+        {% include "sections/dossier/asc_606.html.j2" %}
+
+        {# ---- Remaining Business Profile groups ---- #}
+        {% include "sections/company/exposure_factors.html.j2" %}
+        {% include "sections/company/customer_concentration.html.j2" %}
+        {% include "sections/company/supplier_concentration.html.j2" %}
+        {# Operations #}
+        {% include "sections/company/operational_complexity.html.j2" %}
+        {% include "sections/company/subsidiary_structure.html.j2" %}
+        {% include "sections/company/workforce_distribution.html.j2" %}
+        {% include "sections/company/operational_resilience.html.j2" %}
+        {# Events #}
+        {% include "sections/company/corporate_events.html.j2" %}
+        {% include "sections/company/event_timeline.html.j2" %}
+        {# Environment #}
+        {% include "sections/company/risk_factors.html.j2" %}
+        {% include "sections/company/ten_k_yoy.html.j2" %}
+        {% include "sections/company/environment_assessment.html.j2" %}
+        {# Sector #}
+        {% include "sections/company/sector_risk.html.j2" %}
+        {# Structure #}
+        {% include "sections/company/structural_complexity.html.j2" %}
+        {% include "sections/company/geographic_footprint.html.j2" %}
+        {# Summary #}
+        {% include "sections/company/company_checks.html.j2" %}
+        {# Alerts #}
+        {% include "sections/company/company_density_alerts.html.j2" %}
+      {% endif %}
+    </div>
+  </div>
+</section>

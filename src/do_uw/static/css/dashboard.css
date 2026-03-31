@@ -1,0 +1,202 @@
+/* D&O Underwriting Dashboard Styles
+ * Angry Dolphin branding: Navy #1A1446, Gold #FFD000, NO green in risk spectrum.
+ */
+
+/* ---- DaisyUI theme customization ---- */
+[data-theme="ad"] {
+  --p: 231 67% 18%;      /* --ad-navy #1A1446 in oklch approximation */
+  --pf: 231 67% 14%;     /* navy darker */
+  --pc: 0 0% 100%;       /* white on primary */
+  --a: 48 100% 50%;      /* --ad-gold #FFD000 */
+  --af: 48 100% 40%;     /* gold darker */
+  --ac: 231 67% 18%;     /* navy on accent */
+  --b1: 220 14% 96%;     /* base-100 */
+  --b2: 220 13% 91%;     /* base-200 */
+  --b3: 220 12% 86%;     /* base-300 */
+  --bc: 0 0% 20%;        /* base content */
+}
+
+/* ---- Card interactions ---- */
+.card {
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-1px);
+}
+
+/* ---- Risk badge color overrides ---- */
+.risk-critical {
+  background-color: var(--risk-critical) !important;
+  color: white !important;
+}
+
+.risk-high {
+  background-color: var(--risk-high) !important;
+  color: white !important;
+}
+
+.risk-elevated {
+  background-color: var(--risk-elevated) !important;
+  color: var(--ad-text) !important;
+}
+
+.risk-moderate {
+  background-color: var(--risk-moderate) !important;
+  color: white !important;
+}
+
+.risk-neutral {
+  background-color: var(--risk-neutral) !important;
+  color: white !important;
+}
+
+/* ---- Key findings borders (red/blue, NO green) ---- */
+.finding-negative {
+  background-color: var(--fmt-deteriorating);
+  border-left: 3px solid var(--risk-critical);
+}
+
+.finding-positive {
+  background-color: var(--fmt-improving);
+  border-left: 3px solid var(--risk-moderate);
+}
+
+/* ---- Conditional formatting classes ---- */
+.fmt-deteriorating {
+  background-color: var(--fmt-deteriorating);
+  border-left: 3px solid var(--risk-critical);
+}
+
+.fmt-caution {
+  background-color: var(--fmt-caution);
+  border-left: 3px solid var(--risk-elevated);
+}
+
+.fmt-improving {
+  background-color: var(--fmt-improving);
+  border-left: 3px solid var(--risk-moderate);
+}
+
+/* ---- Source citation styling ---- */
+.source-citation {
+  font-family: "SFMono-Regular", "Consolas", "Menlo", monospace;
+  font-size: 0.75rem;
+  color: var(--ad-text-light);
+}
+
+/* ---- Confidence badge overrides ---- */
+.confidence-high {
+  background-color: var(--risk-moderate) !important;
+  color: white !important;
+}
+
+.confidence-medium {
+  background-color: var(--risk-elevated) !important;
+  color: var(--ad-text) !important;
+}
+
+.confidence-low {
+  background-color: var(--risk-neutral) !important;
+  color: white !important;
+}
+
+/* ---- Score gauge ---- */
+.score-gauge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.score-gauge .score-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ad-navy);
+}
+
+.score-gauge .score-label {
+  font-size: 0.75rem;
+  color: var(--ad-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ---- Navbar override ---- */
+.navbar {
+  min-height: 3.5rem;
+}
+
+/* ---- htmx loading indicator ---- */
+.htmx-indicator {
+  opacity: 0;
+  transition: opacity 200ms ease-in;
+}
+
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+  opacity: 1;
+}
+
+/* ---- htmx fragment swap animation ---- */
+.htmx-swapping {
+  opacity: 0;
+  transition: opacity 150ms ease-out;
+}
+
+.htmx-settling {
+  opacity: 1;
+  transition: opacity 200ms ease-in;
+}
+
+/* ---- Stat compact override ---- */
+.stat {
+  padding: 0.5rem 1rem;
+}
+
+.stat .stat-title {
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+/* ---- Responsive fine-tuning ---- */
+@media (max-width: 640px) {
+  .navbar .flex-none {
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: flex-end;
+  }
+
+  .collapse-title {
+    font-size: 0.8rem;
+  }
+}
+
+/* ---- Print styles ---- */
+@media print {
+  .navbar {
+    display: none;
+  }
+
+  #global-indicator {
+    display: none;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    break-inside: avoid;
+  }
+
+  .btn {
+    display: none;
+  }
+
+  main {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .htmx-indicator {
+    display: none;
+  }
+}

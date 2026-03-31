@@ -1,0 +1,31 @@
+{# Claim Probability — extracted from scoring.html.j2 #}
+{% set claim_prob = sc.get('claim_probability') %}
+{% if claim_prob %}
+<h3>Claim Probability</h3>
+<div class="grid grid-cols-3 gap-2 my-3">
+  <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+    <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Band</p>
+    <p class="text-lg font-bold m-0
+      {% if claim_prob.band in ['VERY_HIGH', 'HIGH'] %} text-risk-red
+      {% elif claim_prob.band in ['ELEVATED'] %} text-risk-amber
+      {% else %} text-navy
+      {% endif %}
+    ">{{ claim_prob.band | humanize }}</p>
+  </div>
+  <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+    <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Company Rate</p>
+    <p class="text-lg font-bold text-navy m-0">{{ claim_prob.range }}</p>
+  </div>
+  <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+    <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Industry Base</p>
+    <p class="text-lg font-bold text-navy m-0">{{ claim_prob.industry_base }}</p>
+  </div>
+</div>
+<ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc pl-4 space-y-0.5">
+  <li>Derived from composite score using historical D&amp;O claims data</li>
+  <li>Company rate reflects adjustments for company-specific risk factors relative to the industry baseline</li>
+  {% if claim_prob.band in ['VERY_HIGH', 'HIGH'] %}
+  <li>Elevated band warrants enhanced underwriting terms including higher attachment or excess-only positioning</li>
+  {% endif %}
+</ul>
+{% endif %}

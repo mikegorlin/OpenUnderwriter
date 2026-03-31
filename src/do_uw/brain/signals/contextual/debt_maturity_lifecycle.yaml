@@ -1,0 +1,52 @@
+- id: CTX.FIN.debt_maturity
+  name: Debt Maturity Profile in Lifecycle Context
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of FIN.DEBT.maturity_profile through lifecycle_stage lens
+    threshold_provenance:
+      source: calibrated
+      rationale: Maturity urgency calibrated from Moody's annual default study by financial condition
+  signal_class: inference
+  group: key_metrics
+  rap_class: host
+  rap_subcategory: host.financials
+  epistemology:
+    rule_origin: 'Moody''s default study: maturity wall impact varies by company financial health'
+    threshold_basis: Maturity urgency calibrated from Moody's annual default study by financial condition
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: FIN.DEBT.maturity_profile
+      context_dimensions:
+      - lifecycle_stage
+      context_adjustments:
+        growth:
+          threshold_adjustment: 0.7
+          rationale: 'Growth: near-term maturities create refinancing risk during rapid scaling'
+        mature:
+          threshold_adjustment: 1.2
+          rationale: 'Mature: established credit access reduces maturity wall concern'
+        distressed:
+          threshold_adjustment: 0.4
+          rationale: 'Distressed: near-term maturities are existential threat'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} debt maturity profile in lifecycle context at {value} represents host risk (company-level
+        characteristics that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} debt maturity profile in lifecycle context at {value} is a moderate indicator for D&O risk
+        assessment, warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} debt maturity profile in lifecycle context at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

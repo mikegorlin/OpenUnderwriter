@@ -1,0 +1,58 @@
+- id: CTX.EXEC.tenure_lifecycle
+  name: Executive Tenure in Lifecycle Context
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of EXEC.TURN.c_suite through lifecycle_stage lens
+    threshold_provenance:
+      source: calibrated
+      rationale: Turnover baselines from Conference Board CEO succession study by company maturity
+  signal_class: inference
+  group: executive_tenure_stability
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  epistemology:
+    rule_origin: 'D&O claims experience: executive turnover interpretation varies significantly by company lifecycle'
+    threshold_basis: Turnover baselines from Conference Board CEO succession study by company maturity
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: EXEC.TURN.c_suite
+      context_dimensions:
+      - lifecycle_stage
+      context_adjustments:
+        pre_revenue:
+          threshold_adjustment: 0.5
+          rationale: 'Pre-revenue: short tenure expected for startup teams'
+        post_ipo:
+          threshold_adjustment: 0.7
+          rationale: 'Post-IPO: some turnover normal during public transition'
+        growth:
+          threshold_adjustment: 1.0
+          rationale: 'Growth: stability expected during scaling'
+        mature:
+          threshold_adjustment: 1.3
+          rationale: 'Mature: long tenure expected; turnover is more concerning'
+        distressed:
+          threshold_adjustment: 0.6
+          rationale: 'Distressed: management change may be positive restructuring signal'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} executive tenure in lifecycle context at {value} represents agent risk (executive/director
+        actions and decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} executive tenure in lifecycle context at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} executive tenure in lifecycle context at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

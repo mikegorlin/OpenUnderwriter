@@ -1,0 +1,48 @@
+- id: CONJ.RPT.audit
+  name: Related-Party Transactions + Audit Issues
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: Related-party transactions combined with audit quality concerns
+  provenance:
+    origin: phase_110_conjunction
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Conjunction of related-party + audit issue signals
+    threshold_provenance:
+      source: calibrated
+      rationale: Academic research (Kohlbeck & Mayhew 2010) shows RPTs + audit issues = 5.2x higher restatement 
+        probability
+  signal_class: inference
+  group: audit_profile
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  epistemology:
+    rule_origin: 'Academic research: Kohlbeck & Mayhew (2010) on related-party transactions and audit quality'
+    threshold_basis: 2+ of 3 conditions met triggers RED; HIGH_RISK floor due to fraud indicator combination
+  evaluation:
+    mechanism: conjunction
+    conjunction_rules:
+      required_signals:
+      - GOV.RPT.related_party
+      - FIN.ACCT.auditor
+      - FIN.ACCT.internal_controls
+      minimum_matches: 2
+      signal_conditions: {}
+      recommendation_floor: HIGH_RISK
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} related-party transactions + audit issues at {value} represents agent risk (executive/director
+        actions and decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} related-party transactions + audit issues at {value} is a moderate indicator for D&O risk
+        assessment, warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} related-party transactions + audit issues at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

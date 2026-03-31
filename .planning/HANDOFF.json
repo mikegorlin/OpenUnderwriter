@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-03-24T14:00:00Z",
+  "phase": "beta-report",
+  "phase_name": "Beta Report visual design iteration",
+  "status": "paused",
+  "completed_tasks": [
+    {"id": "130", "name": "Dual-Voice Intelligence", "status": "done"},
+    {"id": "131", "name": "Scoring Depth and Visualizations", "status": "done"},
+    {"id": "charts", "name": "12 D&O chart types + 10 style variations + 10 litigation layouts", "status": "done"},
+    {"id": "beta-full", "name": "Beta Report: header, 5yr strip, mini-cards, combo chart, 6 sections, all real data", "status": "done"},
+    {"id": "fixed-nav", "name": "Fixed header + nav (position:fixed viewport-locked)", "status": "done-needs-browser-verify"},
+    {"id": "score-bar", "name": "Score bar: red left bad → green right good, badge color matches zone, white border visible", "status": "done"}
+  ],
+  "remaining_tasks": [
+    {"id": "verify-nav", "name": "Verify fixed header/nav in browser"},
+    {"id": "lit-layout", "name": "User picks litigation layout from 10 options"},
+    {"id": "visual-polish", "name": "Continue visual quality iterations toward CR reference"},
+    {"id": "phase-132", "name": "Phase 132 Page-0 Dashboard"}
+  ],
+  "decisions": [
+    {"decision": "Navy Professional default, Bloomberg Orange 5yr strip"},
+    {"decision": "position:fixed for header+nav (not sticky)"},
+    {"decision": "Nav buttons = real sections (Exec Summary, Financial, etc.)"},
+    {"decision": "Score: 100=green/right=good, 0=red/left=bad, badge color matches bar zone"},
+    {"decision": "Score bar has white border container for visibility"},
+    {"decision": "Self-verification BEFORE showing output (CLAUDE.md rule)"},
+    {"decision": "Drops: shade 8%+, label 15%+, circles for insider trades"},
+    {"decision": "Google Favicons for company logos"}
+  ],
+  "next_action": "Resume → verify nav → pick litigation layout → keep iterating visual quality",
+  "context_notes": "Key files: beta_report.html.j2, beta_report.py, beta_report_charts.py, beta_report_sections.py, beta_report_infographics.py, scripts/generate_all_charts.py. CR ref: /Users/gorlin/projects/Underwriting 5.0 Lite/Output/CR/2026-03-23/reports/CR_visual_report.html. AAPL state: output/AAPL/2026-03-22/state.json. Chart spec: memory/reference-do-chart-1.md."
+}

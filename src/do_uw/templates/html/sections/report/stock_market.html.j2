@@ -1,0 +1,384 @@
+{# ═══════════════════════════════════════════════════════════════════════════
+   MANIFEST SECTION 3: STOCK & MARKET — Trading activity, earnings, valuation
+   ═══════════════════════════════════════════════════════════════════════════ #}
+{% set me = b.market_ext %}
+<div id="stock-market" style="margin-top:14px">
+  <div style="background:#1F3A5C;color:white;padding:6px 10px;border-radius:4px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+    <div><span style="font-size:10pt;font-weight:800;letter-spacing:0.3px">Stock & Market</span><br><span style="font-size:7.5pt;color:rgba(255,255,255,0.6)">Trading activity, earnings, insider transactions, valuation</span></div>
+  </div>
+
+  {% if me and me._stage_banner is defined and me._stage_banner %}
+  <div style="background:#FEF3C7;border-left:4px solid #F59E0B;padding:8px 12px;margin-bottom:8px;font-size:9pt;color:#92400E;border-radius:0 4px 4px 0">
+    {{ me._stage_banner }}
+  </div>
+  {% endif %}
+
+  {# ── LLM Critical Insight ── #}
+  {% with insight_id="market" %}{% include "components/section_insight.html.j2" %}{% endwith %}
+
+  {# ── Market Summary Cards ── #}
+  {% if me %}
+  <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:4px">
+    {# Price card with drawdown badge #}
+    <div style="flex:1;min-width:14%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px;text-align:center">
+      <div style="font-size:12pt;font-weight:800;color:#374151">{{ me.stock_price }}</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:1px">Price</div>
+      {% if me.drawdown_from_high and me.drawdown_from_high != 'N/A' and me.drawdown_from_high != '0.0%' %}
+      <div style="font-size:6.5pt;color:#DC2626;margin-top:1px">&#x25BC; {{ me.drawdown_from_high }} from high</div>
+      {% endif %}
+    </div>
+    {# 52W Range #}
+    <div style="flex:1;min-width:14%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px;text-align:center">
+      <div style="font-size:9pt;font-weight:800;color:#374151">{{ me.low_52w }} – {{ me.high_52w }}</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:1px">52-Week Range</div>
+    </div>
+    {# Beta #}
+    <div style="flex:1;min-width:14%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px;text-align:center">
+      <div style="font-size:12pt;font-weight:800;color:{% if me.beta != 'N/A' and me.beta | float > 1.5 %}#DC2626{% elif me.beta != 'N/A' and me.beta | float > 1.2 %}#D97706{% else %}#374151{% endif %}">{{ me.beta }}</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:1px">Beta</div>
+    </div>
+    {# Short Interest #}
+    <div style="flex:1;min-width:14%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px;text-align:center">
+      <div style="font-size:12pt;font-weight:800;color:{% if me.short_pct != 'N/A' and me.short_pct | replace('%','') | float > 10 %}#DC2626{% elif me.short_pct != 'N/A' and me.short_pct | replace('%','') | float > 5 %}#D97706{% else %}#374151{% endif %}">{{ me.short_pct }}</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:1px">Short Interest</div>
+    </div>
+    {# Max Drawdown from High #}
+    <div style="flex:1;min-width:14%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px;text-align:center">
+      <div style="font-size:12pt;font-weight:800;color:{% if me.drawdown_from_high != 'N/A' and me.drawdown_from_high | replace('%','') | float > 20 %}#DC2626{% elif me.drawdown_from_high != 'N/A' and me.drawdown_from_high | replace('%','') | float > 10 %}#D97706{% else %}#374151{% endif %}">{{ me.drawdown_from_high }}</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:1px">Off 52W High</div>
+    </div>
+    {# Analyst Consensus #}
+    <div style="flex:1;min-width:14%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px;text-align:center">
+      <div style="font-size:12pt;font-weight:800;color:{% if me.analyst_rec in ['STRONG_BUY', 'STRONG BUY', 'BUY'] %}#16A34A{% elif me.analyst_rec in ['SELL', 'STRONG_SELL', 'STRONG SELL'] %}#DC2626{% else %}#374151{% endif %}">{{ me.analyst_rec }}</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:1px">Analyst ({{ me.analyst_count }})</div>
+    </div>
+  </div>
+  {% endif %}
+
+  {# Stock charts — 1Y and 5Y side by side as first visual element #}
+  {% set mkt = market or {} %}
+  {% include "sections/market/stock_charts.html.j2" %}
+
+  {# Section opener — data-driven D&O connection #}
+  {% if me and me.section_opener %}
+  <div style="font-size:10.5pt;color:#1F3A5C;line-height:1.6;margin:4px 0 8px;padding:10px 14px;background:#F0F4F8;border:1px solid #1F3A5C;border-radius:5px;border-left:4px solid #1F3A5C">
+    {{ me.section_opener }}
+  </div>
+  {% elif me and me.narrative %}
+  <div style="font-size:10.5pt;color:#1F3A5C;line-height:1.6;margin:4px 0 8px;padding:10px 14px;background:#F0F4F8;border:1px solid #1F3A5C;border-radius:5px;border-left:4px solid #1F3A5C">
+    {{ me.narrative | strip_md }}
+  </div>
+  {% endif %}
+
+  {# 3.5.3 Quarterly Earnings Detail — enhanced with margins, EPS estimates, beat/miss #}
+  {% if me and me.quarterly_earnings %}
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Quarterly Earnings</span></div>
+  <table style="width:100%;border-collapse:collapse;font-size:8pt;margin-bottom:6px">
+    <tr style="background:#F9FAFB;border-bottom:1px solid #E5E7EB">
+      <th style="text-align:left;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6pt;text-transform:uppercase">Quarter</th>
+      <th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6pt;text-transform:uppercase">Revenue</th>
+      <th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6pt;text-transform:uppercase">YoY%</th>
+      <th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6pt;text-transform:uppercase">Gross Mgn</th>
+      <th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6pt;text-transform:uppercase">Op Mgn</th>
+      <th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6pt;text-transform:uppercase">Net Income</th>
+      <th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6pt;text-transform:uppercase">EPS</th>
+      <th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6pt;text-transform:uppercase">Est EPS</th>
+      <th style="text-align:center;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6pt;text-transform:uppercase">Beat/Miss</th>
+    </tr>
+    {% for q in me.quarterly_earnings %}
+    <tr style="border-bottom:1px solid #F3F4F6;{% if q.beat_miss == 'MISS' %}background:#FEF2F2{% elif q.beat_miss == 'BEAT' %}background:#F0FDF4{% endif %}">
+      <td style="padding:3px 4px;font-weight:600;color:#111827">{{ q.period }}</td>
+      <td style="padding:3px 4px;text-align:right;color:#374151;font-variant-numeric:tabular-nums">{{ q.revenue }}</td>
+      <td style="padding:3px 4px;text-align:right;font-variant-numeric:tabular-nums;color:{% if q.yoy_pct and q.yoy_pct != 'N/A' and q.yoy_pct[0:1] == '+' %}#16A34A{% elif q.yoy_pct and q.yoy_pct != 'N/A' and q.yoy_pct[0:1] == '-' %}#DC2626{% else %}#6B7280{% endif %}">{{ q.yoy_pct if q.yoy_pct and q.yoy_pct != 'N/A' else '—' }}</td>
+      <td style="padding:3px 4px;text-align:right;color:#374151;font-variant-numeric:tabular-nums">{{ q.gross_margin }}</td>
+      <td style="padding:3px 4px;text-align:right;color:#374151;font-variant-numeric:tabular-nums">{{ q.op_margin }}</td>
+      <td style="padding:3px 4px;text-align:right;color:#374151;font-variant-numeric:tabular-nums">{{ q.net_income }}</td>
+      <td style="padding:3px 4px;text-align:right;font-weight:700;color:#111827;font-variant-numeric:tabular-nums">{{ q.eps }}</td>
+      <td style="padding:3px 4px;text-align:right;color:#6B7280;font-variant-numeric:tabular-nums">{{ q.eps_estimate if q.eps_estimate and q.eps_estimate != 'N/A' else '—' }}</td>
+      <td style="padding:3px 4px;text-align:center">{% if q.beat_miss == 'BEAT' %}<span style="color:#16A34A;font-weight:700;font-size:7.5pt">BEAT {{ q.surprise_pct }}</span>{% elif q.beat_miss == 'MISS' %}<span style="color:#DC2626;font-weight:700;font-size:7.5pt">MISS {{ q.surprise_pct }}</span>{% elif q.beat_miss == 'MEET' %}<span style="color:#6B7280;font-size:7.5pt">MEET</span>{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+
+  {# Earnings Miss Scenario — investigative analysis #}
+  {% include "sections/investigative/earnings_miss.html.j2" ignore missing %}
+
+  {# 3.7.2 Insider Trading — Scienter Analysis #}
+  {% if me and me.insider_transactions %}
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin:8px 0 4px;display:flex;justify-content:space-between;align-items:center">
+    <div><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Insider Trading</span><span style="font-size:7.5pt;color:#6B7280;margin-left:8px">Scienter Indicator Analysis &mdash; Form 4 filings</span></div>
+    {% if me.insider_scienter_level %}
+    <div style="display:flex;align-items:center;gap:4px">
+      <span style="font-size:7pt;font-weight:700;padding:2px 8px;border-radius:8px;{% if me.insider_scienter_level == 'HIGH' %}background:#DC2626;color:white{% elif me.insider_scienter_level == 'MEDIUM' %}background:#F59E0B;color:white{% else %}background:#16A34A;color:white{% endif %}">{{ me.insider_scienter_level }} SCIENTER RISK</span>
+    </div>
+    {% endif %}
+  </div>
+
+  {# ── A) Scienter Risk Strip — 4 mini indicator cards ── #}
+  <div style="display:flex;gap:4px;margin:4px 0 6px;flex-wrap:wrap">
+    {# Card 1: Net Posture #}
+    <div style="flex:1;min-width:22%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px;text-align:center">
+      <div style="font-size:14pt;font-weight:800;{% if me.insider_net_label == 'NET SELLER' %}color:#DC2626{% elif me.insider_net_label == 'NET BUYER' %}color:#16A34A{% else %}color:#6B7280{% endif %}">{% if me.insider_net_label == 'NET SELLER' %}&#x25BC;{% elif me.insider_net_label == 'NET BUYER' %}&#x25B2;{% else %}&#x25CF;{% endif %} {{ me.insider_net_label }}</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:1px">Net Posture</div>
+      {% if me.insider_net_amount %}<div style="font-size:7pt;color:#9CA3AF">{{ me.insider_net_amount }}</div>{% endif %}
+    </div>
+    {# Card 2: 10b5-1 Coverage #}
+    <div style="flex:1;min-width:22%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px;text-align:center">
+      {% if me.insider_10b5_1_pct is none or me.insider_10b5_1_pct < 0 %}
+      <div style="font-size:11pt;font-weight:700;color:#6B7280">N/D</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:1px">10b5-1 Coverage</div>
+      <div style="font-size:6.5pt;color:#9CA3AF">Not determinable from Form 4 filings</div>
+      {% else %}
+      <div style="font-size:14pt;font-weight:800;{% if me.insider_10b5_1_pct >= 80 %}color:#16A34A{% elif me.insider_10b5_1_pct >= 40 %}color:#F59E0B{% else %}color:#DC2626{% endif %}">{{ me.insider_10b5_1_pct | round(0) | int }}%</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:1px">10b5-1 Coverage</div>
+      <div style="font-size:6.5pt;color:#9CA3AF">{% if me.insider_10b5_1_pct < 20 %}No safe harbor{% elif me.insider_10b5_1_pct < 50 %}Partial coverage{% elif me.insider_10b5_1_pct < 80 %}Moderate coverage{% else %}Strong safe harbor{% endif %}</div>
+      {% endif %}
+    </div>
+    {# Card 3: Cluster Activity #}
+    <div style="flex:1;min-width:22%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px;text-align:center">
+      <div style="font-size:14pt;font-weight:800;{% if me.insider_cluster_count > 0 %}color:#DC2626{% else %}color:#16A34A{% endif %}">{{ me.insider_cluster_count }}</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:1px">Cluster Events</div>
+      <div style="font-size:6.5pt;color:#9CA3AF">{% if me.insider_cluster_count > 0 %}Coordinated selling{% else %}No coordination detected{% endif %}</div>
+    </div>
+    {# Card 4: Timing Suspects #}
+    <div style="flex:1;min-width:22%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px;text-align:center">
+      <div style="font-size:14pt;font-weight:800;{% if me.insider_timing_count > 0 %}color:#DC2626{% elif me.insider_exercise_sell_count > 0 %}color:#F59E0B{% else %}color:#16A34A{% endif %}">{{ me.insider_timing_count + me.insider_exercise_sell_count }}</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:1px">Timing / Exercise-Sell</div>
+      <div style="font-size:6.5pt;color:#9CA3AF">{% if me.insider_timing_count > 0 %}{{ me.insider_timing_count }} pre-event{% endif %}{% if me.insider_timing_count > 0 and me.insider_exercise_sell_count > 0 %}, {% endif %}{% if me.insider_exercise_sell_count > 0 %}{{ me.insider_exercise_sell_count }} ex-sell{% endif %}{% if me.insider_timing_count == 0 and me.insider_exercise_sell_count == 0 %}No suspicious timing{% endif %}</div>
+    </div>
+  </div>
+
+  {# ── Cluster Events detail (if any) ── #}
+  {% if me.insider_cluster_events %}
+  <div style="background:#FEF2F2;border-left:3px solid #DC2626;padding:4px 8px;margin:4px 0;border-radius:0 3px 3px 0">
+    <div style="font-size:7.5pt;font-weight:700;color:#DC2626;margin-bottom:2px">Cluster Selling Detected</div>
+    {% for ce in me.insider_cluster_events %}
+    <div style="font-size:7.5pt;color:#374151">{{ ce.insider_count }} insiders sold {{ ce.total_value }} between {{ ce.start_date }} and {{ ce.end_date }}{% if ce.insiders %}: <span style="font-weight:600">{{ ce.insiders | join(', ') }}</span>{% endif %}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# ── Timing Suspects detail (if any) ── #}
+  {% if me.insider_timing_suspects %}
+  <div style="background:#FEF2F2;border-left:3px solid #F59E0B;padding:4px 8px;margin:4px 0;border-radius:0 3px 3px 0">
+    <div style="font-size:7.5pt;font-weight:700;color:#92400E;margin-bottom:2px">Pre-Event Trading Suspects</div>
+    {% for ts in me.insider_timing_suspects %}
+    <div style="font-size:7.5pt;color:#374151"><span style="font-weight:600">{{ ts.insider_name }}</span> {{ ts.transaction_type | lower }} {{ ts.transaction_value }} on {{ ts.transaction_date }} &mdash; {{ ts.days_before_filing }}d before {{ ts.filing_item }} filing ({{ ts.filing_sentiment | lower }}){% if ts.severity == 'RED_FLAG' %} <span style="color:#DC2626;font-weight:700">&bull; RED FLAG</span>{% endif %}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# ── B) Key Transactions Table — enriched with role, 10b5-1, exercise-sell ── #}
+  {% set ns_itv = namespace(show_value=false, show_pct=false, show_10b5=false) %}
+  {% for t in me.insider_transactions %}
+    {% if t.value and t.value != 'N/A' and t.value != '—' and t.value != '$0' %}{% set ns_itv.show_value = true %}{% endif %}
+    {% if t.pct_holdings %}{% set ns_itv.show_pct = true %}{% endif %}
+    {% if t.is_10b5_1 is true %}{% set ns_itv.show_10b5 = true %}{% endif %}
+  {% endfor %}
+  <table style="width:100%;border-collapse:collapse;font-size:8pt;margin-bottom:4px">
+    <tr style="background:#F9FAFB;border-bottom:1px solid #E5E7EB">
+      <th style="text-align:left;padding:3px 5px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Date</th>
+      <th style="text-align:left;padding:3px 5px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Name</th>
+      <th style="text-align:left;padding:3px 5px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Role</th>
+      <th style="text-align:center;padding:3px 5px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Type</th>
+      <th style="text-align:right;padding:3px 5px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Shares</th>
+      {% if ns_itv.show_value %}<th style="text-align:right;padding:3px 5px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Value</th>{% endif %}
+      {% if ns_itv.show_pct %}<th style="text-align:right;padding:3px 5px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">% Hldg</th>{% endif %}
+      {% if ns_itv.show_10b5 %}<th style="text-align:center;padding:3px 5px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">10b5-1</th>{% endif %}
+    </tr>
+    {% for t in me.insider_transactions %}
+    <tr style="border-bottom:1px solid #F3F4F6;{% if t.is_exercise_sell %}background:#FEF3C7{% elif t.is_c_suite and t.type in ['SELL', 'SALE'] %}background:#FEF2F2{% endif %}">
+      <td style="padding:3px 5px;color:#6B7280;white-space:nowrap;font-variant-numeric:tabular-nums">{{ t.date }}</td>
+      <td style="padding:3px 5px;font-weight:600;color:#111827">{{ t.name }}{% if t.is_exercise_sell %} <span style="font-size:6pt;color:#92400E;font-weight:700" title="Exercise-and-sell pattern detected">EX-SELL</span>{% endif %}</td>
+      <td style="padding:3px 5px;color:#6B7280;font-size:7pt">{{ t.role if t.role else '—' }}</td>
+      <td style="padding:3px 5px;text-align:center"><span style="font-size:7pt;font-weight:600;padding:1px 5px;border-radius:8px;{% if t.type in ['BUY', 'PURCHASE'] %}background:#F0FDF4;color:#16A34A{% elif t.type in ['SELL', 'SALE'] %}background:#FEF2F2;color:#DC2626{% else %}background:#F3F4F6;color:#374151{% endif %}">{{ t.type }}</span></td>
+      <td style="padding:3px 5px;text-align:right;color:#374151;font-variant-numeric:tabular-nums">{{ t.shares }}</td>
+      {% if ns_itv.show_value %}<td style="padding:3px 5px;text-align:right;font-weight:600;color:#111827;font-variant-numeric:tabular-nums">{{ t.value if t.value and t.value != 'N/A' else '—' }}</td>{% endif %}
+      {% if ns_itv.show_pct %}<td style="padding:3px 5px;text-align:right;font-variant-numeric:tabular-nums;{% if t.pct_holdings %}font-weight:600;color:#DC2626{% else %}color:#9CA3AF{% endif %}">{{ t.pct_holdings if t.pct_holdings else '—' }}</td>{% endif %}
+      {% if ns_itv.show_10b5 %}<td style="padding:3px 5px;text-align:center">{% if t.is_10b5_1 %}<span style="font-size:7pt;color:#16A34A;font-weight:700">&#x2713;</span>{% elif t.type in ['SELL', 'SALE'] %}<span style="font-size:7pt;color:#DC2626;font-weight:700">&#x2717;</span>{% else %}<span style="color:#D1D5DB">—</span>{% endif %}</td>{% endif %}
+    </tr>
+    {% endfor %}
+  </table>
+
+  {# ── C) Scienter Assessment — one-line summary ── #}
+  {% if me.insider_scienter_level and me.insider_scienter_factors %}
+  <div style="background:{% if me.insider_scienter_level == 'HIGH' %}#FEF2F2{% elif me.insider_scienter_level == 'MEDIUM' %}#FFFBEB{% else %}#F0FDF4{% endif %};border-left:3px solid {% if me.insider_scienter_level == 'HIGH' %}#DC2626{% elif me.insider_scienter_level == 'MEDIUM' %}#F59E0B{% else %}#16A34A{% endif %};padding:4px 8px;margin:4px 0 6px;border-radius:0 3px 3px 0">
+    <span style="font-size:7.5pt;font-weight:700;{% if me.insider_scienter_level == 'HIGH' %}color:#DC2626{% elif me.insider_scienter_level == 'MEDIUM' %}color:#92400E{% else %}color:#166534{% endif %}">Scienter Assessment:</span>
+    <span style="font-size:7.5pt;color:#374151">{{ me.insider_scienter_level }} risk &mdash; {{ me.insider_scienter_factors | join(', ') }}.</span>
+  </div>
+  {% elif me.insider_scienter_level %}
+  <div style="background:#F0FDF4;border-left:3px solid #16A34A;padding:4px 8px;margin:4px 0 6px;border-radius:0 3px 3px 0">
+    <span style="font-size:7.5pt;font-weight:700;color:#166534">Scienter Assessment:</span>
+    <span style="font-size:7.5pt;color:#374151">{{ me.insider_scienter_level }} risk &mdash; no significant scienter indicators detected.</span>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  {# 3.6.1 Valuation Multiples — manifest item, data from mini card 6 context #}
+  {% if b.valuation_multiples %}
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin:8px 0 4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Valuation Multiples</span></div>
+  <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px">
+    {% for vm in b.valuation_multiples %}
+    <div style="flex:1;min-width:14%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px;text-align:center">
+      <div style="font-size:12pt;font-weight:800;color:#374151">{{ vm.value }}</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">{{ vm.label }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# 3.4.1 Short Interest #}
+  {% if b.short_interest_pct %}
+  <div style="display:flex;gap:4px;margin-bottom:{% if b.short_interest_pct | float < 2 %}2{% else %}6{% endif %}px">
+    <div style="flex:1;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 10px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:8pt;color:#6B7280;font-weight:600">Short Interest</span>
+      <span style="font-size:11pt;font-weight:800;color:{% if b.short_interest_pct | float > 10 %}#DC2626{% elif b.short_interest_pct | float > 5 %}#D97706{% else %}#374151{% endif %}">{{ b.short_interest_pct }}%</span>
+    </div>
+    {% if b.short_interest_ratio %}<div style="flex:1;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 10px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:8pt;color:#6B7280;font-weight:600">Days to Cover</span>
+      <span style="font-size:11pt;font-weight:800;color:#374151">{{ b.short_interest_ratio }}</span>
+    </div>{% endif %}
+    {% if b.short_interest_trend %}
+    <div style="flex:1;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 10px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:8pt;color:#6B7280;font-weight:600">SI Trend</span>
+      <span style="font-size:11pt;font-weight:800;color:{{ b.short_interest_trend.color }}">{{ b.short_interest_trend.change_pct }}</span>
+    </div>
+    {% endif %}
+  </div>
+  {# Fix 6: Short interest context for low SI — <2% is non-material for mega-caps #}
+  {% if b.short_interest_pct | float < 2 %}
+  <div style="font-size:7.5pt;color:#6B7280;font-style:italic;margin-bottom:6px;padding:0 4px;line-height:1.4">
+    Short interest at {{ b.short_interest_pct }}% is well below the 5% threshold that typically signals elevated short seller activity. Not a D&amp;O concern for a mega-cap company.
+  </div>
+  {% elif b.short_interest_pct | float < 5 %}
+  <div style="font-size:7.5pt;color:#6B7280;font-style:italic;margin-bottom:6px;padding:0 4px;line-height:1.4">
+    Short interest at {{ b.short_interest_pct }}% is below the 5% threshold for elevated concern. Monitor for trend changes.
+  </div>
+  {% endif %}
+  {% endif %}
+
+  {# Analyst Consensus #}
+  {% if b.analyst_consensus %}
+  <div style="background:white;border:1px solid #E5E7EB;border-radius:5px;padding:8px 10px;margin-bottom:6px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <span style="font-size:11pt;font-weight:700;color:#1F3A5C">Analyst Consensus</span>
+      <span style="padding:2px 10px;border-radius:10px;font-size:8pt;font-weight:700;background:{{ b.analyst_consensus.rec_color }};color:white">{{ b.analyst_consensus.recommendation }}</span>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <div><span style="font-size:7.5pt;color:#6B7280">Rating: </span><span style="font-size:8pt;font-weight:700;color:#111827">{{ b.analyst_consensus.rating }}</span></div>
+      <div><span style="font-size:7.5pt;color:#6B7280">Analysts: </span><span style="font-size:8pt;font-weight:700;color:#111827">{{ b.analyst_consensus.num_analysts }}</span></div>
+      <div><span style="font-size:7.5pt;color:#6B7280">Target Mean: </span><span style="font-size:8pt;font-weight:700;color:#111827">{{ b.analyst_consensus.target_mean }}</span></div>
+      <div><span style="font-size:7.5pt;color:#6B7280">Target High: </span><span style="font-size:8pt;font-weight:700;color:#111827">{{ b.analyst_consensus.target_high }}</span></div>
+      <div><span style="font-size:7.5pt;color:#6B7280">Target Low: </span><span style="font-size:8pt;font-weight:700;color:#111827">{{ b.analyst_consensus.target_low }}</span></div>
+    </div>
+  </div>
+  {% endif %}
+
+  {# Stock Performance + Dividend Info + Volume Stats — compact row #}
+  {% if b.stock_52w_change or b.dividend_info or b.volume_stats %}
+  <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px">
+    {# 52-Week Performance #}
+    {% if b.stock_52w_change %}
+    <div style="flex:1;min-width:30%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px">
+      <div style="font-size:8pt;color:#1D4ED8;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:3px">52-Week Performance</div>
+      <div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">Stock Return</span><span style="font-size:8pt;font-weight:700;color:{% if b.stock_52w_change and b.stock_52w_change[0] == '+' %}#16A34A{% else %}#DC2626{% endif %}">{{ b.stock_52w_change }}</span></div>
+      {% if b.sp500_52w_change %}<div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">S&P 500</span><span style="font-size:8pt;font-weight:700;color:#374151">{{ b.sp500_52w_change }}</span></div>{% endif %}
+      {% if b.stock_alpha %}<div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">Alpha</span><span style="font-size:8pt;font-weight:700;color:{{ b.stock_alpha_color }}">{{ b.stock_alpha }}</span></div>{% endif %}
+    </div>
+    {% endif %}
+
+    {# Dividend Info #}
+    {% if b.dividend_info %}
+    <div style="flex:1;min-width:30%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px">
+      <div style="font-size:8pt;color:#16A34A;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:3px">Dividends</div>
+      <div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">Rate</span><span style="font-size:8pt;font-weight:700">{{ b.dividend_info.rate }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">Yield</span><span style="font-size:8pt;font-weight:700">{{ b.dividend_info.yield_pct }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">Payout Ratio</span><span style="font-size:8pt;font-weight:700">{{ b.dividend_info.payout_ratio }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">Ex-Div Date</span><span style="font-size:8pt;font-weight:700">{{ b.dividend_info.ex_date }}</span></div>
+    </div>
+    {% endif %}
+
+    {# Volume Stats + Institutional #}
+    {% if b.volume_stats or b.institutional_pct_market %}
+    <div style="flex:1;min-width:30%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 8px">
+      <div style="font-size:8pt;color:#7C3AED;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:3px">Trading Activity</div>
+      {% if b.volume_stats %}
+      <div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">Avg Volume</span><span style="font-size:8pt;font-weight:700">{{ b.volume_stats.avg_volume }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">10-Day Avg</span><span style="font-size:8pt;font-weight:700">{{ b.volume_stats.avg_volume_10d }}</span></div>
+      {% endif %}
+      {% if b.institutional_pct_market %}<div style="display:flex;justify-content:space-between;padding:1.5px 0"><span style="font-size:7.5pt;color:#6B7280">Institutional</span><span style="font-size:8pt;font-weight:700">{{ b.institutional_pct_market }}</span></div>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {# Stock Split History #}
+  {% if b.stock_splits %}
+  <div style="background:white;border:1px solid #E5E7EB;border-radius:5px;padding:6px 10px;margin-bottom:6px">
+    <div style="font-size:11pt;font-weight:700;color:#1F3A5C;margin-bottom:4px">Stock Split History <span style="font-size:7.5pt;color:#6B7280;font-weight:400">({{ b.stock_splits | length }} splits)</span></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      {% for sp in b.stock_splits %}
+      <div style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;background:#EFF6FF;border:1px solid #BFDBFE">
+        <span style="font-size:8pt;font-weight:700;color:#1D4ED8">{{ sp.ratio }}</span>
+        <span style="font-size:7pt;color:#6B7280">{{ sp.date }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# Full market detail from existing sub-templates #}
+  <div style="margin-top:12px">
+
+  {# ── LAYER 1: Price & Performance Detail ── #}
+  {# NOTE: Stock drops removed — now covered by unified drop chart + catalyst legend above #}
+  {# NOTE: Short interest removed — already in summary cards above #}
+  <div style="border:1px solid #1F3A5C;border-radius:6px;padding:10px;margin-bottom:12px;background:#FAFAFA">
+    <div style="font-size:8pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #1F3A5C;padding-bottom:4px">Price & Performance — Valuation, Returns & Drop Catalysts</div>
+    {% include "sections/market/stock_performance.html.j2" %}
+    {% include "sections/market/stock_drop_catalyst.html.j2" %}
+  </div>
+
+  {# ── LAYER 2: Earnings & Estimates ── #}
+  {# NOTE: analyst_consensus removed — already in summary cards above #}
+  <div style="border:1px solid #BFDBFE;border-radius:6px;padding:10px;margin-bottom:12px;background:#F8FBFF">
+    <div style="font-size:8pt;font-weight:700;color:#1E40AF;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #2563EB;padding-bottom:4px">Earnings & Estimates — History, Guidance & Analyst Views</div>
+    {% include "sections/market/earnings_history.html.j2" %}
+    {% include "sections/market/earnings_guidance.html.j2" %}
+    {% include "sections/market/earnings_reaction.html.j2" %}
+    {% include "sections/market/forward_estimates.html.j2" %}
+    {% include "sections/market/analyst_revisions.html.j2" %}
+    {% include "sections/market/upgrades_downgrades.html.j2" %}
+  </div>
+
+  {# NOTE: Layer 3 (Insider Trading) REMOVED — insider trading analysis now consolidated
+     in the top-level scienter section + insider timeline charts above.
+     The old insider_trading.html.j2 sub-template was a full duplicate. #}
+
+  {# ── LAYER 3: Ownership & Capital ── #}
+  <div style="border:1px solid #1F3A5C;border-radius:6px;padding:10px;margin-bottom:12px;background:#FAFAFA">
+    <div style="font-size:8pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #1F3A5C;padding-bottom:4px">Ownership & Capital — Institutional Holdings, Markets & Returns</div>
+    {% include "sections/market/ownership_chart.html.j2" %}
+    {% include "sections/market/capital_markets.html.j2" %}
+    {% include "sections/market/capital_returns.html.j2" %}
+  </div>
+
+  {# ── LAYER 4: Market Signals ── #}
+  <div style="border:1px solid #BFDBFE;border-radius:6px;padding:10px;margin-bottom:12px;background:#F8FBFF">
+    <div style="font-size:8pt;font-weight:700;color:#1E40AF;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #2563EB;padding-bottom:4px">Market Signals — NLP, Volume Anomalies & Event Correlation</div>
+    {% include "sections/scoring/nlp_dashboard.html.j2" %}
+    {% include "sections/market/volume_anomalies.html.j2" %}
+    {% include "sections/market/correlation_metrics.html.j2" %}
+    {% include "sections/market/eight_k_events.html.j2" %}
+  </div>
+
+  {# ── LAYER 5: Checks ── #}
+  <div style="border:1px solid #BBF7D0;border-radius:6px;padding:10px;margin-bottom:12px;background:#F7FFF9">
+    <div style="font-size:8pt;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #16A34A;padding-bottom:4px">Market Checks — Data Quality & Completeness</div>
+    {% include "sections/market/market_checks.html.j2" %}
+    {% include "sections/market/stock_performance_summary.html.j2" ignore missing %}
+  </div>
+
+  </div>
+</div>

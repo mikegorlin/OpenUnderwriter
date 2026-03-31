@@ -1,0 +1,58 @@
+- id: CTX.GOV.lifecycle
+  name: Board Independence in Lifecycle Context
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of GOV.BOARD.independence through lifecycle_stage lens
+    threshold_provenance:
+      source: calibrated
+      rationale: Independence expectations calibrated from ISS governance database by company maturity
+  signal_class: inference
+  group: structural_governance
+  rap_class: host
+  rap_subcategory: host.governance_structure
+  epistemology:
+    rule_origin: NYSE/NASDAQ listing standards and ISS governance scoring adjusted for company lifecycle
+    threshold_basis: Independence expectations calibrated from ISS governance database by company maturity
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: GOV.BOARD.independence
+      context_dimensions:
+      - lifecycle_stage
+      context_adjustments:
+        pre_revenue:
+          threshold_adjustment: 0.5
+          rationale: 'Pre-revenue: founder control expected, lower independence bar'
+        post_ipo:
+          threshold_adjustment: 0.7
+          rationale: 'Post-IPO: transitioning to independent governance'
+        growth:
+          threshold_adjustment: 0.9
+          rationale: 'Growth: approaching full independence expectations'
+        mature:
+          threshold_adjustment: 1.3
+          rationale: 'Mature: full independence expected, higher scrutiny'
+        distressed:
+          threshold_adjustment: 1.5
+          rationale: 'Distressed: independence critical for fiduciary duty defense'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} board independence in lifecycle context at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} board independence in lifecycle context at {value} is a moderate indicator for D&O risk
+        assessment, warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} board independence in lifecycle context at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

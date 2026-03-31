@@ -1,0 +1,52 @@
+{# AI Risk Assessment section template.
+   AI risk score, dimension breakdown, and strategic assessment.
+
+   Phase 56: Decomposed into 5 fragment templates in sections/ai_risk/.
+   Facets are dispatched from section_context when available; falls back to
+   legacy inline rendering if section_context is not populated. #}
+
+{% set density = densities.get('ai_risk', {}) %}
+{% set level = density.level|default('CLEAN') if density else 'CLEAN' %}
+{% set ai = ai_risk or {} %}
+
+<section id="ai-risk"{% if ai.get('overall_score') is not none or ai.get('dimensions') %} class="page-break"{% endif %}>
+  {{ density_indicator(level) }}
+  <h2>AI Risk Assessment</h2>
+
+  {# --- 5-Layer Narrative Architecture (NARR-01) --- #}
+  {% set sn = section_narratives.get('ai_risk', {}) if section_narratives is defined else {} %}
+  {% if sn %}
+    {{ narrative_5layer(sn.verdict, sn.thesis, sn.evidence_items, sn.implications, sn.deep_context) }}
+  {% else %}
+    {# Fallback: SCR + pre-computed narrative + D&O Implications #}
+    {% if scr_narratives is defined and scr_narratives.get('ai_risk') %}
+      {{ scr_narrative(scr_narratives.ai_risk) }}
+    {% endif %}
+    {% set narr = narratives.ai_risk if narratives else none %}
+    {% if narr and narr is string and 'cannot write this narrative' not in narr and 'data field is empty' not in narr %}
+    {{ section_narrative(narr) }}
+    {% endif %}
+    {% if do_implications_data is defined and do_implications_data.get('ai_risk') %}
+      {{ do_implications(do_implications_data.ai_risk) }}
+    {% endif %}
+  {% endif %}
+
+  <div>
+    <div style="font-weight:600;margin-bottom:4px">AI &amp; Emerging Risk Details</div>
+    <div class="collapsible-content">
+      {# --- Facet-driven dispatch (Phase 56) --- #}
+      {% if section_context is defined and section_context.get('ai_risk') %}
+        {% for facet in section_context.ai_risk.facets %}
+          {% include facet.template %}
+        {% endfor %}
+      {% else %}
+        {# Legacy fallback — inline fragment includes #}
+        {% include "sections/ai_risk/overall_score.html.j2" %}
+        {% include "sections/ai_risk/dimension_breakdown.html.j2" %}
+        {% include "sections/ai_risk/competitive_position.html.j2" %}
+        {% include "sections/ai_risk/forward_assessment.html.j2" %}
+        {% include "sections/ai_risk/ai_risk_density_alerts.html.j2" %}
+      {% endif %}
+    </div>
+  </div>
+</section>

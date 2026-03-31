@@ -1,0 +1,352 @@
+/* Angry Dolphin Underwriting -- D&O Worksheet PDF Styles
+ * Professional print-ready layout for WeasyPrint generation.
+ * Brand: Navy #1A1446, Gold #FFD000. NO green in risk spectrum.
+ */
+
+/* =====================================================================
+   Page Setup
+   ===================================================================== */
+@page {
+  size: letter;
+  margin: 0.75in 0.65in;
+  @bottom-center {
+    content: "Page " counter(page) " of " counter(pages);
+    font-size: 7pt;
+    color: #999;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+  }
+  @bottom-right {
+    content: "Confidential";
+    font-size: 7pt;
+    color: #bbb;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+  }
+}
+
+/* =====================================================================
+   Typography
+   ===================================================================== */
+body {
+  font-family: Georgia, "Times New Roman", "Noto Serif", serif;
+  font-size: 10pt;
+  color: #2C2C2C;
+  line-height: 1.45;
+}
+
+h1, h2, h3 {
+  font-family: "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  color: #1A1446;
+  page-break-after: avoid;
+  orphans: 3;
+  widows: 3;
+}
+
+h1 {
+  font-size: 20pt;
+  margin: 0 0 4pt 0;
+  letter-spacing: -0.5pt;
+}
+
+h2 {
+  font-size: 13pt;
+  border-bottom: 2px solid #1A1446;
+  padding-bottom: 4pt;
+  margin: 16pt 0 8pt 0;
+}
+
+h3 {
+  font-size: 11pt;
+  margin: 12pt 0 4pt 0;
+  color: #2A2060;
+}
+
+strong { color: #1A1446; }
+p { margin: 4pt 0; }
+ul { margin: 4pt 0; padding-left: 18pt; }
+li { margin-bottom: 2pt; }
+
+/* =====================================================================
+   Header & Footer
+   ===================================================================== */
+header {
+  border-bottom: 3px solid #FFD000;
+  padding-bottom: 10pt;
+  margin-bottom: 16pt;
+}
+
+header .subtitle {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 14pt;
+  color: #1A1446;
+  font-weight: bold;
+  margin: 2pt 0;
+}
+
+header .meta {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 8pt;
+  color: #888;
+  margin: 0;
+}
+
+footer {
+  margin-top: 24pt;
+  padding-top: 6pt;
+  border-top: 1px solid #ccc;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 7pt;
+  color: #999;
+  text-align: center;
+}
+
+/* =====================================================================
+   Tables -- Core Layout
+   ===================================================================== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6pt 0 10pt 0;
+  page-break-inside: auto;
+}
+
+table.data-table {
+  font-size: 9pt;
+  line-height: 1.3;
+}
+
+table.data-table thead th {
+  background-color: #1A1446;
+  color: #FFFFFF;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-weight: 600;
+  text-align: left;
+  padding: 5pt 7pt;
+  font-size: 8.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.3pt;
+  border-bottom: 2px solid #FFD000;
+}
+
+table.data-table tbody td {
+  padding: 4pt 7pt;
+  border-bottom: 1px solid #E0E0E0;
+  vertical-align: top;
+}
+
+table.data-table tbody tr:nth-child(even) td {
+  background-color: #F5F6F9;
+}
+
+table.data-table tbody tr:last-child td {
+  border-bottom: 2px solid #E0E0E0;
+}
+
+/* Key-value tables (2 columns: label + value) */
+table.kv-table th {
+  background-color: #F0EFF5;
+  color: #1A1446;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-weight: 600;
+  text-align: left;
+  padding: 4pt 7pt;
+  font-size: 9pt;
+  width: 35%;
+  border-bottom: 1px solid #E0E0E0;
+}
+
+table.kv-table td {
+  padding: 4pt 7pt;
+  border-bottom: 1px solid #E0E0E0;
+  font-size: 9pt;
+}
+
+/* Compact tables for litigation (many columns) */
+table.compact { font-size: 8pt; }
+table.compact td, table.compact th { padding: 3pt 5pt; }
+
+/* Evidence cells -- truncate overflow */
+.evidence-cell {
+  max-width: 180pt;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 8pt;
+  color: #555;
+}
+
+/* =====================================================================
+   Risk Coloring (NO green)
+   ===================================================================== */
+tr.risk-critical td,
+td.risk-critical {
+  background-color: #FCE8E6 !important;
+  border-left: 3px solid #CC0000;
+}
+
+tr.risk-elevated td,
+td.risk-elevated {
+  background-color: #FFF3CD !important;
+  border-left: 3px solid #E67300;
+}
+
+tr.risk-moderate td,
+td.risk-moderate {
+  background-color: #DCEEF8 !important;
+  border-left: 3px solid #4A90D9;
+}
+
+tr.risk-low td,
+td.risk-low {
+  background-color: transparent;
+}
+
+/* Risk badges -- inline labels for exposure/threat levels */
+.risk-badge {
+  display: inline-block;
+  padding: 1pt 6pt;
+  border-radius: 3pt;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 7.5pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.3pt;
+}
+
+.risk-badge.risk-critical { background: #CC0000; color: #fff; }
+.risk-badge.risk-high { background: #CC0000; color: #fff; }
+.risk-badge.risk-elevated { background: #E67300; color: #fff; }
+.risk-badge.risk-moderate { background: #4A90D9; color: #fff; }
+.risk-badge.risk-low { background: #7A8A9E; color: #fff; }
+.risk-badge.risk-neutral { background: #AABBCC; color: #333; }
+
+/* =====================================================================
+   Callout Boxes
+   ===================================================================== */
+.callout {
+  margin: 8pt 0;
+  padding: 8pt 10pt;
+  border-radius: 2pt;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+}
+
+.callout-thesis {
+  background-color: #F0EFF5;
+  border-left: 4px solid #1A1446;
+  font-style: italic;
+}
+
+.callout-warning {
+  background-color: #FFF3CD;
+  border-left: 4px solid #E67300;
+}
+
+.callout-do-context {
+  background-color: #EAF0F9;
+  border-left: 4px solid #4A90D9;
+  font-size: 9pt;
+}
+
+/* =====================================================================
+   Narratives
+   ===================================================================== */
+.narrative {
+  font-size: 9.5pt;
+  margin: 4pt 0 8pt 0;
+  color: #333;
+}
+
+/* =====================================================================
+   Findings Lists
+   ===================================================================== */
+.findings.negative li::marker { color: #CC0000; }
+.findings.positive li::marker { color: #4A90D9; }
+
+/* =====================================================================
+   Citations & Sources
+   ===================================================================== */
+.citation {
+  font-family: "Courier New", "Consolas", monospace;
+  font-size: 7.5pt;
+  color: #888;
+  margin: 2pt 0;
+}
+
+/* =====================================================================
+   Category Tags (Meeting Prep)
+   ===================================================================== */
+.tag {
+  display: inline-block;
+  padding: 1pt 6pt;
+  border-radius: 3pt;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 7.5pt;
+  font-weight: bold;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.tag-clarification { background-color: #4A90D9; }
+.tag-forward_indicator { background-color: #E67300; }
+.tag-gap_filler { background-color: #FFB800; color: #333; }
+.tag-credibility_test { background-color: #CC0000; }
+
+/* =====================================================================
+   Meeting Prep Questions
+   ===================================================================== */
+.question {
+  margin: 10pt 0;
+  padding: 8pt 10pt;
+  border-left: 3px solid #1A1446;
+  background-color: #FAFAFA;
+  page-break-inside: avoid;
+}
+
+.question h3 {
+  margin: 0 0 4pt 0;
+  font-size: 10pt;
+}
+
+.q-text { font-size: 10pt; margin: 2pt 0; }
+.context { font-size: 8.5pt; color: #555; margin: 2pt 0; }
+.answers { margin-left: 14pt; font-size: 8.5pt; }
+.good strong { color: #4A90D9; }
+.bad strong { color: #CC0000; }
+.follow-up { font-size: 8.5pt; color: #666; margin: 2pt 0; }
+
+/* =====================================================================
+   N/A Placeholder
+   ===================================================================== */
+.na {
+  color: #999;
+  font-style: italic;
+  font-size: 9pt;
+}
+
+/* =====================================================================
+   Page Break & Print Utilities
+   ===================================================================== */
+.page-break { page-break-before: always; }
+
+section {
+  margin-bottom: 8pt;
+}
+
+/* Avoid breaking inside tables and figures */
+figure {
+  margin: 10pt 0;
+  text-align: center;
+  page-break-inside: avoid;
+}
+
+figure img {
+  max-width: 100%;
+  height: auto;
+}
+
+figcaption {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 8pt;
+  color: #888;
+  margin-top: 3pt;
+}

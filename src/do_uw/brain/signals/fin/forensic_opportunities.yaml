@@ -1,0 +1,916 @@
+- id: FIN.QUALITY.revenue_recognition_risk
+  execution_mode: AUTO
+  name: Revenue Recognition Risk Indicators
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  - F5
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: xbrl_deferred_revenue_divergence
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.20'
+    yellow: '> 0.10'
+    clear: <= 0.10
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_signal_audit_bucket_f
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: earnings_quality
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Revenue recognition risk indicators above 20%
+  group: earnings_quality
+  signal_class: evaluative
+  field_path: xbrl_deferred_revenue_divergence
+  depends_on:
+  - signal: BASE.FORENSIC.revenue
+    field: xbrl_deferred_revenue_divergence
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.20; YELLOW: > 0.10) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Revenue Recognition Risk Indicators at {value} (threshold:
+        > 0.20) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3, F5). Revenue recognition anomalies are the #1 restatement trigger. Restatements
+        generate automatic SCA filings with near-certain class certification, as they
+        provide strong evidence of material misstatement. Thresholds (RED: > 0.20;
+        YELLOW: > 0.10) from D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Revenue Recognition Risk Indicators at {value}
+        (threshold: > 0.10) is in the caution zone for Financial Irregularities /
+        Restatement Risk (F3, F5). Monitor for deterioration — trend direction and
+        peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Revenue Recognition Risk Indicators at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3, F5) — this level
+        is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.FORENSIC.level3_fair_value
+  name: Level 3 Fair Value Asset Concentration
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L2
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_level3_fair_value
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.15'
+    yellow: '> 0.05'
+    clear: <= 0.05
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_signal_audit_bucket_f
+    confidence: MEDIUM
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Level 3 fair value assets exceed 15% of total — valuation opacity
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_level3_fair_value
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.15; YELLOW: > 0.05) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Level 3 Fair Value Asset Concentration at {value}
+        (threshold: > 0.15) signals elevated Financial Irregularities / Restatement
+        Risk risk (F3). Level 3 asset concentration requires management judgment in
+        valuation -- the discretion itself creates scienter exposure when valuations
+        are subsequently written down, as plaintiffs allege management manipulated
+        unobservable inputs. Thresholds (RED: > 0.15; YELLOW: > 0.05) from D&O underwriting
+        practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Level 3 Fair Value Asset Concentration at {value}
+        (threshold: > 0.05) is in the caution zone for Financial Irregularities /
+        Restatement Risk (F3). Monitor for deterioration — trend direction and peer
+        comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Level 3 Fair Value Asset Concentration at {value} is within
+        acceptable range for Financial Irregularities / Restatement Risk (F3) — this
+        level is a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.DEBT.pension_underfunded_risk
+  execution_mode: DEFERRED
+  name: Pension Underfunded Status Risk
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: xbrl_pension_underfunding
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.20'
+    yellow: '> 0.10'
+    clear: <= 0.10
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_signal_audit_bucket_f
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: distress_indicators
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Pension plan funded status below 80%
+  group: distress_indicators
+  signal_class: evaluative
+  field_path: xbrl_pension_underfunding
+  depends_on:
+  - signal: BASE.FORENSIC.debt_tax
+    field: xbrl_pension_underfunding
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.20; YELLOW: > 0.10) from D&O underwriting
+      practice and claims experience'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Pension Underfunded Status Risk at {value} (threshold:
+        > 0.20) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Underfunded pension obligations create contingent liabilities that must
+        be disclosed. Failure to adequately reserve or disclose the underfunding generates
+        restatement risk and ERISA fiduciary breach exposure. Thresholds (RED: > 0.20;
+        YELLOW: > 0.10) from D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Pension Underfunded Status Risk at {value} (threshold:
+        > 0.10) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Pension Underfunded Status Risk at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.DEBT.operating_lease_burden
+  execution_mode: DEFERRED
+  name: Operating Lease Liability Burden
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L2
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_operating_lease_burden
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.30'
+    yellow: '> 0.15'
+    clear: <= 0.15
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_signal_audit_bucket_f
+    confidence: MEDIUM
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: distress_indicators
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Operating lease liabilities exceed 30% of total liabilities
+  group: distress_indicators
+  signal_class: evaluative
+  field_path: forensic_operating_lease_burden
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.30; YELLOW: > 0.15) from D&O underwriting
+      practice and claims experience'
+  rap_class: host
+  rap_subcategory: host.financials
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Operating Lease Liability Burden at {value} (threshold:
+        > 0.30) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Operating lease liability burden creates off-balance-sheet risk that
+        became more visible under ASC 842. Understated lease obligations create restatement
+        exposure and creditor-oriented derivative claims. Thresholds (RED: > 0.30;
+        YELLOW: > 0.15) from D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Operating Lease Liability Burden at {value} (threshold:
+        > 0.15) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Operating Lease Liability Burden at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.FORENSIC.goodwill_deterioration_pattern
+  name: Goodwill Deterioration Pattern
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: xbrl_goodwill_growth_rate
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.25'
+    yellow: '> 0.10'
+    clear: <= 0.10
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_signal_audit_bucket_f
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Goodwill growth rate >25% with declining ROIC — impairment
+      pattern
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: xbrl_goodwill_growth_rate
+  depends_on:
+  - signal: BASE.FORENSIC.ma
+    field: xbrl_goodwill_growth_rate
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.25; YELLOW: > 0.10) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Goodwill Deterioration Pattern at {value} (threshold:
+        > 0.25) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Annual ASC 350 impairment testing creates a recurring disclosure risk
+        event. When goodwill is subsequently written down, plaintiffs allege management
+        knew acquisitions were overvalued, triggering Section 10(b) claims with strong
+        scienter evidence. Thresholds (RED: > 0.25; YELLOW: > 0.10) from D&O underwriting
+        practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Goodwill Deterioration Pattern at {value} (threshold:
+        > 0.10) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Goodwill Deterioration Pattern at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.QUALITY.stock_comp_dilution_rate
+  execution_mode: DEFERRED
+  name: Stock Compensation Dilution Rate
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_sbc_dilution
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.10'
+    yellow: '> 0.05'
+    clear: <= 0.05
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_signal_audit_bucket_f
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: earnings_quality
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: SBC dilution rate exceeds 10% of revenue
+  group: earnings_quality
+  signal_class: evaluative
+  field_path: forensic_sbc_dilution
+  depends_on:
+  - signal: BASE.FORENSIC.earnings
+    field: forensic_sbc_dilution
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.10; YELLOW: > 0.05) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Stock Compensation Dilution Rate at {value} (threshold:
+        > 0.10) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Excessive stock compensation dilution signals misaligned incentives
+        between management and shareholders, supporting governance failure theories
+        in derivative claims and creating the ''motive'' element in scienter analysis.
+        Thresholds (RED: > 0.10; YELLOW: > 0.05) from D&O underwriting practice and
+        claims experience.'
+      TRIGGERED_YELLOW: '{company} Stock Compensation Dilution Rate at {value} (threshold:
+        > 0.05) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Stock Compensation Dilution Rate at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.FORENSIC.related_party_revenue
+  name: Related Party Revenue Concentration
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L2
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_related_party_revenue
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.10'
+    yellow: '> 0.05'
+    clear: <= 0.05
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_signal_audit_bucket_f
+    confidence: MEDIUM
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Related party revenue exceeds 10% — conflict of interest risk
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_related_party_revenue
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.10; YELLOW: > 0.05) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Related Party Revenue Concentration at {value} (threshold:
+        > 0.10) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Related party transactions create duty-of-loyalty exposure for directors
+        -- these transactions are presumptively suspect under Entire Fairness review,
+        shifting the burden of proof to defendants in derivative litigation. Thresholds
+        (RED: > 0.10; YELLOW: > 0.05) from D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Related Party Revenue Concentration at {value}
+        (threshold: > 0.05) is in the caution zone for Financial Irregularities /
+        Restatement Risk (F3). Monitor for deterioration — trend direction and peer
+        comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Related Party Revenue Concentration at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: GOV.INSIDER.trading_pattern_deviation
+  execution_mode: DEFERRED
+  name: Insider Trading Pattern Deviation
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L2
+  required_data:
+  - INSIDER_TRADES
+  data_locations:
+    INSIDER_TRADES:
+    - form4_transactions
+  data_strategy:
+    field_key: insider_trading_pattern_deviation
+    primary_source: INSIDER_TRADES
+  threshold:
+    type: boolean
+    true_means: yellow
+    triggered: Insider trading pattern deviates from historical norm
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '5.5'
+  worksheet_section: governance
+  display_when: has_data
+  provenance:
+    origin: v3.1_signal_audit_bucket_f
+    confidence: MEDIUM
+    source_author: system
+    added_by: Phase70
+    data_source: INSIDER_TRADES
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: ownership_structure
+    formula: ''
+  display:
+    value_format: boolean
+    source_type: INSIDER_TRADES
+    threshold_context: Insider trading deviates from historical pattern
+  group: ownership_structure
+  signal_class: evaluative
+  field_path: insider_trading_pattern_deviation
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Boolean check -- presence/absence determination; triggered:
+      Insider trading pattern deviates from historical norm'
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} triggered Insider Trading Pattern Deviation (F6) —
+        this agent risk (executive/director actions and decisions that create D&O
+        exposure) indicates Governance Failures / Breach of Fiduciary Duty. Evidence:
+        {evidence}.'
+      TRIGGERED_YELLOW: '{company} shows moderate signal on Insider Trading Pattern
+        Deviation (F6) at {value} — review recommended for Governance Failures / Breach
+        of Fiduciary Duty implications.'
+      CLEAR: '{company} clear on Insider Trading Pattern Deviation (F6) — no Governance
+        Failures / Breach of Fiduciary Duty concern identified at this level.'
+- id: GOV.INSIDER.option_exercise_sell_pattern
+  execution_mode: DEFERRED
+  name: Option Exercise and Immediate Sell Pattern
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F6
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L2
+  required_data:
+  - INSIDER_TRADES
+  data_locations:
+    INSIDER_TRADES:
+    - form4_transactions
+  data_strategy:
+    field_key: insider_option_exercise_sell
+    primary_source: INSIDER_TRADES
+  threshold:
+    type: boolean
+    true_means: yellow
+    triggered: Executive exercises options and sells immediately — confidence concern
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '5.5'
+  worksheet_section: governance
+  display_when: has_data
+  provenance:
+    origin: v3.1_signal_audit_bucket_f
+    confidence: MEDIUM
+    source_author: system
+    added_by: Phase70
+    data_source: INSIDER_TRADES
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: ownership_structure
+    formula: ''
+  display:
+    value_format: boolean
+    source_type: INSIDER_TRADES
+    threshold_context: Exercise-and-sell pattern detected in executive Form 4 filings
+  group: ownership_structure
+  signal_class: evaluative
+  field_path: insider_option_exercise_sell
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Boolean check -- presence/absence determination; triggered:
+      Executive exercises options and sells immediately — confidence concern'
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} triggered Option Exercise and Immediate Sell Pattern
+        (F6) — this agent risk (executive/director actions and decisions that create
+        D&O exposure) indicates Governance Failures / Breach of Fiduciary Duty. Evidence:
+        {evidence}.'
+      TRIGGERED_YELLOW: '{company} shows moderate signal on Option Exercise and Immediate
+        Sell Pattern (F6) at {value} — review recommended for Governance Failures
+        / Breach of Fiduciary Duty implications.'
+      CLEAR: '{company} clear on Option Exercise and Immediate Sell Pattern (F6) —
+        no Governance Failures / Breach of Fiduciary Duty concern identified at this
+        level.'
+- id: STOCK.PATTERN.peer_valuation_gap
+  execution_mode: DEFERRED
+  name: Peer Valuation Gap
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F2
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L2
+  required_data:
+  - MARKET_PRICE
+  data_locations:
+    MARKET_PRICE:
+    - peer_comparison
+  data_strategy:
+    field_key: peer_valuation_gap
+    primary_source: MARKET_PRICE
+  threshold:
+    type: tiered
+    red: '> 0.50'
+    yellow: '> 0.25'
+    clear: <= 0.25
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '2.7'
+  worksheet_section: stock
+  display_when: has_data
+  provenance:
+    origin: v3.1_signal_audit_bucket_f
+    confidence: MEDIUM
+    source_author: system
+    added_by: Phase70
+    data_source: MARKET_PRICE
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: stock_drops
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: MARKET_PRICE
+    threshold_context: Valuation premium >50% vs peers — DDL exposure on correction
+  group: stock_drops
+  signal_class: evaluative
+  field_path: peer_valuation_gap
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.50; YELLOW: > 0.25) from D&O underwriting
+      practice and claims experience'
+  rap_class: environment
+  rap_subcategory: environment.market_patterns
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Peer Valuation Gap at {value} (threshold: > 0.50)
+        signals elevated Stock Decline / Securities Fraud risk (F2). Peer valuation
+        gap at this level signals the market views this company as fundamentally weaker
+        than peers. When the valuation gap widens further, the resulting stock decline
+        creates SCA filing exposure. Thresholds (RED: > 0.50; YELLOW: > 0.25) from
+        D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Peer Valuation Gap at {value} (threshold: > 0.25)
+        is in the caution zone for Stock Decline / Securities Fraud (F2). Monitor
+        for deterioration — trend direction and peer comparison inform the D&O risk
+        assessment.'
+      CLEAR: '{company} Peer Valuation Gap at {value} is within acceptable range for
+        Stock Decline / Securities Fraud (F2) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: FIN.GUIDE.estimate_revision_pattern
+  execution_mode: DEFERRED
+  name: Analyst Estimate Revision Pattern
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F2
+  - F5
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L2
+  required_data:
+  - MARKET_PRICE
+  data_locations:
+    MARKET_PRICE:
+    - analyst_estimates
+  data_strategy:
+    field_key: estimate_revision_pattern
+    primary_source: MARKET_PRICE
+  threshold:
+    type: tiered
+    red: < -0.15
+    yellow: < -0.05
+    clear: '>= -0.05'
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.5'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_signal_audit_bucket_f
+    confidence: MEDIUM
+    source_author: system
+    added_by: Phase70
+    data_source: MARKET_PRICE
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: key_metrics
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: MARKET_PRICE
+    threshold_context: Consensus estimate revisions down >15% — negative momentum
+  group: key_metrics
+  signal_class: evaluative
+  field_path: estimate_revision_pattern
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: < -0.15; YELLOW: < -0.05) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.disclosure_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Analyst Estimate Revision Pattern at {value} (threshold:
+        < -0.15) signals elevated Stock Decline / Securities Fraud risk (F2, F5).
+        Analyst estimate revision patterns signal the market is reassessing company
+        fundamentals. Downward revision trends frequently precede earnings misses
+        that trigger SCA filings. Thresholds (RED: < -0.15; YELLOW: < -0.05) from
+        D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Analyst Estimate Revision Pattern at {value} (threshold:
+        < -0.05) is in the caution zone for Stock Decline / Securities Fraud (F2,
+        F5). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Analyst Estimate Revision Pattern at {value} is within acceptable
+        range for Stock Decline / Securities Fraud (F2, F5) — this level is a protective
+        factor in D&O risk assessment, reducing claim probability.'
+- id: FWRD.EVENT.ma_integration_risk
+  execution_mode: AUTO
+  name: M&A Integration Risk
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  - F5
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_serial_acquirer
+    primary_source: SEC_10K
+  threshold:
+    type: boolean
+    true_means: yellow
+    triggered: Active M&A integration underway — execution risk elevated
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_signal_audit_bucket_f
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forward_looking_event_catalysts
+    formula: ''
+  display:
+    value_format: boolean
+    source_type: SEC_10K
+    threshold_context: Serial acquirer with active integration — elevated D&O risk
+  group: forward_looking_event_catalysts
+  signal_class: evaluative
+  field_path: forensic_serial_acquirer
+  depends_on:
+  - signal: BASE.FORENSIC.ma
+    field: forensic_serial_acquirer
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Boolean check -- presence/absence determination; triggered:
+      Active M&A integration underway — execution risk elevated'
+  rap_class: agent
+  rap_subcategory: agent.corporate_events
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} triggered M&A Integration Risk (F3, F5) — this agent
+        risk (executive/director actions and decisions that create D&O exposure) indicates
+        Financial Irregularities / Restatement Risk. Evidence: {evidence}.'
+      TRIGGERED_YELLOW: '{company} shows moderate signal on M&A Integration Risk (F3,
+        F5) at {value} — review recommended for Financial Irregularities / Restatement
+        Risk implications.'
+      CLEAR: '{company} clear on M&A Integration Risk (F3, F5) — no Financial Irregularities
+        / Restatement Risk concern identified at this level.'

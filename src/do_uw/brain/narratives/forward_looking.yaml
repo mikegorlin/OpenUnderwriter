@@ -1,0 +1,30 @@
+# Narrative configuration for Forward Looking section
+# 5-layer architecture: Verdict > Thesis > Evidence Grid > Implications > Deep Context
+
+id: forward_looking
+name: Forward-Looking Assessment
+
+verdict:
+  thresholds:
+    CRITICAL: CRITICAL
+    ELEVATED: CONCERNING
+    CLEAN: FAVORABLE
+
+thesis_template: >
+  Forward-looking risk indicators {{ 'raise significant concerns' if density_level == 'CRITICAL' else 'show elevated signals' if density_level == 'ELEVATED' else 'are within normal range' }}.
+  {% if event_catalysts %}Identified event catalysts may trigger near-term D&O claims.{% endif %}
+
+evidence_keys:
+  - forward_looking.early_warnings
+  - forward_looking.event_catalysts
+  - forward_looking.macro_risks
+  - forward_looking.disclosure_quality
+  - forward_looking.narrative_coherence
+
+implications_template: >
+  {% if density_level != 'CLEAN' %}Forward-looking risk signals inform policy period exposure and renewal timing considerations.{% endif %}
+  {% if density_level == 'CLEAN' %}No material forward-looking concerns identified for current policy period.{% endif %}
+
+deep_context_keys:
+  - forward_looking.macro_detail
+  - forward_looking.disclosure_evolution

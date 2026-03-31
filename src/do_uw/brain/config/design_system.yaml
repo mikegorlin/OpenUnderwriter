@@ -1,0 +1,533 @@
+# ══════════════════════════════════════════════════════════════
+# DESIGN SYSTEM — Card Catalog Design Language v4
+# Source of truth for all visual presentation in the worksheet.
+# ══════════════════════════════════════════════════════════════
+#
+# This file defines the visual language. Templates consume it.
+# Change a color here → every card using that section updates.
+# Add a card here → tracker and renderer pick it up.
+#
+# Principles:
+#   1. Cards are MODULAR — insert/remove without affecting siblings
+#   2. Cards are SELF-CONTAINED — own border, header, body
+#   3. Section colors are the ONLY visual grouping mechanism
+#   4. Inner content FLOWS — no card-level CSS bleeds into content
+#   5. Data sources are ALWAYS visible — colored pills on every card
+
+schema_version: 1
+
+# ── Section Palette ──
+# Each section has a primary color used for: card header, nav button active state,
+# section number, accent line, border tint
+sections:
+  overview:
+    number: "00"
+    color: "#0F172A"
+    nav_label: "Overview"
+  exec_brief:
+    number: "01"
+    color: "#6D28D9"
+    nav_label: "Exec Brief"
+  company:
+    number: "02"
+    color: "#0369A1"
+    nav_label: "Company"
+  market:
+    number: "03"
+    color: "#EA580C"
+    nav_label: "Stock & Market"
+  financial:
+    number: "04"
+    color: "#059669"
+    nav_label: "Financial"
+  governance:
+    number: "05"
+    color: "#D97706"
+    nav_label: "Governance"
+  litigation:
+    number: "06"
+    color: "#DC2626"
+    nav_label: "Litigation"
+  forward:
+    number: "07"
+    color: "#0D9488"
+    nav_label: "Forward"
+  industry:
+    number: "08"
+    color: "#7C3AED"
+    nav_label: "Industry"
+  scoring:
+    number: "09"
+    color: "#0891B2"
+    nav_label: "Scoring"
+  uw_framework:
+    number: "10"
+    color: "#4338CA"
+    nav_label: "UW Framework"
+  meeting:
+    number: "11"
+    color: "#BE185D"
+    nav_label: "Meeting Prep"
+  audit:
+    number: "12"
+    color: "#64748B"
+    nav_label: "Audit Trail"
+
+# ── Global Colors ──
+colors:
+  background: "#F8FAFC"
+  card_bg: "#FFFFFF"
+  border: "#E2E8F0"
+  text: "#1E293B"
+  muted: "#64748B"
+  faint: "#94A3B8"
+  gold: "#D4A843"
+  red: "#DC2626"
+  amber: "#F59E0B"
+  green: "#16A34A"
+  blue: "#1D4ED8"
+
+# ── Data Source Colors ──
+# Used for pills showing where each card's data comes from
+data_sources:
+  XBRL:
+    bg: "#DCFCE7"
+    fg: "#166534"
+    description: "SEC XBRL filings (audited, HIGH confidence)"
+  yfinance:
+    bg: "#FEF3C7"
+    fg: "#92400E"
+    description: "Yahoo Finance market data (MEDIUM confidence)"
+  LLM:
+    bg: "#F3E8FF"
+    fg: "#7C3AED"
+    description: "Claude LLM extraction/synthesis"
+  Web:
+    bg: "#DBEAFE"
+    fg: "#1D4ED8"
+    description: "Web search / news sources (LOW confidence)"
+  Computed:
+    bg: "#F1F5F9"
+    fg: "#475569"
+    description: "Derived/calculated from other data"
+  SEC:
+    bg: "#FFE4E6"
+    fg: "#9F1239"
+    description: "SEC EDGAR filings, enforcement data"
+  Supabase:
+    bg: "#E0F2FE"
+    fg: "#075985"
+    description: "GorlinBase D&O claims database"
+
+# ── Typography ──
+typography:
+  font_family: "Inter, -apple-system, sans-serif"
+  mono_family: "'JetBrains Mono', monospace"
+  card_title: { size: "13px", weight: 800 }
+  section_number: { size: "36px", weight: 900, opacity: 0.18 }
+  section_title: { size: "18px", weight: 800 }
+  sub_block_name: { size: "11px", weight: 700 }
+  body_text: { size: "10.5px", weight: 400, line_height: 1.5 }
+  kv_label: { size: "10px", weight: 400, color: "#64748B" }
+  kv_value: { size: "10px", weight: 600, variant: "tabular-nums" }
+  table_header: { size: "8.5px", weight: 700, transform: "uppercase" }
+  table_cell: { size: "9.5px", weight: 400 }
+  mini_card_value: { size: "13px", weight: 800 }
+  mini_card_label: { size: "7px", weight: 700, transform: "uppercase" }
+
+# ── Card Component ──
+card:
+  border_width: "2px"
+  border_radius: "12px"
+  border_color_opacity: 0.25  # section_color * this opacity
+  header_padding: "10px 16px"
+  body_padding: "0"  # content controls own padding
+  margin_bottom: "16px"
+  # Card header: full section color background, white text
+  # Card number: 16px, 900 weight, 30% white opacity
+  # Card title: 13px, 800 weight, white
+
+# ── Sub-Block Component ──
+sub_block:
+  border_bottom: "1px solid #F1F5F9"
+  header_padding: "8px 16px"
+  body_padding: "0 16px 12px 44px"
+  letter_size: "20px"
+  letter_radius: "5px"
+  # Letter uses section color background, white text
+
+# ── Mini Card Component ──
+mini_card:
+  border_radius: "5px"
+  padding: "6px 8px"
+  border: "1px solid"
+  # Background and border from card-specific color
+  # Title: 7px uppercase, Value: 13px bold, Subtitle: 7.5px muted
+
+# ── Alert Bar Component ──
+alert:
+  border_radius: "5px"
+  padding: "8px 12px"
+  variants:
+    red: { bg: "#FEF2F2", border: "#FECACA", text: "#991B1B" }
+    green: { bg: "#F0FDF4", border: "#BBF7D0", text: "#065F46" }
+    amber: { bg: "#FFFBEB", border: "#FDE68A", text: "#92400E" }
+
+# ── Status Badge Component ──
+badge:
+  font_size: "8px"
+  font_weight: 700
+  padding: "1px 6px"
+  border_radius: "3px"
+  variants:
+    chart: { bg: "#DBEAFE", fg: "#1D4ED8" }
+    table: { bg: "#FEF3C7", fg: "#92400E" }
+    narrative: { bg: "#F3E8FF", fg: "#7C3AED" }
+    cards: { bg: "#DCFCE7", fg: "#166534" }
+    alert: { bg: "#FEF2F2", fg: "#991B1B" }
+    visual: { bg: "#EDE9FE", fg: "#6D28D9" }
+    layer: { bg: "#F1F5F9", fg: "#475569" }
+    metric: { bg: "#F0FDF4", fg: "#166534" }
+
+# ── Severity Colors ──
+severity:
+  safe: "#16A34A"
+  grey: "#D97706"
+  distress: "#DC2626"
+  neutral: "#64748B"
+
+# ── Card Catalog (62 cards) ──
+# Each card: id, section, title, sub_element_count, data_sources
+# Full definitions in scripts/build_ops_dashboard.py (AUTHORITATIVE)
+# Expanded 2026-03-29: +10 cards from audit + Liberty template review
+cards:
+  # Section 0: Overview (1)
+  - { id: "00", section: overview, title: "Overview (Decision Dashboard)", subs: 7, sources: [XBRL, yfinance, Computed, LLM, Web, SEC, Supabase] }
+  # Section 1: Exec Brief (2)
+  - { id: "01", section: exec_brief, title: "Recommendation & Red Flags", subs: 3, sources: [Computed, LLM] }
+  - { id: "02", section: exec_brief, title: "Risk Thesis & Commentary", subs: 2, sources: [LLM] }
+  # Section 2: Company (10)
+  - { id: "03", section: company, title: "Business Description & Revenue Model", subs: 5, sources: [SEC, LLM, Computed] }
+  - { id: "04", section: company, title: "Revenue Deep Dive", subs: 6, sources: [XBRL, LLM] }
+  - { id: "05", section: company, title: "Concentration Risk", subs: 4, sources: [LLM, XBRL] }
+  - { id: "06", section: company, title: "Risk Factors & D&O Exposure", subs: 4, sources: [SEC, LLM, Computed] }
+  - { id: "07", section: company, title: "10-K YoY & Peer SCA", subs: 3, sources: [SEC, LLM, Supabase] }
+  - { id: "08", section: company, title: "Sector Risk, Regulatory & News", subs: 3, sources: [Web, LLM, SEC] }
+  - { id: "09", section: company, title: "M&A Profile & Transaction History", subs: 4, sources: [SEC, LLM, Web] }
+  - { id: "10", section: company, title: "Corporate Events & IPO/Offerings", subs: 5, sources: [SEC, LLM, Computed] }
+  - { id: "11", section: company, title: "Operational Complexity & Supply Chain", subs: 5, sources: [SEC, LLM] }
+  - { id: "12", section: company, title: "Competitive Moat & Industry Position", subs: 3, sources: [LLM, Web] }
+  # Section 3: Stock & Market (6)
+  - { id: "13", section: market, title: "Stock Performance & Drop Investigation", subs: 4, sources: [yfinance, Web, Computed] }
+  - { id: "14", section: market, title: "Insider Trading & Scienter Risk", subs: 5, sources: [yfinance, Computed] }
+  - { id: "15", section: market, title: "Technical Analysis Charts", subs: 5, sources: [yfinance, Computed] }
+  - { id: "16", section: market, title: "Earnings & Guidance", subs: 5, sources: [yfinance, LLM, Computed] }
+  - { id: "17", section: market, title: "Analyst Coverage & Estimates", subs: 3, sources: [yfinance] }
+  - { id: "18", section: market, title: "Capital Returns, Sentiment & 8-K", subs: 4, sources: [yfinance, SEC, LLM, Computed] }
+  # Section 4: Financial (7)
+  - { id: "19", section: financial, title: "Annual Financial Comparison", subs: 1, sources: [XBRL] }
+  - { id: "20", section: financial, title: "Key Metrics & Quarterly Trends", subs: 4, sources: [XBRL, yfinance, Computed] }
+  - { id: "21", section: financial, title: "Distress & Forensic Models", subs: 5, sources: [XBRL, Computed] }
+  - { id: "22", section: financial, title: "Audit & Tax Profile", subs: 4, sources: [XBRL, SEC] }
+  - { id: "23", section: financial, title: "Debt, Liquidity & Balance Sheet Risk", subs: 7, sources: [XBRL, LLM, Computed] }
+  - { id: "24", section: financial, title: "Peer Benchmarking", subs: 3, sources: [yfinance, XBRL, Computed] }
+  - { id: "25", section: financial, title: "MD&A & Filing Analysis", subs: 3, sources: [SEC, LLM] }
+  # Section 5: Governance (6)
+  - { id: "26", section: governance, title: "Board Composition & Skills", subs: 6, sources: [SEC, Computed] }
+  - { id: "27", section: governance, title: "Board & Officer Forensic Profiles", subs: 3, sources: [SEC, Web, LLM] }
+  - { id: "28", section: governance, title: "People Risk & Executive Profiles", subs: 4, sources: [Web, SEC, LLM] }
+  - { id: "29", section: governance, title: "Compensation & Ownership", subs: 5, sources: [SEC, yfinance, Web] }
+  - { id: "30", section: governance, title: "Structural Governance & Rights", subs: 4, sources: [SEC, LLM] }
+  - { id: "31", section: governance, title: "Compensation & Conflicts", subs: 3, sources: [SEC, LLM] }
+  # Section 6: Litigation (5)
+  - { id: "32", section: litigation, title: "Active Litigation & Defense", subs: 6, sources: [Supabase, SEC, Web, LLM] }
+  - { id: "33", section: litigation, title: "Exposure Windows & SOL", subs: 2, sources: [Computed, SEC] }
+  - { id: "34", section: litigation, title: "SEC & Regulatory Enforcement", subs: 2, sources: [SEC, Web] }
+  - { id: "35", section: litigation, title: "Historical Litigation & Timeline", subs: 3, sources: [SEC, XBRL, Web] }
+  - { id: "36", section: litigation, title: "Other Matters, Internal Issues & Whistleblower", subs: 4, sources: [SEC, LLM, Web] }
+  # Section 7: Forward-Looking (5) — NEW
+  - { id: "37", section: forward, title: "Catalyst Events & Key Dates", subs: 3, sources: [yfinance, SEC, LLM] }
+  - { id: "38", section: forward, title: "Scenario Analysis (Bull/Base/Bear)", subs: 3, sources: [LLM, Computed] }
+  - { id: "39", section: forward, title: "Short Seller & Alternative Signals", subs: 4, sources: [Web, LLM] }
+  - { id: "40", section: forward, title: "Analyst Credibility & Disclosure Quality", subs: 3, sources: [yfinance, LLM] }
+  - { id: "41", section: forward, title: "Macro, Geopolitical & Emerging Risk", subs: 4, sources: [Web, LLM] }
+  # Section 8: Industry (2)
+  - { id: "42", section: industry, title: "Competitive & Strategic Position", subs: 4, sources: [Computed, LLM, Supabase] }
+  - { id: "43", section: industry, title: "AI Risk & Biotech Module", subs: 2, sources: [LLM, SEC] }
+  # Section 9: Scoring (13)
+  - { id: "44", section: scoring, title: "Tier & Factor Scoring", subs: 5, sources: [Computed] }
+  - { id: "45", section: scoring, title: "Loss Analysis & Scenarios", subs: 3, sources: [Computed] }
+  - { id: "46", section: scoring, title: "Peril Assessment & Mapping", subs: 3, sources: [Computed] }
+  - { id: "47", section: scoring, title: "Investigative Depth", subs: 5, sources: [Computed] }
+  - { id: "48", section: scoring, title: "UW Posture & Calibration", subs: 4, sources: [Computed, LLM] }
+  - { id: "49", section: scoring, title: "Altman Z-Score & Distress Models", subs: 3, sources: [XBRL, Computed] }
+  - { id: "50", section: scoring, title: "Beneish M-Score (Manipulation)", subs: 8, sources: [XBRL, Computed] }
+  - { id: "51", section: scoring, title: "Piotroski F-Score (Health)", subs: 3, sources: [XBRL, Computed] }
+  - { id: "52", section: scoring, title: "Hazard Profile (H1-H7, 47 dims)", subs: 8, sources: [Computed] }
+  - { id: "53", section: scoring, title: "AI Risk Scoring (5 dims)", subs: 5, sources: [LLM, Computed] }
+  - { id: "54", section: scoring, title: "Frequency & Severity Modeling", subs: 6, sources: [Computed, Supabase] }
+  - { id: "55", section: scoring, title: "7-Lens Peril Mapping", subs: 7, sources: [Computed] }
+  - { id: "56", section: scoring, title: "Pattern Detection & Red Flags", subs: 4, sources: [Computed, LLM] }
+  # Section 10: UW Framework (1)
+  - { id: "57", section: uw_framework, title: "Underwriting Decision Questions", subs: 2, sources: [Computed, LLM] }
+  # Section 11: Meeting Prep (1)
+  - { id: "58", section: meeting, title: "Meeting Preparation Questions", subs: 1, sources: [Computed, LLM] }
+  # Section 12: Audit Trail (3)
+  - { id: "59", section: audit, title: "Signal Disposition Audit", subs: 2, sources: [Computed] }
+  - { id: "60", section: audit, title: "Data Coverage & Gaps", subs: 4, sources: [Computed, Web] }
+  - { id: "61", section: audit, title: "Decision Record & Provenance", subs: 5, sources: [Computed] }
+
+# ══════════════════════════════════════════════════════════════
+# DESIGN ELEMENTS — Named, standardized visual components
+# Inspired by: WSJ, Economist, NYT graphics, Bloomberg Terminal, S&P Capital IQ
+# ══════════════════════════════════════════════════════════════
+
+design_elements:
+
+  # ── CARDS (9 types) ──
+  cards:
+    MetricCard:
+      description: "Large bold number with label, optional trend, colored background"
+      variants: [Green, Amber, Red, Blue, Purple, Default]
+      inspiration: "Bloomberg terminal KPI tiles"
+      value_size: "15pt"
+      label_size: "6.5pt uppercase"
+
+    RiskCard:
+      description: "Title + severity badge (HIGH/MED/LOW) + evidence bullets, colored left border"
+      variants: [Red, Amber, Green]
+      inspiration: "Economist risk assessment boxes"
+
+    KeyValueCard:
+      description: "Compact labeled pairs in bordered container, 1-2 column grid"
+      variants: [1Col, 2Col]
+      inspiration: "Capital IQ paired-column fact tables"
+
+    AlertCard:
+      description: "Prominent notification with colored border, headline, description, optional pills"
+      variants: [Red, Amber, Green, Blue]
+      inspiration: "WSJ breaking news alerts"
+
+    ComparisonCard:
+      description: "Side-by-side metric comparison, auto-colored by performance"
+      inspiration: "Economist country comparison infographics"
+
+    TimelineCard:
+      description: "Vertical timeline with colored dots, dates, connecting line"
+      inspiration: "NYT event timelines"
+
+    DataTableCard:
+      description: "Compact table with navy header, row count badge, alternating shading"
+      inspiration: "Bloomberg data grids"
+
+    NarrativeCard:
+      description: "Text block with left accent border, colored background, title bar"
+      variants: [Blue, Navy, Green, Amber, Red]
+      inspiration: "Economist analysis boxes"
+
+    MetricStrip:
+      description: "Horizontal grid of metric cards (1-6 columns)"
+      inspiration: "Bloomberg terminal header strip"
+
+  # ── BADGES & PILLS (7 types) ──
+  badges:
+    StatusBadge:
+      description: "Colored pill for check results (TRIGGERED/CLEAR/ELEVATED/SKIPPED)"
+      colors: { TRIGGERED: "#DC2626", CLEAR: "#047857", ELEVATED: "#D97706", SKIPPED: "#6B7280", INFO: "#2563EB" }
+
+    TierBadge:
+      description: "Underwriting recommendation pill (WIN/WANT/WRITE/WATCH/WALK/NO_TOUCH)"
+      colors: { WIN: "#16A34A", WANT: "#059669", WRITE: "#D97706", WATCH: "#EA580C", WALK: "#DC2626", NO_TOUCH: "#991B1B" }
+
+    VerdictBadge:
+      description: "Section verdict pill (FAVORABLE/NEUTRAL/CONCERNING/CRITICAL)"
+      colors: { FAVORABLE: "#16A34A", NEUTRAL: "#6B7280", CONCERNING: "#D97706", CRITICAL: "#DC2626" }
+
+    PillBadgeRow:
+      description: "Flex-wrapped row of colored classification pills"
+
+    DimensionBadge:
+      description: "Tiny H/A/E risk dimension pills"
+      colors: { H: "#1D4ED8", A: "#B91C1C", E: "#059669" }
+
+    ConfidenceMarker:
+      description: "Small italic gray text for data quality notes"
+
+    FactorTag:
+      description: "Small pill showing factor codes in evidence"
+
+  # ── CALLOUTS & CONTAINERS (7 types) ──
+  callouts:
+    DiscoveryBox:
+      description: "Gold left border callout for blind spot findings"
+      inspiration: "NYT 'What We Found' boxes"
+      border_color: "#D4A843"
+
+    WarningBox:
+      description: "Amber left border callout for elevated findings"
+      border_color: "#D97706"
+
+    GapNotice:
+      description: "Gray data unavailability notice"
+      border_color: "#9CA3AF"
+
+    ContextNote:
+      description: "Small italic text explaining D&O relevance"
+
+    SCRBlock:
+      description: "Situation-Complication-Resolution analytical framework"
+      inspiration: "McKinsey pyramid principle"
+
+    ImplicationsBox:
+      description: "Navy left border container with D&O implications bullets"
+
+    InsightBox:
+      description: "Navy left border with 'UNDERWRITING INSIGHT' label"
+
+  # ── INLINE CHARTS & INFOGRAPHICS (12 types) ──
+  # These are SVG/CSS elements embedded directly in cards (not matplotlib)
+  infographics:
+    Sparkline:
+      description: "Lightweight inline trend line (60x16px), auto-colored by direction"
+      inspiration: "Edward Tufte sparklines"
+      colors: { up: "#16A34A", down: "#DC2626", flat: "#6B7280" }
+
+    TrendArrow:
+      description: "Tiny directional triangle (12x12px)"
+      colors: { up: "#16A34A", down: "#DC2626", flat: "#6B7280" }
+
+    FactorBar:
+      description: "Horizontal bar showing points/max with color intensity"
+      inspiration: "Economist progress bars"
+
+    ScoreGauge:
+      description: "Semi-circular 180° arc showing 0-100 score with needle"
+      inspiration: "Dashboard gauges"
+
+    DecileDots:
+      description: "10 rounded squares showing position in distribution"
+      inspiration: "NYT dot distribution charts"
+
+    RangeSlider:
+      description: "Horizontal range indicator showing position between low/high"
+      inspiration: "Bloomberg range bars"
+
+    CompositionBar:
+      description: "Stacked horizontal bar showing cash/debt composition"
+      inspiration: "Economist stacked bars"
+
+    EarningsCircles:
+      description: "8px colored circles showing beat/miss history"
+      inspiration: "NYT win/loss indicators"
+
+    SeverityBlocks:
+      description: "5-block severity bar (filled vs empty) for plaintiff exposure"
+
+    EquityLiabilityBar:
+      description: "Two-color mini bar showing equity/liability split"
+
+    SpectrumBar:
+      description: "Market cap tier position indicator"
+
+    DataSourcePill:
+      description: "Colored pill showing data provenance (XBRL/yfinance/LLM/etc)"
+
+  # ── MATPLOTLIB CHARTS (13 types) ──
+  # Full-panel charts rendered as PNG/SVG, embedded in worksheet
+  charts:
+    StockPerformanceChart:
+      description: "Bloomberg-style price chart with sector overlay, drop markers, volume bars"
+      theme: "Dark navy (#1A1A2E)"
+      inspiration: "Bloomberg terminal equity charts"
+      variants: [1Y, 5Y, 2Y_unified]
+
+    RelativePerformanceChart:
+      description: "Indexed to 100 comparing company vs sector vs S&P 500"
+      inspiration: "WSJ performance comparison"
+
+    VolatilityChart:
+      description: "Rolling volatility + beta with colored zone backgrounds"
+      inspiration: "Risk analytics dashboards"
+
+    DrawdownChart:
+      description: "Running drawdown with max annotated, sector reference"
+      inspiration: "Hedge fund drawdown analysis"
+
+    RadarChart:
+      description: "10-spoke polar axes showing factor risk profile"
+      theme: "Navy fill (25% alpha), gold outline"
+      inspiration: "Economist country comparison radars"
+
+    WaterfallChart:
+      description: "Factor deductions stacking down from 100 with tier thresholds"
+      type: "SVG (inline)"
+      inspiration: "McKinsey waterfall charts"
+
+    TornadoChart:
+      description: "Horizontal sensitivity bars extending left/right from center"
+      type: "SVG (inline)"
+      inspiration: "Actuarial sensitivity analysis"
+
+    LitigationTimeline:
+      description: "Horizontal timeline with event markers by category"
+      inspiration: "NYT event timelines"
+
+    OwnershipDonut:
+      description: "Donut chart showing institutional/insider/retail split"
+      inspiration: "Capital IQ ownership charts"
+
+    PxSMatrix:
+      description: "2D scatter with probability vs severity zones"
+      inspiration: "Risk management heat maps"
+
+    DropAnalysisChart:
+      description: "Price line with drop event annotations and catalyst attribution"
+      inspiration: "Investigative journalism stock analysis"
+
+    InsiderTimeline:
+      description: "Stock price with insider trade overlays and cluster windows"
+
+    DebtMaturityChart:
+      description: "Bar chart with near-term (red) vs future (blue) maturities"
+      inspiration: "Moody's debt maturity profiles"
+
+  # ── TABLES (6 types) ──
+  tables:
+    DataTable:
+      description: "Full-width with navy header, alternating rows, tabular-nums"
+      inspiration: "Bloomberg data grids"
+
+    KeyValueTable:
+      description: "2-column facts table with light header"
+      inspiration: "Capital IQ detail panels"
+
+    PairedKVTable:
+      description: "4 cols/row for CIQ-density display (Label|Value|Label|Value)"
+      inspiration: "S&P Capital IQ paired columns"
+
+    FinancialRow:
+      description: "Label | Current | Prior | YoY Change with color-coded arrows"
+      inspiration: "Earnings release tables"
+
+    CheckSummaryTable:
+      description: "Signal results with color-coded rows by severity"
+
+    EvidenceTable:
+      description: "3-column (Indicator|Value|Source) with severity coloring"
+
+  # ── NARRATIVE FRAMEWORKS (4 types) ──
+  narratives:
+    Narrative5Layer:
+      description: "Verdict badge → thesis → evidence grid → deep context → implications"
+      inspiration: "McKinsey presentation structure"
+
+    BullBearFraming:
+      description: "Two-column positive/negative analysis"
+      inspiration: "Sell-side equity research"
+
+    EvidenceChain:
+      description: "Bulleted evidence items with source citations"
+
+    DualVoice:
+      description: "'What Was Said' (factual) + 'Underwriting Commentary' (analytical)"
+      inspiration: "Audit report dual-perspective"

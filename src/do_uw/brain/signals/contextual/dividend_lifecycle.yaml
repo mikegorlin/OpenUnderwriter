@@ -1,0 +1,55 @@
+- id: CTX.FIN.dividend_lifecycle
+  name: Dividend Policy in Lifecycle Context
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of FIN.RETURN.dividend_yield through lifecycle_stage lens
+    threshold_provenance:
+      source: calibrated
+      rationale: Dividend expectations calibrated from S&P 500 payout data by company maturity
+  signal_class: inference
+  group: key_metrics
+  rap_class: host
+  rap_subcategory: host.financials
+  epistemology:
+    rule_origin: 'D&O underwriting practice: dividend policy interpretation varies by lifecycle stage'
+    threshold_basis: Dividend expectations calibrated from S&P 500 payout data by company maturity
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: FIN.RETURN.dividend_yield
+      context_dimensions:
+      - lifecycle_stage
+      context_adjustments:
+        pre_revenue:
+          threshold_adjustment: 0.1
+          rationale: Pre-revenue dividends are extremely unusual and concerning
+        growth:
+          threshold_adjustment: 0.5
+          rationale: 'Growth: dividends unusual; may signal capital allocation issues'
+        mature:
+          threshold_adjustment: 1.5
+          rationale: 'Mature: dividends expected; cuts are concerning'
+        distressed:
+          threshold_adjustment: 0.3
+          rationale: 'Distressed: paying dividends while distressed is red flag'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} dividend policy in lifecycle context at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} dividend policy in lifecycle context at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} dividend policy in lifecycle context at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

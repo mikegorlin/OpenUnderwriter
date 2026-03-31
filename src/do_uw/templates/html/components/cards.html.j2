@@ -1,0 +1,247 @@
+{# ═══════════════════════════════════════════════════════════════
+   Standardized Card System — D&O Underwriting Worksheet
+
+   10 reusable card types for consistent data presentation.
+   Every section uses these instead of ad-hoc HTML.
+
+   Usage: {% from "components/cards.html.j2" import metric_card, risk_card, ... %}
+   ═══════════════════════════════════════════════════════════════ #}
+
+
+{# ─── 1. METRIC CARD: Big number + label + optional trend ─── #}
+{# Usage: {{ metric_card("$416.2B", "Revenue", sub="FY2025 · XBRL", color="green", emoji="📈") }} #}
+{% macro metric_card(value, label, sub="", color="default", emoji="", trend="") %}
+{% set colors = {
+  "green": {"bg":"#F0FDF4","border":"#BBF7D0","text":"#166534","accent":"#16A34A"},
+  "amber": {"bg":"#FFFBEB","border":"#FDE68A","text":"#92400E","accent":"#D97706"},
+  "red":   {"bg":"#FEF2F2","border":"#FECACA","text":"#991B1B","accent":"#DC2626"},
+  "blue":  {"bg":"#EFF6FF","border":"#BFDBFE","text":"#1E40AF","accent":"#2563EB"},
+  "purple":{"bg":"#F5F3FF","border":"#DDD6FE","text":"#5B21B6","accent":"#7C3AED"},
+  "default":{"bg":"white","border":"#E5E7EB","text":"#374151","accent":"#1F3A5C"}
+} %}
+{% set c = colors.get(color, colors.default) %}
+<div style="background:{{ c.bg }};border:1.5px solid {{ c.border }};border-radius:6px;padding:8px 10px;text-align:center;">
+  {% if emoji %}<div style="font-size:14pt;margin-bottom:2px;">{{ emoji }}</div>{% endif %}
+  <div style="font-size:15pt;font-weight:800;color:{{ c.text }};line-height:1;font-variant-numeric:tabular-nums;">{{ value }}{% if trend %} <span style="font-size:8pt;color:{{ c.accent }};">{{ trend }}</span>{% endif %}</div>
+  <div style="font-size:6.5pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:3px;">{{ label }}</div>
+  {% if sub %}<div style="font-size:6pt;color:#9CA3AF;margin-top:1px;">{{ sub }}</div>{% endif %}
+</div>
+{% endmacro %}
+
+
+{# ─── 2. RISK CARD: Metric + risk level badge + evidence bullets ─── #}
+{# Usage: {{ risk_card("Refinancing Risk", "HIGH", "⚠️", ["40% debt due within 2 years", "Days cash: 46"], "red") }} #}
+{% macro risk_card(title, level, emoji, evidence, color="amber") %}
+{% set colors = {
+  "green": {"bg":"#F0FDF4","border":"#16A34A","badge_bg":"#16A34A"},
+  "amber": {"bg":"#FFFBEB","border":"#D97706","badge_bg":"#D97706"},
+  "red":   {"bg":"#FEF2F2","border":"#DC2626","badge_bg":"#DC2626"}
+} %}
+{% set c = colors.get(color, colors.amber) %}
+<div style="background:{{ c.bg }};border-left:3px solid {{ c.border }};border-radius:0 5px 5px 0;padding:8px 12px;margin:6px 0;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+    <span style="font-size:9pt;font-weight:700;color:#111827;">{% if emoji %}{{ emoji }} {% endif %}{{ title }}</span>
+    <span style="padding:1px 8px;border-radius:8px;font-size:7pt;font-weight:700;color:white;background:{{ c.badge_bg }};">{{ level }}</span>
+  </div>
+  {% if evidence %}
+  <ul style="margin:0;padding:0 0 0 16px;font-size:8pt;color:#4B5563;line-height:1.5;">
+    {% for item in evidence %}
+    <li style="margin-bottom:2px;">{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endmacro %}
+
+
+{# ─── 3. KV CARD: Compact key-value pairs in a bordered card ─── #}
+{# Usage: {{ kv_card("Debt Profile", [("Total Debt","$90.7B"),("Net Debt","$54.7B")], color="blue", emoji="🏦") }} #}
+{% macro kv_card(title, pairs, color="default", emoji="", cols=1) %}
+{% set colors = {
+  "green": {"title":"#16A34A","border":"#BBF7D0"},
+  "amber": {"title":"#D97706","border":"#FDE68A"},
+  "red":   {"title":"#DC2626","border":"#FECACA"},
+  "blue":  {"title":"#1D4ED8","border":"#BFDBFE"},
+  "purple":{"title":"#7C3AED","border":"#DDD6FE"},
+  "default":{"title":"#1F3A5C","border":"#E5E7EB"}
+} %}
+{% set c = colors.get(color, colors.default) %}
+<div style="border:1px solid {{ c.border }};border-radius:5px;overflow:hidden;margin:4px 0;">
+  <div style="background:#F9FAFB;padding:4px 8px;border-bottom:1px solid {{ c.border }};">
+    <span style="font-size:7pt;font-weight:700;color:{{ c.title }};text-transform:uppercase;letter-spacing:0.3px;">{% if emoji %}{{ emoji }} {% endif %}{{ title }}</span>
+  </div>
+  <div style="padding:4px 8px;{% if cols > 1 %}display:grid;grid-template-columns:repeat({{ cols }},1fr);gap:0 12px;{% endif %}">
+    {% for key, val in pairs %}
+    <div style="display:flex;justify-content:space-between;padding:2px 0;{% if not loop.last %}border-bottom:1px solid #F3F4F6;{% endif %}">
+      <span style="font-size:8pt;color:#6B7280;">{{ key }}</span>
+      <span style="font-size:8pt;font-weight:600;color:#111827;font-variant-numeric:tabular-nums;">{{ val }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endmacro %}
+
+
+{# ─── 4. ALERT CARD: Prominent notification with icon ─── #}
+{# Usage: {{ alert_card("🚨 Auditor Change Detected", "EY replaced Deloitte effective Jan 2026", "red") }} #}
+{% macro alert_card(headline, description, color="amber", pills=[]) %}
+{% set colors = {
+  "green": {"bg":"#F0FDF4","border":"#16A34A","text":"#166534"},
+  "amber": {"bg":"#FFFBEB","border":"#D97706","text":"#92400E"},
+  "red":   {"bg":"#FEF2F2","border":"#DC2626","text":"#991B1B"},
+  "blue":  {"bg":"#EFF6FF","border":"#2563EB","text":"#1E40AF"}
+} %}
+{% set c = colors.get(color, colors.amber) %}
+<div style="background:{{ c.bg }};border:1.5px solid {{ c.border }};border-radius:6px;padding:8px 12px;margin:6px 0;">
+  <div style="font-size:9pt;font-weight:700;color:{{ c.text }};">{{ headline }}</div>
+  {% if description %}<div style="font-size:8pt;color:#4B5563;margin-top:3px;line-height:1.5;">{{ description }}</div>{% endif %}
+  {% if pills %}
+  <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">
+    {% for pill in pills %}
+    <span style="padding:1px 6px;border-radius:8px;font-size:6.5pt;font-weight:600;background:{{ c.border }};color:white;">{{ pill }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endmacro %}
+
+
+{# ─── 5. BADGE ROW: Row of colored pill badges ─── #}
+{# Usage: {{ badge_row([("Delaware","blue"),("NYSE","green"),("Large Cap","purple")]) }} #}
+{% macro badge_row(badges) %}
+{% set badge_colors = {
+  "green": {"bg":"#DCFCE7","text":"#166534"},
+  "amber": {"bg":"#FEF3C7","text":"#92400E"},
+  "red":   {"bg":"#FEE2E2","text":"#991B1B"},
+  "blue":  {"bg":"#DBEAFE","text":"#1E40AF"},
+  "purple":{"bg":"#EDE9FE","text":"#5B21B6"},
+  "gray":  {"bg":"#F3F4F6","text":"#374151"}
+} %}
+<div style="display:flex;gap:4px;flex-wrap:wrap;margin:4px 0;">
+  {% for label, color in badges %}
+  {% set bc = badge_colors.get(color, badge_colors.gray) %}
+  <span style="padding:2px 8px;border-radius:10px;font-size:7pt;font-weight:600;background:{{ bc.bg }};color:{{ bc.text }};">{{ label }}</span>
+  {% endfor %}
+</div>
+{% endmacro %}
+
+
+{# ─── 6. COMPARISON CARD: Side-by-side metrics ─── #}
+{# Usage: {{ comparison_card("TSR Comparison", "Company", "233.9", "Peer Group", "279.5", "📊") }} #}
+{% macro comparison_card(title, left_label, left_val, right_label, right_val, emoji="") %}
+{% set left_num = left_val | float(0) %}
+{% set right_num = right_val | float(0) %}
+{% set left_color = "#16A34A" if left_num >= right_num else "#DC2626" %}
+{% set right_color = "#16A34A" if right_num >= left_num else "#DC2626" %}
+<div style="border:1px solid #E5E7EB;border-radius:5px;overflow:hidden;margin:4px 0;">
+  <div style="background:#F9FAFB;padding:4px 8px;border-bottom:1px solid #E5E7EB;">
+    <span style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.3px;">{% if emoji %}{{ emoji }} {% endif %}{{ title }}</span>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;text-align:center;padding:6px 8px;">
+    <div style="border-right:1px solid #F3F4F6;">
+      <div style="font-size:14pt;font-weight:800;color:{{ left_color }};font-variant-numeric:tabular-nums;">{{ left_val }}</div>
+      <div style="font-size:6.5pt;color:#6B7280;text-transform:uppercase;margin-top:2px;">{{ left_label }}</div>
+    </div>
+    <div>
+      <div style="font-size:14pt;font-weight:800;color:{{ right_color }};font-variant-numeric:tabular-nums;">{{ right_val }}</div>
+      <div style="font-size:6.5pt;color:#6B7280;text-transform:uppercase;margin-top:2px;">{{ right_label }}</div>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+
+{# ─── 7. TIMELINE CARD: Vertical timeline with colored dots ─── #}
+{# Usage: {{ timeline_card("Corporate Events", events) }}
+   events = [{"date":"2025-12-05","title":"Officer Departure","desc":"CFO resigned","color":"red","emoji":"👤"}] #}
+{% macro timeline_card(title, events) %}
+{% if events %}
+<div style="border:1px solid #E5E7EB;border-radius:5px;overflow:hidden;margin:6px 0;">
+  <div style="background:#F9FAFB;padding:4px 8px;border-bottom:1px solid #E5E7EB;">
+    <span style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.3px;">{{ title }}</span>
+  </div>
+  <div style="padding:8px 12px;">
+    {% for e in events %}
+    {% set dot_color = {"red":"#DC2626","amber":"#D97706","green":"#16A34A","blue":"#2563EB","purple":"#7C3AED"}.get(e.color, "#6B7280") %}
+    <div style="display:flex;gap:10px;{% if not loop.last %}padding-bottom:8px;margin-bottom:8px;border-bottom:1px solid #F3F4F6;{% endif %}">
+      <div style="flex-shrink:0;text-align:right;min-width:70px;">
+        <div style="font-size:7.5pt;font-weight:600;color:#374151;font-variant-numeric:tabular-nums;">{{ e.date }}</div>
+      </div>
+      <div style="flex-shrink:0;width:10px;display:flex;flex-direction:column;align-items:center;">
+        <div style="width:10px;height:10px;border-radius:5px;background:{{ dot_color }};"></div>
+        {% if not loop.last %}<div style="width:2px;flex:1;background:#E5E7EB;margin-top:2px;"></div>{% endif %}
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:8pt;font-weight:600;color:#111827;">{% if e.emoji %}{{ e.emoji }} {% endif %}{{ e.title }}</div>
+        {% if e.desc %}<div style="font-size:7.5pt;color:#6B7280;margin-top:1px;">{{ e.desc }}</div>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endmacro %}
+
+
+{# ─── 8. DATA TABLE CARD: Compact table with header ─── #}
+{# Usage: {{ table_card("Debt Instruments", ["Name","Rate","Maturity"], rows, emoji="📋") }}
+   rows = [{"cells":["2% Notes","2.0%","2027"],"color":"default"}] #}
+{% macro table_card(title, headers, rows, emoji="", color="default") %}
+{% if rows %}
+<div style="border:1px solid #E5E7EB;border-radius:5px;overflow:hidden;margin:6px 0;">
+  <div style="background:#F9FAFB;padding:4px 8px;border-bottom:1px solid #E5E7EB;">
+    <span style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.3px;">{% if emoji %}{{ emoji }} {% endif %}{{ title }}</span>
+    <span style="font-size:6pt;color:#9CA3AF;margin-left:6px;">{{ rows | length }} items</span>
+  </div>
+  <table style="width:100%;border-collapse:collapse;">
+    <thead>
+      <tr>
+        {% for h in headers %}
+        <th style="padding:3px 6px;font-size:6.5pt;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.3px;text-align:left;border-bottom:1px solid #E5E7EB;background:#FAFAFA;">{{ h }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr style="{% if not loop.last %}border-bottom:1px solid #F3F4F6;{% endif %}{% if row.color == 'red' %}background:#FEF2F2;{% elif row.color == 'amber' %}background:#FFFBEB;{% endif %}">
+        {% for cell in row.cells %}
+        <td style="padding:3px 6px;font-size:8pt;color:#374151;font-variant-numeric:tabular-nums;">{{ cell }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endmacro %}
+
+
+{# ─── 9. NARRATIVE CARD: Text block with accent border ─── #}
+{# Usage: {{ narrative_card("Financial Health", "Revenue growing 6.4% YoY...", "blue", "📊") }} #}
+{% macro narrative_card(title, text, color="blue", emoji="") %}
+{% set colors = {
+  "blue":  {"border":"#2563EB","bg":"#EFF6FF","title":"#1E40AF"},
+  "navy":  {"border":"#1F3A5C","bg":"#F8FAFC","title":"#1F3A5C"},
+  "green": {"border":"#16A34A","bg":"#F0FDF4","title":"#166534"},
+  "amber": {"border":"#D97706","bg":"#FFFBEB","title":"#92400E"},
+  "red":   {"border":"#DC2626","bg":"#FEF2F2","title":"#991B1B"}
+} %}
+{% set c = colors.get(color, colors.blue) %}
+<div style="border-left:3px solid {{ c.border }};background:{{ c.bg }};border-radius:0 5px 5px 0;padding:8px 12px;margin:6px 0;">
+  {% if title %}<div style="font-size:7pt;font-weight:700;color:{{ c.title }};text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px;">{% if emoji %}{{ emoji }} {% endif %}{{ title }}</div>{% endif %}
+  <div style="font-size:9pt;color:#374151;line-height:1.55;">{{ text }}</div>
+</div>
+{% endmacro %}
+
+
+{# ─── 10. METRIC STRIP: Row of metric cards (like KPI strip but card-style) ─── #}
+{# Usage: {{ metric_strip(cards) }}
+   cards = [{"value":"$90.7B","label":"Total Debt","color":"red","emoji":"💰","sub":"XBRL"},...]  #}
+{% macro metric_strip(cards, cols=0) %}
+{% set col_count = cols if cols > 0 else cards|length %}
+<div style="display:grid;grid-template-columns:repeat({{ col_count }},1fr);gap:4px;margin:6px 0;">
+  {% for card in cards %}
+  {{ metric_card(card.value, card.label, sub=card.get("sub",""), color=card.get("color","default"), emoji=card.get("emoji",""), trend=card.get("trend","")) }}
+  {% endfor %}
+</div>
+{% endmacro %}

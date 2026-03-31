@@ -1,0 +1,44 @@
+{# Probability decomposition table (Phase 131-03, D-03/D-04) #}
+{% set sc_viz = scorecard if scorecard is defined else {} %}
+{% set probability_components = sc_viz.get('probability_components', []) %}
+{% if probability_components %}
+<div class="probability-decomposition" style="margin:16px 0;">
+  <h4 style="margin:0 0 8px;font-size:13px;color:#374151;">Filing Probability Decomposition</h4>
+  <table class="compact-table" style="width:100%;font-size:12px;border-collapse:collapse;">
+    <thead>
+      <tr style="border-bottom:2px solid #E5E7EB;">
+        <th style="text-align:left;padding:4px 8px;">Component</th>
+        <th style="text-align:right;padding:4px 8px;">Impact</th>
+        <th style="text-align:center;padding:4px 8px;">Direction</th>
+        <th style="text-align:right;padding:4px 8px;">Running Total</th>
+        <th style="text-align:left;padding:4px 8px;">Calibration</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for comp in probability_components %}
+      <tr style="border-bottom:1px solid #F3F4F6;">
+        <td style="padding:4px 8px;">{{ comp.name }}</td>
+        <td style="text-align:right;padding:4px 8px;font-variant-numeric:tabular-nums;">
+          {% if comp.direction == 'base' %}{{ "%.1f"|format(comp.value_pct) }}%
+          {% elif comp.direction == 'increase' %}<span style="color:#DC2626;">+{{ "%.1f"|format(comp.value_pct) }}%</span>
+          {% else %}<span style="color:#059669;">-{{ "%.1f"|format(comp.value_pct|abs) }}%</span>
+          {% endif %}
+        </td>
+        <td style="text-align:center;padding:4px 8px;">
+          {% if comp.direction == 'increase' %}&#9650;{% elif comp.direction == 'decrease' %}&#9660;{% else %}&#8212;{% endif %}
+        </td>
+        <td style="text-align:right;padding:4px 8px;font-variant-numeric:tabular-nums;">{{ "%.1f"|format(comp.running_total_pct) }}%</td>
+        <td style="padding:4px 8px;">
+          {% if comp.is_calibrated %}
+          <span style="background:#DCFCE7;color:#166534;padding:1px 6px;border-radius:3px;font-size:10px;">CALIBRATED</span>
+          <span style="font-size:10px;color:#6B7280;">{{ comp.source }}</span>
+          {% else %}
+          <span style="background:#FEF3C7;color:#92400E;padding:1px 6px;border-radius:3px;font-size:10px;">UNCALIBRATED</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}

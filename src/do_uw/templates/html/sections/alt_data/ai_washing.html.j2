@@ -1,0 +1,44 @@
+{# AI-Washing Risk Assessment — Phase 119 (ALTDATA-02) #}
+{# Renders AI claims, indicators table, scienter risk, D&O relevance. #}
+
+{% if has_ai_data %}
+<div class="page-break-inside-avoid mt-4">
+  <h4 class="font-heading text-sm font-semibold uppercase tracking-wider text-navy mb-2">AI-Washing Risk Assessment</h4>
+
+  {% if ai_indicators %}
+  <table class="data-table w-full border-collapse text-sm mb-3">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Claim</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Evidence</th>
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">D&O Risk</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ind in ai_indicators %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+        <td class="p-1 text-xs">{{ ind.get('claim', '') }}</td>
+        <td class="p-1 text-xs">{{ ind.get('evidence', '') }}</td>
+        <td class="p-1 text-xs do-callout">{{ ind.get('risk', '') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  <table class="data-table w-full border-collapse text-sm mb-3">
+    <tbody>
+      <tr class="bg-bg-alt">
+        <td class="p-1 font-semibold w-1/4">Scienter Risk</td>
+        <td class="p-1 {{ 'text-risk-red font-semibold' if ai_scienter_risk == 'HIGH' else 'text-amber-600 font-semibold' if ai_scienter_risk == 'MEDIUM' else '' }}">{{ ai_scienter_risk }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  {% if ai_do_relevance %}
+  <div class="border-l-4 border-amber-500 bg-amber-50 pl-3 py-2">
+    <p class="text-sm do-callout m-0"><strong>D&O Relevance:</strong> {{ ai_do_relevance }}</p>
+  </div>
+  {% endif %}
+</div>
+{% endif %}

@@ -1,0 +1,8 @@
+{# Risk Type Classification — extracted from scoring.html.j2 #}
+{% if sc.get('risk_type_primary') %}
+<h3>Risk Type Classification</h3>
+{{ kv_table([
+  {'key': 'Primary Risk Type', 'value': sc.risk_type_primary|humanize},
+  {'key': 'Secondary Risk Type', 'value': sc.get('risk_type_secondary', 'N/A')|humanize if sc.get('risk_type_secondary') else 'N/A'},
+]) }}
+{% endif %}

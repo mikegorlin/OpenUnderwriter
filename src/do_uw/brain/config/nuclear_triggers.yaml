@@ -1,0 +1,47 @@
+# Nuclear trigger definitions -- 5 binary checks that demand immediate escalation.
+# Each trigger has a data source mapping for deterministic verification.
+# Evidence templates use {placeholders} filled at runtime from state data.
+#
+# Phase 117: Forward-Looking Risk Framework
+
+nuclear_triggers:
+  - id: NUC-01
+    name: "Active Securities Class Action"
+    description: "Company is a defendant in an active SCA"
+    data_source: "Stanford SCAC database match"
+    state_path: "extracted.litigation.active_cases"
+    check_type: "list_not_empty"
+    evidence_template_fired: "Stanford SCAC: {case_details}"
+    evidence_template_clean: "Stanford SCAC clean -- no active SCA found"
+  - id: NUC-02
+    name: "SEC Investigation / Enforcement"
+    description: "Active SEC enforcement action or AAER"
+    data_source: "SEC AAER database + 10-K disclosure"
+    state_path: "extracted.litigation.sec_enforcement"
+    check_type: "list_not_empty"
+    evidence_template_fired: "SEC enforcement: {action_details}"
+    evidence_template_clean: "No SEC enforcement actions or AAERs found"
+  - id: NUC-03
+    name: "Financial Restatement"
+    description: "Company has restated financial results"
+    data_source: "10-K disclosure + 8-K Item 4.02"
+    state_path: "analysis.restatement_detected"
+    check_type: "boolean_true"
+    evidence_template_fired: "Restatement disclosed: {restatement_details}"
+    evidence_template_clean: "No financial restatements disclosed in filings"
+  - id: NUC-04
+    name: "CEO/CFO Departure Under Pressure"
+    description: "CEO or CFO departed under circumstances suggesting pressure"
+    data_source: "8-K Item 5.02 filing analysis"
+    state_path: "extracted.governance.executive_departures"
+    check_type: "departure_under_pressure"
+    evidence_template_fired: "{executive_name} departed {date}: {circumstances}"
+    evidence_template_clean: "No CEO/CFO departures under pressure identified"
+  - id: NUC-05
+    name: "Going Concern Opinion"
+    description: "Auditor issued going concern qualification"
+    data_source: "10-K audit opinion"
+    state_path: "extracted.financials.going_concern"
+    check_type: "boolean_true"
+    evidence_template_fired: "Going concern: {auditor} opinion dated {date}"
+    evidence_template_clean: "Clean audit opinion -- no going concern qualification"

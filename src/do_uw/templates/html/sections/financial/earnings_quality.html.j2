@@ -1,0 +1,34 @@
+{# Earnings Quality Detail — extracted from financial.html.j2 #}
+{% set eq_detail = fin.get('earnings_quality_detail', {}) %}
+{% if eq_detail %}
+<h3>Earnings Quality</h3>
+
+{# OCF/NI ratio interpretation — single most important quality signal #}
+{% if eq_detail.get('ocf_to_ni') %}
+{% set ocf_ni_str = eq_detail.ocf_to_ni | string | replace('x', '') | replace('%', '') %}
+{% set ocf_ni_val = ocf_ni_str | float(default=1.0) %}
+<div style="border-left:3px solid {{ '#B91C1C' if ocf_ni_val < 0.5 else '#D97706' if ocf_ni_val < 0.8 else '#0B1D3A' }}; padding:0.375rem 0.75rem; margin:0.5rem 0; background:{{ '#fef2f2' if ocf_ni_val < 0.5 else '#fffbeb' if ocf_ni_val < 0.8 else '#f8fafc' }}; border-radius:0 4px 4px 0; font-size:0.75rem;">
+  <strong>Cash Earnings Ratio: {{ eq_detail.ocf_to_ni }}</strong> —
+  {% if ocf_ni_val < 0.5 %}
+  Operating cash flow significantly lags reported earnings. Companies with OCF/NI < 0.5x face 3-5x higher restatement risk per academic studies. This is the single strongest forensic predictor of future earnings quality problems.
+  {% elif ocf_ni_val < 0.8 %}
+  Operating cash flow trails reported earnings, suggesting reliance on accruals. Monitor for working capital management practices that may be masking underlying cash generation weakness.
+  {% elif ocf_ni_val > 1.5 %}
+  Operating cash flow exceeds reported earnings — strong cash quality. This is a favorable D&O indicator, suggesting conservative accounting practices.
+  {% else %}
+  Cash flow and reported earnings are well-aligned — neutral quality indicator.
+  {% endif %}
+</div>
+{% endif %}
+
+{% set eq_items = [] %}
+{% if eq_detail.get('quality_score') %}{% set _ = eq_items.append({'key': 'Quality Score', 'value': eq_detail.quality_score}) %}{% endif %}
+{% if eq_detail.get('ocf_to_ni') %}{% set _ = eq_items.append({'key': 'Operating CF / Net Income', 'value': eq_detail.ocf_to_ni}) %}{% endif %}
+{% if eq_detail.get('accruals_ratio') %}{% set _ = eq_items.append({'key': 'Accruals Ratio', 'value': eq_detail.accruals_ratio}) %}{% endif %}
+{% if eq_detail.get('dso_delta') %}{% set _ = eq_items.append({'key': 'DSO Change', 'value': eq_detail.dso_delta}) %}{% endif %}
+{% if eq_detail.get('cash_flow_adequacy') %}{% set _ = eq_items.append({'key': 'Cash Flow Adequacy', 'value': eq_detail.cash_flow_adequacy}) %}{% endif %}
+{% if eq_items %}
+{{ kv_table(eq_items, title="Earnings Quality") }}
+{% endif %}
+{# do_context removed — generic brain YAML boilerplate #}
+{% endif %}

@@ -1,0 +1,155 @@
+## Section 7: D&O Risk Scoring & Composite Assessment -- 10-Factor Model & Red Flags
+{{ density_indicator("scoring") }}
+{% if scoring %}
+{% if scoring_narrative %}{{ scoring_narrative }}
+
+{% endif %}
+### Tier Classification
+
+| Quality Score | Composite | Risk Tier | Total Risk Pts |
+|--------------|-----------|-----------|---------------|
+| **{{ scoring.quality_score }}/100** | {{ scoring.composite_score }} | **{{ scoring.tier }}** | {{ scoring.total_risk_points }} |
+
+{% if scoring.tier_score_range is defined %}**Tier Range:** {{ scoring.tier_score_range }}{% endif %}{% if scoring.tier_action is defined %} | **Action:** {{ scoring.tier_action }}{% endif %}{% if scoring.binding_ceiling is defined and scoring.binding_ceiling != "None" %} | **Binding Ceiling:** {{ scoring.binding_ceiling }}{% endif %}
+
+{% if scoring.peril_scoring is defined and scoring.peril_scoring.all_perils %}
+### D&O Claim Peril Assessment
+
+{{ scoring.peril_scoring.active_count }} of {{ scoring.peril_scoring.all_perils|length }} D&O claim perils show active risk signals.
+
+| Peril | Risk Level | Active Chains | Key Evidence |
+|-------|-----------|--------------|-------------|
+{% for p in scoring.peril_scoring.all_perils %}| {{ p.name }} | **{{ p.risk_level }}** | {{ p.active_chain_count }}/{{ p.total_chain_count }} | {{ p.key_evidence|join('; ') }} |
+{% endfor %}
+{% endif %}
+### 10-Factor Composite Score Breakdown
+
+| Factor | Name | Deducted | Max | % Used | Top Contributor |
+|--------|------|---------|-----|--------|----------------|
+{% for factor in scoring.factors %}| {{ factor.id }} | {{ factor.name }} | {{ factor.score }} | {{ factor.weight }} | {{ factor.pct_used }} | {{ factor.top_evidence }} |
+{% endfor %}
+{% if chart_dir %}![Risk Radar](images/radar.png)
+{% endif %}
+
+### Red Flag Gates
+
+{% if scoring.red_flags %}| Flag | Name | Ceiling | Max Tier | Evidence |
+|------|------|---------|----------|----------|
+{% for flag in scoring.red_flags %}| {{ flag.id }} | {{ flag.name }} | {{ flag.ceiling }} | {{ flag.max_tier }} | {{ flag.description }} |
+{% endfor %}{% else %}*No red flags triggered.*
+{% endif %}
+
+{% if scoring.patterns %}
+### Composite Risk Patterns
+
+{% for pattern in scoring.patterns %}- **{{ pattern.name }}**: {{ pattern.description }}
+{% endfor %}{% endif %}
+{% if scoring.claim_probability is defined %}
+### Claim Probability
+
+| Band | Range | Industry Base Rate |
+|------|-------|-------------------|
+| **{{ scoring.claim_probability.band }}** | {{ scoring.claim_probability.range }} | {{ scoring.claim_probability.industry_base }} |
+{% endif %}
+{% if scoring.severity_scenarios is defined %}
+### Severity Scenarios
+
+| Scenario | Probability | Expected Loss | Defense Costs | Total Exposure |
+|----------|------------|--------------|--------------|---------------|
+{% for s in scoring.severity_scenarios %}| {{ s.scenario }} | {{ s.probability }} | {{ s.expected_loss }} | {{ s.defense_costs }} | {{ s.total }} |
+{% endfor %}{% endif %}
+{% if scoring.allegation_map is defined %}
+### Allegation Theory Mapping
+
+| Theory | Exposure Level | Evidence |
+|--------|---------------|---------|
+{% for a in scoring.allegation_map %}| {{ a.theory }} | **{{ a.exposure_level }}** | {{ a.evidence }} |
+{% endfor %}{% endif %}
+{% if scoring.risk_type_primary is defined %}**Risk Type:** {{ scoring.risk_type_primary }}{% if scoring.risk_type_secondary is defined and scoring.risk_type_secondary %} | Secondary: {{ scoring.risk_type_secondary }}{% endif %}
+{% endif %}
+{% if scoring.calibration_notes is defined %}
+### Calibration Notes
+
+{% for note in scoring.calibration_notes %}- {{ note }}
+{% endfor %}{% endif %}
+{% else %}
+*Scoring data not available.*
+{% endif %}
+
+{% if forensic_composites %}
+### Forensic Composite Scores
+
+| Composite | Score | Interpretation |
+|-----------|-------|---------------|
+{% for c in forensic_composites.composites %}| {{ c.name }} | {{ c.score }} | {{ c.interpretation }} |
+{% endfor %}
+{% else %}
+### Forensic Composite Scores
+
+*Forensic composite scores not available.*
+{% endif %}
+
+{% if executive_risk %}
+### Executive Risk Profile
+
+**Weighted Score:** {{ executive_risk.weighted_score }} | **Risk Level:** {{ executive_risk.risk_level }}
+
+{% if executive_risk.findings %}
+{% for finding in executive_risk.findings %}- {{ finding }}
+{% endfor %}{% endif %}
+{% else %}
+### Executive Risk Profile
+
+*Executive risk profile not available.*
+{% endif %}
+
+{% if temporal_signals %}
+### Temporal Signals
+
+| Type | Direction | Magnitude | Description |
+|------|-----------|-----------|-------------|
+{% for sig in temporal_signals %}| {{ sig.type }} | {{ sig.direction }} | {{ sig.magnitude }} | {{ sig.description }} |
+{% endfor %}
+{% else %}
+### Temporal Signals
+
+*No temporal signals detected.*
+{% endif %}
+
+{% if nlp_signals %}
+### NLP Filing Analysis
+
+| Metric | Value |
+|--------|-------|
+| Readability | {{ nlp_signals.readability }} |
+| Tone Assessment | {{ nlp_signals.tone }} |
+| Risk Language Density | {{ nlp_signals.risk_density }} |
+{% else %}
+### NLP Filing Analysis
+
+*NLP filing analysis not available.*
+{% endif %}
+
+{% if peril_map %}
+### Peril Map
+
+**Overall Assessment:** {{ peril_map.overall_assessment }}
+
+{% if peril_map.assessments %}
+#### Plaintiff Assessments
+
+| Plaintiff Type | Probability | Severity | Key Evidence |
+|---------------|-------------|----------|-------------|
+{% for a in peril_map.assessments %}| {{ a.type }} | {{ a.probability }} | {{ a.severity }} | {{ a.evidence }} |
+{% endfor %}
+{% endif %}
+{% if peril_map.bear_cases %}
+#### Bear Cases
+
+{% for bc in peril_map.bear_cases %}- **{{ bc.theory }}** (Prob: {{ bc.probability }}, Severity: {{ bc.severity }}): {{ bc.summary }}
+{% endfor %}{% endif %}
+{% else %}
+### Peril Map
+
+*Peril assessment not available.*
+{% endif %}

@@ -1,0 +1,205 @@
+- id: BASE.FILING.10K
+  name: Annual Report (10-K) Filing
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_FILINGS
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: filing_analysis_patterns
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_10K
+      fields:
+      - acquired_data.filings.annual
+      - extracted.financials
+      - extracted.risk_factors
+      - extracted.text_signals
+      fallback_to: null
+  description: 'Most recent 10-K annual report. Source for XBRL financials, risk factors, MD&A text, Item 3 legal proceedings,
+    auditor opinion, exhibits.
+
+    '
+  group: filing_analysis_patterns
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC filing requirements: 10K availability per Regulation S-K/S-X mandatory disclosure rules'
+    threshold_basis: Binary availability check -- 10K filing either exists in EDGAR or does not; no threshold calibration
+      needed
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} annual report (10-k) filing at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} annual report (10-k) filing at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} annual report (10-k) filing at {value} is within normal parameters for D&O risk assessment — no D&O
+        concern at this level.'
+- id: BASE.FILING.10Q
+  name: Quarterly Report (10-Q) Filing
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_FILINGS
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: filing_analysis_patterns
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_10Q
+      fields:
+      - acquired_data.filings.quarterly
+      - extracted.financials.quarterly_periods
+      fallback_to: null
+  description: 'Recent 10-Q quarterly reports (up to 8 quarters). Source for quarterly XBRL financials and trend computation.
+
+    '
+  group: filing_analysis_patterns
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC filing requirements: 10Q availability per Regulation S-K/S-X mandatory disclosure rules'
+    threshold_basis: Binary availability check -- 10Q filing either exists in EDGAR or does not; no threshold calibration
+      needed
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} quarterly report (10-q) filing at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} quarterly report (10-q) filing at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} quarterly report (10-q) filing at {value} is within normal parameters for D&O risk assessment — no
+        D&O concern at this level.'
+- id: BASE.FILING.DEF14A
+  name: Proxy Statement (DEF 14A) Filing
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_FILINGS
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: filing_analysis_patterns
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_DEF14A
+      fields:
+      - extracted.governance.board
+      - extracted.governance.leadership
+      - extracted.governance.compensation
+      - extracted.governance.comp_analysis
+      fallback_to: null
+  description: 'DEF 14A proxy statement. Source for board composition, executive compensation, say-on-pay results, related
+    party transactions, shareholder proposals.
+
+    '
+  group: filing_analysis_patterns
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC filing requirements: DEF14A availability per Regulation S-K/S-X mandatory disclosure rules'
+    threshold_basis: Binary availability check -- DEF14A filing either exists in EDGAR or does not; no threshold calibration
+      needed
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} proxy statement (def 14a) filing at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} proxy statement (def 14a) filing at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} proxy statement (def 14a) filing at {value} is within normal parameters for D&O risk assessment —
+        no D&O concern at this level.'
+- id: BASE.FILING.8K
+  name: Current Report (8-K) Filing
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_FILINGS
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: filing_analysis_patterns
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_8K
+      fields:
+      - acquired_data.filings.current_reports
+      fallback_to: null
+  description: 'Recent 8-K current reports for material events: executive departures, auditor changes, restatements, M&A announcements,
+    material agreements.
+
+    '
+  group: filing_analysis_patterns
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SEC filing requirements: 8K availability per Regulation S-K/S-X mandatory disclosure rules'
+    threshold_basis: Binary availability check -- 8K filing either exists in EDGAR or does not; no threshold calibration needed
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} current report (8-k) filing at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} current report (8-k) filing at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} current report (8-k) filing at {value} is within normal parameters for D&O risk assessment — no D&O
+        concern at this level.'

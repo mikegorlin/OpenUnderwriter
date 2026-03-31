@@ -1,0 +1,63 @@
+{# Quick Screen / Trigger Matrix -- nuclear triggers + RED/YELLOW flag summary (Phase 117 -- TRIGGER-01/02/03)
+   Should be placed near the top of the worksheet for immediate underwriter visibility. #}
+{% set qs = quick_screen_data | default({}) %}
+{% if qs.get('quick_screen_available', false) %}
+<div class="quick-screen-panel border-2 {{ 'border-risk-red' if qs.nuclear_fired_count > 0 else 'border-green-500' }} rounded-lg p-4 my-4 page-break-inside-avoid" id="quick-screen">
+  {# Nuclear Trigger Verification -- most important check #}
+  <div class="flex items-center justify-between mb-3">
+    <h3 class="m-0 text-lg font-heading">Quick Screen</h3>
+    <div class="px-3 py-1 rounded-full text-sm font-bold {{ 'bg-risk-red text-white' if qs.nuclear_fired_count > 0 else 'bg-green-100 text-green-800' }}">
+      {{ qs.nuclear_display }}
+    </div>
+  </div>
+
+  {# Nuclear triggers checklist #}
+  <div class="grid grid-cols-5 gap-2 mb-4">
+    {% for nt in qs.nuclear_triggers %}
+    <div class="border rounded p-2 text-center {{ 'bg-red-50 border-risk-red' if nt.fired else 'bg-green-50 border-green-300' }}">
+      <p class="text-xs font-semibold m-0 {{ 'text-risk-red' if nt.fired else 'text-green-700' }}">
+        {{ nt.trigger_id }}
+      </p>
+      <p class="text-xs m-0 mt-1">{{ nt.name }}</p>
+      <p class="text-lg m-0 mt-1">{{ nt.icon }}</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  {# Trigger Matrix -- RED/YELLOW flags by section #}
+  {% if qs.total_flags > 0 %}
+  <h4 class="font-heading text-sm mb-2">
+    Flag Summary: <span class="text-risk-red">{{ qs.red_count }} RED</span>
+    {% if qs.yellow_count > 0 %} / <span class="text-amber-600">{{ qs.yellow_count }} YELLOW</span>{% endif %}
+  </h4>
+  {% for section_name, section_flags in qs.trigger_matrix_by_section.items() %}
+  <div class="mb-2">
+    <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0 mb-1">{{ section_name }}</p>
+    {% for flag in section_flags %}
+    <div class="flex items-center gap-2 py-1 border-b border-gray-100">
+      <span class="px-1.5 py-0.5 rounded text-xs font-bold {{ flag.flag_class }}">{{ flag.flag_level }}</span>
+      <a href="{{ flag.section_anchor }}" class="text-sm text-navy hover:underline">{{ flag.signal_name }}</a>
+      {% if flag.do_context %}<span class="text-xs text-gray-500 ml-auto">{{ flag.do_context }}</span>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+  {% else %}
+  <p class="text-sm text-green-700 m-0">No RED or YELLOW flags detected. Clean risk profile.</p>
+  {% endif %}
+
+  {# Prospective Checks -- forward-looking traffic lights #}
+  {% if qs.has_prospective_checks %}
+  <h4 class="font-heading text-sm mb-2 mt-3">Prospective Checks</h4>
+  <div class="grid grid-cols-5 gap-2">
+    {% for pc in qs.prospective_checks %}
+    <div class="border border-gray-200 rounded p-2 text-center">
+      <div class="w-3 h-3 rounded-full mx-auto mb-1 {{ pc.status_class }}"></div>
+      <p class="text-xs font-semibold m-0">{{ pc.check_name }}</p>
+      <p class="text-xs text-gray-500 m-0 mt-1">{{ pc.finding | default('--', true) }}</p>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endif %}

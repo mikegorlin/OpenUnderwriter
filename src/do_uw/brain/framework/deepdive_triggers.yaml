@@ -1,0 +1,272 @@
+# Deep-Dive Triggers: Conditional investigation prompts for underwriters.
+# Phase 110-01: 10 triggers covering all H/A/E dimensions.
+#
+# Each trigger fires when ALL conditions in trigger_conditions.all_of are met.
+# When fired, the UW investigation prompt guides deeper analysis.
+#
+# NOTE: additional_acquisition lists what data WOULD be requested in a future
+# acquisition loop. For v7.0, triggers produce investigation prompts only.
+# Actual re-acquisition is deferred (UW prompts deliver 80% of value).
+
+triggers:
+  - id: deepdive.governance_board
+    name: Board Governance Deep-Dive
+    description: "Weak governance combined with executive departure warrants full board investigation"
+    trigger_conditions:
+      all_of:
+        - signal: GOV.BOARD.independence
+          status: TRIGGERED
+        - signal: EXEC.TURN.c_suite
+          status: TRIGGERED
+    additional_signals:
+      - GOV.BOARD.expertise
+      - GOV.BOARD.size
+      - EXEC.COMP.ceo_total_comp
+    additional_acquisition:
+      - board_member_backgrounds
+      - proxy_contest_history
+    uw_investigation_prompt: >
+      BOARD GOVERNANCE INVESTIGATION: Both board independence and executive turnover signals
+      have triggered. Investigate: (1) Why did the executive depart? Resignation vs termination,
+      (2) Is the board sufficiently independent to oversee management transition? (3) Review
+      committee compositions, especially audit and compensation, (4) Check for director
+      interlocks or related-party connections, (5) Assess board diversity and refreshment.
+    rap_dimensions:
+      - agent
+      - host
+
+  - id: deepdive.financial_controls
+    name: Financial Controls Deep-Dive
+    description: "Restatement combined with auditor change warrants forensic accounting review"
+    trigger_conditions:
+      all_of:
+        - signal: FIN.ACCT.restatement
+          status: TRIGGERED
+        - signal: FIN.ACCT.auditor
+          status: TRIGGERED
+    additional_signals:
+      - FIN.ACCT.internal_controls
+      - FIN.FORENSIC.beneish
+      - FIN.FORENSIC.altman_z
+    additional_acquisition:
+      - pcaob_inspection_reports
+      - sec_comment_letters
+    uw_investigation_prompt: >
+      FINANCIAL CONTROLS INVESTIGATION: Both restatement and auditor signals have triggered.
+      Investigate: (1) Nature and scope of restatement (revision vs restatement, material vs
+      immaterial), (2) Reason for auditor change (fee dispute vs disagreement on accounting),
+      (3) Review PCAOB inspection reports for the audit firm, (4) Check for SEC comment
+      letters on financial reporting, (5) Assess internal controls over financial reporting
+      (ICFR) effectiveness, (6) Review Beneish M-Score and other forensic indicators.
+    rap_dimensions:
+      - agent
+      - host
+
+  - id: deepdive.distress_insider
+    name: DIC/Bankruptcy Scenario Deep-Dive
+    description: "Financial distress with insider selling indicates potential DIC claim exposure"
+    trigger_conditions:
+      all_of:
+        - signal: FIN.FORENSIC.altman_z
+          status: TRIGGERED
+        - signal: STOCK.INSIDER.net_selling
+          status: TRIGGERED
+    additional_signals:
+      - FIN.LIQ.position
+      - FIN.DEBT.leverage_ratio
+      - FIN.DEBT.maturity_profile
+    additional_acquisition:
+      - bankruptcy_court_filings
+      - credit_agency_reports
+    uw_investigation_prompt: >
+      DIC/BANKRUPTCY INVESTIGATION: Both financial distress and insider selling signals have
+      triggered. Investigate: (1) Altman Z-Score trend over 4 quarters, (2) Insider selling
+      timeline vs material events, (3) Debt maturity wall and refinancing options, (4) Cash
+      runway and liquidity position, (5) Going concern opinion history, (6) Assess probability
+      of Zone of Insolvency and fiduciary duty implications for directors.
+    rap_dimensions:
+      - host
+      - agent
+
+  - id: deepdive.regulatory_escalation
+    name: Regulatory Escalation Deep-Dive
+    description: "Regulatory action with new material litigation signals enforcement escalation"
+    trigger_conditions:
+      all_of:
+        - signal: LIT.SEC.enforcement
+          status: TRIGGERED
+        - signal: LIT.SCA.active_cases
+          status: TRIGGERED
+    additional_signals:
+      - LIT.DERIV.derivative_actions
+      - LIT.CONTINGENT.provisions
+    additional_acquisition:
+      - sec_litigation_releases
+      - state_ag_actions
+    uw_investigation_prompt: >
+      REGULATORY ESCALATION INVESTIGATION: Both SEC enforcement and active SCA signals have
+      triggered. Investigate: (1) Nature of SEC enforcement (formal order vs Wells notice
+      vs cease-and-desist), (2) Is the SCA piggy-backing on the enforcement action?
+      (3) Timeline: did enforcement precede or follow private litigation? (4) Check for
+      parallel state AG or DOJ investigations, (5) Assess potential for derivative actions
+      and demand futility, (6) Review litigation contingency reserves adequacy.
+    rap_dimensions:
+      - environment
+      - agent
+
+  - id: deepdive.ma_integration
+    name: M&A Integration Risk Deep-Dive
+    description: "Rapid M&A with integration red flags warrants acquisition risk assessment"
+    trigger_conditions:
+      all_of:
+        - signal: BIZ.MA.acquisition_activity
+          status: TRIGGERED
+        - signal: FIN.BAL.goodwill_impairment
+          status: TRIGGERED
+    additional_signals:
+      - FIN.PROFIT.margin_trend
+      - EXEC.TURN.c_suite
+    additional_acquisition:
+      - acquisition_proxy_statements
+      - fairness_opinions
+    uw_investigation_prompt: >
+      M&A INTEGRATION INVESTIGATION: Both acquisition activity and goodwill impairment
+      signals have triggered. Investigate: (1) Number and size of recent acquisitions,
+      (2) Goodwill as percentage of total assets and impairment trend, (3) Integration
+      success metrics (revenue synergies achieved, cost savings), (4) Was proper due
+      diligence conducted? Were fairness opinions obtained? (5) Executive turnover at
+      acquired companies, (6) Assess duty of care claims from overpaying.
+    rap_dimensions:
+      - host
+      - agent
+
+  - id: deepdive.compensation_governance
+    name: Compensation Committee Investigation
+    description: "Excessive compensation with weak board oversight warrants comp investigation"
+    trigger_conditions:
+      all_of:
+        - signal: EXEC.COMP.ceo_total_comp
+          status: TRIGGERED
+        - signal: GOV.BOARD.independence
+          status: TRIGGERED
+    additional_signals:
+      - GOV.COMP.clawback
+      - EXEC.COMP.equity_mix
+    additional_acquisition:
+      - say_on_pay_votes
+      - peer_comp_benchmarks
+    uw_investigation_prompt: >
+      COMPENSATION INVESTIGATION: Both executive compensation and board independence
+      signals have triggered. Investigate: (1) CEO pay vs peer median and company
+      performance, (2) Say-on-pay vote results (below 70% = red flag), (3) Compensation
+      committee composition and independence, (4) Clawback policy existence and adequacy,
+      (5) Change-in-control provisions and golden parachute terms, (6) Equity compensation
+      dilution impact on shareholders.
+    rap_dimensions:
+      - agent
+
+  - id: deepdive.cyber_operational
+    name: Technology Risk Deep-Dive
+    description: "Cyber incident with operational disruption warrants technology risk review"
+    trigger_conditions:
+      all_of:
+        - signal: ENV.CYBER.incident_history
+          status: TRIGGERED
+        - signal: ENV.OPERATIONAL.disruption
+          status: TRIGGERED
+    additional_signals:
+      - ENV.CYBER.security_posture
+      - ENV.DATA.privacy_compliance
+    additional_acquisition:
+      - breach_notification_filings
+      - cyber_insurance_claims
+    uw_investigation_prompt: >
+      TECHNOLOGY RISK INVESTIGATION: Both cybersecurity incident and operational disruption
+      signals have triggered. Investigate: (1) Nature and scope of cyber incident (data
+      breach, ransomware, system outage), (2) Regulatory notifications filed, (3) Class
+      action exposure from affected consumers/patients, (4) Cyber insurance coverage and
+      prior claims, (5) Board oversight of cybersecurity (dedicated committee?),
+      (6) Remediation measures and timeline.
+    rap_dimensions:
+      - environment
+      - host
+
+  - id: deepdive.accounting_fraud
+    name: Forensic Accounting Deep-Dive
+    description: "High Beneish M-Score with revenue anomaly warrants forensic review"
+    trigger_conditions:
+      all_of:
+        - signal: FIN.FORENSIC.beneish
+          status: TRIGGERED
+        - signal: FIN.PROFIT.revenue
+          status: TRIGGERED
+    additional_signals:
+      - FIN.ACCT.restatement
+      - FIN.ACCT.internal_controls
+      - FIN.FORENSIC.altman_z
+    additional_acquisition:
+      - quarterly_revenue_reconciliation
+      - channel_stuffing_indicators
+    uw_investigation_prompt: >
+      FORENSIC ACCOUNTING INVESTIGATION: Both Beneish M-Score and revenue signals have
+      triggered. Investigate: (1) Which Beneish sub-scores are driving the flag (DSRI,
+      GMI, AQI, SGI, DEPI, SGAI, TATA, LVGI)? (2) Revenue recognition policy changes,
+      (3) Days sales outstanding trend, (4) Deferred revenue and contract liability changes,
+      (5) Non-GAAP adjustments pattern, (6) Assess probability of earnings manipulation
+      per Beneish research (M-Score > -1.78 = likely manipulator).
+    rap_dimensions:
+      - host
+      - agent
+
+  - id: deepdive.litigation_surge
+    name: Securities Class Action Exposure Deep-Dive
+    description: "Multiple new lawsuits with stock drop warrants SCA exposure assessment"
+    trigger_conditions:
+      all_of:
+        - signal: LIT.SCA.active_cases
+          status: TRIGGERED
+        - signal: STOCK.DROP.corrective_disclosure
+          status: TRIGGERED
+    additional_signals:
+      - STOCK.VOL.historical
+      - STOCK.SHORT.interest_ratio
+    additional_acquisition:
+      - scac_complaint_text
+      - lead_plaintiff_motions
+    uw_investigation_prompt: >
+      SCA EXPOSURE INVESTIGATION: Both active SCA and corrective disclosure stock drop
+      signals have triggered. Investigate: (1) Number and nature of SCA complaints filed,
+      (2) Class period identification and stock price decline, (3) Lead plaintiff competition
+      and institutional plaintiff involvement, (4) Identified misstatement theories
+      (forward-looking statements, omissions, affirmative misrepresentation), (5) Short
+      seller reports preceding the drop, (6) Settlement demand range based on market cap
+      and stock decline.
+    rap_dimensions:
+      - environment
+      - host
+
+  - id: deepdive.environmental_regulatory
+    name: Environmental Remediation Deep-Dive
+    description: "Environmental liability with regulatory action warrants remediation assessment"
+    trigger_conditions:
+      all_of:
+        - signal: ENV.REGULATORY.environmental_liability
+          status: TRIGGERED
+        - signal: LIT.SEC.enforcement
+          status: TRIGGERED
+    additional_signals:
+      - FIN.CONTINGENT.provisions
+      - ENV.REGULATORY.compliance_status
+    additional_acquisition:
+      - epa_enforcement_actions
+      - superfund_site_listings
+    uw_investigation_prompt: >
+      ENVIRONMENTAL INVESTIGATION: Both environmental liability and regulatory enforcement
+      signals have triggered. Investigate: (1) Nature of environmental liability (contamination,
+      emissions, waste disposal), (2) EPA enforcement status and consent orders, (3) Superfund
+      or CERCLA site involvement, (4) Remediation cost estimates and reserve adequacy,
+      (5) State environmental agency actions, (6) Assess long-tail environmental liability
+      exposure for D&O coverage.
+    rap_dimensions:
+      - environment
+      - host

@@ -1,0 +1,47 @@
+- id: CONJ.FIN.growth_margin_guidance
+  name: Rapid Growth + Margin Compression + Guidance Miss
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: Rapid revenue growth with declining margins and history of guidance misses
+  provenance:
+    origin: phase_110_conjunction
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Conjunction of growth + margin + guidance signals
+    threshold_provenance:
+      source: calibrated
+      rationale: 'Cornerstone settlement data: growth companies with margin compression + guidance miss have 2.8x SCA frequency'
+  signal_class: inference
+  group: key_metrics
+  rap_class: host
+  rap_subcategory: host.financials
+  epistemology:
+    rule_origin: 'Cornerstone settlement data and SCAC filing analysis: Desperate Growth Trap pattern'
+    threshold_basis: 2+ of 3 conditions met triggers RED; classic desperate-growth SCA fact pattern
+  evaluation:
+    mechanism: conjunction
+    conjunction_rules:
+      required_signals:
+      - FIN.PROFIT.revenue
+      - FIN.PROFIT.margin_trend
+      - FWRD.DISC.guidance_accuracy
+      minimum_matches: 2
+      signal_conditions: {}
+      recommendation_floor: ELEVATED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} rapid growth + margin compression + guidance miss at {value} represents host risk (company-level
+        characteristics that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} rapid growth + margin compression + guidance miss at {value} is a moderate indicator for
+        D&O risk assessment, warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} rapid growth + margin compression + guidance miss at {value} is within normal parameters for D&O risk
+        assessment — no D&O concern at this level.'

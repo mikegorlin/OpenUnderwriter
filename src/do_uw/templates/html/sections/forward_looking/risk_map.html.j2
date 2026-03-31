@@ -1,0 +1,44 @@
+{# Forward-Looking Statement Risk Map (Phase 117 -- FORWARD-01)
+   Renders every forward-looking claim with miss risk and SCA relevance. #}
+{% set fwd = forward_risk_map | default({}) %}
+{% if fwd.get('has_forward_statements', false) %}
+<h3 id="forward-risk-map">Forward-Looking Statement Risk Map</h3>
+{% if not fwd.get('has_quantitative_guidance', false) %}
+<p class="text-xs text-amber-600 italic mb-2">This company does not provide explicit numeric guidance. Claims below are qualitative forward-looking statements from SEC filings.</p>
+{% endif %}
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Metric</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Current Value</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">Guidance / Claim</th>
+      <th class="text-center p-1 border-b font-heading text-xs font-semibold uppercase">Miss Risk</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase">SCA Relevance if Missed</th>
+      <th class="text-left p-1 border-b font-heading text-xs font-semibold uppercase text-gray-400">Source</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for stmt in fwd.forward_statements %}
+    <tr class="{{ stmt.row_class }} {{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-semibold">{{ stmt.metric_name }}</td>
+      <td class="p-1">{{ stmt.current_value | default('--', true) }}</td>
+      <td class="p-1">{{ stmt.guidance_claim | default('--', true) }}</td>
+      <td class="p-1 text-center font-semibold">
+        {% if stmt.miss_risk == 'HIGH' %}<span class="text-risk-red">HIGH</span>
+        {% elif stmt.miss_risk == 'MEDIUM' %}<span class="text-amber-600">MEDIUM</span>
+        {% elif stmt.miss_risk == 'LOW' %}<span class="text-green-600">LOW</span>
+        {% else %}<span class="text-gray-400">{{ stmt.miss_risk }}</span>{% endif %}
+      </td>
+      <td class="p-1 text-xs">{{ stmt.sca_relevance | default('--', true) }}</td>
+      <td class="p-1 text-xs text-gray-400">{{ stmt.source | default('', true) }}</td>
+    </tr>
+    {% if stmt.miss_risk_rationale %}
+    <tr class="bg-white">
+      <td colspan="6" class="px-3 py-1 border-b border-gray-100 text-xs text-gray-500 italic">{{ stmt.miss_risk_rationale }}</td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+<p class="text-xs text-gray-400">{{ fwd.forward_statement_count }} forward-looking statement(s) identified</p>
+{% endif %}

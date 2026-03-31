@@ -1,0 +1,20 @@
+{# Key Events & News — company-specific articles from yfinance news feed.
+   Data from mkt.news_articles (built from acquired_data.market_data.news).
+   Filtered to company-relevant articles only.
+   Note: yfinance provides recent news (typically 1-7 days). For 24-month coverage,
+   supplemental news sources (Brave Search, Exa) would be needed. #}
+
+{% set articles = mkt.get('news_articles', []) %}
+{% if articles %}
+  <h3>Key Events & News</h3>
+  <div style="display:flex;flex-direction:column;gap:3px;margin:6px 0 10px">
+    {% for article in articles %}
+    <div style="display:flex;align-items:baseline;gap:8px;padding:4px 8px;background:{% if loop.index is odd %}#F9FAFB{% else %}white{% endif %};border:1px solid #E5E7EB;border-radius:3px">
+      <span style="font-size:7.5pt;color:#9CA3AF;white-space:nowrap;min-width:68px;font-variant-numeric:tabular-nums">{{ article.date }}</span>
+      <span style="font-size:8.5pt;color:#111827;font-weight:500;flex:1">{% if article.url %}<a href="{{ article.url }}" target="_blank" style="color:#111827;text-decoration:none">{{ article.title }}</a>{% else %}{{ article.title }}{% endif %}</span>
+      {% if article.provider %}<span style="font-size:7pt;color:#6B7280;white-space:nowrap">{{ article.provider }}</span>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  <div style="font-size:7pt;color:#9CA3AF;margin-top:-4px;margin-bottom:6px">Note: News coverage limited to recent articles from yfinance feed. For comprehensive 24-month event history, supplemental sources are recommended.</div>
+{% endif %}

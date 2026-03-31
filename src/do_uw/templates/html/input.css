@@ -1,0 +1,87 @@
+/* Tailwind CSS v4 input file for D&O Underwriting Worksheet.
+ * Compiled via: uv run tailwindcss -i input.css -o compiled.css --minify
+ *
+ * All custom colors and fonts defined here MUST match the DesignSystem
+ * constants in src/do_uw/stages/render/design_system.py (html_* properties).
+ */
+
+@import "tailwindcss";
+
+/* Tell Tailwind v4 where to scan for utility classes */
+@source "../../../do_uw/templates/html";
+
+/* Custom theme: colors and fonts for D&O Underwriting Worksheet */
+@theme {
+  /* Primary palette */
+  --color-navy: #0B1D3A;
+  --color-navy-light: #1A2D4A;
+  --color-gold: #D4A843;
+  --color-gold-light: #F5ECD8;
+
+  /* Risk spectrum — Phase 124 updated palette */
+  --color-risk-critical: #DC2626;
+  --color-risk-elevated: #EA580C;
+  --color-risk-watch: #EAB308;
+  --color-risk-positive: #2563EB;
+  --color-risk-green: #16A34A;
+  --color-neutral-gray: #6B7280;
+
+  /* Backward-compat aliases */
+  --color-risk-red: #DC2626;
+  --color-risk-amber: #EA580C;
+  --color-risk-blue: #2563EB;
+
+  /* Backgrounds */
+  --color-bg-alt: #F8FAFC;
+
+  /* Font families — Inter (self-hosted) + JetBrains Mono for data */
+  --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', Consolas, monospace;
+}
+
+/* =====================================================================
+   Self-hosted font declarations
+   Fonts are base64-inlined at build time via build-css.sh for
+   Playwright file:// rendering compatibility.
+   ===================================================================== */
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/inter-latin-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/inter-latin-500-normal.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/inter-latin-600-normal.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/inter-latin-700-normal.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('./fonts/jetbrains-mono-latin-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

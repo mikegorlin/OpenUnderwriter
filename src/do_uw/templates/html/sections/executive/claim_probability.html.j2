@@ -1,0 +1,26 @@
+{# Claim Probability — extracted from executive.html.j2 #}
+
+  {# --- Claim Probability --- #}
+  {% set cp = es.get('claim_probability') %}
+  {% if cp %}
+  <h3>Claim Probability</h3>
+  <div class="grid grid-cols-3 gap-2 my-3">
+    <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+      <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Band</p>
+      <p class="text-lg font-bold m-0
+        {% if cp.band in ['VERY_HIGH', 'HIGH'] %} text-risk-red
+        {% elif cp.band in ['ELEVATED'] %} text-risk-amber
+        {% else %} text-navy
+        {% endif %}
+      ">{{ cp.band | humanize }}</p>
+    </div>
+    <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+      <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Company Rate</p>
+      <p class="text-lg font-bold text-navy m-0">{{ cp.range }}</p>
+    </div>
+    <div class="bg-bg-alt border border-gray-200 rounded p-3 text-center page-break-inside-avoid">
+      <p class="font-heading text-xs uppercase tracking-wide text-gray-500 m-0">Industry Base</p>
+      <p class="text-lg font-bold text-navy m-0">{{ cp.industry_base }}</p>
+    </div>
+  </div>
+  {% endif %}

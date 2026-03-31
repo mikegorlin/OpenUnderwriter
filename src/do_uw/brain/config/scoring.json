@@ -1,0 +1,1420 @@
+{
+  "$schema": "SCORING_V1",
+  "version": "1.0.0",
+  "description": "Consolidated D&O underwriting scoring configuration. Merges factor weights, sub-factor thresholds, and tier boundaries into a single authoritative source.",
+  "last_updated": "2026-02-07",
+  "sources": [
+    "scoring_weights.json v2.0 (2026-01-30)",
+    "factor_thresholds.json v1.0 (2026-01-28)",
+    "tier_boundaries.json v1.0 (2026-01-28)"
+  ],
+  "scoring_formula": "quality_score = 100 - risk_points",
+  "total_points": 100,
+  "factors": {
+    "F1_prior_litigation": {
+      "factor_id": "F.1",
+      "name": "Prior Litigation",
+      "max_points": 20,
+      "weight_pct": 20,
+      "description": "Active securities litigation, SEC enforcement, DOJ investigation",
+      "confidence": "VALIDATED",
+      "historical_lift": 4.2,
+      "rules": [
+        {
+          "id": "F1-001",
+          "condition": "Active securities class action",
+          "points": 20,
+          "triggers_crf": "CRF-001"
+        },
+        {
+          "id": "F1-002",
+          "condition": "Securities suit settled <3 years",
+          "points": 18
+        },
+        {
+          "id": "F1-003",
+          "condition": "Securities suit settled 3-5 years",
+          "points": 15
+        },
+        {
+          "id": "F1-004",
+          "condition": "Securities suit settled 5-10 years",
+          "points": 10
+        },
+        {
+          "id": "F1-005",
+          "condition": "SEC enforcement action <5 years",
+          "points": 12
+        },
+        {
+          "id": "F1-006",
+          "condition": "Derivative suit <5 years",
+          "points": 6
+        },
+        {
+          "id": "F1-007",
+          "condition": "No prior litigation",
+          "points": 0
+        }
+      ]
+    },
+    "F2_stock_decline": {
+      "factor_id": "F.2",
+      "name": "Stock Decline",
+      "max_points": 15,
+      "weight_pct": 15,
+      "description": "Decline from 52-week high with company-specific attribution and insider trading amplifier",
+      "confidence": "VALIDATED",
+      "historical_lift": 3.8,
+      "rules": [
+        {
+          "id": "F2-001",
+          "condition": ">60% decline",
+          "points": 15
+        },
+        {
+          "id": "F2-002",
+          "condition": "50-60% decline",
+          "points": 12
+        },
+        {
+          "id": "F2-003",
+          "condition": "40-50% decline",
+          "points": 9
+        },
+        {
+          "id": "F2-004",
+          "condition": "30-40% decline",
+          "points": 6
+        },
+        {
+          "id": "F2-005",
+          "condition": "20-30% decline",
+          "points": 3
+        },
+        {
+          "id": "F2-006",
+          "condition": "<20% decline",
+          "points": 0
+        }
+      ],
+      "insider_amplifier": {
+        "note": "Insider trading is a severity multiplier, not standalone factor. Provides scienter evidence.",
+        "multipliers": [
+          {
+            "id": "F2-IA01",
+            "condition": "Net buying or neutral",
+            "multiplier": 1.0
+          },
+          {
+            "id": "F2-IA02",
+            "condition": "Routine 10b5-1 sales (established >6mo)",
+            "multiplier": 1.0
+          },
+          {
+            "id": "F2-IA03",
+            "condition": "Heavy selling (>25% holdings by CEO/CFO)",
+            "multiplier": 1.5
+          },
+          {
+            "id": "F2-IA04",
+            "condition": "Cluster selling (3+ executives)",
+            "multiplier": 2.0
+          },
+          {
+            "id": "F2-IA05",
+            "condition": "Pre-announcement selling (<90 days before bad news)",
+            "multiplier": 2.5
+          }
+        ],
+        "pattern_integration": {
+          "INFORMED_TRADING_2_signals": 1.5,
+          "INFORMED_TRADING_3_signals": 2.0,
+          "CEO_sold_pre_drop_additional": 0.25
+        },
+        "calculation": "F.2 Final = MIN(F.2 Base x Insider Multiplier, 15)"
+      },
+      "bonuses": [
+        {
+          "id": "F2-007",
+          "condition": "Company underperformed sector by >20 ppts",
+          "points": 3
+        },
+        {
+          "id": "F2-008",
+          "condition": "Event-window >20% sector-adjusted (10-day)",
+          "points": 2
+        }
+      ],
+      "pattern_modifiers": [
+        {
+          "pattern": "EVENT_COLLAPSE",
+          "base_points": 2,
+          "severity_modifiers": {
+            "drop_gt_25": 1,
+            "earnings_trigger": 1,
+            "fraud_trigger": 2
+          }
+        },
+        {
+          "pattern": "CASCADE",
+          "base_points": 2,
+          "severity_modifiers": {
+            "gt_40_days": 1,
+            "si_rising": 1
+          }
+        },
+        {
+          "pattern": "PEER_DIVERGENCE",
+          "base_points": 3,
+          "severity_modifiers": {
+            "gap_gt_30": 1,
+            "accelerating": 1
+          }
+        },
+        {
+          "pattern": "DEATH_SPIRAL",
+          "base_points": 3,
+          "severity_modifiers": {
+            "4_factors": 2,
+            "5_factors": 3
+          }
+        },
+        {
+          "pattern": "SHORT_ATTACK",
+          "base_points": 2,
+          "severity_modifiers": {
+            "hindenburg_mw": 2,
+            "fraud_allegations": 2,
+            "sec_doj_followup": 3
+          }
+        }
+      ]
+    },
+    "F3_restatement_audit": {
+      "factor_id": "F.3",
+      "name": "Restatement/Audit Issues",
+      "max_points": 12,
+      "weight_pct": 12,
+      "description": "Financial restatements, auditor changes, material weaknesses",
+      "confidence": "VALIDATED",
+      "historical_lift": 4.5,
+      "rules": [
+        {
+          "id": "F3-001",
+          "condition": "Restatement <12 months",
+          "points": 12,
+          "triggers_crf": "CRF-005"
+        },
+        {
+          "id": "F3-002",
+          "condition": "Restatement 12-24 months",
+          "points": 10
+        },
+        {
+          "id": "F3-003",
+          "condition": "Restatement 2-5 years",
+          "points": 6
+        },
+        {
+          "id": "F3-004",
+          "condition": "Auditor fired/resigned with disagreement",
+          "points": 10
+        },
+        {
+          "id": "F3-005",
+          "condition": "Material weakness (SOX 404)",
+          "points": 5
+        },
+        {
+          "id": "F3-006",
+          "condition": "Auditor change (routine rotation)",
+          "points": 2
+        },
+        {
+          "id": "F3-007",
+          "condition": "Clean",
+          "points": 0
+        }
+      ]
+    },
+    "F4_ipo_spac_ma": {
+      "factor_id": "F.4",
+      "name": "IPO/SPAC/M&A",
+      "max_points": 10,
+      "weight_pct": 10,
+      "description": "Recent IPO, SPAC, or M&A activity windows",
+      "confidence": "VALIDATED",
+      "historical_lift": 2.8,
+      "rules": [
+        {
+          "id": "F4-001",
+          "condition": "SPAC merger <18 months",
+          "points": 10
+        },
+        {
+          "id": "F4-002",
+          "condition": "SPAC merger 18-36 months",
+          "points": 7
+        },
+        {
+          "id": "F4-003",
+          "condition": "IPO <18 months",
+          "points": 8
+        },
+        {
+          "id": "F4-004",
+          "condition": "IPO 18-36 months",
+          "points": 5
+        },
+        {
+          "id": "F4-005",
+          "condition": "Major M&A (>25% market cap) <2 years",
+          "points": 6
+        },
+        {
+          "id": "F4-006",
+          "condition": "IPO/SPAC >36 months or N/A",
+          "points": 0
+        }
+      ]
+    },
+    "F5_guidance_misses": {
+      "factor_id": "F.5",
+      "name": "Guidance Misses",
+      "max_points": 10,
+      "weight_pct": 10,
+      "description": "Missed guidance or earnings expectations (8 quarters)",
+      "confidence": "VALIDATED",
+      "historical_lift": 2.4,
+      "rules": [
+        {
+          "id": "F5-001",
+          "condition": "4+ misses in past 8 quarters",
+          "points": 8
+        },
+        {
+          "id": "F5-002",
+          "condition": "3 misses",
+          "points": 6
+        },
+        {
+          "id": "F5-003",
+          "condition": "2 misses",
+          "points": 4
+        },
+        {
+          "id": "F5-004",
+          "condition": "1 miss",
+          "points": 2
+        },
+        {
+          "id": "F5-005",
+          "condition": "0 misses",
+          "points": 0
+        }
+      ],
+      "bonuses": [
+        {
+          "id": "F5-006",
+          "condition": "Any single miss >15% vs guidance",
+          "points": 2
+        }
+      ],
+      "pattern_modifiers": [
+        {
+          "pattern": "POOR_TRACK_RECORD",
+          "condition": "3+ misses in 8Q OR 2+ consecutive",
+          "points": 3
+        },
+        {
+          "pattern": "MODERATE_TRACK_RECORD",
+          "condition": "2 misses in 8Q",
+          "points": 1
+        },
+        {
+          "pattern": "GUIDANCE_WITHDRAWN",
+          "condition": "Guidance withdrawn",
+          "points": 2
+        },
+        {
+          "pattern": "CONSECUTIVE_ESCALATION",
+          "condition": "Current miss follows consecutive misses",
+          "points": 2
+        }
+      ]
+    },
+    "F6_short_interest": {
+      "factor_id": "F.6",
+      "name": "Short Interest",
+      "max_points": 8,
+      "weight_pct": 8,
+      "description": "Elevated short interest relative to sector baseline",
+      "confidence": "CORRELATED",
+      "historical_lift": 2.1,
+      "note": "Apply sector baseline adjustments from config/sector_baselines.json",
+      "rules": [
+        {
+          "id": "F6-R01",
+          "condition": ">3x sector average",
+          "points": 4
+        },
+        {
+          "id": "F6-R02",
+          "condition": "2-3x sector average",
+          "points": 3
+        },
+        {
+          "id": "F6-R03",
+          "condition": "1.5-2x sector average",
+          "points": 2
+        },
+        {
+          "id": "F6-R04",
+          "condition": "1-1.5x sector average",
+          "points": 1
+        },
+        {
+          "id": "F6-R05",
+          "condition": "<1x sector average",
+          "points": 0
+        }
+      ],
+      "market_cap_modifiers": [
+        {
+          "id": "F6-M01",
+          "condition": "<$1B market cap",
+          "points": 2
+        },
+        {
+          "id": "F6-M02",
+          "condition": "$1-5B market cap",
+          "points": 1
+        },
+        {
+          "id": "F6-M03",
+          "condition": ">$5B market cap",
+          "points": 0
+        }
+      ],
+      "trend_modifiers": [
+        {
+          "id": "F6-D01",
+          "condition": "SI increased >50%",
+          "points": 2
+        },
+        {
+          "id": "F6-D02",
+          "condition": "SI increased 25-50%",
+          "points": 1
+        },
+        {
+          "id": "F6-D03",
+          "condition": "SI stable (+/-25%)",
+          "points": 0
+        },
+        {
+          "id": "F6-D04",
+          "condition": "SI decreased >25%",
+          "points": -1
+        }
+      ],
+      "short_report_override": [
+        {
+          "id": "F6-X01",
+          "condition": "Named report <6 months",
+          "minimum_points": 6,
+          "triggers_crf": "CRF-008"
+        },
+        {
+          "id": "F6-X02",
+          "condition": "Named report 6-12 months",
+          "minimum_points": 4
+        }
+      ]
+    },
+    "F7_volatility": {
+      "factor_id": "F.7",
+      "name": "Stock Volatility",
+      "max_points": 9,
+      "weight_pct": 9,
+      "description": "90-day volatility relative to sector baseline",
+      "confidence": "CORRELATED",
+      "historical_lift": 1.9,
+      "note": "Compare to sector ETF volatility from config/sector_baselines.json",
+      "rules": [
+        {
+          "id": "F7-R01",
+          "condition": ">3x sector ETF volatility",
+          "points": 4
+        },
+        {
+          "id": "F7-R02",
+          "condition": "2-3x sector ETF volatility",
+          "points": 3
+        },
+        {
+          "id": "F7-R03",
+          "condition": "1.5-2x sector ETF volatility",
+          "points": 2
+        },
+        {
+          "id": "F7-R04",
+          "condition": "1-1.5x sector ETF volatility",
+          "points": 1
+        },
+        {
+          "id": "F7-R05",
+          "condition": "<1x sector ETF volatility",
+          "points": 0
+        }
+      ],
+      "trend_modifiers": [
+        {
+          "id": "F7-D01",
+          "condition": "Vol increased >100% vs 6mo ago",
+          "points": 2
+        },
+        {
+          "id": "F7-D02",
+          "condition": "Vol increased 50-100%",
+          "points": 1
+        },
+        {
+          "id": "F7-D03",
+          "condition": "Vol stable (+/-50%)",
+          "points": 0
+        },
+        {
+          "id": "F7-D04",
+          "condition": "Vol decreased >50%",
+          "points": -1
+        }
+      ],
+      "extreme_events": [
+        {
+          "id": "F7-E01",
+          "condition": "5+ days with >5% single-day move (past 90d)",
+          "points": 2
+        },
+        {
+          "id": "F7-E02",
+          "condition": "3-4 days with >5% single-day move",
+          "points": 1
+        },
+        {
+          "id": "F7-E03",
+          "condition": "0-2 days with >5% single-day move",
+          "points": 0
+        }
+      ]
+    },
+    "F8_financial_distress": {
+      "factor_id": "F.8",
+      "name": "Financial Distress",
+      "max_points": 8,
+      "weight_pct": 8,
+      "description": "Leverage, liquidity, going concern indicators",
+      "confidence": "CORRELATED",
+      "historical_lift": 2.0,
+      "note": "Use sector-specific leverage baselines from config/sector_baselines.json",
+      "rules": [
+        {
+          "id": "F8-L01",
+          "condition": "Leverage >critical sector threshold",
+          "points": 3
+        },
+        {
+          "id": "F8-L02",
+          "condition": "Leverage elevated to critical",
+          "points": 2
+        },
+        {
+          "id": "F8-L03",
+          "condition": "Leverage normal to elevated",
+          "points": 1
+        },
+        {
+          "id": "F8-L04",
+          "condition": "Leverage below normal",
+          "points": 0
+        }
+      ],
+      "cash_runway": [
+        {
+          "id": "F8-C01",
+          "condition": "<6 months cash runway",
+          "points": 4
+        },
+        {
+          "id": "F8-C02",
+          "condition": "6-12 months cash runway",
+          "points": 2
+        },
+        {
+          "id": "F8-C03",
+          "condition": "12-18 months cash runway",
+          "points": 1
+        },
+        {
+          "id": "F8-C04",
+          "condition": ">18 months or cash flow positive",
+          "points": 0
+        }
+      ],
+      "trend_modifiers": [
+        {
+          "id": "F8-T01",
+          "condition": "Leverage increased >50% YoY",
+          "points": 1
+        },
+        {
+          "id": "F8-T02",
+          "condition": "Cash declined >40% QoQ (non-seasonal)",
+          "points": 1
+        },
+        {
+          "id": "F8-T03",
+          "condition": "EBITDA margin declined >500bps YoY",
+          "points": 1
+        },
+        {
+          "id": "F8-T04",
+          "condition": "Metrics improving (leverage down, cash up)",
+          "points": -1
+        }
+      ],
+      "hard_triggers": [
+        {
+          "id": "F8-X01",
+          "condition": "Going concern opinion",
+          "points": 6,
+          "triggers_crf": "CRF-004"
+        },
+        {
+          "id": "F8-X02",
+          "condition": "Covenant breach or waiver",
+          "minimum_points": 4
+        },
+        {
+          "id": "F8-X03",
+          "condition": "Missed debt payment",
+          "points": 6
+        },
+        {
+          "id": "F8-X04",
+          "condition": "Credit rating downgrade to junk (<BBB-) in past 12mo",
+          "points": 2
+        }
+      ]
+    },
+    "F9_governance": {
+      "factor_id": "F.9",
+      "name": "Governance Issues",
+      "max_points": 6,
+      "weight_pct": 6,
+      "description": "Board independence, compensation concerns, shareholder activism",
+      "confidence": "HYPOTHESIS",
+      "historical_lift": 1.3,
+      "note": "Low direct correlation to claims; narrative/context factor",
+      "rules": [
+        {
+          "id": "F9-001",
+          "condition": "CEO = Chairman + Board independence <50%",
+          "points": 3
+        },
+        {
+          "id": "F9-002",
+          "condition": "CEO = Chairman alone",
+          "points": 2
+        },
+        {
+          "id": "F9-003",
+          "condition": "Board independence <66% alone",
+          "points": 2
+        },
+        {
+          "id": "F9-004",
+          "condition": "CEO tenure <6 months",
+          "points": 1
+        },
+        {
+          "id": "F9-005",
+          "condition": "CFO tenure <6 months",
+          "points": 1
+        },
+        {
+          "id": "F9-006",
+          "condition": "Strong governance",
+          "points": 0
+        }
+      ],
+      "dual_class_override": {
+        "condition": "Dual-class structure",
+        "points": 3,
+        "note": "Automatic 3 points if dual-class"
+      },
+      "pattern_modifiers": [
+        {
+          "pattern": "TURNOVER_STRESS",
+          "condition": "3+ of: CEO <2yr, CFO <1yr, CCO/CAO turnover, multiple same quarter, departures <vesting",
+          "points": 1
+        },
+        {
+          "pattern": "CREDIBILITY_RISK",
+          "condition": "6+ triggers from guidance misses, forecast volatility, management conflicts, tone analysis",
+          "points": 1,
+          "also_affects": "F.5"
+        },
+        {
+          "pattern": "PROXY_ADVISOR_RISK",
+          "condition": "ISS QualityScore decile 8-10 OR multiple Withhold recommendations",
+          "points": 1
+        }
+      ]
+    },
+    "F10_officer_stability": {
+      "factor_id": "F.10",
+      "name": "Officer Stability",
+      "max_points": 2,
+      "weight_pct": 2,
+      "description": "CEO/CFO tenure and succession planning",
+      "confidence": "HYPOTHESIS",
+      "historical_lift": 1.2,
+      "note": "Extracted from governance; officer turnover as leading indicator",
+      "rules": [
+        {
+          "id": "F10-001",
+          "condition": "CEO >2 years AND CFO >1 year",
+          "points": 0
+        },
+        {
+          "id": "F10-002",
+          "condition": "CEO <2 years OR CFO <1 year",
+          "points": 1
+        },
+        {
+          "id": "F10-003",
+          "condition": "Both CEO <2yr AND CFO <1yr",
+          "points": 2
+        },
+        {
+          "id": "F10-004",
+          "condition": "Interim CEO or CFO",
+          "points": 2
+        }
+      ]
+    }
+  },
+  "thresholds": {
+    "F2_stock_decline": {
+      "factor_id": "F.2",
+      "metric": "decline_from_52w_high",
+      "unit": "percentage",
+      "direction": "higher_is_worse",
+      "ranges": [
+        {
+          "min_pct": 60,
+          "max_pct": 100,
+          "points": 15,
+          "label": "Severe"
+        },
+        {
+          "min_pct": 50,
+          "max_pct": 60,
+          "points": 12,
+          "label": "High"
+        },
+        {
+          "min_pct": 40,
+          "max_pct": 50,
+          "points": 9,
+          "label": "Elevated"
+        },
+        {
+          "min_pct": 30,
+          "max_pct": 40,
+          "points": 6,
+          "label": "Moderate"
+        },
+        {
+          "min_pct": 20,
+          "max_pct": 30,
+          "points": 3,
+          "label": "Low"
+        },
+        {
+          "min_pct": 0,
+          "max_pct": 20,
+          "points": 0,
+          "label": "Normal"
+        }
+      ]
+    },
+    "F6_short_interest": {
+      "factor_id": "F.6",
+      "metric": "short_interest_vs_sector",
+      "unit": "percentage_of_float",
+      "direction": "higher_is_worse",
+      "note": "Apply sector baseline from sector_baselines.json",
+      "ranges": [
+        {
+          "min_pct": 20,
+          "max_pct": 100,
+          "points": 8,
+          "label": "Extreme"
+        },
+        {
+          "min_pct": 15,
+          "max_pct": 20,
+          "points": 6,
+          "label": "High"
+        },
+        {
+          "min_pct": 10,
+          "max_pct": 15,
+          "points": 4,
+          "label": "Elevated"
+        },
+        {
+          "min_pct": 5,
+          "max_pct": 10,
+          "points": 2,
+          "label": "Moderate"
+        },
+        {
+          "min_pct": 0,
+          "max_pct": 5,
+          "points": 0,
+          "label": "Normal"
+        }
+      ],
+      "absolute_ranges_fallback": [
+        {
+          "category": "Extreme",
+          "multiplier": ">2x elevated threshold",
+          "points": 6
+        },
+        {
+          "category": "High",
+          "points": 4
+        },
+        {
+          "category": "Elevated",
+          "points": 2
+        },
+        {
+          "category": "Normal",
+          "points": 0
+        }
+      ]
+    },
+    "F8_volatility": {
+      "factor_id": "F.8",
+      "metric": "90_day_volatility",
+      "unit": "percentage",
+      "direction": "higher_is_worse",
+      "note": "90-day annualized volatility, compare to sector ETF",
+      "ranges": [
+        {
+          "min_pct": 60,
+          "max_pct": 100,
+          "points": 7,
+          "label": "Extreme"
+        },
+        {
+          "min_pct": 40,
+          "max_pct": 60,
+          "points": 5,
+          "label": "High"
+        },
+        {
+          "min_pct": 25,
+          "max_pct": 40,
+          "points": 3,
+          "label": "Elevated"
+        },
+        {
+          "min_pct": 0,
+          "max_pct": 25,
+          "points": 0,
+          "label": "Normal"
+        }
+      ],
+      "relative_ranges": [
+        {
+          "ratio_min": 3.0,
+          "ratio_max": null,
+          "points": 4,
+          "label": ">3x sector"
+        },
+        {
+          "ratio_min": 2.0,
+          "ratio_max": 3.0,
+          "points": 3,
+          "label": "2-3x sector"
+        },
+        {
+          "ratio_min": 1.5,
+          "ratio_max": 2.0,
+          "points": 2,
+          "label": "1.5-2x sector"
+        },
+        {
+          "ratio_min": 1.0,
+          "ratio_max": 1.5,
+          "points": 1,
+          "label": "1-1.5x sector"
+        },
+        {
+          "ratio_min": 0,
+          "ratio_max": 1.0,
+          "points": 0,
+          "label": "<1x sector"
+        }
+      ]
+    },
+    "F9_financial_distress": {
+      "factor_id": "F.9",
+      "metrics": {
+        "leverage": {
+          "metric": "debt_to_ebitda",
+          "note": "Use sector-specific thresholds from sector_baselines.json",
+          "default_ranges": [
+            {
+              "threshold": "distress",
+              "points": 3
+            },
+            {
+              "threshold": "critical",
+              "points": 2
+            },
+            {
+              "threshold": "elevated",
+              "points": 1
+            },
+            {
+              "threshold": "normal",
+              "points": 0
+            }
+          ]
+        },
+        "cash_runway": {
+          "metric": "months_of_cash",
+          "note": "For pre-revenue/cash-burn companies",
+          "ranges": [
+            {
+              "min_months": 0,
+              "max_months": 6,
+              "points": 4,
+              "label": "Critical"
+            },
+            {
+              "min_months": 6,
+              "max_months": 12,
+              "points": 2,
+              "label": "Concerning"
+            },
+            {
+              "min_months": 12,
+              "max_months": 18,
+              "points": 1,
+              "label": "Tight"
+            },
+            {
+              "min_months": 18,
+              "max_months": null,
+              "points": 0,
+              "label": "Adequate"
+            }
+          ]
+        }
+      }
+    },
+    "F5_guidance_misses": {
+      "factor_id": "F.5",
+      "metric": "misses_in_8_quarters",
+      "direction": "higher_is_worse",
+      "ranges": [
+        {
+          "min_count": 4,
+          "max_count": null,
+          "points": 8,
+          "label": "Serial Misser"
+        },
+        {
+          "min_count": 3,
+          "max_count": 3,
+          "points": 6,
+          "label": "Pattern Emerging"
+        },
+        {
+          "min_count": 2,
+          "max_count": 2,
+          "points": 4,
+          "label": "Warning"
+        },
+        {
+          "min_count": 1,
+          "max_count": 1,
+          "points": 2,
+          "label": "Isolated"
+        },
+        {
+          "min_count": 0,
+          "max_count": 0,
+          "points": 0,
+          "label": "Clean"
+        }
+      ],
+      "magnitude_bonus": {
+        "condition": "single_miss_gt_15_pct",
+        "points": 2
+      }
+    },
+    "F7_insider_trading": {
+      "factor_id": "F.7",
+      "metrics": {
+        "holdings_sold": {
+          "metric": "ceo_cfo_pct_holdings_sold",
+          "period": "6_months",
+          "ranges": [
+            {
+              "min_pct": 50,
+              "max_pct": 100,
+              "points": 5,
+              "label": "Major Liquidation"
+            },
+            {
+              "min_pct": 25,
+              "max_pct": 50,
+              "points": 3,
+              "label": "Significant"
+            },
+            {
+              "min_pct": 10,
+              "max_pct": 25,
+              "points": 1,
+              "label": "Moderate"
+            },
+            {
+              "min_pct": 0,
+              "max_pct": 10,
+              "points": 0,
+              "label": "Normal"
+            }
+          ]
+        },
+        "market_cap_impact": {
+          "metric": "total_selling_pct_mktcap",
+          "ranges": [
+            {
+              "min_pct": 1.0,
+              "max_pct": 100,
+              "points": 3,
+              "label": "Material"
+            },
+            {
+              "min_pct": 0.5,
+              "max_pct": 1.0,
+              "points": 2,
+              "label": "Notable"
+            },
+            {
+              "min_pct": 0.1,
+              "max_pct": 0.5,
+              "points": 1,
+              "label": "Minor"
+            },
+            {
+              "min_pct": 0,
+              "max_pct": 0.1,
+              "points": 0,
+              "label": "Immaterial"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "recency_triggers": {
+    "description": "Recent stock drops that trigger WATCH tier ceiling",
+    "NT-009": {
+      "metric": "7_day_drop",
+      "threshold_pct": 10,
+      "tier_ceiling": "WATCH",
+      "quality_score_ceiling": 50,
+      "note": "May be binding INTO exposure window"
+    },
+    "NT-010": {
+      "metric": "30_day_drop",
+      "threshold_pct": 15,
+      "tier_ceiling": "WATCH",
+      "quality_score_ceiling": 50,
+      "note": "Within typical 89-day filing window"
+    },
+    "NT-011": {
+      "metric": "90_day_drop",
+      "threshold_pct": 25,
+      "tier_ceiling": "WATCH",
+      "quality_score_ceiling": 50,
+      "note": "Still in primary exposure window"
+    }
+  },
+  "market_cap_multipliers": {
+    "description": "Market cap adjustments for F.2 stock decline scoring",
+    "source": "NERA/Cornerstone 2024 - large-caps face 10.7x higher litigation probability",
+    "tiers": [
+      {
+        "tier": "MEGA",
+        "min_cap_b": 50,
+        "max_cap_b": null,
+        "multiplier": 1.3
+      },
+      {
+        "tier": "LARGE",
+        "min_cap_b": 10,
+        "max_cap_b": 50,
+        "multiplier": 1.15
+      },
+      {
+        "tier": "MID",
+        "min_cap_b": 2,
+        "max_cap_b": 10,
+        "multiplier": 1.0
+      },
+      {
+        "tier": "SMALL",
+        "min_cap_b": 0.5,
+        "max_cap_b": 2,
+        "multiplier": 0.85
+      },
+      {
+        "tier": "MICRO",
+        "min_cap_b": 0,
+        "max_cap_b": 0.5,
+        "multiplier": 0.7
+      }
+    ],
+    "application": "Multiply base F.2 score by multiplier, round to nearest integer, cap at 15"
+  },
+  "tiers": [
+    {
+      "tier": "WIN",
+      "tier_code": "TR-001",
+      "min_score": 86,
+      "max_score": 100,
+      "emoji": "green_circle_green_circle",
+      "probability_range": "<2%",
+      "probability_description": "1 in 50+",
+      "pricing_multiplier": "0.5-0.7x",
+      "action": "Must-have account, compete aggressively",
+      "tower_position": "PRIMARY"
+    },
+    {
+      "tier": "WANT",
+      "tier_code": "TR-002",
+      "min_score": 71,
+      "max_score": 85,
+      "emoji": "green_circle",
+      "probability_range": "2-5%",
+      "probability_description": "1 in 20-50",
+      "pricing_multiplier": "0.8-1.0x",
+      "action": "Actively pursue, support",
+      "tower_position": "PRIMARY or LOW_EXCESS"
+    },
+    {
+      "tier": "WRITE",
+      "tier_code": "TR-003",
+      "min_score": 51,
+      "max_score": 70,
+      "emoji": "yellow_circle",
+      "probability_range": "5-10%",
+      "probability_description": "1 in 10-20",
+      "pricing_multiplier": "Market rate",
+      "action": "Normal terms, support with conditions",
+      "tower_position": "LOW_EXCESS or MID_EXCESS"
+    },
+    {
+      "tier": "WATCH",
+      "tier_code": "TR-004",
+      "min_score": 31,
+      "max_score": 50,
+      "emoji": "orange_circle",
+      "probability_range": "10-15%",
+      "probability_description": "1 in 7-10",
+      "pricing_multiplier": "1.5-2x + attachment",
+      "action": "Write carefully, senior review required",
+      "tower_position": "MID_EXCESS or HIGH_EXCESS"
+    },
+    {
+      "tier": "WALK",
+      "tier_code": "TR-005",
+      "min_score": 11,
+      "max_score": 30,
+      "emoji": "red_circle",
+      "probability_range": "15-20%",
+      "probability_description": "1 in 5-7",
+      "pricing_multiplier": "2x+ at high attachment",
+      "action": "Excess/Side A only, high attachment required",
+      "tower_position": "HIGH_EXCESS or DECLINE"
+    },
+    {
+      "tier": "NO_TOUCH",
+      "tier_code": "TR-006",
+      "min_score": 0,
+      "max_score": 10,
+      "emoji": "no_entry",
+      "probability_range": ">20%",
+      "probability_description": "1 in 5",
+      "pricing_multiplier": "N/A",
+      "action": "Decline",
+      "tower_position": "DECLINE"
+    }
+  ],
+  "calibration_note": "Only ~10% of accounts (Quality Score 0-10) should be true declines. Accounts scoring 11-30 (WALK) can still be written at high excess attachment or in Side A/DIC capacity.",
+  "probability_ceiling": {
+    "rule_id": "TR-007",
+    "max_probability": 25,
+    "note": "Never claim >25% probability. Even extreme cases rarely exceed 20-25%."
+  },
+  "critical_red_flag_ceilings": {
+    "description": "When critical red flags triggered, quality score has ceiling (cannot exceed)",
+    "ceilings": [
+      {
+        "trigger": "Active securities class action",
+        "id": "CRF-001",
+        "max_tier": "WALK",
+        "max_quality_score": 30,
+        "size_severity_matrix": {
+          "mega_cap": {"threshold_usd": 100000000000, "ceiling": 70, "max_tier": "WRITE"},
+          "large_cap": {"threshold_usd": 10000000000, "ceiling": 55, "max_tier": "WRITE"},
+          "mid_cap": {"threshold_usd": 2000000000, "ceiling": 40, "max_tier": "WATCH"},
+          "small_cap": {"threshold_usd": 500000000, "ceiling": 30, "max_tier": "WALK"},
+          "micro_cap": {"threshold_usd": 0, "ceiling": 25, "max_tier": "WALK"}
+        },
+        "severity_weight": 0.30
+      },
+      {
+        "trigger": "Wells Notice disclosed",
+        "id": "CRF-002",
+        "max_tier": "WALK",
+        "max_quality_score": 30,
+        "severity_weight": 0.25
+      },
+      {
+        "trigger": "DOJ criminal investigation",
+        "id": "CRF-003",
+        "max_tier": "WALK",
+        "max_quality_score": 30,
+        "severity_weight": 0.30
+      },
+      {
+        "trigger": "Going concern opinion",
+        "id": "CRF-004",
+        "max_tier": "WATCH",
+        "max_quality_score": 50,
+        "severity_weight": 0.20
+      },
+      {
+        "trigger": "Restatement <12 months",
+        "id": "CRF-005",
+        "max_tier": "WATCH",
+        "max_quality_score": 50,
+        "severity_weight": 0.20
+      },
+      {
+        "trigger": "SPAC <18mo + stock <$5",
+        "id": "CRF-006",
+        "max_tier": "WATCH",
+        "max_quality_score": 50,
+        "severity_weight": 0.10
+      },
+      {
+        "trigger": "Short seller report <6 months",
+        "id": "CRF-007",
+        "max_tier": "WATCH",
+        "max_quality_score": 50,
+        "severity_weight": 0.10
+      },
+      {
+        "trigger": "Stock decline >60% company-specific",
+        "id": "CRF-008",
+        "max_tier": "WATCH",
+        "max_quality_score": 50,
+        "size_severity_matrix": {
+          "mega_cap": {"threshold_usd": 100000000000, "ceiling": 65, "max_tier": "WRITE"},
+          "large_cap": {"threshold_usd": 10000000000, "ceiling": 55, "max_tier": "WRITE"},
+          "mid_cap": {"threshold_usd": 2000000000, "ceiling": 45, "max_tier": "WATCH"},
+          "small_cap": {"threshold_usd": 500000000, "ceiling": 35, "max_tier": "WALK"},
+          "micro_cap": {"threshold_usd": 0, "ceiling": 25, "max_tier": "WALK"}
+        },
+        "severity_weight": 0.20
+      },
+      {
+        "trigger": "Stock drop >10% in last 7 days",
+        "id": "CRF-009",
+        "max_tier": "WATCH",
+        "max_quality_score": 50,
+        "severity_weight": 0.05
+      },
+      {
+        "trigger": "Stock drop >15% in last 30 days",
+        "id": "CRF-010",
+        "max_tier": "WATCH",
+        "max_quality_score": 50,
+        "severity_weight": 0.08
+      },
+      {
+        "trigger": "Stock drop >25% in last 90 days",
+        "id": "CRF-011",
+        "max_tier": "WATCH",
+        "max_quality_score": 50,
+        "severity_weight": 0.10
+      },
+      {
+        "trigger": "Distress Zone (Altman Z < 1.81)",
+        "id": "CRF-013",
+        "max_tier": "WALK",
+        "max_quality_score": 25,
+        "distress_graduation": {
+          "going_concern": {"ceiling": 15, "max_tier": "NO_TOUCH"},
+          "severe": {"z_max": 1.0, "negative_equity": true, "ceiling": 20, "max_tier": "WALK"},
+          "distress": {"z_max": 1.81, "ceiling": 40, "max_tier": "WATCH"},
+          "gray": {"z_max": 2.99, "ceiling": 55, "max_tier": "WRITE"}
+        },
+        "severity_weight": 0.25
+      }
+    ]
+  },
+  "tower_positions": {
+    "description": "Target portfolio allocation by tower position",
+    "positions": [
+      {
+        "position": "PRIMARY",
+        "target_pct": "10-15%",
+        "typical_attachment": "$0 ground-up",
+        "risk_profile": "WIN/WANT scores",
+        "premium_guidance": "Full rate, slight discount for WIN"
+      },
+      {
+        "position": "LOW_EXCESS",
+        "target_pct": "10-15%",
+        "typical_attachment": "$5-15M xs $5-15M",
+        "risk_profile": "WANT/WRITE scores",
+        "premium_guidance": "Market rate"
+      },
+      {
+        "position": "MID_EXCESS",
+        "target_pct": "30-40%",
+        "typical_attachment": "$15-50M xs $15-50M",
+        "risk_profile": "WRITE/WATCH scores",
+        "premium_guidance": "Market to 1.3x"
+      },
+      {
+        "position": "HIGH_EXCESS",
+        "target_pct": "20-30%",
+        "typical_attachment": "$50M+ xs $50M+",
+        "risk_profile": "WATCH/WALK scores",
+        "premium_guidance": "1.3-2x with attachment"
+      },
+      {
+        "position": "DECLINE",
+        "target_pct": "10-15%",
+        "typical_attachment": "N/A",
+        "risk_profile": "WALK+ with compounding factors",
+        "premium_guidance": "N/A"
+      }
+    ]
+  },
+  "severity_ranges": {
+    "description": "Expected settlement ranges by market cap tier",
+    "by_market_cap": [
+      {
+        "tier": "MEGA",
+        "min_cap_b": 50,
+        "base_range_m": [
+          25,
+          150
+        ]
+      },
+      {
+        "tier": "LARGE",
+        "min_cap_b": 10,
+        "max_cap_b": 50,
+        "base_range_m": [
+          15,
+          75
+        ]
+      },
+      {
+        "tier": "MID",
+        "min_cap_b": 2,
+        "max_cap_b": 10,
+        "base_range_m": [
+          8,
+          40
+        ]
+      },
+      {
+        "tier": "SMALL",
+        "min_cap_b": 0.5,
+        "max_cap_b": 2,
+        "base_range_m": [
+          4,
+          20
+        ]
+      },
+      {
+        "tier": "MICRO",
+        "max_cap_b": 0.5,
+        "base_range_m": [
+          2,
+          10
+        ]
+      }
+    ],
+    "tier_multipliers": [
+      {
+        "quality_tier": "NO_TOUCH",
+        "multiplier": null,
+        "note": "Decline"
+      },
+      {
+        "quality_tier": "WALK",
+        "multiplier": [
+          1.5,
+          2.0
+        ]
+      },
+      {
+        "quality_tier": "WATCH",
+        "multiplier": [
+          1.2,
+          1.5
+        ]
+      },
+      {
+        "quality_tier": "WRITE",
+        "multiplier": [
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "quality_tier": "WANT",
+        "multiplier": [
+          0.7,
+          0.9
+        ]
+      },
+      {
+        "quality_tier": "WIN",
+        "multiplier": [
+          0.5,
+          0.7
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,72 @@
+{# Operational Complexity — composite assessment + component breakdown + indicators #}
+{% set ops = company.operational_complexity_signals %}
+{% if company.has_ops_complexity and ops %}
+<div class="mb-4">
+  {# Composite assessment badge #}
+  <div class="flex items-center gap-3 mb-3">
+    <span class="text-sm font-semibold text-gray-700">Operational Complexity</span>
+    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold
+      {% if ops.composite_color == 'red' %}bg-red-100 text-red-800
+      {% elif ops.composite_color == 'amber' %}bg-amber-100 text-amber-800
+      {% else %}bg-emerald-100 text-emerald-800{% endif %}">
+      {{ ops.composite_level }}
+    </span>
+  </div>
+
+  {# Component KV table with D&O context #}
+  <table class="kv-table w-full text-sm mb-3">
+    <tbody>
+      <tr>
+        <td class="font-medium text-gray-600 w-1/3">Operating Jurisdictions</td>
+        <td>
+          {{ ops.jurisdiction_count }} jurisdictions
+          {%- if ops.high_reg_count %} ({{ ops.high_reg_count }} high-regulatory){% endif %}
+          <br><span class="text-xs text-gray-400 italic">Multi-jurisdiction operations increase regulatory exposure and D&amp;O claim venues</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="font-medium text-gray-600">Workforce</td>
+        <td>
+          {{ ops.total_employees | default("N/A", true) }} employees
+          {%- if ops.international_pct %} ({{ ops.international_pct }}% international){% endif %}
+        </td>
+      </tr>
+      {% if ops.unionized_pct %}
+      <tr>
+        <td class="font-medium text-gray-600">Unionized Workforce</td>
+        <td>{{ ops.unionized_pct }}% — increases employment practices liability exposure</td>
+      </tr>
+      {% endif %}
+      <tr>
+        <td class="font-medium text-gray-600">Business Segments</td>
+        <td>{{ ops.segment_count }} reporting segment{{ "s" if ops.segment_count != 1 }}</td>
+      </tr>
+      <tr>
+        <td class="font-medium text-gray-600">Supply Chain Depth</td>
+        <td>{{ ops.supply_chain_depth | default("N/A", true) | title }}</td>
+      </tr>
+      <tr>
+        <td class="font-medium text-gray-600">Operational Resilience</td>
+        <td>{{ ops.overall_assessment | default("N/A", true) | title }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  {# Structural risk indicators #}
+  {% if ops.indicators %}
+  <p class="text-xs text-gray-500 mb-1 mt-2">Structural Risk Indicators</p>
+  <div class="flex flex-wrap gap-2">
+    {% for ind in ops.indicators %}
+    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+      {% if ind.level == 'red' %}bg-red-100 text-red-700
+      {% elif ind.level == 'amber' %}bg-amber-100 text-amber-700
+      {% else %}bg-gray-100 text-gray-500{% endif %}">
+      {{ ind.name }}{% if ind.present %} &#10003;{% else %} &mdash;{% endif %}
+    </span>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% else %}
+<p class="text-sm text-gray-400 italic">No operational complexity data available.</p>
+{% endif %}

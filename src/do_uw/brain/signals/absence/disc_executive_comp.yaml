@@ -1,0 +1,46 @@
+- id: ABS.DISC.executive_comp
+  name: Missing Executive Compensation Disclosure
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: 'Expected disclosure absent: SEC Regulation S-K Item 402 requires executive compensation disclosure'
+  provenance:
+    origin: phase_110_absence
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Absence detection for EXEC.COMP.ceo_total_comp
+    threshold_provenance:
+      source: standard
+      rationale: Mandatory proxy disclosure; absence indicates proxy not filed or extraction gap
+  signal_class: inference
+  group: transparency_disclosure
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  epistemology:
+    rule_origin: SEC Regulation S-K Item 402 executive compensation disclosure
+    threshold_basis: Mandatory proxy disclosure; absence indicates proxy not filed or extraction gap
+  evaluation:
+    mechanism: absence
+    absence_rules:
+      expectation_type: always_expected
+      expected_signals:
+      - EXEC.COMP.ceo_total_comp
+      condition: SEC Regulation S-K Item 402 requires executive compensation disclosure
+      expected_status: TRIGGERED
+      absence_trigger: SKIPPED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} missing executive compensation disclosure at {value} represents agent risk (executive/director
+        actions and decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} missing executive compensation disclosure at {value} is a moderate indicator for D&O risk
+        assessment, warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} missing executive compensation disclosure at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

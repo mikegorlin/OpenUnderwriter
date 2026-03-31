@@ -1,0 +1,153 @@
+{# Distress Model Indicators — enriched with D&O context, trajectory, and component breakdowns #}
+<h3>Distress Model Indicators</h3>
+<p class="text-xs text-gray-500 mb-2">Quantitative models assessing bankruptcy risk, earnings manipulation, and financial strength — interpreted for D&O underwriting relevance.</p>
+{% if fin.get('is_financial_sector') %}
+<div style="background:#FEF3C7;border:1px solid #F59E0B;border-radius:4px;padding:6px 10px;margin-bottom:8px;font-size:8pt;color:#92400E">
+  <strong>Financial Sector Note:</strong> {{ fin.get('sector_caveat', 'Altman Z-Score, Ohlson O-Score, and DSCR are calibrated for industrial companies and produce structurally misleading scores for banks and financial institutions.') }}
+</div>
+{% endif %}
+
+<table class="w-full border-collapse my-3 text-sm">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Model</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Score</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Assessment</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">D&O Relevance</th>
+    </tr>
+  </thead>
+  <tbody class="tabular-nums">
+    <tr class="bg-bg-alt">
+      <td class="p-1 font-heading text-xs font-semibold text-navy">Altman Z-Score</td>
+      <td class="p-1 text-right">{{ fin.z_score | format_na }}</td>
+      <td class="p-1">{{ traffic_light(fin.z_zone|default('N/A')|replace('distress', 'TRIGGERED')|replace('safe', 'CLEAR')|replace('grey', 'ELEVATED')|replace('gray', 'ELEVATED'), fin.z_zone|default('N/A')) }}</td>
+      <td class="p-1 text-xs text-gray-600">{{ fin.get('z_do_context', '') or '—' }}</td>
+    </tr>
+    <tr class="bg-white">
+      <td class="p-1 font-heading text-xs font-semibold text-navy">Beneish M-Score</td>
+      <td class="p-1 text-right">{{ fin.beneish_score | format_na }}</td>
+      <td class="p-1">{{ traffic_light(fin.beneish_zone|default('N/A')|replace('manipulation likely', 'TRIGGERED')|replace('manipulation unlikely', 'CLEAR'), fin.beneish_zone|default('N/A')) }}</td>
+      <td class="p-1 text-xs text-gray-600">{{ fin.get('beneish_do_context', '') or '—' }}</td>
+    </tr>
+    <tr class="bg-bg-alt">
+      <td class="p-1 font-heading text-xs font-semibold text-navy">Ohlson O-Score</td>
+      <td class="p-1 text-right">{{ fin.o_score | format_na }}</td>
+      <td class="p-1">{{ traffic_light(fin.o_zone|default('N/A')|replace('distress', 'TRIGGERED')|replace('safe', 'CLEAR')|replace('grey', 'ELEVATED')|replace('gray', 'ELEVATED'), fin.o_zone|default('N/A')) }}</td>
+      <td class="p-1 text-xs text-gray-600">{{ fin.get('o_do_context', '') or '—' }}</td>
+    </tr>
+    <tr class="bg-white">
+      <td class="p-1 font-heading text-xs font-semibold text-navy">Piotroski F-Score</td>
+      <td class="p-1 text-right">{{ fin.piotroski_score | format_na }}/9</td>
+      <td class="p-1">{{ traffic_light(fin.piotroski_zone|default('N/A')|replace('strong', 'CLEAR')|replace('moderate', 'INFO')|replace('weak', 'TRIGGERED'), fin.piotroski_zone|default('N/A')) }}</td>
+      <td class="p-1 text-xs text-gray-600">{{ fin.get('piotroski_do_context', '') or '—' }}</td>
+    </tr>
+  </tbody>
+</table>
+
+{# Distress model interpretation with D&O context #}
+<div class="bg-bg-alt border border-gray-200 rounded p-3 my-3 text-xs text-gray-600 leading-relaxed">
+  <div class="font-semibold text-navy text-sm mb-2">D&O Underwriting Interpretation</div>
+  {% if fin.get('z_do_context') %}
+  <p class="mb-1"><strong>Altman Z-Score:</strong> {{ fin.z_do_context }}</p>
+  {% endif %}
+  {% if fin.get('beneish_do_context') %}
+  <p class="mb-1"><strong>Beneish M-Score:</strong> {{ fin.beneish_do_context }}</p>
+  {% endif %}
+  {% if fin.get('o_do_context') %}
+  <p class="mb-1"><strong>Ohlson O-Score:</strong> {{ fin.o_do_context }}</p>
+  {% endif %}
+  {% if fin.get('piotroski_do_context') %}
+  <p class="mb-0"><strong>Piotroski F-Score:</strong> {{ fin.piotroski_do_context }}</p>
+  {% endif %}
+</div>
+
+{# Altman Z-Score Trajectory (if historical data available) #}
+{% set z_traj = fin.get('z_trajectory', []) %}
+{% if z_traj|length > 1 %}
+{# Check if Position bar has meaningful data #}
+{% set ns_zt = namespace(show_position=false) %}
+{% for t in z_traj %}
+  {% if t.score is not none and t.score != '—' and t.score != '' and t.score != 'N/A' %}{% set ns_zt.show_position = true %}{% endif %}
+{% endfor %}
+<div>
+  <div style="font-weight:600;margin-bottom:4px">Altman Z-Score Trajectory ({{ z_traj|length }} periods)</div>
+  <div class="collapsible-content">
+    <table class="w-full border-collapse text-sm my-2">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="text-left px-3 py-1 font-heading text-xs font-semibold uppercase">Period</th>
+          <th class="text-right px-3 py-1 font-heading text-xs font-semibold uppercase">Score</th>
+          <th class="text-left px-3 py-1 font-heading text-xs font-semibold uppercase">Zone</th>
+          {% if ns_zt.show_position %}<th class="text-left px-3 py-1 font-heading text-xs font-semibold uppercase" style="min-width:120px">Position</th>{% endif %}
+        </tr>
+      </thead>
+      <tbody class="tabular-nums">
+        {% for t in z_traj %}
+        <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+          <td class="px-3 py-1.5 font-semibold">{{ t.period }}</td>
+          <td class="px-3 py-1.5 text-right
+            {%- if t.zone == 'distress' %} text-red-600 font-bold
+            {%- elif t.zone == 'grey' %} text-amber-600 font-semibold
+            {%- else %} text-green-600{% endif %}">{{ t.score }}</td>
+          <td class="px-3 py-1.5">
+            <span class="badge-pill text-xs
+              {%- if t.zone == 'distress' %} bg-red-100 text-red-800
+              {%- elif t.zone == 'grey' %} bg-amber-100 text-amber-800
+              {%- else %} bg-green-100 text-green-800{% endif %}">{{ t.zone | replace('_', ' ') | title }}</span>
+          </td>
+          {% if ns_zt.show_position %}
+          <td class="px-3 py-1.5">
+            <div class="percentile-bar" style="min-width:120px;">
+              {% set z_pct = [[(t.score|float / 4.0 * 100)|int, 100]|min, 0]|max %}
+              <div class="percentile-fill" style="width: {{ z_pct }}%; background:
+                {%- if t.zone == 'distress' %} var(--do-risk-red, #dc2626)
+                {%- elif t.zone == 'grey' %} var(--do-risk-amber, #d97706)
+                {%- else %} var(--do-risk-green, #16a34a){% endif %};"></div>
+            </div>
+          </td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="text-xs text-gray-500 mt-1 mb-0">Zones: Safe (&gt;2.99) | Grey (1.81&ndash;2.99) | Distress (&lt;1.81). Trajectory direction is critical for D&O pricing — deteriorating Z-Scores amplify claim severity.</p>
+  </div>
+</div>
+{% endif %}
+
+{# Piotroski F-Score Component Breakdown #}
+{% set pio_comps = fin.get('piotroski_components', []) %}
+{% if pio_comps %}
+<div>
+  <div style="font-weight:600;margin-bottom:4px">Piotroski F-Score Components ({{ pio_comps|selectattr('passed')|list|length }}/{{ pio_comps|length }} passed)</div>
+  <div class="collapsible-content">
+    <table class="w-full border-collapse text-sm my-2">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="text-left px-3 py-1 font-heading text-xs font-semibold uppercase">Criterion</th>
+          <th class="text-center px-3 py-1 font-heading text-xs font-semibold uppercase">Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for comp in pio_comps %}
+        <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+          <td class="px-3 py-1.5">{{ comp.label }}</td>
+          <td class="px-3 py-1.5 text-center">
+            {% if comp.passed %}
+            <span class="text-green-600 font-bold" title="Pass">&#x2713;</span>
+            {% else %}
+            <span class="text-red-600 font-bold" title="Fail">&#x2717;</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="text-xs text-gray-500 mt-1 mb-0">Piotroski F-Score evaluates 9 binary criteria across profitability (4), leverage/liquidity (3), and operating efficiency (2). Failed criteria identify specific areas of financial weakness relevant to D&O risk assessment.</p>
+  </div>
+</div>
+{% endif %}
+
+{% if fin.get('forensics', {}).get('beneish', {}).get('has_data') %}
+<p class="text-xs text-gray-500 mt-1 mb-3"><em>See Forensic Dashboard below for full Beneish 8-component breakdown with per-indicator thresholds.</em></p>
+{% endif %}

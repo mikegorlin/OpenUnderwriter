@@ -1,0 +1,16 @@
+{# Reusable chart container macro for Plotly.js charts.
+   Renders a card with a title and a div that dashboard.js will find
+   via [data-chart-url] and populate with Plotly.newPlot().
+#}
+
+{% macro chart(chart_id, chart_url, title, height="300px") %}
+<div class="card bg-base-100 shadow-md">
+  <div class="card-body p-4">
+    <h3 class="card-title text-sm" style="color: var(--ad-navy);">{{ title }}</h3>
+    <div id="{{ chart_id }}"
+         data-chart-url="{{ chart_url }}"
+         style="height: {{ height }}; width: 100%;">
+    </div>
+  </div>
+</div>
+{% endmacro %}

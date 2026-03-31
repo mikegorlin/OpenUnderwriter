@@ -1,0 +1,60 @@
+# Domain 1: Company Identity & Business Model
+# "Who is this company and how do they make money?"
+# This is where the underwriter builds their mental model of the risk.
+
+domain: company_identity
+domain_label: "Company & Business Model"
+order: 1
+description: >
+  Establish what the company does, how it generates revenue, where it operates,
+  and what makes it distinctive. An underwriter who can't explain the business
+  in two sentences hasn't done enough diligence.
+
+questions:
+  - question_id: BIZ-01
+    text: "What does this company do and what sector does it operate in?"
+    weight: 10
+    data_sources: [company.identity, company.sic_code, yfinance.info.sector]
+    answer_template: "{company_name} is a {sector} company (SIC {sic_code}) in the {industry} industry."
+    upgrade_criteria: "Simple, well-understood business model with long public history"
+    downgrade_criteria: "Complex multi-segment, recent pivot, or novel business model"
+
+  - question_id: BIZ-02
+    text: "How does the company generate revenue and how concentrated is it?"
+    weight: 9
+    data_sources: [extracted.financials.revenue, extracted.financials.segments]
+    answer_template: "Revenue of {revenue} ({period}). {segment_count} segments, top segment = {top_segment_pct}% of revenue."
+    upgrade_criteria: "Diversified revenue across segments and geographies"
+    downgrade_criteria: "Single product/customer >40% of revenue, or revenue model change"
+
+  - question_id: BIZ-03
+    text: "How long has this company been public and what's its market cap?"
+    weight: 9
+    data_sources: [company.ipo_date, yfinance.info.marketCap]
+    answer_template: "{company_name} has been public since {ipo_date} ({years_public} years). Market cap: {market_cap}."
+    upgrade_criteria: "Public >10 years, large-cap, established track record"
+    downgrade_criteria: "IPO <3 years, micro/nano-cap, or recent SPAC"
+
+  - question_id: BIZ-04
+    text: "How many employees and where are key operations?"
+    weight: 6
+    data_sources: [yfinance.info.fullTimeEmployees, company.identity.headquarters]
+    answer_template: "{employees} employees. Headquarters: {headquarters}."
+    upgrade_criteria: "Stable headcount, domestic operations"
+    downgrade_criteria: "Rapid headcount changes (>20% YoY), significant international exposure"
+
+  - question_id: BIZ-05
+    text: "Are there any pending or recent M&A transactions?"
+    weight: 8
+    data_sources: [analysis.signals.ma_*, extracted.sec_filings]
+    answer_template: "{ma_status}"
+    upgrade_criteria: "No pending transactions, organic growth"
+    downgrade_criteria: "Active M&A — acquirer faces integration risk, target faces fiduciary duty claims"
+
+  - question_id: BIZ-06
+    text: "What are the company's key risk factors from their own 10-K?"
+    weight: 8
+    data_sources: [extracted.risk_factors]
+    answer_template: "{risk_factor_count} risk factors disclosed. Top risks: {top_risks}"
+    upgrade_criteria: "Standard boilerplate risk factors, no unusual disclosures"
+    downgrade_criteria: "Company self-identifies novel or acute risks (going concern, regulatory, cybersecurity)"

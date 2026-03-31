@@ -1,0 +1,55 @@
+- id: CTX.LIT.size
+  name: Litigation Frequency by Company Size
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of LIT.SCA.active_cases through size_tier lens
+    threshold_provenance:
+      source: calibrated
+      rationale: SCA filing rates from Cornerstone annual report by company size bucket
+  signal_class: inference
+  group: active_matters
+  rap_class: environment
+  rap_subcategory: environment.external_warnings
+  epistemology:
+    rule_origin: Cornerstone Research SCA frequency data by company market capitalization tier
+    threshold_basis: SCA filing rates from Cornerstone annual report by company size bucket
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: LIT.SCA.active_cases
+      context_dimensions:
+      - size_tier
+      context_adjustments:
+        small_cap:
+          threshold_adjustment: 0.5
+          rationale: 'Small-cap: any SCA is significant; lower frequency expected'
+        mid_cap:
+          threshold_adjustment: 0.8
+          rationale: 'Mid-cap: occasional litigation expected'
+        large_cap:
+          threshold_adjustment: 1.3
+          rationale: 'Large-cap: routine litigation volume expected'
+        mega_cap:
+          threshold_adjustment: 1.8
+          rationale: 'Mega-cap: constant litigation is structural; focus on severity'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} litigation frequency by company size at {value} represents environment risk (external market,
+        regulatory, and industry conditions affecting D&O liability) — this level is associated with D&O risk assessment exposure
+        based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} litigation frequency by company size at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} litigation frequency by company size at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

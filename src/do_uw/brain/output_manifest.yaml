@@ -1,0 +1,913 @@
+manifest_version: '2.0'
+sections:
+- id: identity
+  name: Cover & Identity
+  template: sections/identity.html.j2
+  render_mode: required
+  layer: decision
+  groups: []
+- id: executive_summary
+  name: Executive Summary
+  template: sections/executive.html.j2
+  render_mode: required
+  layer: decision
+  groups:
+  - id: data_quality_notice
+    name: Data Quality Notice
+    template: sections/executive/data_quality_notice.html.j2
+    render_as: conditional_alert
+    display_only: true
+  - id: company_profile
+    name: Company Profile
+    template: sections/executive/company_profile.html.j2
+    render_as: kv_table
+    requires:
+    - company
+  - id: risk_classification
+    name: Risk Classification
+    template: sections/executive/risk_classification.html.j2
+    render_as: kv_table
+  - id: key_findings
+    name: Key Findings
+    template: sections/executive/key_findings.html.j2
+    render_as: list
+  - id: claim_probability
+    name: Claim Probability
+    template: sections/executive/claim_probability.html.j2
+    render_as: metric_card
+    display_only: true
+  - id: tower_recommendation
+    name: Tower Recommendation
+    template: sections/executive/tower_recommendation.html.j2
+    render_as: kv_table
+    display_only: true
+  - id: executive_density_alerts
+    name: Executive Summary Density Alerts
+    template: sections/executive/executive_density_alerts.html.j2
+    render_as: conditional_alert
+    display_only: true
+- id: red_flags
+  name: Critical Risk Flags
+  template: sections/red_flags.html.j2
+  render_mode: required
+  layer: decision
+  groups:
+  - id: triggered_flags
+    name: Triggered Critical Risk Flags
+    template: sections/red_flags/triggered_flags.html.j2
+    render_as: flag_list
+    display_only: true
+- id: company_operations
+  name: Company & Operations
+  template: sections/company.html.j2
+  render_mode: required
+  layer: analysis
+  groups:
+  - id: business_description
+    name: Business Description
+    template: sections/company/business_description.html.j2
+    render_as: narrative
+  - id: business_model
+    name: Business Model Profile
+    template: sections/company/business_model.html.j2
+    render_as: kv_table
+    requires:
+    - company
+  - id: revenue_segments
+    name: Revenue Segments
+    template: sections/company/revenue_segments.html.j2
+    render_as: data_table
+  - id: dossier_what_company_does
+    name: What the Company Does
+    template: sections/dossier/what_company_does.html.j2
+    render_as: narrative
+    display_only: true
+  - id: dossier_money_flows
+    name: How Money Flows
+    template: sections/dossier/money_flows.html.j2
+    render_as: preformatted
+    display_only: true
+  - id: dossier_revenue_model_card
+    name: Revenue Model Card
+    template: sections/dossier/revenue_model_card.html.j2
+    render_as: data_table
+    display_only: true
+  - id: dossier_revenue_segments
+    name: Revenue Segment Breakdown
+    template: sections/dossier/revenue_segments.html.j2
+    render_as: data_table
+    display_only: true
+  - id: dossier_unit_economics
+    name: Unit Economics
+    template: sections/dossier/unit_economics.html.j2
+    render_as: data_table
+    display_only: true
+  - id: dossier_revenue_waterfall
+    name: Revenue Waterfall
+    template: sections/dossier/revenue_waterfall.html.j2
+    render_as: data_table
+    display_only: true
+  - id: dossier_competitive_landscape
+    name: Competitive Landscape & Moat Assessment
+    template: sections/dossier/competitive_landscape.html.j2
+    render_as: data_table
+    display_only: true
+  - id: dossier_emerging_risk_radar
+    name: Emerging Risk Radar
+    template: sections/dossier/emerging_risk_radar.html.j2
+    render_as: data_table
+    display_only: true
+  - id: dossier_asc_606
+    name: Revenue Recognition (ASC 606)
+    template: sections/dossier/asc_606.html.j2
+    render_as: data_table
+    display_only: true
+  - id: exposure_factors
+    name: D&O Exposure Factors
+    template: sections/company/exposure_factors.html.j2
+    render_as: data_table
+    display_only: true
+  - id: customer_concentration
+    name: Customer Concentration
+    template: sections/company/customer_concentration.html.j2
+    render_as: data_table
+  - id: supplier_concentration
+    name: Supplier Concentration
+    template: sections/company/supplier_concentration.html.j2
+    render_as: data_table
+  - id: operational_complexity
+    name: Operational Complexity
+    template: sections/company/operational_complexity.html.j2
+    render_as: kv_table
+  - id: subsidiary_structure
+    name: Subsidiary Structure
+    template: sections/company/subsidiary_structure.html.j2
+    render_as: data_table
+    display_only: true
+  - id: workforce_distribution
+    name: Workforce Distribution
+    template: sections/company/workforce_distribution.html.j2
+    render_as: kv_table
+    display_only: true
+  - id: operational_resilience
+    name: Operational Resilience
+    template: sections/company/operational_resilience.html.j2
+    render_as: kv_table
+    display_only: true
+  - id: ma_profile
+    name: M&A Profile
+    template: sections/company/ma_profile.html.j2
+    render_as: metric_cards
+    requires:
+    - company
+    - analysis
+  - id: corporate_events
+    name: Corporate Events & Transaction Risk
+    template: sections/company/corporate_events.html.j2
+    render_as: kv_table
+    requires:
+    - company
+  - id: risk_factors
+    name: Risk Factors (D&O-Relevant)
+    template: sections/company/risk_factors.html.j2
+    render_as: categorized_list
+    display_only: true
+  - id: ten_k_yoy
+    name: 10-K Year-over-Year Analysis
+    template: sections/company/ten_k_yoy.html.j2
+    render_as: metric_table
+    requires:
+    - extracted
+  - id: external_environment
+    name: External Environment Assessment
+    template: sections/company/environment_assessment.html.j2
+    render_as: kv_table
+    requires:
+    - company
+  - id: sector_risk
+    name: Sector Risk Classification
+    template: sections/company/sector_risk.html.j2
+    render_as: kv_table
+    requires:
+    - company
+  - id: structural_complexity
+    name: Structural Complexity
+    template: sections/company/structural_complexity.html.j2
+    render_as: kv_table
+    requires:
+    - company
+  - id: geographic_footprint
+    name: Geographic Footprint
+    template: sections/company/geographic_footprint.html.j2
+    render_as: data_table
+  - id: risk_factor_review
+    name: Risk Factor Review
+    template: sections/company/risk_factor_review.html.j2
+    render_as: data_table
+    display_only: true
+  - id: peer_sca_contagion
+    name: Peer SCA Contagion
+    template: sections/company/peer_sca_contagion.html.j2
+    render_as: data_table
+    display_only: true
+  - id: concentration_assessment
+    name: Concentration Assessment
+    template: sections/company/concentration_assessment.html.j2
+    render_as: data_grid
+    display_only: true
+  - id: supply_chain
+    name: Supply Chain Dependencies
+    template: sections/company/supply_chain.html.j2
+    render_as: data_table
+    display_only: true
+  - id: esg_risk
+    name: ESG & Climate Risk
+    template: sections/alt_data/esg_risk.html.j2
+    render_as: data_table
+    display_only: true
+  - id: tariff_exposure
+    name: Tariff & Trade Exposure
+    template: sections/alt_data/tariff_exposure.html.j2
+    render_as: data_table
+    display_only: true
+  - id: sector_concerns
+    name: Sector-Specific D&O Concerns
+    template: sections/company/sector_concerns.html.j2
+    render_as: data_table
+    display_only: true
+  - id: regulatory_map
+    name: Regulatory Environment Map
+    template: sections/company/regulatory_map.html.j2
+    render_as: data_table
+    display_only: true
+  - id: company_checks
+    name: Company Checks
+    template: sections/company/company_checks.html.j2
+    render_as: check_summary
+  - id: company_density_alerts
+    name: Company Density Alerts
+    template: sections/company/company_density_alerts.html.j2
+    render_as: conditional_alert
+    display_only: true
+- id: market_activity
+  name: Market Activity
+  template: sections/market.html.j2
+  render_mode: required
+  layer: analysis
+  groups:
+  - id: stock_performance
+    name: Stock Performance
+    template: sections/market/stock_performance.html.j2
+    render_as: data_grid
+    requires:
+    - market.stock_data
+  - id: stock_charts
+    name: Stock Charts
+    template: sections/market/stock_charts.html.j2
+    render_as: chart_embed
+    display_only: true
+  - id: stock_drops
+    name: Significant Stock Drops
+    template: sections/market/stock_drops.html.j2
+    render_as: data_table
+  - id: short_interest
+    name: Short Interest
+    template: sections/market/short_interest.html.j2
+    render_as: kv_table
+  - id: earnings_guidance
+    name: Earnings Guidance Track Record
+    template: sections/market/earnings_guidance.html.j2
+    render_as: kv_table
+    display_only: true
+  - id: earnings_reaction
+    name: Earnings Reaction Analysis
+    template: sections/market/earnings_reaction.html.j2
+    render_as: data_table
+    display_only: true
+  - id: analyst_consensus
+    name: Analyst Consensus
+    template: sections/market/analyst_consensus.html.j2
+    render_as: kv_table
+  - id: analyst_revisions
+    name: Analyst Revision Trends
+    template: sections/market/analyst_revisions.html.j2
+    render_as: data_table
+    display_only: true
+  - id: insider_trading
+    name: Insider Trading Analysis
+    template: sections/market/insider_trading.html.j2
+    render_as: kv_table
+  - id: ownership_chart
+    name: Ownership Distribution
+    template: sections/market/ownership_chart.html.j2
+    render_as: chart_embed
+    display_only: true
+  - id: capital_markets
+    name: Capital Markets Activity
+    template: sections/market/capital_markets.html.j2
+    render_as: data_table
+    display_only: true
+  - id: earnings_history
+    name: Earnings History
+    template: sections/market/earnings_history.html.j2
+    render_as: data_table
+    display_only: true
+  - id: forward_estimates
+    name: Forward Estimates
+    template: sections/market/forward_estimates.html.j2
+    render_as: data_table
+    display_only: true
+  - id: upgrades_downgrades
+    name: Analyst Upgrades & Downgrades
+    template: sections/market/upgrades_downgrades.html.j2
+    render_as: data_table
+    display_only: true
+  - id: capital_returns
+    name: Capital Returns & Dividends
+    template: sections/market/capital_returns.html.j2
+    render_as: kv_table
+    display_only: true
+  - id: eight_k_events
+    name: 8-K Events
+    template: sections/market/eight_k_events.html.j2
+    render_as: data_table
+    display_only: true
+  - id: news_articles
+    name: Recent News
+    template: sections/market/news_articles.html.j2
+    render_as: data_table
+    display_only: true
+  - id: stock_performance_summary
+    name: Stock Performance Summary
+    template: sections/market/stock_performance_summary.html.j2
+    render_as: data_table
+    display_only: true
+  - id: stock_drop_catalyst
+    name: Stock Drop Catalyst & D&O Assessment
+    template: sections/market/stock_drop_catalyst.html.j2
+    render_as: data_table
+    display_only: true
+  - id: volume_anomalies
+    name: Volume Anomalies
+    template: sections/market/volume_anomalies.html.j2
+    render_as: data_table
+    display_only: true
+  - id: correlation_metrics
+    name: Return Correlation Analysis
+    template: sections/market/correlation_metrics.html.j2
+    render_as: data_grid
+    display_only: true
+  - id: market_checks
+    name: Market Checks
+    template: sections/market/market_checks.html.j2
+    render_as: check_summary
+    display_only: true
+  - id: market_density_alerts
+    name: Market Density Alerts
+    template: sections/market/market_density_alerts.html.j2
+    render_as: conditional_alert
+    display_only: true
+- id: financial_health
+  name: Financial Health
+  template: sections/financial.html.j2
+  render_mode: required
+  layer: analysis
+  groups:
+  - id: annual_comparison
+    name: Annual Financial Comparison
+    template: sections/financial/annual_comparison.html.j2
+    render_as: financial_table
+    requires:
+    - financials.statements
+  - id: key_metrics
+    name: Key Financial Metrics
+    template: sections/financial/key_metrics.html.j2
+    render_as: data_grid
+    requires:
+    - financials.ratios
+  - id: statement_tables
+    name: Financial Statements
+    template: sections/financial/statement_tables.html.j2
+    render_as: statement_tables
+  - id: quarterly_trends
+    name: Quarterly Trends (8 Quarters)
+    template: sections/financial/quarterly_trend.html.j2
+    render_as: dashboard
+  - id: quarterly_updates
+    name: Quarterly Updates
+    template: sections/financial/quarterly_updates.html.j2
+    render_as: financial_table
+    display_only: true
+  - id: distress_indicators
+    name: Distress Model Indicators
+    template: sections/financial/distress_indicators.html.j2
+    render_as: scorecard
+    requires:
+    - financials.altman_z
+    - financials.beneish
+  - id: forensic_dashboard
+    name: Forensic Analysis Dashboard
+    template: sections/financial/forensic_dashboard.html.j2
+    render_as: scorecard
+  - id: tax_risk
+    name: Tax Risk Profile
+    template: sections/financial/tax_risk.html.j2
+    render_as: kv_table
+    display_only: true
+  - id: earnings_quality
+    name: Earnings Quality
+    template: sections/financial/earnings_quality.html.j2
+    render_as: kv_table
+  - id: goodwill_equity
+    name: Goodwill & Intangible Concentration
+    template: sections/financial/goodwill_equity.html.j2
+    render_as: metric_card
+    display_only: true
+  - id: capital_allocation
+    name: Capital Allocation
+    template: sections/financial/capital_allocation.html.j2
+    render_as: data_table
+    display_only: true
+  - id: debt_service_coverage
+    name: Cash Flow Adequacy
+    template: sections/financial/debt_service_coverage.html.j2
+    render_as: metric_card
+    display_only: true
+  - id: refinancing_risk
+    name: Refinancing Risk
+    template: sections/financial/refinancing_risk.html.j2
+    render_as: metric_card
+    display_only: true
+  - id: bankruptcy_composite
+    name: Bankruptcy Risk Assessment
+    template: sections/financial/bankruptcy_composite.html.j2
+    render_as: scorecard
+    display_only: true
+  - id: audit_disclosure_alerts
+    name: Audit & Disclosure Alerts
+    template: sections/financial/audit_disclosure_alerts.html.j2
+    render_as: conditional_alert
+    display_only: true
+  - id: audit_profile
+    name: Audit Profile
+    template: sections/financial/audit_profile.html.j2
+    render_as: kv_table
+  - id: debt_structure
+    name: Debt Structure & Maturity
+    template: sections/financial/debt_structure.html.j2
+    render_as: data_table
+    display_only: true
+    requires:
+    - financials.debt_structure
+  - id: peer_group
+    name: Peer Group
+    template: sections/financial/peer_group.html.j2
+    render_as: data_table
+  - id: peer_percentiles
+    name: Peer Benchmarking (SEC Filers)
+    template: sections/financial/peer_percentiles.html.j2
+    render_as: chart
+    display_only: true
+  - id: peer_matrix
+    name: Peer Comparison Matrix
+    template: sections/financial/peer_matrix.html.j2
+    render_as: data_table
+  - id: filing_analysis_mda
+    name: MD&A Analysis
+    template: sections/filing_analysis/mda_analysis.html.j2
+    render_as: kv_table
+  - id: filing_analysis_risk_factors
+    name: Risk Factor Analysis
+    template: sections/filing_analysis/risk_factor_analysis.html.j2
+    render_as: metric_table
+  - id: filing_analysis_patterns
+    name: Filing Patterns & Whistleblower
+    template: sections/filing_analysis/filing_patterns.html.j2
+    render_as: metric_table
+  - id: financial_checks
+    name: Financial Checks
+    template: sections/financial/financial_checks.html.j2
+    render_as: check_summary
+    display_only: true
+  - id: density_alerts
+    name: Density Alerts
+    template: sections/financial/density_alerts.html.j2
+    render_as: conditional_alert
+    display_only: true
+- id: governance
+  name: Governance Assessment
+  template: sections/governance.html.j2
+  render_mode: required
+  layer: analysis
+  groups:
+  - id: people_risk
+    name: People Risk
+    template: sections/governance/people_risk.html.j2
+    render_as: forensic_table
+    requires:
+    - governance.leadership
+  - id: board_composition
+    name: Board Composition
+    template: sections/governance/board_composition.html.j2
+    render_as: kv_table
+    requires:
+    - governance.board
+  - id: board_forensics
+    name: Board Member Forensic Profiles
+    template: sections/governance/board_forensics.html.j2
+    render_as: forensic_table
+    requires:
+    - governance.board_forensics
+  - id: skills_matrix
+    name: Board Skills Matrix
+    template: sections/governance/skills_matrix.html.j2
+    render_as: data_table
+    display_only: true
+    requires:
+    - governance.board_forensics
+  - id: committee_detail
+    name: Committee Membership
+    template: sections/governance/committee_detail.html.j2
+    render_as: data_table
+    display_only: true
+    requires:
+    - governance.board_forensics
+  - id: executive_risk_profiles
+    name: Executive Risk Profiles
+    template: sections/executive_risk/executive_profiles.html.j2
+    render_as: kv_table
+  - id: executive_tenure_stability
+    name: Tenure & Stability
+    template: sections/executive_risk/tenure_stability.html.j2
+    render_as: metric_table
+  - id: executive_insider_trading
+    name: Insider Trading Activity
+    template: sections/executive_risk/insider_trading.html.j2
+    render_as: metric_table
+    display_only: true
+  - id: executive_prior_litigation
+    name: Prior Litigation Exposure
+    template: sections/executive_risk/prior_litigation.html.j2
+    render_as: metric_table
+  - id: structural_governance
+    name: Structural Governance
+    template: sections/governance/structural_governance.html.j2
+    render_as: kv_table
+  - id: ownership_structure
+    name: Ownership Structure
+    template: sections/governance/ownership_structure.html.j2
+    render_as: data_table
+    requires:
+    - market.ownership
+  - id: transparency_disclosure
+    name: Transparency & Disclosure
+    template: sections/governance/transparency_disclosure.html.j2
+    render_as: kv_table
+  - id: compensation_analysis
+    name: Compensation Analysis
+    template: sections/governance/compensation_analysis.html.j2
+    render_as: mixed
+  - id: activist_risk
+    name: Activist Investor Risk
+    template: sections/governance/activist_risk.html.j2
+    render_as: data_table
+  - id: officer_backgrounds
+    name: Officer Background Investigation
+    template: sections/governance/officer_backgrounds.html.j2
+    render_as: data_grid
+    display_only: true
+  - id: shareholder_rights
+    name: Shareholder Rights Inventory
+    template: sections/governance/shareholder_rights.html.j2
+    render_as: data_table
+    display_only: true
+  - id: per_insider_activity
+    name: Per-Insider Trading Activity
+    template: sections/governance/per_insider_activity.html.j2
+    render_as: data_table
+    display_only: true
+  - id: governance_checks
+    name: Governance Checks
+    template: sections/governance/governance_checks.html.j2
+    render_as: check_summary
+    display_only: true
+  - id: governance_density_alerts
+    name: Governance Density Alerts
+    template: sections/governance/governance_density_alerts.html.j2
+    render_as: conditional_alert
+    display_only: true
+- id: litigation
+  name: Litigation & Regulatory
+  template: sections/litigation.html.j2
+  render_mode: required
+  layer: analysis
+  groups:
+  - id: risk_card
+    name: SCA Risk Profile
+    template: sections/litigation/risk_card.html.j2
+    render_as: composite
+    display_only: true
+  - id: active_matters
+    name: Active Matters
+    template: sections/litigation/active_matters.html.j2
+    render_as: data_table
+    requires:
+    - litigation.cases
+  - id: sec_enforcement
+    name: SEC Enforcement Pipeline
+    template: sections/litigation/sec_enforcement.html.j2
+    render_as: kv_table
+  - id: settlement_history
+    name: Settlement History
+    template: sections/litigation/settlement_history.html.j2
+    render_as: data_table
+  - id: sol_analysis
+    name: Statute of Limitations Analysis
+    template: sections/litigation/sol_analysis.html.j2
+    render_as: data_table
+  - id: derivative_suits
+    name: Derivative Suits
+    template: sections/litigation/derivative_suits.html.j2
+    render_as: data_table
+  - id: contingent_liabilities
+    name: Contingent Liabilities (ASC 450)
+    template: sections/litigation/contingent_liabilities.html.j2
+    render_as: data_table
+  - id: defense_strength
+    name: Defense Strength Assessment
+    template: sections/litigation/defense_strength.html.j2
+    render_as: kv_table
+  - id: industry_patterns
+    name: Industry Claim Patterns
+    template: sections/litigation/industry_patterns.html.j2
+    render_as: list
+  - id: workforce_product_env
+    name: Workforce, Product & Environmental Matters
+    template: sections/litigation/workforce_product_env.html.j2
+    render_as: list
+  - id: whistleblower
+    name: Whistleblower Indicators
+    template: sections/litigation/whistleblower.html.j2
+    render_as: data_table
+  - id: litigation_checks
+    name: Litigation Checks
+    template: sections/litigation/litigation_checks.html.j2
+    render_as: check_summary
+    display_only: true
+  - id: litigation_density_alerts
+    name: Litigation Density Alerts
+    template: sections/litigation/litigation_density_alerts.html.j2
+    render_as: conditional_alert
+    display_only: true
+- id: sector_industry
+  name: Sector & Industry Analysis
+  template: sections/sector_industry.html.j2
+  render_mode: optional
+  layer: analysis
+  groups:
+  - id: competitive_position
+    name: Competitive Position
+    template: sections/ai_risk/competitive_position.html.j2
+    render_as: kv_table
+    display_only: true
+  - id: forward_assessment
+    name: Forward Indicators & Strategic Assessment
+    template: sections/ai_risk/forward_assessment.html.j2
+    render_as: list
+    display_only: true
+  - id: dimension_breakdown
+    name: Dimension Breakdown
+    template: sections/ai_risk/dimension_breakdown.html.j2
+    render_as: data_table
+    display_only: true
+  - id: forward_looking_macro_risks
+    name: Macro Risk Factors
+    template: sections/forward_looking/macro_risks.html.j2
+    render_as: metric_table
+  - id: ai_risk_density_alerts
+    name: AI Risk Density Alerts
+    template: sections/ai_risk/ai_risk_density_alerts.html.j2
+    render_as: conditional_alert
+    display_only: true
+- id: forward_looking
+  name: Forward-Looking Analysis
+  template: sections/forward_looking.html.j2
+  render_mode: optional
+  layer: analysis
+  groups:
+  - id: forward_scenarios
+    name: Score Impact Scenarios
+    template: sections/forward_looking/scenarios.html.j2
+    render_as: data_grid
+    display_only: true
+  - id: key_dates_calendar
+    name: Key Dates Calendar
+    template: sections/forward_looking/key_dates.html.j2
+    render_as: data_table
+    display_only: true
+  - id: management_credibility
+    name: Management Credibility
+    template: sections/forward_looking/credibility_enhanced.html.j2
+    render_as: data_table
+    display_only: true
+  - id: short_seller_monitoring
+    name: Short-Seller Monitoring
+    template: sections/forward_looking/short_seller_alerts.html.j2
+    render_as: data_grid
+    display_only: true
+- id: scoring
+  name: Scoring & Risk Assessment
+  template: sections/scoring.html.j2
+  render_mode: required
+  layer: analysis
+  groups:
+  - id: tier_classification
+    name: Tier Classification
+    template: sections/scoring/tier_classification.html.j2
+    render_as: scorecard
+    display_only: true
+  - id: peril_assessment
+    name: D&O Claim Peril Assessment
+    template: sections/scoring/peril_assessment.html.j2
+    render_as: data_table
+    display_only: true
+  - id: hazard_profile
+    name: Hazard Profile (IES)
+    template: sections/scoring/hazard_profile.html.j2
+    render_as: data_table
+    display_only: true
+  - id: ten_factor_scoring
+    name: 10-Factor Scoring
+    template: sections/scoring/ten_factor_scoring.html.j2
+    render_as: data_table
+    display_only: true
+    requires:
+    - score_result
+  - id: pattern_detection
+    name: Composite Pattern Detection
+    template: sections/scoring/pattern_detection.html.j2
+    render_as: list
+    display_only: true
+  - id: pattern_firing
+    name: Pattern Detection Engines
+    template: sections/pattern_firing.html.j2
+    render_as: card_grid
+    display_only: true
+  - id: risk_classification
+    name: Risk Type Classification
+    template: sections/scoring/risk_classification.html.j2
+    render_as: kv_table
+  - id: allegation_mapping
+    name: Allegation Theory Mapping
+    template: sections/scoring/allegation_mapping.html.j2
+    render_as: data_table
+    display_only: true
+  - id: claim_probability
+    name: Claim Probability
+    template: sections/scoring/claim_probability.html.j2
+    render_as: scorecard
+    display_only: true
+  - id: severity_scenarios
+    name: Severity Scenarios
+    template: sections/scoring/severity_scenarios.html.j2
+    render_as: data_table
+    display_only: true
+  - id: tower_recommendation
+    name: Tower Position Recommendation
+    template: sections/scoring/tower_recommendation.html.j2
+    render_as: data_table
+    display_only: true
+  - id: forensic_composites
+    name: Forensic Composite Scores
+    template: sections/scoring/forensic_composites.html.j2
+    render_as: data_table
+  - id: executive_risk_profile
+    name: Executive Risk Profile
+    template: sections/scoring/executive_risk_profile.html.j2
+    render_as: kv_table
+    display_only: true
+  - id: temporal_signals
+    name: Temporal Signals
+    template: sections/scoring/temporal_signals.html.j2
+    render_as: data_table
+    display_only: true
+  - id: nlp_analysis
+    name: NLP & Sentiment Dashboard
+    template: sections/scoring/nlp_dashboard.html.j2
+    render_as: mixed
+    display_only: true
+  - id: peril_map
+    name: Peril Map
+    template: sections/scoring/peril_map.html.j2
+    render_as: data_table
+    display_only: true
+  - id: calibration_notes
+    name: Calibration Notes
+    template: sections/scoring/calibration_notes.html.j2
+    render_as: list
+    display_only: true
+  - id: overall_score
+    name: Overall AI Risk Score
+    template: sections/ai_risk/overall_score.html.j2
+    render_as: metric_card
+    display_only: true
+  - id: scoring_checks
+    name: Forward-Looking Checks
+    template: sections/scoring/scoring_checks.html.j2
+    render_as: check_summary
+    display_only: true
+  - id: scoring_density_alerts
+    name: Scoring Density Alerts
+    template: sections/scoring/scoring_density_alerts.html.j2
+    render_as: conditional_alert
+    display_only: true
+  - id: underwriting_posture
+    name: Underwriting Posture
+    template: sections/scoring/underwriting_posture.html.j2
+    render_as: kv_table
+    display_only: true
+  - id: zero_verification
+    name: Zero-Factor Verification
+    template: sections/scoring/zero_verification.html.j2
+    render_as: data_table
+    display_only: true
+  - id: watch_items
+    name: Watch Items
+    template: sections/scoring/watch_items.html.j2
+    render_as: data_table
+    display_only: true
+  - id: forward_looking_risk_map
+    name: Forward-Looking Risk Map
+    template: sections/forward_looking/risk_map.html.j2
+    render_as: data_table
+    display_only: true
+  - id: forward_looking_credibility
+    name: Management Credibility
+    template: sections/forward_looking/credibility.html.j2
+    render_as: data_table
+    display_only: true
+  - id: forward_looking_catalysts
+    name: Catalyst Events
+    template: sections/forward_looking/catalysts.html.j2
+    render_as: data_table
+    display_only: true
+  - id: forward_looking_growth_estimates
+    name: Growth Estimates
+    template: sections/forward_looking/growth_estimates.html.j2
+    render_as: data_table
+    display_only: true
+  - id: forward_looking_alt_signals
+    name: Alternative Market Signals
+    template: sections/forward_looking/alt_signals.html.j2
+    render_as: data_table
+    display_only: true
+  - id: forward_looking_monitoring_triggers
+    name: Monitoring Triggers
+    template: sections/forward_looking/monitoring_triggers.html.j2
+    render_as: data_table
+    display_only: true
+  - id: forward_looking_early_warning
+    name: Early Warning Signals
+    template: sections/forward_looking/early_warning.html.j2
+    render_as: metric_table
+  - id: forward_looking_event_catalysts
+    name: Event Catalysts
+    template: sections/forward_looking/event_catalysts.html.j2
+    render_as: metric_table
+  - id: forward_looking_disclosure_quality
+    name: Disclosure Quality
+    template: sections/forward_looking/disclosure_quality.html.j2
+    render_as: kv_table
+  - id: forward_looking_narrative_coherence
+    name: Narrative Coherence
+    template: sections/forward_looking/narrative_coherence.html.j2
+    render_as: kv_table
+  - id: meeting_prep
+    name: Meeting Preparation Questions
+    template: appendices/meeting_prep.html.j2
+    render_as: list
+    display_only: true
+- id: sources
+  name: Sources
+  template: appendices/sources.html.j2
+  render_mode: required
+  layer: audit
+  groups: []
+- id: qa_audit
+  name: QA Audit
+  template: appendices/qa_audit.html.j2
+  render_mode: required
+  layer: audit
+  groups: []
+- id: market_overflow
+  name: Market Data Full Detail
+  template: appendices/market_overflow.html.j2
+  render_mode: optional
+  layer: audit
+  groups: []
+- id: coverage
+  name: Coverage Analysis
+  template: appendices/coverage.html.j2
+  render_mode: required
+  layer: audit
+  groups: []

@@ -1,0 +1,55 @@
+- id: CTX.MKT.insider_lifecycle
+  name: Insider Trading in Lifecycle Context
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+  provenance:
+    origin: phase_110_contextual
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Contextual re-evaluation of STOCK.INSIDER.net_selling through lifecycle_stage lens
+    threshold_provenance:
+      source: calibrated
+      rationale: Insider selling baselines from Form 4 filing data by company lifecycle category
+  signal_class: inference
+  group: insider_trading
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  epistemology:
+    rule_origin: 'SEC enforcement patterns: insider trading significance varies dramatically by company stage'
+    threshold_basis: Insider selling baselines from Form 4 filing data by company lifecycle category
+  evaluation:
+    mechanism: contextual
+    contextual_rules:
+      source_signal: STOCK.INSIDER.net_selling
+      context_dimensions:
+      - lifecycle_stage
+      context_adjustments:
+        post_ipo:
+          threshold_adjustment: 0.5
+          rationale: 'Post-IPO: insider selling during lockup expiry is high-signal'
+        growth:
+          threshold_adjustment: 0.8
+          rationale: 'Growth: insider selling may signal valuation concern'
+        mature:
+          threshold_adjustment: 1.3
+          rationale: 'Mature: routine portfolio diversification expected'
+        distressed:
+          threshold_adjustment: 0.3
+          rationale: 'Distressed: insider selling is extreme red flag'
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} insider trading in lifecycle context at {value} represents agent risk (executive/director
+        actions and decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} insider trading in lifecycle context at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} insider trading in lifecycle context at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

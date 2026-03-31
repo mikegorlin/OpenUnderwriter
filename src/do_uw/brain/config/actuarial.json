@@ -1,0 +1,72 @@
+{
+  "description": "Actuarial pricing model parameters. All values NEED CALIBRATION.",
+  "defense_cost_factors": {
+    "description": "Defense costs as % of indemnity by case type",
+    "standard_sca": 0.2,
+    "complex_sca": 0.25,
+    "sec_enforcement": 0.3,
+    "derivative": 0.15,
+    "default": 0.2
+  },
+  "ilf_parameters": {
+    "description": "ILF power curve alpha by market segment",
+    "standard": 0.4,
+    "large_cap": 0.38,
+    "small_cap": 0.45,
+    "biotech": 0.35,
+    "financial_services": 0.42
+  },
+  "loss_ratio_targets": {
+    "description": "Target loss ratio for premium derivation by layer type",
+    "primary": 0.55,
+    "low_excess": 0.5,
+    "mid_excess": 0.45,
+    "high_excess": 0.4,
+    "side_a": 0.35
+  },
+  "expense_loads": {
+    "acquisition_cost_pct": 0.15,
+    "overhead_pct": 0.05,
+    "profit_margin_pct": 0.05
+  },
+  "credibility": {
+    "standard": 50,
+    "minimum_quotes": 3
+  },
+  "default_tower": {
+    "description": "Standard D&O tower structure for pricing",
+    "layers": [
+      {
+        "layer_type": "primary",
+        "layer_number": 1,
+        "attachment": 0,
+        "limit": 10000000
+      },
+      {
+        "layer_type": "low_excess",
+        "layer_number": 2,
+        "attachment": 10000000,
+        "limit": 10000000
+      },
+      {
+        "layer_type": "mid_excess",
+        "layer_number": 3,
+        "attachment": 20000000,
+        "limit": 10000000
+      },
+      {
+        "layer_type": "high_excess",
+        "layer_number": 4,
+        "attachment": 30000000,
+        "limit": 10000000
+      },
+      {
+        "layer_type": "side_a",
+        "layer_number": 5,
+        "attachment": 0,
+        "limit": 10000000
+      }
+    ]
+  },
+  "model_label": "MODEL-INDICATED: Not prescriptive. Underwriter sets final price."
+}

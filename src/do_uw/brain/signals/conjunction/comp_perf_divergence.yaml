@@ -1,0 +1,52 @@
+- id: CONJ.COMP.perf_divergence
+  name: Compensation-Performance Divergence
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: CEO compensation increasing while company performance declining and no clawback enforced
+    yellow: Partial match on compensation-performance divergence signals
+  provenance:
+    origin: phase_110_conjunction
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Conjunction of EXEC.COMP.ceo_total_comp + FIN.PROFIT.revenue (declining) + GOV.COMP.clawback (absent)
+    threshold_provenance:
+      source: calibrated
+      rationale: SCAC filing data shows 2.3x elevated SCA frequency when executive comp rises while performance declines
+        (Cornerstone 2023)
+  signal_class: inference
+  group: compensation_analysis
+  rap_class: agent
+  rap_subcategory: agent.executive_conduct
+  epistemology:
+    rule_origin: 'SCAC filing analysis and Cornerstone settlement data: compensation-performance divergence is a top-5 SCA
+      trigger'
+    threshold_basis: 2+ of 3 conditions met triggers RED; based on D&O claims experience with compensation committee 
+      failures
+  evaluation:
+    mechanism: conjunction
+    conjunction_rules:
+      required_signals:
+      - EXEC.COMP.ceo_total_comp
+      - FIN.PROFIT.revenue
+      - GOV.COMP.clawback
+      minimum_matches: 2
+      signal_conditions:
+        GOV.COMP.clawback: CLEAR
+      recommendation_floor: ELEVATED
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} compensation-performance divergence at {value} represents agent risk (executive/director actions
+        and decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based on D&O
+        claims experience.'
+      TRIGGERED_YELLOW: '{company} compensation-performance divergence at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} compensation-performance divergence at {value} is within normal parameters for D&O risk assessment
+        — no D&O concern at this level.'

@@ -1,0 +1,1320 @@
+- id: FIN.ACCT.auditor
+  name: Auditor
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    restatement_to_sca: mitigator
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: Going concern OR adverse opinion OR disclaimer
+    yellow: Qualified opinion OR auditor change
+    clear: Unqualified opinion, no change
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.5'
+  extraction_hints:
+    field_patterns:
+    - auditor_report
+    - audit_opinion
+    - going_concern
+    expected_type: text
+    no_data_sentinel: Auditor report section not extractable from 10-K
+    validation_rule: 'opinion is one of: unqualified, qualified, adverse, disclaimer'
+  data_strategy:
+    field_key: xbrl_auditor_opinion
+    narrative_key: auditor_opinion_narrative
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: audit_profile
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: audit_profile
+  signal_class: evaluative
+  field_path: xbrl_auditor_opinion
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'PCAOB auditing standards and GAAP audit opinion requirements: going concern, adverse, or qualified opinions
+      are critical D&O risk indicators'
+    threshold_basis: 'Going concern/adverse opinion = RED: any qualified audit opinion is a material risk event per D&O claims
+      experience; auditor change = YELLOW per SEC staff scrutiny patterns'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Auditor at {value} (threshold: Going concern OR adverse opinion OR disclaimer) signals elevated
+        Financial Irregularities / Restatement Risk risk (F3). Auditor risk factors increase the probability of audit failure
+        or qualified opinion. Auditor changes, small firm audits, and qualified opinions are among the strongest predictors
+        of future restatements and subsequent SCA filings.'
+      TRIGGERED_YELLOW: '{company} Auditor at {value} (threshold: Qualified opinion OR auditor change) is in the caution zone
+        for Financial Irregularities / Restatement Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Auditor at {value} is within acceptable range for Financial Irregularities / Restatement Risk (F3)
+        — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.ACCT.internal_controls
+  name: Internal Controls
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    restatement_to_sca: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: '>0 material weaknesses disclosed'
+    yellow: '>0 significant deficiencies disclosed'
+    clear: No MW or SD
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.5'
+  extraction_hints:
+    field_patterns:
+    - item_9a_controls
+    - material_weakness
+    - significant_deficiency
+    expected_type: boolean
+    no_data_sentinel: Item 9A controls section not found in 10-K
+    validation_rule: boolean flag for material weakness presence
+  data_strategy:
+    field_key: xbrl_material_weakness_count
+    narrative_key: material_weakness_narrative
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: audit_profile
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: audit_profile
+  signal_class: evaluative
+  field_path: xbrl_material_weakness_count
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'SOX Section 302/404 internal controls requirements: material weakness in ICFR is among the strongest SCA
+      filing predictors'
+    threshold_basis: 'Material weakness = RED: 4-6x elevated SCA filing rate per SCAC data; significant deficiency = YELLOW
+      per D&O underwriting practice'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Internal Controls at {value} (threshold: >0 material weaknesses disclosed) signals elevated
+        Financial Irregularities / Restatement Risk risk (F3). Internal control deficiencies create the conditions for financial
+        misstatement. Material weaknesses are cited in virtually every restatement-driven SCA as evidence that management
+        was reckless in certifying financial statements under SOX 302/906.'
+      TRIGGERED_YELLOW: '{company} Internal Controls at {value} (threshold: >0 significant deficiencies disclosed) is in the
+        caution zone for Financial Irregularities / Restatement Risk (F3). Monitor for deterioration — trend direction and
+        peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Internal Controls at {value} is within acceptable range for Financial Irregularities / Restatement
+        Risk (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.ACCT.restatement
+  name: Restatement History
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    stock_drop_to_sca: amplifier
+    restatement_to_sca: trigger
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_8K
+  - SEC_10K
+  data_locations:
+    SEC_8K:
+    - item_4_01
+    - item_4_02
+    SEC_10K:
+    - item_9a_controls
+  threshold:
+    type: tiered
+    red: '>1 restatements within 3 years'
+    yellow: '>0 restatements within 5 years'
+    clear: No restatements
+  claims_correlation: 0.25
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.5'
+  extraction_hints:
+    field_patterns:
+    - restatement
+    - 8-K Item 4.02
+    - non_reliance
+    expected_type: boolean
+    no_data_sentinel: No 8-K Item 4.02 filings or restatement disclosures found
+    validation_rule: boolean flag for restatement occurrence
+  data_strategy:
+    field_key: xbrl_restatement_count
+    narrative_key: restatement_narrative
+    primary_source: SEC_8K
+  worksheet_section: management
+  display_when: has_data
+  critical_red_flag: true
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: audit_profile
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_8K
+      fields:
+      - extracted.financials.audit.restatements
+      fallback_to: SEC_10K
+    - type: SEC_10K
+      fields:
+      - extracted.financials.audit.restatements
+  evaluation:
+    formula: restatements
+    thresholds:
+    - op: '>'
+      value: 1
+      label: RED
+    - op: '>'
+      value: 0
+      label: YELLOW
+    window_years: 3
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Restatements: {value}'
+    - level: standard
+      template: '{value} restatement(s) in past 3 years — {status_label}'
+    - level: deep
+      fields:
+      - restatements
+      - restatement_auditor_link
+      - material_weaknesses
+    context_templates:
+      TRIGGERED: 'Financial restatement risk: {value} restatement(s) detected'
+      CLEAR: No financial restatements in review period
+    do_context:
+      TRIGGERED_RED: '{company} Restatement History at {value} (threshold: >1 restatements within 3 years) signals elevated
+        Financial Irregularities / Restatement Risk risk (F3). Restatement history is the single strongest predictor of future
+        SCA filings. Prior restatements establish a pattern of unreliable financial reporting that strengthens scienter allegations
+        in any subsequent securities fraud claim.'
+      TRIGGERED_YELLOW: '{company} Restatement History at {value} (threshold: >0 restatements within 5 years) is in the caution
+        zone for Financial Irregularities / Restatement Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Restatement History at {value} is within acceptable range for Financial Irregularities / Restatement
+        Risk (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+  group: audit_profile
+  signal_class: evaluative
+  field_path: xbrl_restatement_count
+  depends_on: []
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: 'Thresholds (RED: >1 restatements within 3 years; YELLOW: >0 restatements within 5 years) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+- id: FIN.ACCT.restatement_magnitude
+  name: Restatement Revenue Impact
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    restatement_to_sca: trigger
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_8K
+  - SEC_10K
+  data_locations:
+    SEC_8K:
+    - item_4_01
+    - item_4_02
+    SEC_10K:
+    - item_9a_controls
+  threshold:
+    type: percentage
+    red: '>2% impact on reported metrics'
+    yellow: '>2%'
+    clear: <=2%
+  claims_correlation: 0.3
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.5'
+  data_strategy:
+    field_key: xbrl_restatement_magnitude
+    narrative_key: restatement_magnitude_narrative
+    primary_source: SEC_8K
+  worksheet_section: management
+  display_when: has_data
+  critical_red_flag: true
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: audit_profile
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: audit_profile
+  signal_class: evaluative
+  field_path: xbrl_restatement_magnitude
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: 'Thresholds (RED: >2% impact on reported metrics; YELLOW: >2%) from D&O underwriting practice and claims
+      experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Restatement Revenue Impact at {value} (threshold: >2% impact on reported metrics) signals
+        elevated Financial Irregularities / Restatement Risk risk (F3). Revenue-related restatements generate the highest
+        SCA filing rates and settlement amounts. Revenue restatements directly undermine the reliability of the most-watched
+        financial metric, maximizing damages and class certification probability. Thresholds (RED: >2% impact on reported
+        metrics; YELLOW: >2%) from D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Restatement Revenue Impact at {value} (threshold: >2%) is in the caution zone for Financial
+        Irregularities / Restatement Risk (F3). Monitor for deterioration — trend direction and peer comparison inform the
+        D&O risk assessment.'
+      CLEAR: '{company} Restatement Revenue Impact at {value} is within acceptable range for Financial Irregularities / Restatement
+        Risk (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.ACCT.restatement_pattern
+  name: Repeat Restatement Pattern
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    restatement_to_sca: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_8K
+  - SEC_10K
+  data_locations:
+    SEC_8K:
+    - item_4_01
+    - item_4_02
+    SEC_10K:
+    - item_9a_controls
+  threshold:
+    type: count
+    red: '>1 repeat restatements'
+    yellow: '>0 restatements in same area'
+    clear: '0'
+  claims_correlation: 0.35
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.5'
+  data_strategy:
+    field_key: xbrl_restatement_pattern
+    narrative_key: restatement_pattern_narrative
+    primary_source: SEC_8K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: audit_profile
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: audit_profile
+  signal_class: evaluative
+  field_path: xbrl_restatement_pattern
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: 'Thresholds (RED: >1 repeat restatements; YELLOW: >0 restatements in same area) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Repeat Restatement Pattern at {value} (threshold: >1 repeat restatements) signals elevated
+        Financial Irregularities / Restatement Risk risk (F3). Restatement history is the single strongest predictor of future
+        SCA filings. Prior restatements establish a pattern of unreliable financial reporting that strengthens scienter allegations
+        in any subsequent securities fraud claim.'
+      TRIGGERED_YELLOW: '{company} Repeat Restatement Pattern at {value} (threshold: >0 restatements in same area) is in the
+        caution zone for Financial Irregularities / Restatement Risk (F3). Monitor for deterioration — trend direction and
+        peer comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Repeat Restatement Pattern at {value} is within acceptable range for Financial Irregularities / Restatement
+        Risk (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.ACCT.restatement_auditor_link
+  execution_mode: DEFERRED
+  name: Restatement-Auditor Change Correlation
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    restatement_to_sca: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_8K
+  - SEC_10K
+  data_locations:
+    SEC_8K:
+    - item_4_01
+    - item_4_02
+    SEC_10K:
+    - item_9a_controls
+  threshold:
+    type: boolean
+    red: Restatement coinciding with auditor change
+    clear: No restatement-auditor change correlation
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.5'
+  data_strategy:
+    field_key: xbrl_restatement_auditor_link
+    narrative_key: restatement_auditor_narrative
+    primary_source: SEC_8K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: audit_profile
+    formula: ''
+  display:
+    value_format: boolean
+    source_type: SEC_10K
+    threshold_context: ''
+  group: audit_profile
+  signal_class: evaluative
+  field_path: xbrl_restatement_auditor_link
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: 'Boolean check -- presence/absence determination; triggered: Restatement coinciding with auditor change'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} triggered Restatement-Auditor Change Correlation (F3) — this agent risk (executive/director
+        actions and decisions that create D&O exposure) indicates Financial Irregularities / Restatement Risk. Evidence: {evidence}.'
+      TRIGGERED_YELLOW: '{company} shows moderate signal on Restatement-Auditor Change Correlation (F3) at {value} — review
+        recommended for Financial Irregularities / Restatement Risk implications.'
+      CLEAR: '{company} clear on Restatement-Auditor Change Correlation (F3) — no Financial Irregularities / Restatement Risk
+        concern identified at this level.'
+- id: FIN.ACCT.material_weakness
+  name: Material Weakness in Internal Controls
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    restatement_to_sca: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_9a_controls
+  threshold:
+    type: tiered
+    red: '>0 material weaknesses disclosed'
+    clear: No material weakness disclosed
+    yellow: '>0 significant deficiencies'
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.5'
+  data_strategy:
+    field_key: xbrl_material_weakness_flag
+    narrative_key: material_weakness_detail
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: audit_profile
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: audit_profile
+  signal_class: evaluative
+  field_path: xbrl_material_weakness_flag
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'SOX Section 302/906 certification requirements and PCAOB Auditing Standard No. 5: material weaknesses in
+      internal control over financial reporting (ICFR) are the strongest predictor of future restatement. Rice & Weber (2012)
+      found material weakness disclosure increases restatement probability by 3.4x. Virtually every restatement-driven SCA
+      cites pre-existing material weaknesses as scienter evidence.'
+    threshold_basis: 'RED: Any material weakness = management has certified financials under SOX while knowing controls are
+      deficient. YELLOW: Significant deficiencies are precursors — 22% escalate to material weaknesses within 2 years per
+      Doyle et al. (2007).'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} disclosed {value} material weakness(es) in internal controls over financial reporting (F3).
+        Material weaknesses are cited in virtually every restatement-driven SCA as evidence that management was reckless in
+        certifying financial statements under SOX 302/906. Research shows material weakness disclosure increases restatement
+        probability by 3.4x. Evaluate the specific control deficiency: revenue recognition weaknesses carry the highest SCA
+        risk, followed by asset valuation and expense timing controls.'
+      TRIGGERED_YELLOW: '{company} disclosed significant deficiencies in internal controls (F3). While not yet material weaknesses,
+        22% of significant deficiencies escalate within 2 years. Monitor remediation progress — failure to remediate is itself
+        a scienter indicator in subsequent litigation.'
+      CLEAR: '{company} reports effective internal controls with no material weaknesses or significant deficiencies (F3) —
+        this is a protective factor indicating robust financial reporting infrastructure.'
+- id: FIN.ACCT.auditor_disagreement
+  execution_mode: DEFERRED
+  name: Auditor Disagreement Letter
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_8K
+  - SEC_10K
+  data_locations:
+    SEC_8K:
+    - item_4_01
+    - item_4_02
+    SEC_10K:
+    - item_9a_controls
+  threshold:
+    type: boolean
+    red: Auditor change with disagreement letter filed
+    clear: No auditor disagreement letters
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.5'
+  data_strategy:
+    field_key: xbrl_auditor_disagreement
+    narrative_key: auditor_disagreement_narrative
+    primary_source: SEC_8K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: audit_profile
+    formula: ''
+  display:
+    value_format: boolean
+    source_type: SEC_10K
+    threshold_context: ''
+  group: audit_profile
+  signal_class: evaluative
+  field_path: xbrl_auditor_disagreement
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: 'Boolean check -- presence/absence determination; triggered: Auditor change with disagreement letter
+      filed'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} triggered Auditor Disagreement Letter (F3) — this agent risk (executive/director actions and
+        decisions that create D&O exposure) indicates Financial Irregularities / Restatement Risk. Evidence: {evidence}.'
+      TRIGGERED_YELLOW: '{company} shows moderate signal on Auditor Disagreement Letter (F3) at {value} — review recommended
+        for Financial Irregularities / Restatement Risk implications.'
+      CLEAR: '{company} clear on Auditor Disagreement Letter (F3) — no Financial Irregularities / Restatement Risk concern
+        identified at this level.'
+- id: FIN.ACCT.auditor_attestation_fail
+  execution_mode: DEFERRED
+  name: Failed Auditor Attestation on Internal Controls
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_9a_controls
+  threshold:
+    type: boolean
+    red: Auditor unable to attest to internal control effectiveness under SOX 404
+    clear: Auditor attested to effective internal controls
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.5'
+  data_strategy:
+    field_key: xbrl_auditor_attestation_fail
+    narrative_key: auditor_attestation_narrative
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: audit_profile
+    formula: ''
+  display:
+    value_format: boolean
+    source_type: SEC_10K
+    threshold_context: ''
+  group: audit_profile
+  signal_class: evaluative
+  field_path: xbrl_auditor_attestation_fail
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: 'Boolean check -- presence/absence determination; triggered: Auditor unable to attest to internal control
+      effectiveness under SOX 404'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} triggered Failed Auditor Attestation on Internal Controls (F3) — this agent risk (executive/director
+        actions and decisions that create D&O exposure) indicates Financial Irregularities / Restatement Risk. Evidence: {evidence}.'
+      TRIGGERED_YELLOW: '{company} shows moderate signal on Failed Auditor Attestation on Internal Controls (F3) at {value}
+        — review recommended for Financial Irregularities / Restatement Risk implications.'
+      CLEAR: '{company} clear on Failed Auditor Attestation on Internal Controls (F3) — no Financial Irregularities / Restatement
+        Risk concern identified at this level.'
+- id: FIN.ACCT.restatement_stock_window
+  name: Restatement Within Stock Drop Window
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    restatement_to_sca: evidence
+  unlinked: false
+  acquisition_tier: L3
+  required_data:
+  - SEC_8K
+  - SEC_10K
+  - MARKET_PRICE
+  data_locations:
+    SEC_8K:
+    - item_4_01
+    - item_4_02
+    SEC_10K:
+    - item_9a_controls
+  threshold:
+    type: boolean
+    red: Restatement within 90 days of significant stock decline creating class period exposure
+    clear: No restatement-stock drop temporal overlap
+  claims_correlation: 0.4
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.5'
+  - '2.2'
+  data_strategy:
+    field_key: xbrl_restatement_stock_window
+    narrative_key: restatement_stock_window_narrative
+    primary_source: SEC_8K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: audit_profile
+    formula: ''
+  gap_bucket: data-unavailable
+  gap_keywords:
+  - restatement
+  - stock drop
+  - disclosure
+  display:
+    value_format: boolean
+    source_type: SEC_10K
+    threshold_context: ''
+  group: audit_profile
+  signal_class: evaluative
+  field_path: xbrl_restatement_stock_window
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: 'Boolean check -- presence/absence determination; triggered: Restatement within 90 days of significant
+      stock decline creating class period exposure'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} triggered Restatement Within Stock Drop Window (F3) — this agent risk (executive/director
+        actions and decisions that create D&O exposure) indicates Financial Irregularities / Restatement Risk. Evidence: {evidence}.'
+      TRIGGERED_YELLOW: '{company} shows moderate signal on Restatement Within Stock Drop Window (F3) at {value} — review
+        recommended for Financial Irregularities / Restatement Risk implications.'
+      CLEAR: '{company} clear on Restatement Within Stock Drop Window (F3) — no Financial Irregularities / Restatement Risk
+        concern identified at this level.'
+- id: FIN.ACCT.sec_correspondence
+  execution_mode: DEFERRED
+  name: Sec Correspondence
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    enforcement_to_penalty: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: '>3 comment letters in 12 months OR accounting-focused letters'
+    yellow: 1-3 comment letters in 12 months
+    clear: No recent comment letters
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.5'
+  - '5.4'
+  data_strategy:
+    field_key: xbrl_sec_correspondence_count
+    narrative_key: sec_correspondence_narrative
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: earnings_quality
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: earnings_quality
+  signal_class: evaluative
+  field_path: xbrl_sec_correspondence_count
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: 'Thresholds (RED: >3 comment letters in 12 months OR accounting-focused letters; YELLOW: 1-3 comment
+      letters in 12 months) from D&O underwriting practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Sec Correspondence at {value} (threshold: >3 comment letters in 12 months OR accounting-focused
+        letters) signals elevated Financial Irregularities / Restatement Risk risk (F3). SEC correspondence reveals regulatory
+        questions about financial reporting. Comment letters that result in restatements establish the company was on notice
+        of accounting issues, strengthening scienter in subsequent SCA complaints.'
+      TRIGGERED_YELLOW: '{company} Sec Correspondence at {value} (threshold: 1-3 comment letters in 12 months) is in the caution
+        zone for Financial Irregularities / Restatement Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Sec Correspondence at {value} is within acceptable range for Financial Irregularities / Restatement
+        Risk (F3) — this level is a protective factor in D&O risk assessment, reducing claim probability.'
+- id: FIN.ACCT.quality_indicators
+  name: Quality Indicators
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: Z-Score <1.81 (distress zone)
+    yellow: Z-Score 1.81-2.99 (grey zone)
+    clear: Z-Score >2.99 (safe zone)
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.5'
+  data_strategy:
+    field_key: xbrl_altman_z_score
+    narrative_key: altman_z_narrative
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: earnings_quality
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: earnings_quality
+  signal_class: evaluative
+  field_path: xbrl_altman_z_score
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: 'Thresholds (RED: Z-Score <1.81 (distress zone); YELLOW: Z-Score 1.81-2.99 (grey zone)) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Altman Z-Score of {value} is in the distress zone (below 1.81) -- historically associated
+        with 2-3x higher D&O claim frequency and increased exposure to going-concern lawsuits, creditor derivative actions,
+        and breach-of-fiduciary-duty claims.'
+      TRIGGERED_YELLOW: '{company} Altman Z-Score of {value} is in the grey zone (1.81-2.99) -- moderate financial stress
+        that could trigger securities class actions if stock price declines coincide with negative financial disclosures.'
+      CLEAR: '{company} Altman Z-Score of {value} is in the safe zone (above 2.99) -- low bankruptcy probability. Strong financial
+        position is a protective factor for D&O risk, reducing exposure to insolvency-related claims.'
+- id: FIN.ACCT.ohlson_o_score
+  name: Ohlson O-Score Bankruptcy Probability
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: O-Score > 0.5 (distress)
+    yellow: O-Score 0.38-0.5 (grey zone)
+    clear: O-Score < 0.38 (safe)
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.5'
+  data_strategy:
+    field_key: xbrl_ohlson_o_score
+    narrative_key: ohlson_o_narrative
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: phase_115_03
+    confidence: high
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: academic
+      rationale: Ohlson (1980) Financial Ratios and the Probabilistic Prediction of Bankruptcy
+    render_target: earnings_quality
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: earnings_quality
+  signal_class: evaluative
+  field_path: xbrl_ohlson_o_score
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: Ohlson (1980) 'Financial Ratios and the Probabilistic Prediction of Bankruptcy'
+    threshold_basis: O-Score > 0.5 = elevated bankruptcy probability (RED), 0.38-0.5 = moderate (YELLOW), < 0.38 = low (CLEAR)
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Ohlson O-Score of {value} indicates elevated bankruptcy probability (threshold > 0.5). The
+        model considers size, leverage, profitability, and liquidity -- high scores correlate with Zone-of-Insolvency fiduciary
+        duty claims against directors.'
+      CLEAR: '{company} Ohlson O-Score of {value} indicates low bankruptcy probability -- supportive of favorable D&O risk
+        profile and reduced exposure to insolvency-related derivative suits.'
+- id: FIN.ACCT.earnings_manipulation
+  execution_mode: AUTO
+  name: Earnings Manipulation
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_1_business
+    - item_1a_risk_factors
+    - item_7_mda
+  threshold:
+    type: tiered
+    red: M-Score >-1.78 (likely manipulator)
+    yellow: M-Score between -2.22 and -1.78 (grey zone)
+    clear: M-Score <-2.22 (unlikely manipulator)
+  tier: 2
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.5'
+  data_strategy:
+    field_key: xbrl_beneish_m_score
+    narrative_key: beneish_m_narrative
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: earnings_quality
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: ''
+  group: earnings_quality
+  signal_class: evaluative
+  field_path: xbrl_beneish_m_score
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators from accounting research and claims
+      data'
+    threshold_basis: 'Thresholds (RED: M-Score >-1.78 (likely manipulator); YELLOW: M-Score between -2.22 and -1.78 (grey
+      zone)) from D&O underwriting practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      CLEAR: '{company} Beneish M-Score of {value} is below -2.22 threshold -- low earnings manipulation probability. Reduces
+        restatement risk, which is a primary driver of Securities Class Action filings under Section 10(b).'
+      TRIGGERED_YELLOW: '{company} Beneish M-Score of {value} is in the grey zone (-2.22 to -1.78) -- inconclusive manipulation
+        signal warranting deeper forensic review given the D&O restatement risk correlation.'
+      TRIGGERED_RED: '{company} Beneish M-Score of {value} is above -1.78 -- elevated manipulation probability. Research shows
+        scores above this threshold predict restatements that frequently trigger securities class actions and SEC enforcement.'
+- id: FIN.ACCT.restatement_history
+  name: Restatement History (Amendment Filings)
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    restatement_to_sca: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  - SEC_10Q
+  data_locations:
+    SEC_10K:
+    - filing_index
+    SEC_10Q:
+    - filing_index
+  threshold:
+    type: tiered
+    red: Any 10-K/A amendment filing exists — indicates annual financial statement restatement
+    yellow: Any 10-Q/A amendment filing exists — indicates quarterly financial statement amendment
+    clear: No amendment filings found
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.5'
+  data_strategy:
+    field_key: amendment_filing_10k_count
+    narrative_key: amendment_filing_detail
+    primary_source: SEC_10K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: manifest_4_8_7
+    confidence: HIGH
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: claude
+    data_source: SEC_10K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: 10-K/A filings are the strongest indicator of financial restatement — the single most predictive event for
+        Securities Class Action filing. 10-Q/A filings are less severe but still indicate material quarterly corrections.
+    render_target: audit_profile
+    formula: count of 10-K/A + 10-Q/A filings in SEC submission history
+  display:
+    value_format: count
+    source_type: SEC_10K
+    threshold_context: ''
+  group: audit_profile
+  signal_class: evaluative
+  field_path: amendment_filing_10k_count
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'SEC EDGAR filing history: 10-K/A and 10-Q/A amendment filings are the definitive evidence of financial restatement.
+      Academic research (Palmrose et al. 2004, Hennes et al. 2008) shows that restatements are the strongest predictor of
+      securities class actions, with filing probability exceeding 40% for revenue-related restatements.'
+    threshold_basis: 'RED: Any 10-K/A = annual restatement confirmed; YELLOW: Any 10-Q/A = quarterly amendment confirmed.
+      Binary thresholds — any restatement is a D&O-critical event regardless of magnitude.'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} has filed {value} 10-K/A amendment(s) with the SEC, confirming annual financial statement
+        restatement(s) (F3). Restatements are the single most predictive event for Securities Class Action filings — academic
+        research shows >40% filing probability for revenue-related restatements. The restatement itself typically becomes
+        the corrective disclosure that defines the SCA class period end date. Evaluate the scope: which line items were restated,
+        over how many periods, and whether the restatement was company-initiated or regulator-driven.'
+      TRIGGERED_YELLOW: '{company} has filed {value} 10-Q/A quarterly amendment(s) with the SEC, indicating quarterly financial
+        statement corrections (F3). While less severe than annual restatements, quarterly amendments signal internal control
+        issues and may be precursors to broader restatement activity. Monitor for pattern escalation — multiple 10-Q/A filings
+        often precede a 10-K/A.'
+      CLEAR: '{company} has no 10-K/A or 10-Q/A amendment filings in SEC history (F3) — no evidence of financial restatement.
+        This is a significant protective factor for D&O risk assessment.'
+- id: FIN.ACCT.auditor_change
+  name: Auditor Change (8-K Item 4.01)
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    restatement_to_sca: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_8K
+  data_locations:
+    SEC_8K:
+    - item_4_01
+  threshold:
+    type: tiered
+    red: Auditor change detected via 8-K Item 4.01
+    clear: No auditor change in 8-K filings
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.5'
+  data_strategy:
+    field_key: eight_k_auditor_change
+    primary_source: SEC_8K
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: manifest_4_8_8
+    confidence: HIGH
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: claude
+    data_source: SEC_8K
+    threshold_provenance:
+      source: d_and_o_claims_analysis
+      rationale: 8-K Item 4.01 requires disclosure of auditor changes. Auditor changes are D&O-critical events — they frequently
+        precede restatements and are cited in SCA complaints as red flags. SEC Staff Accounting Bulletin No. 104 and PCAOB
+        guidance recognize auditor changes as heightened risk indicators.
+    render_target: audit_profile
+    formula: boolean from 8-K Item 4.01 detection
+  display:
+    value_format: boolean
+    source_type: SEC_8K
+    threshold_context: ''
+  group: audit_profile
+  signal_class: evaluative
+  field_path: eight_k_auditor_change
+  depends_on: []
+  schema_version: 4
+  epistemology:
+    rule_origin: 'SEC 8-K Item 4.01 disclosure requirement: changes in registrant certifying accountant must be reported within
+      4 business days. Research shows auditor changes correlate with subsequent restatements at 2-3x the base rate, and are
+      a standard allegation in SCA complaints alleging accounting fraud.'
+    threshold_basis: 'RED: Any auditor change is a D&O-critical event requiring investigation of the circumstances — was it
+      voluntary rotation, fee dispute, or disagreement on accounting treatment? The reason matters enormously for D&O risk.'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} changed its auditor as reported in 8-K Item 4.01 (F3). Auditor changes are a D&O-critical
+        event — they correlate with subsequent restatements at 2-3x the base rate. Investigate the circumstances: was the
+        change voluntary rotation, a fee dispute, or a disagreement on accounting treatment? Check for concurrent Item 4.02
+        (non-reliance) filings. In SCA complaints, auditor changes are frequently cited as scienter evidence suggesting management
+        was shopping for a more accommodating auditor.'
+      CLEAR: '{company} has not changed its auditor in recent 8-K filings (F3) — auditor continuity is a positive D&O risk
+        indicator suggesting stable accounting oversight.'

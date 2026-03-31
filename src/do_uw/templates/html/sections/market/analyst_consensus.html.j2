@@ -1,0 +1,75 @@
+{# Analyst Consensus — recommendation breakdown + price targets #}
+  {# --- Analyst Consensus --- #}
+  {% if mkt.get('analyst_consensus') or mkt.get('recommendation_breakdown') %}
+  <h3>Analyst Consensus</h3>
+
+  {# Recommendation breakdown bar #}
+  {% set rb = mkt.get('recommendation_breakdown', {}) %}
+  {% if rb and rb.get('total', 0) > 0 %}
+  <div style="margin-bottom:8px">
+    <div style="display:flex;height:20px;border-radius:4px;overflow:hidden;margin-bottom:4px">
+      {% if rb.strong_buy %}<div style="flex:{{ rb.strong_buy }};background:#16A34A" title="Strong Buy: {{ rb.strong_buy }}"></div>{% endif %}
+      {% if rb.buy %}<div style="flex:{{ rb.buy }};background:#4ADE80" title="Buy: {{ rb.buy }}"></div>{% endif %}
+      {% if rb.hold %}<div style="flex:{{ rb.hold }};background:#FCD34D" title="Hold: {{ rb.hold }}"></div>{% endif %}
+      {% if rb.sell %}<div style="flex:{{ rb.sell }};background:#F87171" title="Sell: {{ rb.sell }}"></div>{% endif %}
+      {% if rb.strong_sell %}<div style="flex:{{ rb.strong_sell }};background:#DC2626" title="Strong Sell: {{ rb.strong_sell }}"></div>{% endif %}
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:7.5pt;color:#6B7280">
+      <span style="color:#16A34A;font-weight:700">Strong Buy: {{ rb.strong_buy }}</span>
+      <span style="color:#4ADE80;font-weight:600">Buy: {{ rb.buy }}</span>
+      <span style="color:#D97706;font-weight:600">Hold: {{ rb.hold }}</span>
+      <span style="color:#F87171;font-weight:600">Sell: {{ rb.sell }}</span>
+      <span style="color:#DC2626;font-weight:700">Strong Sell: {{ rb.strong_sell }}</span>
+    </div>
+    <div style="font-size:8pt;color:#374151;margin-top:4px;text-align:center">
+      <span style="font-weight:700">{{ rb.total }} analysts</span> &mdash;
+      {{ rb.buy_pct }} Buy/Strong Buy,
+      {{ rb.sell_pct }} Sell/Strong Sell
+    </div>
+    {# Contextualize tiny sell counts — 1-2 sells out of 40+ analysts is noise, not signal #}
+    {% set total_sell = (rb.sell|default(0)) + (rb.strong_sell|default(0)) %}
+    {% if total_sell > 0 and rb.total > 20 and (total_sell / rb.total * 100) < 10.0 %}
+    <div style="font-size:7.5pt;color:#6B7280;margin-top:2px;text-align:center;font-style:italic">
+      Note: {{ total_sell }} of {{ rb.total }} analysts ({{ "%.0f"|format(total_sell / rb.total * 100) }}%) rate Sell/Strong Sell &mdash; {{ 'statistically negligible minority view' if (total_sell / rb.total * 100) < 5.0 else 'minority view, monitor for changes' }}
+    </div>
+    {# Fix 10: Identify specific bearish firms from recent analyst actions #}
+    {% set ud_rows = mkt.get('upgrades_downgrades', []) %}
+    {% set bear_firms = [] %}
+    {% for row in ud_rows %}
+      {% if row.to_grade and ('underweight' in row.to_grade|lower or 'sell' in row.to_grade|lower or 'underperform' in row.to_grade|lower or 'reduce' in row.to_grade|lower) %}
+        {% set _ = bear_firms.append(row.firm ~ ' (' ~ row.to_grade ~ ')') %}
+      {% endif %}
+    {% endfor %}
+    {% if bear_firms %}
+    <div style="font-size:7.5pt;color:#6B7280;margin-top:2px;text-align:center;font-style:italic">
+      Bearish ratings from: {{ bear_firms | unique | join(', ') }}
+    </div>
+    {% endif %}
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {{ kv_table([
+    {'key': 'Consensus', 'value': mkt.analyst_consensus},
+    {'key': 'Recent Upgrades', 'value': mkt.get('analyst_upgrades', '0')},
+    {'key': 'Recent Downgrades', 'value': mkt.get('analyst_downgrades', '0')},
+  ]) }}
+  {# Analyst consensus D&O interpretation #}
+  <ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+    {% if rb and rb.get('total', 0) > 0 %}
+    {% set buy_count = (rb.get('strong_buy', 0)|int) + (rb.get('buy', 0)|int) %}
+    {% set sell_count = (rb.get('sell', 0)|int) + (rb.get('strong_sell', 0)|int) %}
+    {% set buy_ratio = (buy_count / rb.total * 100) if rb.total > 0 else 0 %}
+    {% if buy_ratio >= 80 %}
+    <li>Overwhelming analyst consensus ({{ '%.0f'|format(buy_ratio) }}% Buy/Strong Buy) reduces guidance-miss SCA risk &mdash; broad analyst support indicates market expectations are well-managed</li>
+    {% elif buy_ratio < 40 %}
+    <li>Weak analyst consensus (only {{ '%.0f'|format(buy_ratio) }}% Buy/Strong Buy) signals elevated guidance-miss exposure &mdash; divergent analyst views often precede earnings-related stock drops</li>
+    {% endif %}
+    {% set dg = mkt.get('analyst_downgrades', '0')|int %}
+    {% set ug = mkt.get('analyst_upgrades', '0')|int %}
+    {% if dg >= 3 and dg > ug %}
+    <li>Recent downgrades ({{ dg }}) outpace upgrades ({{ ug }}) &mdash; deteriorating analyst sentiment is a leading indicator for stock drops that trigger SCA filings</li>
+    {% endif %}
+    {% endif %}
+  </ul>
+  {% endif %}

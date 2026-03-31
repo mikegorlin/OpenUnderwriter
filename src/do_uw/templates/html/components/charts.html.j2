@@ -1,0 +1,39 @@
+{# Chart embedding macros for D&O worksheet HTML output.
+   Supports inline SVG (preferred) with PNG base64 fallback.
+   SVG charts are resolution-independent and render identically in HTML and PDF. #}
+
+
+{# Embed a pre-rendered chart from chart_svgs (SVG) or chart_images (PNG base64).
+   chart_name: key in chart_svgs/chart_images dict (e.g., "stock_1y", "radar").
+   caption: descriptive caption text for the figure.
+   figure_num: optional figure number for "Figure N:" prefix.
+   full_width: if true, chart spans full width; if false, max 50%. #}
+{% macro embed_chart(chart_name, caption="", figure_num=0, full_width=true) %}
+{%- set svg_data = chart_svgs.get(chart_name, "") if chart_svgs is defined and chart_svgs else "" -%}
+{%- set png_data = chart_images.get(chart_name, "") if chart_images is defined and chart_images else "" -%}
+{%- if svg_data -%}
+<figure class="chart-figure chart-svg my-4 {{ 'w-full' if full_width else 'max-w-[50%]' }} mx-auto text-center page-break-inside-avoid">
+  <div style="width:100%; max-width:100%; overflow:hidden;">{{ svg_data | safe }}</div>
+  {% if caption %}
+  <figcaption class="chart-caption">
+    {% if figure_num %}Figure {{ figure_num }}: {% endif %}{{ caption }}
+  </figcaption>
+  {% endif %}
+</figure>
+{%- elif png_data -%}
+<figure class="chart-figure my-4 {{ 'w-full' if full_width else 'max-w-[50%]' }} mx-auto text-center page-break-inside-avoid">
+  <img
+    src="data:image/png;base64,{{ png_data }}"
+    alt="{{ caption if caption else chart_name | replace('_', ' ') | title }}"
+    class="{{ 'w-full' if full_width else 'max-w-full' }} h-auto mx-auto rounded shadow-sm"
+  >
+  {% if caption %}
+  <figcaption class="chart-caption">
+    {% if figure_num %}Figure {{ figure_num }}: {% endif %}{{ caption }}
+  </figcaption>
+  {% endif %}
+</figure>
+{%- else -%}
+{# Chart not available -- suppress placeholder to save space #}
+{%- endif -%}
+{% endmacro %}

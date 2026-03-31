@@ -1,0 +1,29 @@
+{# CRF Alert Bar -- persistent banner listing all Critical Risk Factors.
+   Each CRF pill links to the relevant domain section.
+   Hidden when crf_count == 0. Phase 114-02. #}
+
+{% set crf = crf_bar if crf_bar is defined else {} %}
+{% set alerts = crf.get('alerts', []) %}
+
+{% if alerts | length > 0 %}
+<div id="crf-banner" class="crf-banner" role="alert" aria-label="Critical Risk Factors">
+  <div class="crf-banner-label">
+    <span class="crf-banner-icon">&#9888;</span>
+    <span class="crf-banner-title">CRF ALERTS ({{ alerts | length }})</span>
+  </div>
+  <div class="crf-banner-pills">
+    {% for alert in alerts %}
+    <a href="{{ alert.section_link | default('#scoring') }}"
+       class="crf-pill crf-pill--{{ alert.severity | lower }}"
+       title="{{ alert.get('evidence', '') | truncate(200) }}">
+      {% if alert.severity == 'CRITICAL' %}
+        <span class="crf-pill-icon">&#9679;</span>
+      {% else %}
+        <span class="crf-pill-icon">&#9650;</span>
+      {% endif %}
+      {{ alert.name }}
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

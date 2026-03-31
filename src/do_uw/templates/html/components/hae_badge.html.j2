@@ -1,0 +1,16 @@
+{# H/A/E Dimension Badge Macro -- small inline pill badges showing which
+   dimensions (Host, Agent, Environment) a section contributes to.
+   H=#1D4ED8 blue, A=#B91C1C red, E=#059669 green. Phase 114-02. #}
+
+{% macro hae_badge(dimensions) %}
+{%- for dim in dimensions -%}
+  {%- set d = dim | lower -%}
+  {%- if d in ['host', 'h'] -%}
+    <span class="hae-badge hae-host" title="Host (Structural Risk)">H</span>
+  {%- elif d in ['agent', 'a'] -%}
+    <span class="hae-badge hae-agent" title="Agent (Behavioral Risk)">A</span>
+  {%- elif d in ['environment', 'e'] -%}
+    <span class="hae-badge hae-environment" title="Environment (External Risk)">E</span>
+  {%- endif -%}
+{%- endfor -%}
+{% endmacro %}

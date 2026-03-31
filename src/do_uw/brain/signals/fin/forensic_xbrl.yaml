@@ -1,0 +1,2292 @@
+# Phase 70 — XBRL Forensic Evaluative Signals
+# 29 signals that evaluate ForensicMetric results from Phase 69 xbrl_forensics.
+# Data source: state.analysis.xbrl_forensics (populated by forensic_orchestrator).
+# field_key prefix: forensic_ (avoids collision per Pitfall 5).
+- id: FIN.FORENSIC.goodwill_impairment_risk
+  name: Goodwill Impairment Risk
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: xbrl_goodwill_to_assets
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.40'
+    yellow: '> 0.25'
+    clear: <= 0.25
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Goodwill exceeds 40% of total assets — significant impairment
+      risk
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: xbrl_goodwill_to_assets
+  depends_on:
+  - signal: BASE.FORENSIC.balance_sheet
+    field: xbrl_goodwill_to_assets
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.40; YELLOW: > 0.25) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Goodwill Impairment Risk at {value} (threshold: >
+        0.40) signals elevated Financial Irregularities / Restatement Risk risk (F3).
+        Annual ASC 350 impairment testing creates a recurring disclosure risk event.
+        When goodwill is subsequently written down, plaintiffs allege management knew
+        acquisitions were overvalued, triggering Section 10(b) claims with strong
+        scienter evidence. Thresholds (RED: > 0.40; YELLOW: > 0.25) from D&O underwriting
+        practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Goodwill Impairment Risk at {value} (threshold:
+        > 0.25) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Goodwill Impairment Risk at {value} is within acceptable range
+        for Financial Irregularities / Restatement Risk (F3) — this level is a protective
+        factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.intangible_concentration
+  name: Intangible Asset Concentration
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_intangible_concentration
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.50'
+    yellow: '> 0.30'
+    clear: <= 0.30
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Intangibles exceed 50% of total assets — high write-down exposure
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_intangible_concentration
+  depends_on:
+  - signal: BASE.FORENSIC.balance_sheet
+    field: forensic_intangible_concentration
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.50; YELLOW: > 0.30) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Intangible Asset Concentration at {value} (threshold:
+        > 0.50) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). High intangible asset concentration amplifies impairment write-down
+        risk. Large write-downs trigger stock declines and SCA filings alleging management
+        delayed recognition of impairment indicators they were required to monitor
+        quarterly. Thresholds (RED: > 0.50; YELLOW: > 0.30) from D&O underwriting
+        practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Intangible Asset Concentration at {value} (threshold:
+        > 0.30) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Intangible Asset Concentration at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.off_balance_sheet
+  name: Off-Balance Sheet Exposure
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_off_balance_sheet
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.20'
+    yellow: '> 0.10'
+    clear: <= 0.10
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Off-balance sheet items exceed 20% of total assets
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_off_balance_sheet
+  depends_on:
+  - signal: BASE.FORENSIC.balance_sheet
+    field: forensic_off_balance_sheet
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.20; YELLOW: > 0.10) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Off-Balance Sheet Exposure at {value} (threshold:
+        > 0.20) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Off-balance sheet exposures create hidden liability risk. When these
+        obligations materialize and force disclosure, plaintiffs allege management
+        concealed material liabilities in violation of Item 303 MD&A disclosure requirements.
+        Thresholds (RED: > 0.20; YELLOW: > 0.10) from D&O underwriting practice and
+        claims experience.'
+      TRIGGERED_YELLOW: '{company} Off-Balance Sheet Exposure at {value} (threshold:
+        > 0.10) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Off-Balance Sheet Exposure at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.cash_conversion_cycle
+  name: Cash Conversion Cycle Risk
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_cash_conversion_cycle
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 120'
+    yellow: '> 80'
+    clear: <= 80
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: Cash conversion cycle exceeds 120 days — working capital stress
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_cash_conversion_cycle
+  depends_on:
+  - signal: BASE.FORENSIC.balance_sheet
+    field: forensic_cash_conversion_cycle
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 120; YELLOW: > 80) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Cash Conversion Cycle Risk at {value} (threshold:
+        > 120) signals elevated Financial Irregularities / Restatement Risk risk (F3).
+        Cash flow weakness relative to reported earnings creates a divergence that
+        plaintiffs cite as evidence of earnings quality deterioration -- when cash
+        flows fail to confirm reported profits, restatement risk increases materially.
+        Thresholds (RED: > 120; YELLOW: > 80) from D&O underwriting practice and claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} Cash Conversion Cycle Risk at {value} (threshold:
+        > 80) is in the caution zone for Financial Irregularities / Restatement Risk
+        (F3). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Cash Conversion Cycle Risk at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.working_capital_volatility
+  name: Working Capital Volatility
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_working_capital_volatility
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.30'
+    yellow: '> 0.15'
+    clear: <= 0.15
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Working capital volatility exceeds 30% — liquidity instability
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_working_capital_volatility
+  depends_on:
+  - signal: BASE.FORENSIC.balance_sheet
+    field: forensic_working_capital_volatility
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.30; YELLOW: > 0.15) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Working Capital Volatility at {value} (threshold:
+        > 0.30) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Working capital volatility signals inconsistent cash management and
+        potential balance sheet manipulation. Erratic working capital patterns are
+        forensic indicators that precede liquidity crises and going-concern disclosures.
+        Thresholds (RED: > 0.30; YELLOW: > 0.15) from D&O underwriting practice and
+        claims experience.'
+      TRIGGERED_YELLOW: '{company} Working Capital Volatility at {value} (threshold:
+        > 0.15) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Working Capital Volatility at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.deferred_revenue_divergence
+  name: Deferred Revenue Divergence
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  - F5
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: xbrl_deferred_revenue_divergence
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.20'
+    yellow: '> 0.10'
+    clear: <= 0.10
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Deferred revenue diverges >20% from revenue growth — pull-forward
+      risk
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: xbrl_deferred_revenue_divergence
+  depends_on:
+  - signal: BASE.FORENSIC.revenue
+    field: xbrl_deferred_revenue_divergence
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.20; YELLOW: > 0.10) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Deferred Revenue Divergence at {value} (threshold:
+        > 0.20) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3, F5). Deferred revenue divergence from billings signals potential revenue
+        recognition manipulation -- accelerating recognition of contracted revenue
+        is a common restatement trigger that produces strong SCA complaints. Thresholds
+        (RED: > 0.20; YELLOW: > 0.10) from D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Deferred Revenue Divergence at {value} (threshold:
+        > 0.10) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3, F5). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Deferred Revenue Divergence at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3, F5) — this level
+        is a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.channel_stuffing
+  name: Channel Stuffing Indicators
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  - F5
+  peril_ids: []
+  chain_roles:
+    restatement_to_sca: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_channel_stuffing
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.15'
+    yellow: '> 0.08'
+    clear: <= 0.08
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: AR/Revenue ratio spike >15% — potential channel stuffing
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_channel_stuffing
+  depends_on:
+  - signal: BASE.FORENSIC.revenue
+    field: forensic_channel_stuffing
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.15; YELLOW: > 0.08) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Channel Stuffing Indicators at {value} (threshold:
+        > 0.15) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3, F5). Channel stuffing indicators suggest revenue acceleration through
+        distributor loading. When the revenue reverses, the resulting miss triggers
+        SCAs where plaintiffs allege management knew the revenue was not sustainable.
+        Thresholds (RED: > 0.15; YELLOW: > 0.08) from D&O underwriting practice and
+        claims experience.'
+      TRIGGERED_YELLOW: '{company} Channel Stuffing Indicators at {value} (threshold:
+        > 0.08) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3, F5). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Channel Stuffing Indicators at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3, F5) — this level
+        is a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.margin_compression
+  name: Forensic Margin Compression
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_margin_compression
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.05'
+    yellow: '> 0.02'
+    clear: <= 0.02
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Margin compression exceeds 500bps — earnings pressure signal
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_margin_compression
+  depends_on:
+  - signal: BASE.FORENSIC.revenue
+    field: forensic_margin_compression
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.05; YELLOW: > 0.02) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Forensic Margin Compression at {value} (threshold:
+        > 0.05) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Margin compression below peer benchmarks creates analyst downgrade risk
+        and signals potential cost structure concealment -- both are frequent precursors
+        to the stock decline that initiates SCA filing decisions. Thresholds (RED:
+        > 0.05; YELLOW: > 0.02) from D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Forensic Margin Compression at {value} (threshold:
+        > 0.02) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Forensic Margin Compression at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.ocf_revenue_ratio
+  name: OCF-to-Revenue Ratio
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: xbrl_ocf_revenue_ratio
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: < 0.05
+    yellow: < 0.10
+    clear: '>= 0.10'
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: OCF/Revenue below 5% — poor cash conversion quality
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: xbrl_ocf_revenue_ratio
+  depends_on:
+  - signal: BASE.FORENSIC.revenue
+    field: xbrl_ocf_revenue_ratio
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: < 0.05; YELLOW: < 0.10) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} OCF-to-Revenue Ratio at {value} (threshold: < 0.05)
+        signals elevated Financial Irregularities / Restatement Risk risk (F3). Cash
+        flow weakness relative to reported earnings creates a divergence that plaintiffs
+        cite as evidence of earnings quality deterioration -- when cash flows fail
+        to confirm reported profits, restatement risk increases materially. Thresholds
+        (RED: < 0.05; YELLOW: < 0.10) from D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} OCF-to-Revenue Ratio at {value} (threshold: < 0.10)
+        is in the caution zone for Financial Irregularities / Restatement Risk (F3).
+        Monitor for deterioration — trend direction and peer comparison inform the
+        D&O risk assessment.'
+      CLEAR: '{company} OCF-to-Revenue Ratio at {value} is within acceptable range
+        for Financial Irregularities / Restatement Risk (F3) — this level is a protective
+        factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.roic_decline
+  name: ROIC Trend Decline
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_roic_trend
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: < 0.05
+    yellow: < 0.08
+    clear: '>= 0.08'
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: ROIC below 5% — capital destruction risk
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_roic_trend
+  depends_on:
+  - signal: BASE.FORENSIC.capital_alloc
+    field: forensic_roic_trend
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: < 0.05; YELLOW: < 0.08) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} ROIC Trend Decline at {value} (threshold: < 0.05)
+        signals elevated Financial Irregularities / Restatement Risk risk (F3). Declining
+        return on invested capital indicates capital allocation failures that eventually
+        force asset write-downs. Write-down announcements trigger SCA filings alleging
+        management concealed deteriorating returns from acquisitions or capex. Thresholds
+        (RED: < 0.05; YELLOW: < 0.08) from D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} ROIC Trend Decline at {value} (threshold: < 0.08)
+        is in the caution zone for Financial Irregularities / Restatement Risk (F3).
+        Monitor for deterioration — trend direction and peer comparison inform the
+        D&O risk assessment.'
+      CLEAR: '{company} ROIC Trend Decline at {value} is within acceptable range for
+        Financial Irregularities / Restatement Risk (F3) — this level is a protective
+        factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.acquisition_effectiveness
+  name: Acquisition Effectiveness
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_acquisition_effectiveness
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: < 0.50
+    yellow: < 0.70
+    clear: '>= 0.70'
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Acquisition effectiveness below 50% — poor M&A returns
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_acquisition_effectiveness
+  depends_on:
+  - signal: BASE.FORENSIC.capital_alloc
+    field: forensic_acquisition_effectiveness
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: < 0.50; YELLOW: < 0.70) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Acquisition Effectiveness at {value} (threshold: <
+        0.50) signals elevated Financial Irregularities / Restatement Risk risk (F3).
+        Poor acquisition returns signal capital allocation failures. When acquired
+        assets are subsequently written down, plaintiffs allege management overpaid
+        and concealed integration problems, forming strong scienter evidence in 10(b)
+        claims. Thresholds (RED: < 0.50; YELLOW: < 0.70) from D&O underwriting practice
+        and claims experience.'
+      TRIGGERED_YELLOW: '{company} Acquisition Effectiveness at {value} (threshold:
+        < 0.70) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Acquisition Effectiveness at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.buyback_timing
+  name: Share Buyback Timing Quality
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_buyback_timing
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: < 0.40
+    yellow: < 0.60
+    clear: '>= 0.60'
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Buyback timing score below 40% — buying at peaks
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_buyback_timing
+  depends_on:
+  - signal: BASE.FORENSIC.capital_alloc
+    field: forensic_buyback_timing
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: < 0.40; YELLOW: < 0.60) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Share Buyback Timing Quality at {value} (threshold:
+        < 0.40) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Buyback timing quality concerns suggest management may have repurchased
+        shares while in possession of material nonpublic information about deteriorating
+        fundamentals -- creating insider trading exposure alongside standard SCA theories.
+        Thresholds (RED: < 0.40; YELLOW: < 0.60) from D&O underwriting practice and
+        claims experience.'
+      TRIGGERED_YELLOW: '{company} Share Buyback Timing Quality at {value} (threshold:
+        < 0.60) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Share Buyback Timing Quality at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.dividend_sustainability
+  name: Dividend Sustainability
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_dividend_sustainability
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: < 0.30
+    yellow: < 0.50
+    clear: '>= 0.50'
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Dividend sustainability below 30% — payout at risk
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_dividend_sustainability
+  depends_on:
+  - signal: BASE.FORENSIC.capital_alloc
+    field: forensic_dividend_sustainability
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: < 0.30; YELLOW: < 0.50) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Dividend Sustainability at {value} (threshold: < 0.30)
+        signals elevated Financial Irregularities / Restatement Risk risk (F3). Unsustainable
+        dividend signals create a future cut event. Dividend reductions trigger stock
+        declines and SCA filings alleging management maintained the dividend to prop
+        up the stock price while knowing it was unsustainable. Thresholds (RED: <
+        0.30; YELLOW: < 0.50) from D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Dividend Sustainability at {value} (threshold:
+        < 0.50) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Dividend Sustainability at {value} is within acceptable range
+        for Financial Irregularities / Restatement Risk (F3) — this level is a protective
+        factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.interest_coverage_decline
+  name: Interest Coverage Trend Decline
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: xbrl_interest_coverage_trend
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: < 1.5
+    yellow: < 3.0
+    clear: '>= 3.0'
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: Interest coverage below 1.5x — debt service risk
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: xbrl_interest_coverage_trend
+  depends_on:
+  - signal: BASE.FORENSIC.debt_tax
+    field: xbrl_interest_coverage_trend
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: < 1.5; YELLOW: < 3.0) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Interest Coverage Trend Decline at {value} (threshold:
+        < 1.5) signals elevated Financial Irregularities / Restatement Risk risk (F3).
+        Declining interest coverage signals approaching debt service failure. The
+        resulting covenant breach or restructuring forces material disclosure that
+        becomes the corrective disclosure event in securities fraud complaints. Thresholds
+        (RED: < 1.5; YELLOW: < 3.0) from D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Interest Coverage Trend Decline at {value} (threshold:
+        < 3.0) is in the caution zone for Financial Irregularities / Restatement Risk
+        (F3). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Interest Coverage Trend Decline at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.debt_maturity_concentration
+  name: Debt Maturity Concentration
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_debt_maturity_concentration
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.50'
+    yellow: '> 0.30'
+    clear: <= 0.30
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: '>50% of debt matures within 2 years — refinancing wall'
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_debt_maturity_concentration
+  depends_on:
+  - signal: BASE.FORENSIC.debt_tax
+    field: forensic_debt_maturity_concentration
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.50; YELLOW: > 0.30) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Debt Maturity Concentration at {value} (threshold:
+        > 0.50) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Concentrated debt maturities create refinancing risk windows where failure
+        to secure replacement financing forces material adverse disclosure -- a classic
+        corrective disclosure trigger in 10b-5 actions. Thresholds (RED: > 0.50; YELLOW:
+        > 0.30) from D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Debt Maturity Concentration at {value} (threshold:
+        > 0.30) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Debt Maturity Concentration at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.etr_anomaly
+  name: Effective Tax Rate Anomaly
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_etr_anomaly
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.15'
+    yellow: '> 0.08'
+    clear: <= 0.08
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: ETR deviates >15pp from statutory 21% — aggressive tax positions
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_etr_anomaly
+  depends_on:
+  - signal: BASE.FORENSIC.debt_tax
+    field: forensic_etr_anomaly
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.15; YELLOW: > 0.08) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Effective Tax Rate Anomaly at {value} (threshold:
+        > 0.15) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Tax rate anomalies signal aggressive tax positions that may require
+        reversal. When tax reserves prove inadequate, the resulting charge triggers
+        stock declines and SCA filings alleging concealment of tax exposure. Thresholds
+        (RED: > 0.15; YELLOW: > 0.08) from D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Effective Tax Rate Anomaly at {value} (threshold:
+        > 0.08) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Effective Tax Rate Anomaly at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.deferred_tax_growth
+  name: Deferred Tax Liability Growth
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_deferred_tax_growth
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.30'
+    yellow: '> 0.15'
+    clear: <= 0.15
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Deferred tax liabilities growing >30% — future tax burden
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_deferred_tax_growth
+  depends_on:
+  - signal: BASE.FORENSIC.debt_tax
+    field: forensic_deferred_tax_growth
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.30; YELLOW: > 0.15) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Deferred Tax Liability Growth at {value} (threshold:
+        > 0.30) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Growing deferred tax liabilities signal potential future cash tax increases
+        when timing differences reverse. The cash impact creates earnings surprise
+        risk and potential disclosure inadequacy claims. Thresholds (RED: > 0.30;
+        YELLOW: > 0.15) from D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Deferred Tax Liability Growth at {value} (threshold:
+        > 0.15) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Deferred Tax Liability Growth at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.pension_underfunding
+  name: Pension Underfunding Risk
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: xbrl_pension_underfunding
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.20'
+    yellow: '> 0.10'
+    clear: <= 0.10
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Pension underfunding exceeds 20% of plan assets
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: xbrl_pension_underfunding
+  depends_on:
+  - signal: BASE.FORENSIC.debt_tax
+    field: xbrl_pension_underfunding
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.20; YELLOW: > 0.10) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Pension Underfunding Risk at {value} (threshold: >
+        0.20) signals elevated Financial Irregularities / Restatement Risk risk (F3).
+        Underfunded pension obligations create contingent liabilities that must be
+        disclosed. Failure to adequately reserve or disclose the underfunding generates
+        restatement risk and ERISA fiduciary breach exposure. Thresholds (RED: > 0.20;
+        YELLOW: > 0.10) from D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Pension Underfunding Risk at {value} (threshold:
+        > 0.10) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Pension Underfunding Risk at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.dsri_elevated
+  name: Days Sales Receivable Index Elevated
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    restatement_to_sca: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_beneish_dsri
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 1.465'
+    yellow: '> 1.031'
+    clear: <= 1.031
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: DSRI >1.465 — receivables growing faster than revenue (manipulation
+      signal)
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_beneish_dsri
+  depends_on:
+  - signal: BASE.FORENSIC.beneish
+    field: forensic_beneish_dsri
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Beneish M-Score: Beneish (1999) ''The Detection of Earnings Manipulation''
+      -- forensic accounting model for detecting earnings manipulation'
+    threshold_basis: 'DSRI > 1.031: Beneish cutoff for elevated days sales in receivables
+      indicating potential revenue manipulation'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Days Sales Receivable Index Elevated at {value} (threshold:
+        > 1.465) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Elevated DSR Index signals accelerating receivables relative to revenue
+        -- a Beneish M-Score component that indicates potential revenue inflation
+        through aggressive credit extension or fictitious sales. DSRI > 1.031: Beneish
+        cutoff for elevated days sales in receivables indicating potential revenue
+        manipulation.'
+      TRIGGERED_YELLOW: '{company} Days Sales Receivable Index Elevated at {value}
+        (threshold: > 1.031) is in the caution zone for Financial Irregularities /
+        Restatement Risk (F3). Monitor for deterioration — trend direction and peer
+        comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Days Sales Receivable Index Elevated at {value} is within
+        acceptable range for Financial Irregularities / Restatement Risk (F3) — this
+        level is a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.aqi_elevated
+  name: Asset Quality Index Elevated
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_beneish_aqi
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 1.254'
+    yellow: '> 1.039'
+    clear: <= 1.039
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: AQI >1.254 — asset capitalization increasing (potential cost
+      deferral)
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_beneish_aqi
+  depends_on:
+  - signal: BASE.FORENSIC.beneish
+    field: forensic_beneish_aqi
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Beneish M-Score: Beneish (1999) ''The Detection of Earnings Manipulation''
+      -- forensic accounting model for detecting earnings manipulation'
+    threshold_basis: 'AQI > 1.039: Beneish cutoff for asset quality index indicating
+      potential capitalization of expenses'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Asset Quality Index Elevated at {value} (threshold:
+        > 1.254) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Elevated Asset Quality Index indicates increasing capitalization of
+        costs that should be expensed -- a Beneish M-Score component associated with
+        earnings manipulation through improper expense deferral. AQI > 1.039: Beneish
+        cutoff for asset quality index indicating potential capitalization of expenses.'
+      TRIGGERED_YELLOW: '{company} Asset Quality Index Elevated at {value} (threshold:
+        > 1.039) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Asset Quality Index Elevated at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.tata_elevated
+  name: Total Accruals to Total Assets Elevated
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    restatement_to_sca: evidence
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_beneish_tata
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.031'
+    yellow: '> 0.018'
+    clear: <= 0.018
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: TATA >0.031 — high accruals relative to assets (earnings quality
+      concern)
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_beneish_tata
+  depends_on:
+  - signal: BASE.FORENSIC.beneish
+    field: forensic_beneish_tata
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Beneish M-Score: Beneish (1999) ''The Detection of Earnings Manipulation''
+      -- forensic accounting model for detecting earnings manipulation'
+    threshold_basis: 'TATA > 0.018: Beneish cutoff for total accruals to total assets
+      indicating earnings quality concerns'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Total Accruals to Total Assets Elevated at {value}
+        (threshold: > 0.031) signals elevated Financial Irregularities / Restatement
+        Risk risk (F3). Elevated accruals relative to cash flows signal potential
+        earnings manipulation through discretionary accrual choices. High accrual
+        ratios are the strongest quantitative predictor of future restatements and
+        subsequent SCA filings. TATA > 0.018: Beneish cutoff for total accruals to
+        total assets indicating earnings quality concerns.'
+      TRIGGERED_YELLOW: '{company} Total Accruals to Total Assets Elevated at {value}
+        (threshold: > 0.018) is in the caution zone for Financial Irregularities /
+        Restatement Risk (F3). Monitor for deterioration — trend direction and peer
+        comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Total Accruals to Total Assets Elevated at {value} is within
+        acceptable range for Financial Irregularities / Restatement Risk (F3) — this
+        level is a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.m_score_composite
+  name: Beneish M-Score Composite (XBRL)
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles:
+    restatement_to_sca: evidence
+    short_attack_to_sca: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_beneish_composite
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> -1.78'
+    yellow: '> -2.22'
+    clear: <= -2.22
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: numeric_2dp
+    source_type: SEC_10K
+    threshold_context: M-Score > -1.78 — likely manipulator per Beneish model
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_beneish_composite
+  depends_on:
+  - signal: BASE.FORENSIC.beneish
+    field: forensic_beneish_composite
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Beneish M-Score: Beneish (1999) ''The Detection of Earnings Manipulation''
+      -- forensic accounting model for detecting earnings manipulation'
+    threshold_basis: 'M-Score > -1.78: Beneish cutoff for probable manipulation; -1.78
+      to -2.22 = gray zone'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      CLEAR: '{company} M-Score composite of {value} is below -2.22 threshold -- low
+        earnings manipulation probability. Reduces restatement risk, a primary driver
+        of Securities Class Action filings.'
+      TRIGGERED_YELLOW: '{company} M-Score composite of {value} is in the grey zone
+        (-2.22 to -1.78) -- inconclusive manipulation signal warranting deeper forensic
+        review for D&O restatement risk.'
+      TRIGGERED_RED: '{company} M-Score composite of {value} is above -1.78 -- elevated
+        manipulation probability. Scores above this threshold predict restatements
+        that frequently trigger securities class actions and SEC enforcement actions.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.sloan_accruals
+  name: Sloan Accruals Ratio
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_sloan_accruals
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.10'
+    yellow: '> 0.05'
+    clear: <= 0.05
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Sloan accruals >10% — earnings driven by accruals not cash
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_sloan_accruals
+  depends_on:
+  - signal: BASE.FORENSIC.earnings
+    field: forensic_sloan_accruals
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.10; YELLOW: > 0.05) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Sloan Accruals Ratio at {value} (threshold: > 0.10)
+        signals elevated Financial Irregularities / Restatement Risk risk (F3). Elevated
+        accruals relative to cash flows signal potential earnings manipulation through
+        discretionary accrual choices. High accrual ratios are the strongest quantitative
+        predictor of future restatements and subsequent SCA filings. Thresholds (RED:
+        > 0.10; YELLOW: > 0.05) from D&O underwriting practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Sloan Accruals Ratio at {value} (threshold: > 0.05)
+        is in the caution zone for Financial Irregularities / Restatement Risk (F3).
+        Monitor for deterioration — trend direction and peer comparison inform the
+        D&O risk assessment.'
+      CLEAR: '{company} Sloan Accruals Ratio at {value} is within acceptable range
+        for Financial Irregularities / Restatement Risk (F3) — this level is a protective
+        factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.cash_flow_manipulation
+  name: Cash Flow Manipulation Indicators
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_cash_flow_manipulation
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.15'
+    yellow: '> 0.08'
+    clear: <= 0.08
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Cash flow manipulation score >15% — potential OCF inflation
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_cash_flow_manipulation
+  depends_on:
+  - signal: BASE.FORENSIC.earnings
+    field: forensic_cash_flow_manipulation
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.15; YELLOW: > 0.08) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Cash Flow Manipulation Indicators at {value} (threshold:
+        > 0.15) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Cash flow manipulation indicators signal potential misclassification
+        between operating and investing/financing activities to inflate operating
+        cash flow -- a practice that triggers SEC enforcement and restatement-driven
+        SCAs. Thresholds (RED: > 0.15; YELLOW: > 0.08) from D&O underwriting practice
+        and claims experience.'
+      TRIGGERED_YELLOW: '{company} Cash Flow Manipulation Indicators at {value} (threshold:
+        > 0.08) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Cash Flow Manipulation Indicators at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.sbc_dilution
+  name: Stock-Based Compensation Dilution
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_sbc_dilution
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.10'
+    yellow: '> 0.05'
+    clear: <= 0.05
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: SBC exceeds 10% of revenue — significant shareholder dilution
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_sbc_dilution
+  depends_on:
+  - signal: BASE.FORENSIC.earnings
+    field: forensic_sbc_dilution
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.10; YELLOW: > 0.05) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Stock-Based Compensation Dilution at {value} (threshold:
+        > 0.10) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Excessive stock compensation dilution signals misaligned incentives
+        between management and shareholders, supporting governance failure theories
+        in derivative claims and creating the ''motive'' element in scienter analysis.
+        Thresholds (RED: > 0.10; YELLOW: > 0.05) from D&O underwriting practice and
+        claims experience.'
+      TRIGGERED_YELLOW: '{company} Stock-Based Compensation Dilution at {value} (threshold:
+        > 0.05) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Stock-Based Compensation Dilution at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.non_gaap_gap
+  name: Non-GAAP to GAAP Earnings Gap
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_non_gaap_gap
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.30'
+    yellow: '> 0.15'
+    clear: <= 0.15
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  - REGULATORS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Non-GAAP earnings exceed GAAP by >30% — aggressive adjustments
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_non_gaap_gap
+  depends_on:
+  - signal: BASE.FORENSIC.earnings
+    field: forensic_non_gaap_gap
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.30; YELLOW: > 0.15) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Non-GAAP to GAAP Earnings Gap at {value} (threshold:
+        > 0.30) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Divergence between non-GAAP and GAAP metrics creates disclosure risk
+        when the gap is not adequately explained. The SEC has increased enforcement
+        of Regulation G, and misleading non-GAAP presentations are a growing basis
+        for SCA complaints. Thresholds (RED: > 0.30; YELLOW: > 0.15) from D&O underwriting
+        practice and claims experience.'
+      TRIGGERED_YELLOW: '{company} Non-GAAP to GAAP Earnings Gap at {value} (threshold:
+        > 0.15) is in the caution zone for Financial Irregularities / Restatement
+        Risk (F3). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Non-GAAP to GAAP Earnings Gap at {value} is within acceptable
+        range for Financial Irregularities / Restatement Risk (F3) — this level is
+        a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.serial_acquirer
+  name: Serial Acquirer Risk
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: forensic_serial_acquirer
+    primary_source: SEC_10K
+  threshold:
+    type: boolean
+    true_means: red
+    triggered: Company is a serial acquirer — elevated integration and goodwill risk
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: SEC_10K
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: boolean
+    source_type: SEC_10K
+    threshold_context: Serial acquirer detected — elevated goodwill and integration
+      risk
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: forensic_serial_acquirer
+  depends_on:
+  - signal: BASE.FORENSIC.ma
+    field: forensic_serial_acquirer
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Boolean check -- presence/absence determination; triggered:
+      Company is a serial acquirer — elevated integration and goodwill risk'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} triggered Serial Acquirer Risk (F3) — this agent risk
+        (executive/director actions and decisions that create D&O exposure) indicates
+        Financial Irregularities / Restatement Risk. Evidence: {evidence}.'
+      TRIGGERED_YELLOW: '{company} shows moderate signal on Serial Acquirer Risk (F3)
+        at {value} — review recommended for Financial Irregularities / Restatement
+        Risk implications.'
+      CLEAR: '{company} clear on Serial Acquirer Risk (F3) — no Financial Irregularities
+        / Restatement Risk concern identified at this level.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.goodwill_growth_rate
+  name: Goodwill Growth Rate
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: xbrl_goodwill_growth_rate
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.25'
+    yellow: '> 0.10'
+    clear: <= 0.10
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Goodwill growing >25% annually — aggressive acquisition pace
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: xbrl_goodwill_growth_rate
+  depends_on:
+  - signal: BASE.FORENSIC.ma
+    field: xbrl_goodwill_growth_rate
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.25; YELLOW: > 0.10) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Goodwill Growth Rate at {value} (threshold: > 0.25)
+        signals elevated Financial Irregularities / Restatement Risk risk (F3). Annual
+        ASC 350 impairment testing creates a recurring disclosure risk event. When
+        goodwill is subsequently written down, plaintiffs allege management knew acquisitions
+        were overvalued, triggering Section 10(b) claims with strong scienter evidence.
+        Thresholds (RED: > 0.25; YELLOW: > 0.10) from D&O underwriting practice and
+        claims experience.'
+      TRIGGERED_YELLOW: '{company} Goodwill Growth Rate at {value} (threshold: > 0.10)
+        is in the caution zone for Financial Irregularities / Restatement Risk (F3).
+        Monitor for deterioration — trend direction and peer comparison inform the
+        D&O risk assessment.'
+      CLEAR: '{company} Goodwill Growth Rate at {value} is within acceptable range
+        for Financial Irregularities / Restatement Risk (F3) — this level is a protective
+        factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO
+- id: FIN.FORENSIC.acquisition_to_revenue
+  name: Acquisition Spend Relative to Revenue
+  work_type: evaluate
+  layer: signal
+  factors:
+  - F3
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_10K
+  data_locations:
+    SEC_10K:
+    - item_8_financials
+  data_strategy:
+    field_key: xbrl_acquisition_to_revenue
+    primary_source: SEC_10K
+  threshold:
+    type: tiered
+    red: '> 0.30'
+    yellow: '> 0.15'
+    clear: <= 0.15
+  tier: 1
+  depth: 3
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '3.4'
+  worksheet_section: management
+  display_when: has_data
+  provenance:
+    origin: v3.1_xbrl_forensic
+    confidence: HIGH
+    source_author: system
+    added_by: Phase70
+    data_source: XBRL
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: forensic_dashboard
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_10K
+    threshold_context: Acquisition spend exceeds 30% of revenue — M&A-dependent growth
+  group: forensic_dashboard
+  signal_class: evaluative
+  field_path: xbrl_acquisition_to_revenue
+  depends_on:
+  - signal: BASE.FORENSIC.ma
+    field: xbrl_acquisition_to_revenue
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Financial analysis: quantitative financial metrics as D&O risk indicators
+      from accounting research and claims data'
+    threshold_basis: 'Thresholds (RED: > 0.30; YELLOW: > 0.15) from D&O underwriting
+      practice and claims experience'
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Acquisition Spend Relative to Revenue at {value} (threshold:
+        > 0.30) signals elevated Financial Irregularities / Restatement Risk risk
+        (F3). Poor acquisition returns signal capital allocation failures. When acquired
+        assets are subsequently written down, plaintiffs allege management overpaid
+        and concealed integration problems, forming strong scienter evidence in 10(b)
+        claims. Thresholds (RED: > 0.30; YELLOW: > 0.15) from D&O underwriting practice
+        and claims experience.'
+      TRIGGERED_YELLOW: '{company} Acquisition Spend Relative to Revenue at {value}
+        (threshold: > 0.15) is in the caution zone for Financial Irregularities /
+        Restatement Risk (F3). Monitor for deterioration — trend direction and peer
+        comparison inform the D&O risk assessment.'
+      CLEAR: '{company} Acquisition Spend Relative to Revenue at {value} is within
+        acceptable range for Financial Irregularities / Restatement Risk (F3) — this
+        level is a protective factor in D&O risk assessment, reducing claim probability.'
+  execution_mode: AUTO

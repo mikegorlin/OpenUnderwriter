@@ -1,0 +1,157 @@
+{# 8-Quarter Trend Table — XBRL data with yfinance fallback (Phase 73) #}
+{% set qt = fin.get('quarterly_trends', {}) %}
+{% set yf_q = fin.get('yfinance_quarterly', {}) %}
+
+{% if qt.get('has_data') %}
+<h3>Quarterly Trends (8 Quarters)</h3>
+<p class="text-xs text-gray-500 mb-2">Source: XBRL Company Facts API | Values in USD</p>
+
+{# Summary strip: 4 key metrics #}
+{% if qt.summary_strip %}
+<div class="flex flex-wrap gap-3 mb-4">
+  {% for s in qt.summary_strip %}
+  <div class="flex-1 min-w-[140px] border border-gray-200 rounded p-1">
+    <div class="text-xs text-gray-500 uppercase tracking-wide font-semibold">{{ s.label }}</div>
+    <div class="flex items-center gap-2 mt-1">
+      <span class="text-base font-bold tabular-nums">{{ s.value }}</span>
+      <span class="sparkline-inline">{{ s.sparkline | safe }}</span>
+      {% if s.yoy_pct is not none %}
+      <span class="text-xs font-semibold tabular-nums
+        {%- if s.yoy_direction == 'up' %} text-green-600
+        {%- elif s.yoy_direction == 'down' %} text-red-600
+        {%- else %} text-gray-500{% endif %}">
+        {{ '%+.1f' | format(s.yoy_pct) }}% YoY
+      </span>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{# CSS-only tabbed layout using radio inputs #}
+<div class="financial-tabs">
+  {% if qt.income_metrics %}
+  <input type="radio" name="trend-tabs" id="trend-tab-income" class="tab-radio" checked>
+  {% endif %}
+  {% if qt.balance_metrics %}
+  <input type="radio" name="trend-tabs" id="trend-tab-balance" class="tab-radio" {{ '' if qt.income_metrics else 'checked' }}>
+  {% endif %}
+  {% if qt.cashflow_metrics %}
+  <input type="radio" name="trend-tabs" id="trend-tab-cashflow" class="tab-radio" {{ '' if (qt.income_metrics or qt.balance_metrics) else 'checked' }}>
+  {% endif %}
+
+  <div class="tab-nav">
+    {% if qt.income_metrics %}
+    <label for="trend-tab-income" class="tab-label">Income</label>
+    {% endif %}
+    {% if qt.balance_metrics %}
+    <label for="trend-tab-balance" class="tab-label">Balance Sheet</label>
+    {% endif %}
+    {% if qt.cashflow_metrics %}
+    <label for="trend-tab-cashflow" class="tab-label">Cash Flow</label>
+    {% endif %}
+  </div>
+
+  {# Macro for rendering a statement tab table #}
+  {% macro trend_table(metrics, periods) %}
+  {# Check if Trend (sparkline) column has any real data #}
+  {% set ns_tt = namespace(show_trend=false, show_yoy=false) %}
+  {% for metric in metrics %}
+    {% if metric.sparkline and metric.sparkline != '—' and metric.sparkline != '' %}{% set ns_tt.show_trend = true %}{% endif %}
+    {% if metric.yoy_pct is not none %}{% set ns_tt.show_yoy = true %}{% endif %}
+  {% endfor %}
+  <div class="overflow-x-auto">
+  <table class="w-full border-collapse my-3 text-sm font-tabular">
+    <thead>
+      <tr class="bg-navy text-white">
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left px-2 py-2 min-w-[140px]">Metric</th>
+        {% for p in periods %}
+        <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right px-2 py-2 whitespace-nowrap">{{ p }}</th>
+        {% endfor %}
+        {% if ns_tt.show_trend %}<th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2">Trend</th>{% endif %}
+        {% if ns_tt.show_yoy %}<th class="font-heading text-xs font-semibold uppercase tracking-wider text-right px-2 py-2">YoY</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for metric in metrics %}
+      <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }} hover:bg-blue-50/30 transition-colors">
+        <td class="px-2 py-1.5 font-semibold text-gray-700">{{ metric.label }}</td>
+        {% for val in metric.cells %}
+        <td class="px-2 py-1.5 text-right tabular-nums whitespace-nowrap
+          {%- if val.startswith('-') or val.startswith('($') %} text-red-600{% endif %}">{{ val }}</td>
+        {% endfor %}
+        {% if ns_tt.show_trend %}<td class="px-2 py-1.5 text-center">{{ metric.sparkline | safe }}</td>{% endif %}
+        {% if ns_tt.show_yoy %}<td class="px-2 py-1.5 text-right tabular-nums whitespace-nowrap
+          {%- if metric.yoy_direction == 'up' %} text-green-600 font-semibold
+          {%- elif metric.yoy_direction == 'down' %} text-red-600 font-semibold
+          {%- else %} text-gray-500{% endif %}">
+          {% if metric.yoy_pct is not none %}{{ '%+.1f' | format(metric.yoy_pct) }}%{% else %}—{% endif %}
+        </td>{% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% endmacro %}
+
+  {# Income tab #}
+  {% if qt.income_metrics %}
+  <div class="tab-content trend-tab-content-income">
+    {{ trend_table(qt.income_metrics, qt.periods) }}
+  </div>
+  {% endif %}
+
+  {# Balance sheet tab #}
+  {% if qt.balance_metrics %}
+  <div class="tab-content trend-tab-content-balance">
+    {{ trend_table(qt.balance_metrics, qt.periods) }}
+  </div>
+  {% endif %}
+
+  {# Cash flow tab #}
+  {% if qt.cashflow_metrics %}
+  <div class="tab-content trend-tab-content-cashflow">
+    {{ trend_table(qt.cashflow_metrics, qt.periods) }}
+  </div>
+  {% endif %}
+</div>
+
+{% elif yf_q.get('has_data') %}
+{# Fallback to yfinance quarterly data #}
+<h3>Quarterly Financial Trends (8Q)</h3>
+<p class="text-xs text-gray-500 mb-2">Source: Yahoo Finance | Values in USD</p>
+{# Check if Trend (sparkline) column has any real data #}
+{% set ns_yft = namespace(show_trend=false) %}
+{% for metric in yf_q.metrics %}
+  {% if metric.sparkline and metric.sparkline != '—' and metric.sparkline != '' %}{% set ns_yft.show_trend = true %}{% endif %}
+{% endfor %}
+<div class="overflow-x-auto">
+<table class="w-full border-collapse my-3 text-sm font-tabular">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left px-2 py-2 min-w-[140px]">Metric</th>
+      {% for period in yf_q.periods %}
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right px-2 py-2 whitespace-nowrap">{{ period[:7] }}</th>
+      {% endfor %}
+      {% if ns_yft.show_trend %}<th class="font-heading text-xs font-semibold uppercase tracking-wider text-center px-2 py-2">Trend</th>{% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for metric in yf_q.metrics %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }} hover:bg-blue-50/30 transition-colors">
+      <td class="px-2 py-1.5 font-semibold text-gray-700">{{ metric.label }}</td>
+      {% for val in metric.cells %}
+      <td class="px-2 py-1.5 text-right tabular-nums whitespace-nowrap
+        {%- if val.startswith('-') or val.startswith('($') %} text-red-600{% endif %}">{{ val }}</td>
+      {% endfor %}
+      {% if ns_yft.show_trend %}<td class="px-2 py-1.5 text-center">{{ metric.sparkline | safe }}</td>{% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+{% else %}
+{{ gap_notice("quarterly_trends", "Quarterly financial trend data not available. Run pipeline with XBRL extraction enabled.") }}
+{% endif %}

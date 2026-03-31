@@ -1,0 +1,66 @@
+{# Risk Factor Changes Analysis — D&O-focused analysis of 10-K risk factor changes.
+   Data: b.investigative.risk_factor_analysis (dict) #}
+{% set rfa = b.investigative.risk_factor_analysis if b.investigative else none %}
+{% if rfa %}
+<div style="margin:8px 0">
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:9pt;font-weight:700;color:#1F3A5C">Risk Factor Changes Analysis</span>
+    <span style="font-size:7pt;color:#6B7280">{{ rfa.years.prior }} &rarr; {{ rfa.years.current }}</span>
+  </div>
+
+  {# Summary stats #}
+  <div style="display:flex;gap:3px;margin-bottom:4px">
+    {% if rfa.removed_count %}
+    <div style="flex:1;background:#FEF2F2;border:1px solid #FECACA;border-radius:5px;padding:5px 8px;text-align:center">
+      <div style="font-size:16pt;font-weight:800;color:#DC2626;line-height:1">{{ rfa.removed_count }}</div>
+      <div style="font-size:6pt;color:#991B1B;font-weight:600;text-transform:uppercase;margin-top:2px">Removed</div>
+      {% if rfa.high_removed_count %}
+      <div style="font-size:7pt;color:#DC2626;margin-top:1px">{{ rfa.high_removed_count }} were HIGH severity</div>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% if rfa.new_count %}
+    <div style="flex:1;background:#FFFBEB;border:1px solid #FDE68A;border-radius:5px;padding:5px 8px;text-align:center">
+      <div style="font-size:16pt;font-weight:800;color:#D97706;line-height:1">{{ rfa.new_count }}</div>
+      <div style="font-size:6pt;color:#92400E;font-weight:600;text-transform:uppercase;margin-top:2px">New</div>
+    </div>
+    {% endif %}
+    {% if rfa.escalated_count %}
+    <div style="flex:1;background:#FEF2F2;border:1px solid #FECACA;border-radius:5px;padding:5px 8px;text-align:center">
+      <div style="font-size:16pt;font-weight:800;color:#DC2626;line-height:1">{{ rfa.escalated_count }}</div>
+      <div style="font-size:6pt;color:#991B1B;font-weight:600;text-transform:uppercase;margin-top:2px">Escalated</div>
+    </div>
+    {% endif %}
+    {% if rfa.de_escalated_count %}
+    <div style="flex:1;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:5px;padding:5px 8px;text-align:center">
+      <div style="font-size:16pt;font-weight:800;color:#16A34A;line-height:1">{{ rfa.de_escalated_count }}</div>
+      <div style="font-size:6pt;color:#166534;font-weight:600;text-transform:uppercase;margin-top:2px">De-escalated</div>
+    </div>
+    {% endif %}
+  </div>
+
+  {# D&O Implications #}
+  {% if rfa.do_implications %}
+  <div style="background:#FFF7ED;border:1px solid #FED7AA;border-left:3px solid #D97706;border-radius:0 5px 5px 0;padding:6px 10px;margin-bottom:4px">
+    <div style="font-size:7pt;font-weight:700;color:#92400E;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px">D&amp;O Implications</div>
+    {% for imp in rfa.do_implications %}
+    <div style="font-size:8pt;color:#374151;line-height:1.5;{% if not loop.last %}margin-bottom:4px;{% endif %}">{{ imp }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# Removed factors detail (if HIGH severity) #}
+  {% if rfa.removed and rfa.high_removed_count %}
+  <div style="margin-top:3px">
+    <div style="font-size:7pt;font-weight:600;color:#991B1B;margin-bottom:2px;padding:0 4px">HIGH-Severity Removed Factors:</div>
+    {% for r in rfa.removed %}
+    {% if r.prior_severity == 'HIGH' %}
+    <div style="font-size:7.5pt;color:#4B5563;padding:2px 4px 2px 12px;line-height:1.4">
+      <span style="color:#DC2626;font-weight:600">{{ r.category }}</span> — {{ r.title }}
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endif %}

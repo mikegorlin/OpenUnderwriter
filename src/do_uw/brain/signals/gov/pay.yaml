@@ -1,0 +1,1231 @@
+- id: GOV.PAY.ceo_total
+  name: Ceo Total
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: Pay ratio >500:1 OR total comp >$50M
+    yellow: Pay ratio >300:1 OR total comp >$25M
+    clear: Pay ratio <300:1
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  extraction_hints:
+    field_patterns:
+    - ceo_total_compensation
+    - ceo_pay_ratio
+    - named_executive_compensation
+    expected_type: numeric
+    no_data_sentinel: CEO compensation not disclosed in DEF 14A summary table
+    validation_rule: compensation amount >= 0
+  data_strategy:
+    field_key: ceo_pay_ratio
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: compensation_analysis
+    formula: ''
+  display:
+    value_format: currency
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: compensation_analysis
+  signal_class: evaluative
+  field_path: ceo_pay_ratio
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: Dodd-Frank Act executive compensation provisions and ISS proxy voting
+      guidelines
+    threshold_basis: Pay-related threshold from ISS proxy voting guidelines and Dodd-Frank
+      requirements
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Ceo Total at {value} (threshold: Pay ratio >500:1
+        OR total comp >$50M) signals elevated Emerging Risk / Forward-Looking Exposure
+        risk (F10). Excessive CEO total compensation relative to company performance
+        creates say-on-pay activism risk and supports waste claims in derivative litigation
+        against the compensation committee. Pay-related threshold from ISS proxy voting
+        guidelines and Dodd-Frank requirements.'
+      TRIGGERED_YELLOW: '{company} Ceo Total at {value} (threshold: Pay ratio >300:1
+        OR total comp >$25M) is in the caution zone for Emerging Risk / Forward-Looking
+        Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Ceo Total at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.PAY.ceo_structure
+  name: Ceo Structure
+  work_type: extract
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: ceo_pay_ratio
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: compensation_analysis
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: compensation_analysis
+  signal_class: evaluative
+  field_path: ceo_pay_ratio
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: Dodd-Frank Act executive compensation provisions and ISS proxy voting
+      guidelines
+    threshold_basis: Pay-related threshold from ISS proxy voting guidelines and Dodd-Frank
+      requirements
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} ceo structure at {value} represents agent risk (executive/director
+        actions and decisions that create D&O exposure) (scoring factor F10) — this
+        level is associated with Emerging Risk / Forward-Looking Exposure exposure
+        based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} ceo structure at {value} is a moderate indicator
+        for Emerging Risk / Forward-Looking Exposure (scoring factor F10), warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} ceo structure at {value} is within normal parameters for Emerging
+        Risk / Forward-Looking Exposure (scoring factor F10) — no D&O concern at this
+        level.'
+- id: GOV.PAY.peer_comparison
+  execution_mode: AUTO
+  name: Peer Comparison
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: '>500 CEO pay ratio (top-quartile excess)'
+    yellow: '>200 CEO pay ratio (elevated)'
+    clear: CEO pay ratio at or below 200:1
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: ceo_pay_ratio
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: compensation_analysis
+    formula: ''
+  display:
+    value_format: currency
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: compensation_analysis
+  signal_class: evaluative
+  field_path: ceo_pay_ratio
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: Dodd-Frank Act executive compensation provisions and ISS proxy voting
+      guidelines
+    threshold_basis: Pay-related threshold from ISS proxy voting guidelines and Dodd-Frank
+      requirements
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Peer Comparison at {value} (threshold: >500 CEO pay
+        ratio (top-quartile excess)) signals elevated Emerging Risk / Forward-Looking
+        Exposure risk (F10). Compensation above peer benchmarks without corresponding
+        performance supports waste and unjust enrichment theories in derivative actions.
+        Compensation committees face heightened scrutiny when pay exceeds peer norms.
+        Pay-related threshold from ISS proxy voting guidelines and Dodd-Frank requirements.'
+      TRIGGERED_YELLOW: '{company} Peer Comparison at {value} (threshold: >200 CEO
+        pay ratio (elevated)) is in the caution zone for Emerging Risk / Forward-Looking
+        Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Peer Comparison at {value} is within acceptable range for
+        Emerging Risk / Forward-Looking Exposure (F10) — this level is a protective
+        factor in D&O risk assessment, reducing claim probability.'
+- id: GOV.PAY.say_on_pay
+  name: Say-on-Pay Results
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles:
+    governance_to_derivative: trigger
+    activist_to_derivative: amplifier
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - say_on_pay_vote
+    - for_votes
+    - against_votes
+  threshold:
+    type: percentage
+    red: <70% approval
+    yellow: 70-80% approval
+    clear: '>80% approval'
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: say_on_pay_pct
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: compensation_analysis
+    formula: ''
+  display:
+    value_format: pct_1dp
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  schema_version: 3
+  acquisition:
+    sources:
+    - type: SEC_DEF14A
+      fields:
+      - extracted.governance.comp_analysis.say_on_pay_pct
+      - extracted.governance.compensation.say_on_pay_support_pct
+  evaluation:
+    formula: say_on_pay_pct
+    thresholds:
+    - op: <
+      value: 70.0
+      label: RED
+    - op: <
+      value: 80.0
+      label: YELLOW
+    mechanism: threshold
+  presentation:
+    detail_levels:
+    - level: glance
+      template: 'Say-on-pay: {value}%'
+    - level: standard
+      template: Say-on-pay approval at {value}% — {status_label}
+    - level: deep
+      fields:
+      - say_on_pay_pct
+      - ceo_pay_ratio
+    context_templates:
+      TRIGGERED: 'Compensation concern: say-on-pay approval {value}% below threshold'
+      CLEAR: Say-on-pay approval adequate at {value}%
+    do_context:
+      TRIGGERED_RED: '{company} Say-on-Pay Results at {value} (threshold: <70% approval)
+        signals elevated Emerging Risk / Forward-Looking Exposure risk (F10). Low
+        say-on-pay approval signals shareholder dissatisfaction with compensation
+        governance. Failed or low say-on-pay votes frequently precede derivative actions
+        against the board and individual compensation committee members. Say-on-pay
+        <70% support = RED: ISS policy trigger for against recommendation on compensation
+        committee; <80% = YELLOW.'
+      TRIGGERED_YELLOW: '{company} Say-on-Pay Results at {value} (threshold: 70-80%
+        approval) is in the caution zone for Emerging Risk / Forward-Looking Exposure
+        (F10). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Say-on-Pay Results at {value} is within acceptable range for
+        Emerging Risk / Forward-Looking Exposure (F10) — this level is a protective
+        factor in D&O risk assessment, reducing claim probability.'
+  group: compensation_analysis
+  signal_class: evaluative
+  field_path: say_on_pay_pct
+  depends_on:
+  - signal: BASE.FILING.DEF14A
+    field: say_on_pay_pct
+  epistemology:
+    rule_origin: 'Dodd-Frank Act Section 951 (say-on-pay): mandatory advisory vote
+      on executive compensation'
+    threshold_basis: 'Say-on-pay <70% support = RED: ISS policy trigger for against
+      recommendation on compensation committee; <80% = YELLOW'
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+- id: GOV.PAY.clawback
+  name: Clawback
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles:
+    stock_drop_to_sca: mitigator
+    governance_to_derivative: mitigator
+    whistleblower_to_claims: mitigator
+  unlinked: false
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: No clawback policy beyond SOX minimum
+    yellow: SOX-minimum clawback only
+    clear: Robust clawback policy beyond SOX requirements
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: clawback_policy
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: transparency_disclosure
+    formula: ''
+  display:
+    value_format: currency
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: transparency_disclosure
+  signal_class: evaluative
+  field_path: clawback_policy
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Dodd-Frank Act Section 954 (clawback policy): mandatory recovery
+      of erroneously awarded compensation'
+    threshold_basis: 'No clawback policy = RED: Dodd-Frank/NYSE/NASDAQ requirement
+      (effective 2023); weak policy = YELLOW'
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Clawback at {value} (threshold: No clawback policy
+        beyond SOX minimum) signals elevated Emerging Risk / Forward-Looking Exposure
+        risk (F10). Inadequate clawback provisions signal weak accountability mechanisms.
+        When restatements occur, the absence of enforceable clawbacks becomes evidence
+        of governance failure in derivative claims against the board. No clawback
+        policy = RED: Dodd-Frank/NYSE/NASDAQ requirement (effective 2023); weak policy
+        = YELLOW.'
+      TRIGGERED_YELLOW: '{company} Clawback at {value} (threshold: SOX-minimum clawback
+        only) is in the caution zone for Emerging Risk / Forward-Looking Exposure
+        (F10). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Clawback at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.PAY.related_party
+  name: Related Party
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: Material RPTs involving executives
+    yellow: RPTs disclosed but immaterial
+    clear: No RPTs beyond standard
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: related_party_txns
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: transparency_disclosure
+    formula: ''
+  display:
+    value_format: currency
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: transparency_disclosure
+  signal_class: evaluative
+  field_path: related_party_txns
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: Dodd-Frank Act executive compensation provisions and ISS proxy voting
+      guidelines
+    threshold_basis: Pay-related threshold from ISS proxy voting guidelines and Dodd-Frank
+      requirements
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Related Party at {value} (threshold: Material RPTs
+        involving executives) signals elevated Emerging Risk / Forward-Looking Exposure
+        risk (F10). Related party transaction exposure creates duty-of-loyalty claims
+        against interested directors under Entire Fairness review. These transactions
+        shift the burden of proof to defendants and are among the most successful
+        derivative claim theories. Pay-related threshold from ISS proxy voting guidelines
+        and Dodd-Frank requirements.'
+      TRIGGERED_YELLOW: '{company} Related Party at {value} (threshold: RPTs disclosed
+        but immaterial) is in the caution zone for Emerging Risk / Forward-Looking
+        Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Related Party at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.PAY.golden_para
+  execution_mode: AUTO
+  name: Golden Para
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: Golden parachute > 50000000
+    yellow: Golden parachute > 10000000
+    clear: Golden parachute < 10000000 or no golden parachute
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: golden_parachute_value
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: compensation_analysis
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: currency
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: compensation_analysis
+  signal_class: evaluative
+  field_path: golden_parachute_value
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: Dodd-Frank Act executive compensation provisions and ISS proxy voting
+      guidelines
+    threshold_basis: Pay-related threshold from ISS proxy voting guidelines and Dodd-Frank
+      requirements
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Golden Para at {value} (threshold: Golden parachute
+        > 50000000) signals elevated Emerging Risk / Forward-Looking Exposure risk
+        (F10). Excessive golden parachute provisions signal entrenchment and misaligned
+        incentives. These provisions become focal points in change-of-control litigation
+        alleging directors negotiated personal benefits at shareholder expense. Pay-related
+        threshold from ISS proxy voting guidelines and Dodd-Frank requirements.'
+      TRIGGERED_YELLOW: '{company} Golden Para at {value} (threshold: Golden parachute
+        > 10000000) is in the caution zone for Emerging Risk / Forward-Looking Exposure
+        (F10). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Golden Para at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.PAY.incentive_metrics
+  name: Incentive Metrics
+  work_type: extract
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: incentive_metrics_detail
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: compensation_analysis
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: compensation_analysis
+  signal_class: evaluative
+  field_path: incentive_metrics_detail
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: Dodd-Frank Act executive compensation provisions and ISS proxy voting
+      guidelines
+    threshold_basis: Pay-related threshold from ISS proxy voting guidelines and Dodd-Frank
+      requirements
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} incentive metrics at {value} represents agent risk
+        (executive/director actions and decisions that create D&O exposure) (scoring
+        factor F10) — this level is associated with Emerging Risk / Forward-Looking
+        Exposure exposure based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} incentive metrics at {value} is a moderate indicator
+        for Emerging Risk / Forward-Looking Exposure (scoring factor F10), warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} incentive metrics at {value} is within normal parameters for
+        Emerging Risk / Forward-Looking Exposure (scoring factor F10) — no D&O concern
+        at this level.'
+- id: GOV.PAY.equity_burn
+  execution_mode: AUTO
+  name: Equity Burn
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: Equity burn rate >3% annually
+    yellow: Equity burn rate >2% annually
+    clear: <2% burn rate
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: equity_burn_rate
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: compensation_analysis
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: currency
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: compensation_analysis
+  signal_class: evaluative
+  field_path: equity_burn_rate
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: Dodd-Frank Act executive compensation provisions and ISS proxy voting
+      guidelines
+    threshold_basis: Pay-related threshold from ISS proxy voting guidelines and Dodd-Frank
+      requirements
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Equity Burn at {value} (threshold: Equity burn rate
+        >3% annually) signals elevated Emerging Risk / Forward-Looking Exposure risk
+        (F10). Excessive equity burn rate signals dilutive compensation that transfers
+        value from shareholders to management. High burn rates support waste claims
+        and increase institutional investor activism targeting compensation governance.
+        Pay-related threshold from ISS proxy voting guidelines and Dodd-Frank requirements.'
+      TRIGGERED_YELLOW: '{company} Equity Burn at {value} (threshold: Equity burn
+        rate >2% annually) is in the caution zone for Emerging Risk / Forward-Looking
+        Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Equity Burn at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.PAY.hedging
+  execution_mode: AUTO
+  name: Hedging
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: Hedging permitted with no restrictions
+    yellow: Partial hedging restrictions
+    clear: Full hedging prohibition
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: hedging_policy
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: compensation_analysis
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: currency
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: compensation_analysis
+  signal_class: evaluative
+  field_path: hedging_policy
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Dodd-Frank Act Section 955: hedging disclosure and ISS anti-hedging
+      best practice'
+    threshold_basis: 'No anti-hedging policy = RED: ISS governance concern and SEC
+      disclosure requirement; partial restrictions = YELLOW'
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Hedging at {value} (threshold: Hedging permitted with
+        no restrictions) signals elevated Emerging Risk / Forward-Looking Exposure
+        risk (F10). Executive hedging of company stock undermines the alignment purpose
+        of equity compensation. Hedged executives face reduced personal downside,
+        weakening the deterrent effect of equity ownership on risk-taking behavior.
+        No anti-hedging policy = RED: ISS governance concern and SEC disclosure requirement;
+        partial restrictions = YELLOW.'
+      TRIGGERED_YELLOW: '{company} Hedging at {value} (threshold: Partial hedging
+        restrictions) is in the caution zone for Emerging Risk / Forward-Looking Exposure
+        (F10). Monitor for deterioration — trend direction and peer comparison inform
+        the D&O risk assessment.'
+      CLEAR: '{company} Hedging at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'
+- id: GOV.PAY.perks
+  name: Perks
+  work_type: extract
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: executive_perks
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: compensation_analysis
+    formula: ''
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: compensation_analysis
+  signal_class: evaluative
+  field_path: executive_perks
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: Dodd-Frank Act executive compensation provisions and ISS proxy voting
+      guidelines
+    threshold_basis: Pay-related threshold from ISS proxy voting guidelines and Dodd-Frank
+      requirements
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} perks at {value} represents agent risk (executive/director
+        actions and decisions that create D&O exposure) (scoring factor F10) — this
+        level is associated with Emerging Risk / Forward-Looking Exposure exposure
+        based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} perks at {value} is a moderate indicator for Emerging
+        Risk / Forward-Looking Exposure (scoring factor F10), warranting review of
+        supporting evidence: {evidence}.'
+      CLEAR: '{company} perks at {value} is within normal parameters for Emerging
+        Risk / Forward-Looking Exposure (scoring factor F10) — no D&O concern at this
+        level.'
+- id: GOV.PAY.401k_match
+  execution_mode: DEFERRED
+  name: 401K Match
+  work_type: extract
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: retirement_benefits
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: compensation_analysis
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: compensation_analysis
+  signal_class: evaluative
+  field_path: retirement_benefits
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: Dodd-Frank Act executive compensation provisions and ISS proxy voting
+      guidelines
+    threshold_basis: Pay-related threshold from ISS proxy voting guidelines and Dodd-Frank
+      requirements
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} 401k match at {value} represents agent risk (executive/director
+        actions and decisions that create D&O exposure) (scoring factor F10) — this
+        level is associated with Emerging Risk / Forward-Looking Exposure exposure
+        based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} 401k match at {value} is a moderate indicator for
+        Emerging Risk / Forward-Looking Exposure (scoring factor F10), warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} 401k match at {value} is within normal parameters for Emerging
+        Risk / Forward-Looking Exposure (scoring factor F10) — no D&O concern at this
+        level.'
+- id: GOV.PAY.deferred_comp
+  execution_mode: DEFERRED
+  name: Deferred Comp
+  work_type: extract
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: deferred_comp_detail
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: compensation_analysis
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: compensation_analysis
+  signal_class: evaluative
+  field_path: deferred_comp_detail
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: Dodd-Frank Act executive compensation provisions and ISS proxy voting
+      guidelines
+    threshold_basis: Pay-related threshold from ISS proxy voting guidelines and Dodd-Frank
+      requirements
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} deferred comp at {value} represents agent risk (executive/director
+        actions and decisions that create D&O exposure) (scoring factor F10) — this
+        level is associated with Emerging Risk / Forward-Looking Exposure exposure
+        based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} deferred comp at {value} is a moderate indicator
+        for Emerging Risk / Forward-Looking Exposure (scoring factor F10), warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} deferred comp at {value} is within normal parameters for Emerging
+        Risk / Forward-Looking Exposure (scoring factor F10) — no D&O concern at this
+        level.'
+- id: GOV.PAY.pension
+  execution_mode: DEFERRED
+  name: Pension
+  work_type: extract
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: display
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: pension_detail
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: always
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: compensation_analysis
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: text
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: compensation_analysis
+  signal_class: evaluative
+  field_path: pension_detail
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: Dodd-Frank Act executive compensation provisions and ISS proxy voting
+      guidelines
+    threshold_basis: Pay-related threshold from ISS proxy voting guidelines and Dodd-Frank
+      requirements
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} pension at {value} represents agent risk (executive/director
+        actions and decisions that create D&O exposure) (scoring factor F10) — this
+        level is associated with Emerging Risk / Forward-Looking Exposure exposure
+        based on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} pension at {value} is a moderate indicator for
+        Emerging Risk / Forward-Looking Exposure (scoring factor F10), warranting
+        review of supporting evidence: {evidence}.'
+      CLEAR: '{company} pension at {value} is within normal parameters for Emerging
+        Risk / Forward-Looking Exposure (scoring factor F10) — no D&O concern at this
+        level.'
+- id: GOV.PAY.exec_loans
+  execution_mode: DEFERRED
+  name: Exec Loans
+  work_type: evaluate
+  layer: hazard
+  factors:
+  - F10
+  peril_ids: []
+  chain_roles: {}
+  unlinked: true
+  acquisition_tier: L1
+  required_data:
+  - SEC_DEF14A
+  data_locations:
+    SEC_DEF14A:
+    - executive_officers
+    - board_members
+    - ownership_table
+  threshold:
+    type: tiered
+    red: Executive loans disclosed (SOX violation risk)
+    yellow: Historic loans grandfathered pre-SOX
+    clear: No executive loans
+  tier: 2
+  depth: 2
+  plaintiff_lenses:
+  - SHAREHOLDERS
+  v6_subsection_ids:
+  - '4.2'
+  data_strategy:
+    field_key: executive_loans
+    primary_source: SEC_DEF14A
+  worksheet_section: litigation
+  display_when: has_data
+  provenance:
+    origin: migrated_from_json
+    confidence: inherited
+    last_validated: null
+    source_url: null
+    source_date: null
+    source_author: null
+    added_by: null
+    data_source: SEC_DEF14A
+    threshold_provenance:
+      source: standard
+      rationale: ''
+    render_target: compensation_analysis
+    formula: ''
+  gap_bucket: intentionally-unmapped
+  gap_keywords: []
+  display:
+    value_format: currency
+    source_type: SEC_DEF14A
+    threshold_context: ''
+  group: compensation_analysis
+  signal_class: evaluative
+  field_path: executive_loans
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: Dodd-Frank Act executive compensation provisions and ISS proxy voting
+      guidelines
+    threshold_basis: Pay-related threshold from ISS proxy voting guidelines and Dodd-Frank
+      requirements
+  rap_class: agent
+  rap_subcategory: agent.compensation_decisions
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} Exec Loans at {value} (threshold: Executive loans
+        disclosed (SOX violation risk)) signals elevated Emerging Risk / Forward-Looking
+        Exposure risk (F10). Executive loans from the company create related party
+        exposure and are prohibited for public company executives under SOX Section
+        402. Any outstanding loans create direct regulatory and derivative claim exposure.
+        Pay-related threshold from ISS proxy voting guidelines and Dodd-Frank requirements.'
+      TRIGGERED_YELLOW: '{company} Exec Loans at {value} (threshold: Historic loans
+        grandfathered pre-SOX) is in the caution zone for Emerging Risk / Forward-Looking
+        Exposure (F10). Monitor for deterioration — trend direction and peer comparison
+        inform the D&O risk assessment.'
+      CLEAR: '{company} Exec Loans at {value} is within acceptable range for Emerging
+        Risk / Forward-Looking Exposure (F10) — this level is a protective factor
+        in D&O risk assessment, reducing claim probability.'

@@ -1,0 +1,69 @@
+# Domain 4: Stock & Market Risk
+# "What's happening with the stock and what could trigger a claim?"
+# Securities class actions require a stock drop. Understanding price behavior,
+# volatility, short interest, and event risk is essential for D&O pricing.
+
+domain: stock_market
+domain_label: "Stock & Market Risk"
+order: 4
+description: >
+  Evaluate stock price behavior, volatility, short selling activity, and
+  event-driven risk. The stock price IS the damages model for 10b-5 claims.
+  DDL (Dollar-Day Loss) drives settlement severity.
+
+questions:
+  - question_id: MKT-01
+    text: "Has the stock had any drops >15% in the last 12 months?"
+    weight: 10
+    data_sources: [analysis.stock_events, market.enhanced_drop_events]
+    answer_template: "{drop_count} drops >15%. Largest: {max_drop}% on {max_drop_date}. Max drawdown (1Y): {mdd}%."
+    upgrade_criteria: "No drops >15%, low beta, tight 52-week range"
+    downgrade_criteria: "Multiple >15% drops, >30% max drawdown, earnings-correlated drops"
+
+  - question_id: MKT-02
+    text: "What's the short interest and days-to-cover?"
+    weight: 8
+    data_sources: [yfinance.info.shortPercentOfFloat, yfinance.info.shortRatio]
+    answer_template: "Short interest: {si_pct}% of float. Days to cover: {dtc}."
+    upgrade_criteria: "SI <3% of float"
+    downgrade_criteria: "SI >8% of float — shorts are betting against this company"
+
+  - question_id: MKT-03
+    text: "What's the DDL exposure — settlement severity curve position?"
+    weight: 9
+    data_sources: [yfinance.info.marketCap, analysis.stock_events]
+    answer_template: "Market cap: {market_cap}. DDL window: {ddl_estimate}. Estimated P50 settlement: {p50_settlement}."
+    upgrade_criteria: "Low DDL (<$1B market cap days), small market cap"
+    downgrade_criteria: "High DDL (>$10B market cap days), large-cap with sustained drop"
+
+  - question_id: MKT-04
+    text: "Are insiders buying or selling, and is the pattern concerning?"
+    weight: 8
+    data_sources: [market.insider_transactions, analysis.signals.insider_*]
+    answer_template: "{insider_pattern}"
+    upgrade_criteria: "Net insider buying, especially by CEO/CFO"
+    downgrade_criteria: "Heavy insider selling before bad news, accelerated 10b5-1 plan modifications"
+
+  - question_id: MKT-05
+    text: "Who are the major institutional holders and are they activist-prone?"
+    weight: 6
+    data_sources: [market.institutional_holders]
+    answer_template: "Top holders: {top_holders}. Institutional ownership: {inst_pct}%."
+    upgrade_criteria: "Stable long-term holders (index funds, mutual funds)"
+    downgrade_criteria: "Activist funds, hedge funds known for proxy fights, declining institutional ownership"
+
+  - question_id: MKT-06
+    text: "Is the stock price near 52-week highs or lows?"
+    weight: 7
+    data_sources: [yfinance.info.fiftyTwoWeekHigh, yfinance.info.fiftyTwoWeekLow]
+    answer_template: "Current: ${current}. 52-week range: ${low} – ${high}. Position: {pct_of_range}% of range."
+    upgrade_criteria: "Near 52-week high — stock is performing well"
+    downgrade_criteria: "Near 52-week low — potential damages class already growing"
+
+  - question_id: MKT-07
+    text: "Has the company issued equity or debt in the last 12 months?"
+    weight: 8
+    data_sources: [extracted.sec_filings, analysis.signals.offering_*]
+    answer_template: "{offering_status}"
+    upgrade_criteria: "No recent offerings"
+    downgrade_criteria: "Recent secondary offering, shelf registration, or convertible debt — each creates Section 11 exposure"

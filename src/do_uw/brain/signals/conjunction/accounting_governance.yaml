@@ -1,0 +1,48 @@
+- id: CONJ.ACCT.governance
+  name: Restatement + Auditor Change + Weak Audit Committee
+  work_type: evaluate
+  layer: signal
+  factors: []
+  peril_ids: []
+  chain_roles: {}
+  unlinked: false
+  tier: 1
+  depth: 2
+  threshold:
+    type: info
+    red: Financial restatement combined with auditor change and weak audit committee oversight
+  provenance:
+    origin: phase_110_conjunction
+    confidence: HIGH
+    data_source: DERIVED
+    formula: Conjunction of restatement + auditor change + audit committee weakness
+    threshold_provenance:
+      source: calibrated
+      rationale: 'PCAOB inspection data and SCAC filings: accounting fraud trifecta is strongest restatement SCA predictor'
+  signal_class: inference
+  group: audit_profile
+  rap_class: agent
+  rap_subcategory: agent.financial_conduct
+  epistemology:
+    rule_origin: 'PCAOB inspection data and D&O claims experience: restatement + auditor change + weak audit committee = accounting
+      fraud pattern'
+    threshold_basis: 2+ of 3 conditions met triggers RED; HIGH_RISK floor due to fraud indicator triad
+  evaluation:
+    mechanism: conjunction
+    conjunction_rules:
+      required_signals:
+      - FIN.ACCT.restatement
+      - FIN.ACCT.auditor
+      - GOV.BOARD.expertise
+      minimum_matches: 2
+      signal_conditions: {}
+      recommendation_floor: HIGH_RISK
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} restatement + auditor change + weak audit committee at {value} represents agent risk (executive/director
+        actions and decisions that create D&O exposure) — this level is associated with D&O risk assessment exposure based
+        on D&O claims experience.'
+      TRIGGERED_YELLOW: '{company} restatement + auditor change + weak audit committee at {value} is a moderate indicator
+        for D&O risk assessment, warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} restatement + auditor change + weak audit committee at {value} is within normal parameters for D&O
+        risk assessment — no D&O concern at this level.'

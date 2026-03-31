@@ -1,0 +1,27 @@
+{# Forward-Looking Indicators -- Disclosure Quality facet template.
+   Renders FWRD.DISC.* signals as key-value pairs.
+   Part of facet dispatch for forward_looking section (Phase 62-01). #}
+
+{% set fwrd_signals = signal_results_by_section.get('FWRD', []) %}
+{% set disc_signals = [] %}
+{% for sig in fwrd_signals %}
+  {% if sig.signal_id.startswith('FWRD.DISC.') %}
+    {% set _ = disc_signals.append(sig) %}
+  {% endif %}
+{% endfor %}
+
+{% if disc_signals %}
+<h3>Disclosure Quality</h3>
+{% set kv_items = [] %}
+{% for sig in disc_signals %}
+  {% set _ = kv_items.append({
+    'key': sig.signal_name | humanize,
+    'value': sig.formatted_value | default(sig.value | default('—'), true)
+  }) %}
+{% endfor %}
+{{ kv_table(kv_items) }}
+<ul class="text-xs text-gray-500 mt-1 mb-3 leading-relaxed list-disc ml-4 space-y-0.5">
+  <li>Disclosure quality metrics assess the completeness and transparency of SEC filings, including MD&amp;A depth, non-GAAP reconciliation, and segment reporting consistency</li>
+  <li>Low disclosure quality scores increase the risk of securities fraud allegations based on omissions or misleading statements</li>
+</ul>
+{% endif %}

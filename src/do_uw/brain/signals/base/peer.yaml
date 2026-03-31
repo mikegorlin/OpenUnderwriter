@@ -1,0 +1,51 @@
+- id: BASE.PEER.frames
+  name: SEC Frames API Peer Benchmarking
+  work_type: acquire
+  tier: 0
+  depth: 1
+  threshold:
+    type: info
+  provenance:
+    origin: v3.1_tier1_manifest
+    confidence: HIGH
+    source_author: system
+    added_by: Phase75
+    data_source: SEC_FRAMES
+    threshold_provenance:
+      source: unattributed
+      rationale: ''
+    render_target: peer_group
+    formula: ''
+  acquisition:
+    sources:
+    - type: SEC_FRAMES
+      fields:
+      - analyzed.benchmarks.frames_percentiles
+      - analyzed.benchmarks.sector_percentiles
+      fallback_to: null
+  description: 'Cross-filer percentile ranking via SEC Frames API for 10+ key metrics. Compares company XBRL values against
+    all SEC filers in same 2-digit SIC sector. Metrics include revenue, assets, liabilities, net income, operating cash flow,
+    and 5 derived ratios (current ratio, debt-to-equity, ROE, profit margin, asset turnover). State paths: analyzed.benchmarks.{frames_percentiles,sector_percentiles}
+
+    '
+  group: peer_group
+  signal_class: foundational
+  field_path: ''
+  depends_on: []
+  schema_version: 3
+  epistemology:
+    rule_origin: 'Data foundation: SEC EDGAR XBRL frames API for peer financial comparison data'
+    threshold_basis: Binary data availability -- peer comparison data either available from XBRL frames or not; no risk threshold
+  rap_class: host
+  rap_subcategory: host.data_foundation
+  evaluation:
+    mechanism: threshold
+  presentation:
+    do_context:
+      TRIGGERED_RED: '{company} sec frames api peer benchmarking at {value} represents host risk (company-level characteristics
+        that attract or deter D&O claims) — this level is associated with D&O risk assessment exposure based on D&O claims
+        experience.'
+      TRIGGERED_YELLOW: '{company} sec frames api peer benchmarking at {value} is a moderate indicator for D&O risk assessment,
+        warranting review of supporting evidence: {evidence}.'
+      CLEAR: '{company} sec frames api peer benchmarking at {value} is within normal parameters for D&O risk assessment —
+        no D&O concern at this level.'

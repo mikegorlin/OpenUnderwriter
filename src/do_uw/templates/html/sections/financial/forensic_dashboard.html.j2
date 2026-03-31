@@ -1,0 +1,182 @@
+{# Forensic Analysis Dashboard — severity-banded hazard cards + Beneish component table (Phase 73) #}
+{% set frnsc = fin.get('forensics', {}) %}
+
+{% if frnsc.get('has_data') %}
+<h3>Forensic Analysis Dashboard</h3>
+<p class="text-xs text-gray-500 mb-2">Source: XBRL forensic analysis | Sorted by severity</p>
+
+{# Forensic Alerts — surface danger-zone indicators prominently #}
+{% set danger_items = [] %}
+{% for band in frnsc.bands %}
+  {% for mod in band.modules %}
+    {% for f in mod.findings %}
+      {% if f.severity == 'critical' or f.zone == 'danger' %}
+        {% set _ = danger_items.append({'indicator': f.label, 'value': f.value, 'module': mod.name, 'trend': f.trend}) %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+{% endfor %}
+{% if danger_items %}
+<div style="border:2px solid #B91C1C; border-radius:6px; padding:0.5rem 0.75rem; margin-bottom:0.75rem; background:#fef2f2;">
+  <div style="font-size:0.6875rem; font-weight:800; color:#B91C1C; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.375rem;">
+    Forensic Alerts — {{ danger_items | length }} Indicator{{ 's' if danger_items | length != 1 }} in Danger Zone
+  </div>
+  {% for di in danger_items %}
+  <div style="padding:0.2rem 0; border-bottom:1px solid #fecaca; font-size:0.75rem; display:flex; justify-content:space-between;">
+    <span><strong>{{ di.indicator }}</strong> <span style="color:#64748b; font-size:0.6875rem;">({{ di.module }})</span></span>
+    <span style="font-weight:700; font-variant-numeric:tabular-nums; color:#B91C1C;">{{ di.value }}{% if di.trend and di.trend != 'N/A' %} <span style="font-size:0.625rem; {{ 'color:#dc2626' if di.trend == 'deteriorating' else 'color:#64748b' }}">{{ di.trend }}</span>{% endif %}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{# Color-banded severity sections #}
+{% for band in frnsc.bands %}
+<div class="forensic-band forensic-band-{{ band.severity }}" style="border-left-color: {{ band.color }}">
+  <div class="forensic-band-header">{{ band.label }}</div>
+  <div class="forensic-grid">
+    {% for mod in band.modules %}
+    <div>
+      <div style="font-weight:600;margin-bottom:4px">
+        <span class="hazard-cat-code">
+          {% if mod.severity == 'critical' %}&#x26A0;
+          {% elif mod.severity == 'warning' %}&#x26A1;
+          {% else %}&#x2713;{% endif %}
+        </span>
+        <span class="hazard-cat-name">{{ mod.name }}</span>
+        <span class="hazard-cat-score">{{ '%.0f' | format(mod.composite_score) }}</span>
+        <span class="badge-pill
+          {%- if mod.severity == 'critical' %} bg-red-100 text-red-800
+          {%- elif mod.severity == 'warning' %} bg-amber-100 text-amber-800
+          {%- else %} bg-green-100 text-green-800{% endif %}">{{ mod.zone | replace('_', ' ') | title }}</span>
+      </div>
+      <div class="p-1 border border-t-0 border-gray-200 rounded-b text-sm">
+        <p class="text-xs text-gray-600 mb-2 font-semibold">Worst: {{ mod.worst_finding }}</p>
+        {# Check if Trend column has real data #}
+        {% set ns_fd = namespace(show_trend=false) %}
+        {% for f in mod.findings %}
+          {% if f.trend and f.trend != 'N/A' and f.trend != '—' and f.trend != '' %}{% set ns_fd.show_trend = true %}{% endif %}
+        {% endfor %}
+        <table class="w-full text-xs">
+          <thead>
+            <tr class="border-b border-gray-200">
+              <th class="text-left py-1 pr-2 font-semibold text-gray-600">Indicator</th>
+              <th class="text-right py-1 px-2 font-semibold text-gray-600">Value</th>
+              <th class="text-left py-1 px-2 font-semibold text-gray-600">Zone</th>
+              {% if ns_fd.show_trend %}<th class="text-left py-1 px-2 font-semibold text-gray-600">Trend</th>{% endif %}
+              <th class="text-left py-1 pl-2 font-semibold text-gray-600">D&amp;O Risk</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for f in mod.findings %}
+            <tr class="{{ 'bg-bg-alt' if loop.index is odd else '' }}">
+              <td class="py-1 pr-2">{{ f.label }}</td>
+              <td class="py-1 px-2 text-right tabular-nums">{{ f.value if f.value is not none and f.value != 'N/A' else '—' }}</td>
+              <td class="py-1 px-2">
+                <span class="badge-pill text-xs
+                  {%- if f.severity == 'critical' %} bg-red-100 text-red-800
+                  {%- elif f.severity == 'warning' %} bg-amber-100 text-amber-800
+                  {%- else %} bg-green-100 text-green-800{% endif %}">{{ f.zone | replace('_', ' ') }}</span>
+              </td>
+              {% if ns_fd.show_trend %}<td class="py-1 px-2 text-xs
+                {%- if f.trend == 'deteriorating' %} text-red-600
+                {%- elif f.trend == 'improving' %} text-green-600
+                {%- else %} text-gray-500{% endif %}">{{ f.trend if f.trend and f.trend != 'N/A' else '—' }}</td>{% endif %}
+              <td class="py-1 pl-2 text-xs text-gray-600">{{ f.evidence | humanize_evidence if f.evidence else '' }}</td>
+            </tr>
+            {# Fix 3: Channel stuffing false positive context for high-volume distributor models #}
+            {% if 'channel stuffing' in (f.label | lower) and (f.severity == 'warning' or f.severity == 'critical') %}
+            <tr>
+              <td colspan="{{ 5 if ns_fd.show_trend else 4 }}" style="padding:2px 8px 4px;font-size:0.6875rem;color:#6B7280;font-style:italic;background:#FFFBEB;border-left:3px solid #FDE68A">
+                Note: Channel stuffing indicator may reflect a high-volume distributor model (significant indirect sales through carriers and retailers) rather than actual revenue manipulation. Peer comparison recommended before drawing conclusions.
+              </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endfor %}
+
+{# Beneish M-Score Component Table #}
+{% set ben = frnsc.get('beneish', {}) %}
+{% if ben.get('has_data') %}
+<h4 class="mt-4 mb-2 font-heading text-sm font-bold text-navy uppercase tracking-wide">Beneish M-Score Component Breakdown</h4>
+<div class="flex items-center gap-3 mb-3">
+  <span class="text-sm font-semibold">M-Score: <span class="tabular-nums">{{ ben.m_score_str }}</span></span>
+  <span class="badge-pill
+    {%- if ben.zone == 'manipulation_likely' %} bg-red-100 text-red-800
+    {%- elif ben.zone == 'grey_zone' %} bg-amber-100 text-amber-800
+    {%- else %} bg-green-100 text-green-800{% endif %}">
+    {{ ben.zone | replace('_', ' ') | title }}
+  </span>
+  {% if ben.primary_driver %}
+  <span class="text-xs text-gray-500">Primary driver: {{ ben.primary_driver }}</span>
+  {% endif %}
+</div>
+
+{# D&O context for Beneish M-Score #}
+<div class="bg-bg-alt border border-gray-200 rounded p-1 mb-3 text-xs text-gray-600 leading-relaxed">
+  {% if ben.zone == 'manipulation_likely' %}
+  <strong class="text-red-700">D&O Impact:</strong> M-Score above -1.78 indicates elevated earnings manipulation probability (~76% accuracy per Beneish 1999). Restatements are the single strongest predictor of securities class actions. Average D&O settlements for restatement-driven SCAs exceed $35M. Component analysis below identifies specific manipulation vectors.
+  {% elif ben.zone == 'grey_zone' %}
+  <strong class="text-amber-700">D&O Impact:</strong> M-Score in the grey zone (-2.22 to -1.78) is inconclusive but warrants monitoring. Companies with scores trending toward the manipulation threshold face 5-8x higher SCA filing rates if earnings are subsequently restated. Review flagged components below for targeted risk areas.
+  {% else %}
+  <strong class="text-green-700">D&O Impact:</strong> M-Score below -2.22 indicates low earnings manipulation probability, reducing restatement-driven SCA exposure. This is a favorable factor for D&O pricing. Individual component flags below (if any) may still indicate localized accounting quality concerns.
+  {% endif %}
+</div>
+
+<table class="beneish-table w-full border-collapse text-sm">
+  <thead>
+    <tr class="bg-navy text-white">
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Code</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-left p-1">Component</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Value</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-right p-1">Threshold</th>
+      <th class="font-heading text-xs font-semibold uppercase tracking-wider text-center p-1">Status</th>
+    </tr>
+  </thead>
+  <tbody class="tabular-nums">
+    {% for c in ben.components %}
+    <tr class="{{ 'bg-bg-alt' if loop.index is odd else 'bg-white' }}">
+      <td class="p-1 font-heading text-xs font-bold text-navy">{{ c.code }}</td>
+      <td class="p-1">{{ c.name }}</td>
+      <td class="p-1 text-right
+        {%- if not c.pass %} text-red-600 font-bold{% endif %}">{{ c.value_str }}</td>
+      <td class="p-1 text-right text-gray-500">{{ '%.3f' | format(c.threshold) }}</td>
+      <td class="p-1 text-center">
+        {% if c.pass %}
+        <span class="beneish-pass" title="Pass">&#x2713;</span>
+        {% else %}
+        <span class="beneish-fail" title="Fail">&#x2717;</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr class="bg-gray-100 font-semibold">
+      <td colspan="2" class="p-1 border-t-2 border-navy">Composite M-Score</td>
+      <td class="p-1 border-t-2 border-navy text-right tabular-nums
+        {%- if ben.zone == 'manipulation_likely' %} text-red-600 font-bold{% endif %}">{{ ben.m_score_str }}</td>
+      <td class="p-1 border-t-2 border-navy text-right text-gray-500">-2.22</td>
+      <td class="p-1 border-t-2 border-navy text-center">
+        {% if ben.zone == 'manipulation_unlikely' %}
+        <span class="beneish-pass">&#x2713;</span>
+        {% else %}
+        <span class="beneish-fail">&#x2717;</span>
+        {% endif %}
+      </td>
+    </tr>
+  </tfoot>
+</table>
+<p class="text-xs text-gray-500 mt-1 mb-0">Thresholds per Beneish (1999). Values exceeding threshold suggest anomalous accounting in that dimension. DSRI = receivables growth vs revenue; GMI = gross margin deterioration; AQI = asset quality inflation; SGI = revenue growth sustainability; DEPI = depreciation policy changes; SGAI = SGA expense management; LVGI = leverage increase; TATA = accrual levels vs assets.</p>
+{% endif %}
+
+{% else %}
+{{ gap_notice("forensic_dashboard", "Forensic analysis data not available. Run pipeline with XBRL forensic analysis enabled.") }}
+{% endif %}

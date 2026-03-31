@@ -1,0 +1,324 @@
+{# ═══════════════════════════════════════════════════════════════════════════
+   MANIFEST SECTION 5: PEOPLE & GOVERNANCE — Board, executives, ownership
+   ═══════════════════════════════════════════════════════════════════════════ #}
+{% set gv = b.gov %}
+{% if gv %}
+<div id="governance" style="margin-top:14px">
+  <div style="background:#1F3A5C;color:white;padding:6px 10px;border-radius:4px;margin-bottom:6px">
+    <span style="font-size:10pt;font-weight:800;letter-spacing:0.3px">People & Governance</span><br>
+    <span style="font-size:7.5pt;color:rgba(255,255,255,0.6)">Board composition, executives, compensation, ownership</span>
+  </div>
+
+  {% if gv._stage_banner is defined and gv._stage_banner %}
+  <div style="background:#FEF3C7;border-left:4px solid #F59E0B;padding:8px 12px;margin-bottom:8px;font-size:9pt;color:#92400E;border-radius:0 4px 4px 0">
+    {{ gv._stage_banner }}
+  </div>
+  {% endif %}
+
+  {# ── LLM Critical Insight ── #}
+  {% with insight_id="governance" %}{% include "components/section_insight.html.j2" %}{% endwith %}
+
+  {# Board summary cards — governance snapshot at a glance #}
+  <div id="beta-governance"></div>
+<div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:3px">
+    {% for card in [
+      {"label":"Board Size","value":gv.board_size},
+      {"label":"Independence","value":gv.independence_ratio},
+      {"label":"Avg Tenure","value":gv.avg_board_tenure},
+      {"label":"CEO/Chair Dual","value":gv.ceo_chair_duality},
+      {"label":"Classified Board","value":gv.classified_board},
+      {"label":"Insider Ownership","value":gv.insider_pct},
+      {"label":"Institutional","value":gv.institutional_pct}
+    ] %}
+    {% if card.value and card.value != 'N/A' %}
+    <div style="flex:1;min-width:11%;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:8px 10px;text-align:center">
+      <div style="font-size:13pt;font-weight:800;color:#374151">{{ card.value }}</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">{{ card.label }}</div>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+  {# Fix 7: Board size context — S&P 500 median comparison #}
+  {% if gv.board_size and gv.board_size != 'N/A' %}
+  {% set _bs = gv.board_size | string | replace(' directors','') | replace(' members','') | int(default=0) %}
+  {% if _bs > 0 and _bs < 10 %}
+  <div style="font-size:7.5pt;color:#6B7280;font-style:italic;margin-bottom:6px;padding:0 4px;line-height:1.4">
+    {{ _bs }} directors (S&amp;P 500 median: 10-11). Smaller board enables faster decision-making but reduces oversight breadth.
+  </div>
+  {% elif _bs > 13 %}
+  <div style="font-size:7.5pt;color:#6B7280;font-style:italic;margin-bottom:6px;padding:0 4px;line-height:1.4">
+    {{ _bs }} directors (S&amp;P 500 median: 10-11). Larger board provides broader oversight but may slow decision-making.
+  </div>
+  {% endif %}
+  {% endif %}
+
+  {# Governance verdict — score and key flags #}
+  {% set _gov_score = gv.governance_total_score %}
+  {% if _gov_score is not none %}
+  {% set _gs_f = _gov_score|float(default=50) %}
+  <div style="font-size:8.5pt;color:#374151;background:#F9FAFB;border-left:3px solid {% if _gs_f >= 70 %}#16A34A{% elif _gs_f >= 40 %}#D97706{% else %}#DC2626{% endif %};padding:4px 10px;margin-bottom:6px;line-height:1.4">
+    Governance score: <b>{{ _gov_score }}/100</b>{% if gv.ceo_chair_duality and gv.ceo_chair_duality != 'No' %} · CEO/Chair duality{% endif %}{% if gv.classified_board and gv.classified_board != 'No' %} · Classified board{% endif %}{% if gv.say_on_pay %} · Say-on-pay: {{ gv.say_on_pay }}{% endif %}{% if gv.departures_18mo and gv.departures_18mo|int(default=0) > 0 %} · {{ gv.departures_18mo }} executive departure{{ 's' if gv.departures_18mo|int(default=0) > 1 }} in 18mo{% endif %}.
+  </div>
+  {% endif %}
+
+  {# Section opener narrative #}
+  {% if gv.section_opener %}
+  <div style="font-size:10.5pt;color:#1F3A5C;line-height:1.6;margin:4px 0 8px;padding:10px 14px;background:#F0F4F8;border:1px solid #1F3A5C;border-radius:5px;border-left:4px solid #1F3A5C">
+    {{ gv.section_opener }}
+  </div>
+  {% elif gv.narrative %}
+  <div style="font-size:10.5pt;color:#1F3A5C;line-height:1.6;margin:4px 0 8px;padding:10px 14px;background:#F0F4F8;border:1px solid #1F3A5C;border-radius:5px;border-left:4px solid #1F3A5C">
+    {{ gv.narrative | strip_md }}
+  </div>
+  {% endif %}
+
+  {# Governance Risk Scores — yfinance ISS QualityScore data, 1-10 scale where 1=low risk #}
+  {% if gv.iss_overall is not none or gv.iss_board is not none %}
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:11pt;font-weight:700;color:#1F3A5C">Governance Risk Scores</span>
+    <span style="font-size:8pt;color:#9CA3AF;font-style:italic">1 = Low Risk, 10 = High Risk (ISS QualityScore via yfinance)</span>
+  </div>
+  <div style="display:flex;gap:4px;margin-bottom:6px">
+    {% for iss in [
+      {"label":"Overall Risk","value":gv.iss_overall},
+      {"label":"Board Risk","value":gv.iss_board},
+      {"label":"Comp. Risk","value":gv.iss_comp},
+      {"label":"Audit Risk","value":gv.iss_audit},
+      {"label":"Shareholder Rights","value":gv.iss_rights}
+    ] %}
+    {% if iss.value is not none %}
+    <div style="flex:1;text-align:center;background:white;border:1px solid #E5E7EB;border-radius:4px;padding:6px 8px">
+      <div style="font-size:12pt;font-weight:800;color:{% if iss.value <= 3 %}#16A34A{% elif iss.value <= 6 %}#D97706{% else %}#DC2626{% endif %}">{{ iss.value }}</div>
+      <div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;margin-top:1px">{{ iss.label }}</div>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# ── Governance Visualizations: Independence Donut + Tenure Bars + CEO Pay Ratio ── #}
+  <div style="display:flex;gap:6px;margin-bottom:6px">
+    {# Board Independence Donut #}
+    <div style="flex:0 0 120px;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:8px;text-align:center">
+      <div style="font-size:8pt;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.3px;font-weight:700;margin-bottom:4px">Independence</div>
+      {% set _ind_raw = gv.independence_ratio if gv.independence_ratio else '75%' %}
+      {% set _ind_str = _ind_raw | string | replace('%','') %}
+      {% set _ind_pct = _ind_str | float %}
+      {% if _ind_pct > 0 and _ind_pct <= 1 %}{% set _ind_frac = _ind_pct %}{% elif _ind_pct > 1 %}{% set _ind_frac = _ind_pct / 100 %}{% else %}{% set _ind_frac = 0.75 %}{% endif %}
+      <svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="30" fill="none" stroke="#E5E7EB" stroke-width="8"/>
+        <circle cx="40" cy="40" r="30" fill="none" stroke="{% if _ind_frac >= 0.75 %}#16A34A{% elif _ind_frac >= 0.5 %}#D97706{% else %}#DC2626{% endif %}" stroke-width="8" stroke-dasharray="{{ _ind_frac * 188.5 }} {{ (1 - _ind_frac) * 188.5 }}" stroke-dashoffset="47.1" transform="rotate(-90 40 40)" stroke-linecap="round"/>
+        <text x="40" y="38" text-anchor="middle" font-size="14" font-weight="700" fill="#374151" font-family="Inter,system-ui,sans-serif">{{ gv.independence_ratio }}</text>
+        <text x="40" y="50" text-anchor="middle" font-size="7" fill="#9CA3AF" font-family="Inter,system-ui,sans-serif">indep.</text>
+      </svg>
+    </div>
+    {# Board Tenure Distribution Bars #}
+    {% if gv.directors and gv.directors | length > 0 %}
+    <div style="flex:1;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:8px 10px">
+      <div style="font-size:8pt;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.3px;font-weight:700;margin-bottom:4px">Board Tenure Distribution</div>
+      {% set _dc = gv.directors | length %}{% set _dbh = 14 %}{% set _dg = 3 %}{% set _dlw = 90 %}{% set _dcw = 200 %}
+      {% set _dsw = _dlw + _dcw + 40 %}{% set _dsh = _dc * (_dbh + _dg) + 2 %}
+      <svg width="100%" viewBox="0 0 {{ _dsw }} {{ _dsh }}" xmlns="http://www.w3.org/2000/svg" style="font-family:Inter,system-ui,sans-serif">
+        {% for d in gv.directors %}{% set _dy = loop.index0 * (_dbh + _dg) + 1 %}{% set _traw = d.tenure | string | replace('yr','') | replace('N/A','0') %}{% set _tv = _traw | float %}{% set _tb = [_tv * (_dcw / 30), _dcw - 2] | min %}
+        <text x="{{ _dlw - 4 }}" y="{{ _dy + _dbh / 2 + 1 }}" text-anchor="end" font-size="7" fill="#374151" dominant-baseline="middle">{{ d.name | truncate(14, True, '..') }}</text>
+        <rect x="{{ _dlw }}" y="{{ _dy }}" width="{{ _dcw }}" height="{{ _dbh }}" rx="2" fill="#F3F4F6"/>
+        <rect x="{{ _dlw }}" y="{{ _dy + 1 }}" width="{{ _tb }}" height="{{ _dbh - 2 }}" rx="2" fill="{% if _tv >= 15 %}#D97706{% elif _tv >= 8 %}#3B82F6{% else %}#16A34A{% endif %}" opacity="0.8"/>
+        <text x="{{ _dlw + _tb + 3 }}" y="{{ _dy + _dbh / 2 + 1 }}" font-size="7" font-weight="600" fill="#374151" dominant-baseline="middle">{{ d.tenure }}</text>
+        {% if d.independent == 'Yes' %}<circle cx="{{ _dlw + _dcw + 12 }}" cy="{{ _dy + _dbh / 2 }}" r="3" fill="#16A34A"/>{% elif d.independent == 'No' %}<circle cx="{{ _dlw + _dcw + 12 }}" cy="{{ _dy + _dbh / 2 }}" r="3" fill="#DC2626"/>{% else %}<circle cx="{{ _dlw + _dcw + 12 }}" cy="{{ _dy + _dbh / 2 }}" r="3" fill="#9CA3AF"/>{% endif %}
+        {% endfor %}
+        <text x="{{ _dlw + _dcw + 25 }}" y="8" font-size="5" fill="#9CA3AF">Indep.</text>
+      </svg>
+    </div>
+    {% endif %}
+    {# CEO Pay Ratio Gauge #}
+    {% if gv.ceo_pay_ratio and gv.ceo_pay_ratio != 'N/A' %}
+    <div style="flex:0 0 140px;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:8px;text-align:center">
+      <div style="font-size:8pt;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.3px;font-weight:700;margin-bottom:4px">CEO Pay Ratio</div>
+      {% set _prr = gv.ceo_pay_ratio | string | replace(':1','') | replace(',','') %}
+      {% set _prv = _prr | float %}{% set _prp = [_prv / 1000, 1.0] | min %}
+      <svg width="120" height="70" viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg" style="font-family:Inter,system-ui,sans-serif">
+        <path d="M 15 55 A 45 45 0 0 1 105 55" fill="none" stroke="#E5E7EB" stroke-width="8" stroke-linecap="round"/>
+        {% set _al = 141.4 %}
+        <path d="M 15 55 A 45 45 0 0 1 105 55" fill="none" stroke="{% if _prv > 500 %}#DC2626{% elif _prv > 200 %}#D97706{% else %}#16A34A{% endif %}" stroke-width="8" stroke-linecap="round" stroke-dasharray="{{ _prp * _al }} {{ (1 - _prp) * _al }}"/>
+        <text x="60" y="48" text-anchor="middle" font-size="16" font-weight="800" fill="{% if _prv > 500 %}#DC2626{% elif _prv > 200 %}#D97706{% else %}#16A34A{% endif %}">{{ gv.ceo_pay_ratio }}</text>
+        <text x="60" y="62" text-anchor="middle" font-size="7" fill="#9CA3AF">CEO : Median</text>
+        <text x="10" y="65" font-size="5" fill="#D1D5DB">0</text>
+        <text x="108" y="65" font-size="5" fill="#D1D5DB">1000</text>
+      </svg>
+      {# Fix 8: CEO pay ratio context — equity-based comp + S&P 500 context #}
+      {% if _prv > 300 %}
+      <div style="font-size:6pt;color:#6B7280;font-style:italic;margin-top:2px;line-height:1.3;padding:0 2px">Top decile S&amp;P 500. ~70% equity-based w/ multi-year vesting; realized pay may differ significantly.</div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+
+  {# Governance Summary narrative #}
+  {% if gv.governance_summary %}
+  <div style="font-size:10.5pt;color:#374151;line-height:1.55;margin-bottom:6px;padding:6px 10px;background:white;border:1px solid #E5E7EB;border-radius:5px;border-left:3px solid #1F3A5C">
+    {{ gv.governance_summary | strip_md }}
+  </div>
+  {% endif %}
+
+  {# Officers & Board tables side by side #}
+  <table style="width:100%;border-collapse:separate;border-spacing:4px 0"><tr>
+    {# Officers #}
+    <td style="width:50%;vertical-align:top">
+      <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px">
+        <span style="font-size:11pt;font-weight:700;color:#1F3A5C">Named Executive Officers</span>
+        <span style="font-size:7pt;color:#6B7280;margin-left:6px">CEO Comp: {{ gv.ceo_total_comp }} | Pay Ratio: {{ gv.ceo_pay_ratio }} | Say-on-Pay: {{ gv.say_on_pay }}</span>
+      </div>
+      {% set ns_ex = namespace(show_age=false) %}
+      {% for ex in gv.executives %}{% if ex.age and ex.age != '—' %}{% set ns_ex.show_age = true %}{% endif %}{% endfor %}
+      <table style="width:100%;border-collapse:collapse;font-size:8pt">
+        <tr style="background:#F9FAFB;border-bottom:1px solid #E5E7EB">
+          <th style="text-align:left;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Name</th>
+          <th style="text-align:left;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Title</th>
+          {% if ns_ex.show_age %}<th style="text-align:center;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Age</th>{% endif %}
+          <th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Tenure</th>
+          <th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Comp</th>
+        </tr>
+        {% for ex in gv.executives %}
+        <tr style="border-bottom:1px solid #F3F4F6">
+          <td style="padding:3px 4px;font-weight:600;color:#111827">{{ ex.name }}</td>
+          <td style="padding:3px 4px;color:#4B5563">{{ ex.title }}</td>
+          {% if ns_ex.show_age %}<td style="padding:3px 4px;text-align:center;color:#6B7280;font-size:7.5pt">{% if ex.age %}{{ ex.age }}{% else %}—{% endif %}</td>{% endif %}
+          <td style="padding:3px 4px;text-align:right;color:#374151">{{ ex.tenure }}</td>
+          <td style="padding:3px 4px;text-align:right;color:#374151;font-variant-numeric:tabular-nums">{{ ex.compensation }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% if gv.departures_18mo > 0 %}<div style="font-size:8pt;color:#DC2626;font-weight:600;margin-top:4px">Departures (18mo): {{ gv.departures_18mo }}</div>{% endif %}
+    </td>
+    {# Board #}
+    <td style="width:50%;vertical-align:top">
+      <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin-bottom:4px">
+        <span style="font-size:11pt;font-weight:700;color:#1F3A5C">Board of Directors</span>
+        <span style="font-size:7pt;color:#6B7280;margin-left:6px">Clawback: {{ gv.has_clawback }}{% if gv.clawback_scope %} ({{ gv.clawback_scope }}){% endif %} | Meetings: {{ gv.meetings_held }}</span>
+      </div>
+      {% set ns_bd = namespace(show_age=false, show_indep=false, show_other_boards=false) %}
+      {% for d in gv.directors %}
+        {% if d.age and d.age != '—' %}{% set ns_bd.show_age = true %}{% endif %}
+        {% if d.independent and d.independent != '—' and d.independent != 'N/A' %}{% set ns_bd.show_indep = true %}{% endif %}
+        {% if d.other_boards %}{% set ns_bd.show_other_boards = true %}{% endif %}
+      {% endfor %}
+      <table style="width:100%;border-collapse:collapse;font-size:8pt">
+        <tr style="background:#F9FAFB;border-bottom:1px solid #E5E7EB">
+          <th style="text-align:left;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Name</th>
+          {% if ns_bd.show_age %}<th style="text-align:center;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Age</th>{% endif %}
+          <th style="text-align:right;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Tenure</th>
+          {% if ns_bd.show_indep %}<th style="text-align:center;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Indep.</th>{% endif %}
+          {% if ns_bd.show_other_boards %}<th style="text-align:left;padding:3px 4px;font-weight:600;color:#6B7280;font-size:6.5pt;text-transform:uppercase">Other Boards</th>{% endif %}
+        </tr>
+        {% for d in gv.directors %}
+        <tr style="border-bottom:1px solid #F3F4F6{% if ns_bd.show_age and d.age and d.age >= 75 %};background:#FFFBEB{% endif %}{% if d.is_overboarded %};background:#FEF2F2{% endif %}">
+          <td style="padding:3px 4px;font-weight:600;color:#111827">{{ d.name }}{% if d.is_overboarded %} <span style="font-size:6pt;font-weight:700;padding:1px 4px;border-radius:6px;background:#FEF2F2;border:1px solid #FECACA;color:#DC2626;white-space:nowrap" title="Serving on 4+ public boards">OB</span>{% endif %}</td>
+          {% if ns_bd.show_age %}<td style="padding:3px 4px;text-align:center;font-size:7.5pt;{% if d.age and d.age >= 75 %}font-weight:700;color:#D97706{% else %}color:#6B7280{% endif %}">{% if d.age %}{{ d.age }}{% else %}—{% endif %}</td>{% endif %}
+          <td style="padding:3px 4px;text-align:right;color:#374151">{{ d.tenure }}</td>
+          {% if ns_bd.show_indep %}<td style="padding:3px 4px;text-align:center"><span style="display:inline-block;width:8px;height:8px;border-radius:4px;background:{% if d.independent == 'Yes' %}#16A34A{% elif d.independent == 'No' %}#DC2626{% else %}#9CA3AF{% endif %}"></span></td>{% endif %}
+          {% if ns_bd.show_other_boards %}<td style="padding:2px 4px">{% if d.other_boards %}{% for ob in d.other_boards %}<span style="font-size:6pt;font-weight:600;padding:1px 5px;border-radius:8px;background:{% if d.total_board_count > 4 %}#FEF2F2;border:1px solid #FECACA;color:#991B1B{% else %}#F3F4F6;border:1px solid #E5E7EB;color:#374151{% endif %};margin:1px;display:inline-block;white-space:nowrap">{{ ob }}</span>{% endfor %}{% else %}<span style="font-size:7pt;color:#9CA3AF">—</span>{% endif %}</td>{% endif %}
+        </tr>
+        {% endfor %}
+      </table>
+    </td>
+  </tr></table>
+
+  {# ── Board Anti-Takeover & Governance Provisions ── #}
+  {% if gv.board_attendance is not none or gv.poison_pill is not none or gv.stability_score is not none %}
+  <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px">
+    {% if gv.board_attendance is not none %}<div style="flex:1;min-width:14%;background:white;border:1px solid #E5E7EB;border-radius:4px;padding:6px 8px;text-align:center"><div style="font-size:11pt;font-weight:800;color:#374151">{{ gv.board_attendance }}%</div><div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;margin-top:1px">Board Attendance</div></div>{% endif %}
+    {% if gv.below_75_attendance is not none %}<div style="flex:1;min-width:14%;background:white;border:1px solid #E5E7EB;border-radius:4px;padding:6px 8px;text-align:center"><div style="font-size:11pt;font-weight:800;color:{% if gv.below_75_attendance > 0 %}#DC2626{% else %}#16A34A{% endif %}">{{ gv.below_75_attendance }}</div><div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;margin-top:1px">Below 75% Attend</div></div>{% endif %}
+    {% if gv.stability_score is not none %}<div style="flex:1;min-width:14%;background:white;border:1px solid #E5E7EB;border-radius:4px;padding:6px 8px;text-align:center"><div style="font-size:11pt;font-weight:800;color:{% if gv.stability_score >= 80 %}#16A34A{% elif gv.stability_score >= 50 %}#D97706{% else %}#DC2626{% endif %}">{{ gv.stability_score }}</div><div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;margin-top:1px">Leadership Stability</div></div>{% endif %}
+    {% if gv.activist_risk %}<div style="flex:1;min-width:14%;background:white;border:1px solid #E5E7EB;border-radius:4px;padding:6px 8px;text-align:center"><div style="font-size:11pt;font-weight:800;color:{% if gv.activist_risk == 'LOW' %}#16A34A{% elif gv.activist_risk == 'MODERATE' %}#D97706{% else %}#DC2626{% endif %}">{{ gv.activist_risk }}</div><div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;margin-top:1px">Activist Risk</div></div>{% endif %}
+    {% if gv.has_dual_class %}<div style="flex:1;min-width:14%;background:white;border:1px solid #E5E7EB;border-radius:4px;padding:6px 8px;text-align:center"><div style="font-size:11pt;font-weight:800;color:#DC2626">Yes</div><div style="font-size:6pt;color:#6B7280;font-weight:600;text-transform:uppercase;margin-top:1px">Dual Class</div></div>{% endif %}
+  </div>
+  {% endif %}
+
+  {# 5.5.3 Shareholder proposals + 5.4.3/5.4.4 Insider activity summary badges #}
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">
+    {% if gv.shareholder_proposals > 0 %}<span style="padding:3px 10px;border-radius:12px;font-size:8pt;font-weight:700;background:#FFFBEB;border:1px solid #FDE68A;color:#92400E">{{ gv.shareholder_proposals }} Shareholder Proposal{{ 's' if gv.shareholder_proposals > 1 else '' }}</span>{% endif %}
+    {% if gv.exercise_sell_count > 0 %}<span style="padding:3px 10px;border-radius:12px;font-size:8pt;font-weight:600;background:#FEF2F2;border:1px solid #FECACA;color:#991B1B">{{ gv.exercise_sell_count }} Exercise-Sell Event{{ 's' if gv.exercise_sell_count > 1 else '' }}</span>{% endif %}
+    {% if gv.ownership_trajectory_count > 0 %}<span style="padding:3px 10px;border-radius:12px;font-size:8pt;font-weight:600;background:#F0FDF4;border:1px solid #BBF7D0;color:#166534">{{ gv.ownership_trajectory_count }} Insider{{ 's' if gv.ownership_trajectory_count > 1 else '' }} Tracked</span>{% endif %}
+  </div>
+
+  {# Top Institutional Holders #}
+  {% if gv.top_holders %}
+  <div style="background:#F3F4F6;padding:4px 8px;border-radius:3px;margin:8px 0 4px"><span style="font-size:11pt;font-weight:700;color:#1F3A5C">Top Institutional Holders</span></div>
+  <div style="display:flex;gap:3px;flex-wrap:wrap">
+    {% for h in gv.top_holders %}
+    <div style="flex:1;min-width:18%;background:white;border:1px solid #E5E7EB;border-radius:4px;padding:6px 8px">
+      <div style="font-size:9pt;font-weight:700;color:#111827">{{ h.name }}</div>
+      <div style="font-size:11pt;font-weight:800;color:#1D4ED8;margin-top:2px">{{ h.pct }}</div>
+      <div style="font-size:7.5pt;color:#6B7280">{{ h.shares }} shares</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if gv.commentary_factual %}
+  <div style="margin:6px 0">
+    <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">What Was Said</div>
+    <div style="font-size:10.5pt;color:#374151;line-height:1.55;padding:6px 10px;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:4px">{{ gv.commentary_factual | strip_md }}</div>
+  </div>
+  {% endif %}
+  {% if gv.commentary_bullets %}
+  <div style="margin:6px 0">
+    <div style="font-size:7pt;font-weight:700;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Underwriting Commentary</div>
+    <div style="font-size:10.5pt;color:#374151;line-height:1.55;padding:6px 10px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;border-left:3px solid #2563EB">{{ gv.commentary_bullets | strip_md }}</div>
+  </div>
+  {% endif %}
+
+  {# Full governance detail from existing sub-templates #}
+  {% set gov = governance or {} %}
+  <div style="margin-top:12px">
+
+  {# ── LAYER 1: Board Detail ── #}
+  <div style="border:1px solid #DDD6FE;border-radius:6px;padding:10px;margin-bottom:12px;background:#FAF8FF">
+    <div style="font-size:8pt;font-weight:700;color:#5B21B6;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #7C3AED;padding-bottom:4px">Board Detail — Composition, Forensics, Skills & Committees</div>
+    {% include "sections/governance/board_composition.html.j2" %}
+    {% include "sections/governance/board_forensics.html.j2" %}
+    {% include "sections/governance/skills_matrix.html.j2" %}
+    {% include "sections/governance/committee_detail.html.j2" %}
+    {% include "sections/governance/tenure_distribution.html.j2" %}
+  </div>
+
+  {# ── LAYER 2: Executive Risk ── #}
+  <div style="border:1px solid #FECACA;border-radius:6px;padding:10px;margin-bottom:12px;background:#FFFBFB">
+    <div style="font-size:8pt;font-weight:700;color:#991B1B;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #DC2626;padding-bottom:4px">Executive Risk — Officer Backgrounds, Cross-Exposure & People Risk</div>
+    {% include "sections/governance/officer_backgrounds.html.j2" %}
+    {% include "sections/investigative/board_cross_exposure.html.j2" ignore missing %}
+    {% include "sections/governance/people_risk.html.j2" %}
+    {# Executive risk profiles — manifest groups #}
+    {% include "sections/executive_risk/executive_profiles.html.j2" ignore missing %}
+    {% include "sections/executive_risk/tenure_stability.html.j2" ignore missing %}
+    {% include "sections/executive_risk/insider_trading.html.j2" ignore missing %}
+    {% include "sections/executive_risk/prior_litigation.html.j2" ignore missing %}
+  </div>
+
+  {# ── LAYER 3: Compensation ── #}
+  <div style="border:1px solid #FDE68A;border-radius:6px;padding:10px;margin-bottom:12px;background:#FFFEF5">
+    <div style="font-size:8pt;font-weight:700;color:#92400E;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #D97706;padding-bottom:4px">Compensation — Executive Pay, Say-on-Pay & Incentive Structure</div>
+    {% include "sections/governance/compensation_analysis.html.j2" %}
+  </div>
+
+  {# ── LAYER 4: Ownership & Rights ── #}
+  <div style="border:1px solid #BFDBFE;border-radius:6px;padding:10px;margin-bottom:12px;background:#F8FBFF">
+    <div style="font-size:8pt;font-weight:700;color:#1E40AF;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #2563EB;padding-bottom:4px">Ownership & Rights — Insider Activity, Activist Risk & Shareholder Protections</div>
+    {% include "sections/governance/ownership_structure.html.j2" %}
+    {% include "sections/governance/per_insider_activity.html.j2" %}
+    {% include "sections/governance/activist_risk.html.j2" %}
+    {% include "sections/governance/structural_governance.html.j2" %}
+    {% include "sections/governance/shareholder_rights.html.j2" %}
+    {% include "sections/governance/transparency_disclosure.html.j2" %}
+  </div>
+
+  {# ── LAYER 5: Checks ── #}
+  <div style="border:1px solid #BBF7D0;border-radius:6px;padding:10px;margin-bottom:12px;background:#F7FFF9">
+    <div style="font-size:8pt;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid #16A34A;padding-bottom:4px">Governance Checks — Data Quality & Completeness</div>
+    {% include "sections/governance/governance_checks.html.j2" %}
+    {% include "sections/governance/governance_density_alerts.html.j2" ignore missing %}
+  </div>
+
+  </div>
+</div>
+{% endif %}
