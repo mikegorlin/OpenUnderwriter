@@ -1,0 +1,35 @@
+#!/bin/bash
+# GSD (Getting Shit Done) wrapper for OpenCode with oh-my-openagent
+# Usage: ./gsd "Your task description"
+#        ./gsd --help
+
+cd "$(dirname "$0")"  # Change to script directory (worktree root)
+
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    echo "GSD (Getting Shit Done) - OpenCode Task Runner"
+    echo "Usage: gsd \"Your task description\""
+    echo "       gsd [oh-my-opencode options] \"Task description\""
+    echo ""
+    echo "This runs: npx oh-my-opencode run [options] \"Task description\""
+    echo ""
+    echo "Examples:"
+    echo "  ./gsd \"Fix the bug in src/do_uw/stages/acquire/orchestrator.py\""
+    echo "  ./gsd --model anthropic/claude-sonnet-4 \"Implement new feature\""
+    echo "  ./gsd --session-id ses_abc123 \"Continue from where we left off\""
+    echo ""
+    echo "Available agents: Sisyphus (default), Hephaestus, Prometheus, Atlas"
+    exit 0
+fi
+
+# Check if npx is available
+if ! command -v npx &> /dev/null; then
+    echo "Error: npx is not available. Install Node.js/npm first."
+    exit 1
+fi
+
+echo "🚀 Starting GSD task with Sisyphus agent..."
+echo "📁 Working directory: $(pwd)"
+echo ""
+
+# Pass all arguments to oh-my-opencode run
+exec npx oh-my-opencode run "$@"

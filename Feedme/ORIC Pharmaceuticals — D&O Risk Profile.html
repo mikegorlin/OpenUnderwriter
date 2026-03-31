@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<!-- saved from url=(0234)file:///Users/gorlin/Library/Application%20Support/Claude/local-agent-mode-sessions/bc905af7-592d-46a7-8c23-a5946e58c761/689c487d-ea94-428c-ab2c-8ce521c59cac/local_31ca8160-130a-4111-a910-826274c26752/outputs/ORIC_DO_Risk_Profile.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORIC Pharmaceuticals — D&amp;O Risk Profile</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+  :root {
+    --navy: #0a1628;
+    --dark-blue: #0f2140;
+    --medium-blue: #1a365d;
+    --accent-blue: #2b6cb0;
+    --light-blue: #bee3f8;
+    --ice-blue: #ebf8ff;
+    --gold: #d69e2e;
+    --gold-light: #fefcbf;
+    --red: #c53030;
+    --red-light: #fff5f5;
+    --red-bg: #fed7d7;
+    --orange: #dd6b20;
+    --orange-light: #fffaf0;
+    --orange-bg: #feebc8;
+    --green: #276749;
+    --green-light: #f0fff4;
+    --green-bg: #c6f6d5;
+    --gray-50: #f7fafc;
+    --gray-100: #edf2f7;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e0;
+    --gray-400: #a0aec0;
+    --gray-500: #718096;
+    --gray-600: #4a5568;
+    --gray-700: #2d3748;
+    --gray-800: #1a202c;
+    --gray-900: #171923;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @page {
+    size: letter portrait;
+    margin: 0;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: #fff;
+    color: var(--gray-800);
+    font-size: 11px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    width: 8.5in;
+    min-height: 11in;
+    margin: 0 auto;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+  }
+
+  /* ===================== COVER PAGE ===================== */
+  .cover {
+    background: linear-gradient(155deg, var(--navy) 0%, var(--dark-blue) 40%, var(--medium-blue) 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0;
+    position: relative;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -120px;
+    right: -120px;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(43,108,176,0.25) 0%, transparent 70%);
+  }
+
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -80px;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(214,158,46,0.12) 0%, transparent 70%);
+  }
+
+  .cover-top {
+    padding: 48px 56px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cover-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1.5px solid rgba(214,158,46,0.4);
+    padding: 6px 16px;
+    border-radius: 3px;
+    margin-bottom: 40px;
+  }
+
+  .cover-main {
+    padding: 0 56px;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .cover-ticker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+  }
+
+  .cover-company {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+  }
+
+  .cover-subtitle {
+    font-size: 20px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 48px;
+    letter-spacing: 0.3px;
+  }
+
+  .cover-divider {
+    width: 60px;
+    height: 3px;
+    background: var(--gold);
+    margin-bottom: 32px;
+    border-radius: 2px;
+  }
+
+  .cover-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .cover-meta-item {
+    padding: 20px 0;
+    border-right: 1px solid rgba(255,255,255,0.08);
+  }
+  .cover-meta-item:last-child { border-right: none; }
+
+  .cover-meta-label {
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 6px;
+  }
+
+  .cover-meta-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+  }
+
+  .cover-footer {
+    padding: 24px 56px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cover-footer-left {
+    font-size: 9px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.5px;
+  }
+
+  .cover-footer-right {
+    font-size: 9px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1px;
+  }
+
+  /* ===================== CONTENT PAGES ===================== */
+  .content-page {
+    background: white;
+    padding: 40px 48px 36px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--navy);
+    margin-bottom: 24px;
+  }
+
+  .page-header-left {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray-400);
+  }
+
+  .page-header-right {
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--gray-400);
+    letter-spacing: 0.5px;
+  }
+
+  .page-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--navy);
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+
+  .page-subtitle {
+    font-size: 11px;
+    color: var(--gray-500);
+    font-weight: 400;
+    margin-bottom: 20px;
+  }
+
+  /* ===================== EXECUTIVE SUMMARY ===================== */
+  .exec-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .exec-card {
+    background: var(--gray-50);
+    border-radius: 6px;
+    padding: 16px 18px;
+    border-left: 4px solid var(--accent-blue);
+  }
+
+  .exec-card.risk-high { border-left-color: var(--red); background: var(--red-light); }
+  .exec-card.risk-mod { border-left-color: var(--orange); background: var(--orange-light); }
+  .exec-card.risk-low { border-left-color: var(--green); background: var(--green-light); }
+
+  .exec-card-label {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 6px;
+  }
+
+  .exec-card-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin-bottom: 2px;
+  }
+
+  .exec-card-note {
+    font-size: 9px;
+    color: var(--gray-500);
+  }
+
+  .verdict-bar {
+    background: linear-gradient(135deg, var(--red) 0%, #9b2c2c 100%);
+    color: white;
+    border-radius: 8px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .verdict-bar.moderate {
+    background: linear-gradient(135deg, var(--orange) 0%, #c05621 100%);
+  }
+
+  .verdict-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .verdict-text {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+  }
+
+  .verdict-right {
+    text-align: right;
+  }
+
+  .verdict-sub {
+    font-size: 9px;
+    opacity: 0.8;
+    margin-top: 2px;
+  }
+
+  /* ===================== RISK MATRIX ===================== */
+  .matrix-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 16px;
+    font-size: 10px;
+  }
+
+  .matrix-table thead th {
+    background: var(--navy);
+    color: white;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    padding: 10px 12px;
+    text-align: left;
+  }
+
+  .matrix-table thead th:first-child { border-radius: 6px 0 0 0; }
+  .matrix-table thead th:last-child { border-radius: 0 6px 0 0; }
+
+  .matrix-table tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--gray-100);
+    vertical-align: top;
+  }
+
+  .matrix-table tbody tr:last-child td { border-bottom: none; }
+  .matrix-table tbody tr:nth-child(even) { background: var(--gray-50); }
+
+  .matrix-table .cat-label {
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 10px;
+  }
+
+  .pill {
+    display: inline-block;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 10px;
+  }
+
+  .pill-high { background: var(--red-bg); color: var(--red); }
+  .pill-mod { background: var(--orange-bg); color: var(--orange); }
+  .pill-low { background: var(--green-bg); color: var(--green); }
+  .pill-elevated { background: #fef3c7; color: #92400e; }
+  .pill-watch { background: #e9d5ff; color: #6b21a8; }
+  .pill-clean { background: var(--green-bg); color: var(--green); }
+
+  /* ===================== PIPELINE CHART ===================== */
+  .pipeline-row {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 10px;
+    min-height: 56px;
+  }
+
+  .pipeline-label {
+    width: 140px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-right: 12px;
+  }
+
+  .pipeline-drug {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .pipeline-indication {
+    font-size: 8.5px;
+    color: var(--gray-500);
+    margin-top: 1px;
+  }
+
+  .pipeline-track {
+    flex: 1;
+    position: relative;
+    background: var(--gray-100);
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+
+  .pipeline-bar {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 9px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.3px;
+    border-radius: 6px;
+    position: relative;
+  }
+
+  .pipeline-bar.phase1 {
+    width: 25%;
+    background: linear-gradient(135deg, #48bb78, #38a169);
+  }
+
+  .pipeline-bar.phase1b {
+    width: 35%;
+    background: linear-gradient(135deg, var(--orange), #c05621);
+  }
+
+  .pipeline-bar.phase1b-to-3 {
+    width: 45%;
+    background: linear-gradient(135deg, var(--red), #9b2c2c);
+  }
+
+  .pipeline-bar.shelved {
+    width: 20%;
+    background: var(--gray-300);
+    color: var(--gray-600);
+  }
+
+  .pipeline-phases {
+    display: flex;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+  }
+
+  .phase-marker {
+    flex: 1;
+    border-right: 1px dashed rgba(0,0,0,0.08);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 2px;
+  }
+
+  .phase-marker-label {
+    font-size: 7px;
+    color: var(--gray-400);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .pipeline-score {
+    width: 80px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 8px;
+  }
+
+  /* ===================== FINANCIALS ===================== */
+  .fin-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .fin-card {
+    background: var(--gray-50);
+    border-radius: 6px;
+    padding: 14px 14px;
+    text-align: center;
+    border: 1px solid var(--gray-100);
+  }
+
+  .fin-card-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 2px;
+  }
+
+  .fin-card-label {
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gray-400);
+  }
+
+  .fin-card.flagged {
+    border-color: var(--orange);
+    background: var(--orange-light);
+  }
+
+  .fin-card.flagged .fin-card-val { color: var(--orange); }
+
+  /* ===================== RED FLAG SECTION ===================== */
+  .flag-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    background: var(--gray-50);
+    border-radius: 6px;
+    border: 1px solid var(--gray-100);
+  }
+
+  .flag-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 13px;
+  }
+
+  .flag-icon.red { background: var(--red-bg); }
+  .flag-icon.orange { background: var(--orange-bg); }
+  .flag-icon.green { background: var(--green-bg); }
+
+  .flag-content { flex: 1; }
+
+  .flag-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .flag-body {
+    font-size: 9.5px;
+    color: var(--gray-600);
+    line-height: 1.5;
+  }
+
+  /* ===================== GAUGES ===================== */
+  .gauge-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .gauge-item {
+    flex: 1;
+    text-align: center;
+  }
+
+  .gauge-ring {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 6px;
+    position: relative;
+  }
+
+  .gauge-ring svg {
+    transform: rotate(-90deg);
+  }
+
+  .gauge-ring-val {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .gauge-label {
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gray-500);
+  }
+
+  /* ===================== SECTION DIVIDERS ===================== */
+  .section-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--navy);
+    letter-spacing: -0.2px;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+    background: var(--navy);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .section-desc {
+    font-size: 9px;
+    color: var(--gray-400);
+    margin-bottom: 12px;
+  }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ===================== TIMELINE ===================== */
+  .timeline {
+    display: flex;
+    align-items: stretch;
+    margin: 12px 0 16px;
+    position: relative;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gray-200);
+    z-index: 0;
+  }
+
+  .tl-item {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .tl-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    margin: 8px auto 8px;
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px var(--accent-blue);
+  }
+
+  .tl-dot.active {
+    background: var(--red);
+    box-shadow: 0 0 0 2px var(--red);
+    width: 14px;
+    height: 14px;
+  }
+
+  .tl-dot.future {
+    background: var(--gray-300);
+    box-shadow: 0 0 0 2px var(--gray-300);
+  }
+
+  .tl-label {
+    font-size: 8px;
+    font-weight: 700;
+    color: var(--gray-600);
+    letter-spacing: 0.5px;
+  }
+
+  .tl-date {
+    font-size: 7.5px;
+    color: var(--gray-400);
+    margin-top: 2px;
+  }
+
+  /* ===================== KEY FINDING BOX ===================== */
+  .keyfinding {
+    background: linear-gradient(135deg, var(--ice-blue), #f0f9ff);
+    border: 1px solid #90cdf4;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+  }
+
+  .keyfinding-title {
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--accent-blue);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .keyfinding-text {
+    font-size: 10px;
+    color: var(--gray-700);
+    line-height: 1.55;
+  }
+
+  /* ===================== FOOTER ===================== */
+  .page-footer {
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .page-footer-text {
+    font-size: 7.5px;
+    color: var(--gray-400);
+    letter-spacing: 0.3px;
+  }
+
+  .page-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--gray-400);
+  }
+
+  /* Print styles */
+  @media print {
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; }
+  }
+
+  /* Screen styles */
+  @media screen {
+    body { background: #e2e8f0; padding: 20px 0; }
+    .page { box-shadow: 0 4px 30px rgba(0,0,0,0.15); margin-bottom: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== PAGE 1: COVER ==================== -->
+<div class="page cover">
+  <div class="cover-top">
+    <div class="cover-badge">Confidential — Underwriting Analysis</div>
+  </div>
+
+  <div class="cover-main">
+    <div class="cover-ticker">NASDAQ: ORIC</div>
+    <div class="cover-company">ORIC<br>Pharmaceuticals</div>
+    <div class="cover-subtitle">Directors &amp; Officers Liability Risk Profile</div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Sector</div>
+        <div class="cover-meta-value">Oncology Biotech</div>
+      </div>
+      <div class="cover-meta-item" style="padding-left:20px;">
+        <div class="cover-meta-label">Market Cap</div>
+        <div class="cover-meta-value">~$1.07B</div>
+      </div>
+      <div class="cover-meta-item" style="padding-left:20px;">
+        <div class="cover-meta-label">Overall D&amp;O Risk</div>
+        <div class="cover-meta-value" style="color:#fc8181;">HIGH</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-footer">
+    <div class="cover-footer-left">Liberty IronPro MGA · Biotech D&amp;O Underwriting Framework</div>
+    <div class="cover-footer-right">March 2026</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 2: EXECUTIVE SUMMARY ==================== -->
+<div class="page content-page">
+  <div class="page-header">
+    <div class="page-header-left">ORIC Pharmaceuticals · D&amp;O Risk Profile</div>
+    <div class="page-header-right">Confidential</div>
+  </div>
+
+  <div class="page-title">Executive Summary</div>
+  <div class="page-subtitle">Key risk indicators and overall D&amp;O risk verdict</div>
+
+  <div class="verdict-bar">
+    <div>
+      <div class="verdict-label">Overall D&amp;O Risk Rating</div>
+      <div class="verdict-text">HIGH</div>
+    </div>
+    <div class="verdict-right">
+      <div class="verdict-text" style="font-size:14px;">Phase 3 Binary Event + Sub-$2B Cap</div>
+      <div class="verdict-sub">Risk window: H1 2026 through 2028</div>
+    </div>
+  </div>
+
+  <div class="exec-grid">
+    <div class="exec-card risk-high">
+      <div class="exec-card-label">Pipeline Binary Event</div>
+      <div class="exec-card-value" style="color:var(--red);">HIGH</div>
+      <div class="exec-card-note">Phase 3 initiation imminent — maximum severity window opens H1 2026</div>
+    </div>
+    <div class="exec-card" style="border-left-color:#d69e2e;">
+      <div class="exec-card-label">Market Cap Vulnerability</div>
+      <div class="exec-card-value" style="color:#92400e;">ELEVATED</div>
+      <div class="exec-card-note">Sub-$2B cap sits in highest-frequency SCA tier</div>
+    </div>
+    <div class="exec-card risk-mod">
+      <div class="exec-card-label">Promotional Language Risk</div>
+      <div class="exec-card-value" style="color:var(--orange);">MODERATE</div>
+      <div class="exec-card-note">"Best-in-class" claims on small-n Phase 1b datasets</div>
+    </div>
+    <div class="exec-card risk-low">
+      <div class="exec-card-label">Litigation History</div>
+      <div class="exec-card-value" style="color:var(--green);">CLEAN</div>
+      <div class="exec-card-note">No known securities class actions to date</div>
+    </div>
+  </div>
+
+  <!-- RISK MATRIX TABLE -->
+  <div class="section-title"><span class="section-num">1</span> Risk Matrix</div>
+  <div class="section-desc">Comprehensive scoring across all D&amp;O risk dimensions</div>
+
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th style="width:28%;">Category</th>
+        <th style="width:14%;">Rating</th>
+        <th>Key Factors</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cat-label">Pipeline Binary Event</td>
+        <td><span class="pill pill-high">HIGH</span></td>
+        <td>Phase 3 initiation H1 2026 for lead asset; maximum severity window through 2028 readout</td>
+      </tr>
+      <tr>
+        <td class="cat-label">Market Cap Vulnerability</td>
+        <td><span class="pill pill-elevated">ELEVATED</span></td>
+        <td>~$1.07B cap in highest SCA frequency tier; could drop below $500M on failure</td>
+      </tr>
+      <tr>
+        <td class="cat-label">Promotional Language</td>
+        <td><span class="pill pill-mod">MODERATE</span></td>
+        <td>"Potential best-in-class" on n=20 datasets; 100% intracranial ORR on small cohort</td>
+      </tr>
+      <tr>
+        <td class="cat-label">Insider Activity</td>
+        <td><span class="pill pill-watch">WATCH</span></td>
+        <td>CEO sold 33,374 shares Dec 2025 ahead of Phase 3 decision; stock dropped 7.5%</td>
+      </tr>
+      <tr>
+        <td class="cat-label">Cash / Liquidity</td>
+        <td><span class="pill pill-low">LOW-MOD</span></td>
+        <td>$412M cash; funded through H2 2028 — covers Phase 3 readout; burn will accelerate</td>
+      </tr>
+      <tr>
+        <td class="cat-label">Financial Controls</td>
+        <td><span class="pill pill-low">LOW</span></td>
+        <td>No restatements or material weakness on record; traditional IPO (no SPAC exposure)</td>
+      </tr>
+      <tr>
+        <td class="cat-label">Litigation History</td>
+        <td><span class="pill pill-clean">CLEAN</span></td>
+        <td>No known securities class actions filed against ORIC to date</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="keyfinding">
+    <div class="keyfinding-title">Key Underwriting Insight</div>
+    <div class="keyfinding-text">
+      ORIC's risk profile is defined by the <strong>imminent Phase 3 transition</strong>. The company is moving from early-stage (lower D&amp;O frequency) to pivotal-trial stage (maximum severity) in H1 2026. This transition — combined with a sub-$2B market cap and promotional disclosure patterns — creates a 24-month window of peak D&amp;O exposure. Price the program for this binary event risk.
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="page-footer-text">Liberty IronPro MGA · Biotech D&amp;O Underwriting Framework · March 2026</div>
+    <div class="page-num">2</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 3: PIPELINE & CLINICAL TRIAL SCORING ==================== -->
+<div class="page content-page">
+  <div class="page-header">
+    <div class="page-header-left">ORIC Pharmaceuticals · D&amp;O Risk Profile</div>
+    <div class="page-header-right">Confidential</div>
+  </div>
+
+  <div class="page-title">Clinical Pipeline &amp; Phase Severity Scoring</div>
+  <div class="page-subtitle">Drug/biologic pipeline mapped to D&amp;O risk severity per clinical phase</div>
+
+  <!-- Pipeline visual -->
+  <div style="margin-bottom:6px;">
+    <div style="display:flex;gap:4px;margin-bottom:8px;margin-left:152px;">
+      <div style="flex:1;text-align:center;font-size:7.5px;font-weight:700;color:var(--gray-400);letter-spacing:1px;">PRECLINICAL</div>
+      <div style="flex:1;text-align:center;font-size:7.5px;font-weight:700;color:var(--gray-400);letter-spacing:1px;">PHASE I</div>
+      <div style="flex:1;text-align:center;font-size:7.5px;font-weight:700;color:var(--gray-400);letter-spacing:1px;">PHASE II</div>
+      <div style="flex:1;text-align:center;font-size:7.5px;font-weight:700;color:var(--gray-400);letter-spacing:1px;">PHASE III</div>
+      <div style="flex:1;text-align:center;font-size:7.5px;font-weight:700;color:var(--gray-400);letter-spacing:1px;">NDA/BLA</div>
+      <div style="width:80px;"></div>
+    </div>
+  </div>
+
+  <div class="pipeline-row">
+    <div class="pipeline-label">
+      <div class="pipeline-drug">Rinzimetostat</div>
+      <div class="pipeline-indication">mCRPC (Prostate)</div>
+    </div>
+    <div class="pipeline-track">
+      <div class="pipeline-bar phase1b-to-3" style="width:58%;">
+        <span style="font-size:8px;">Phase 1b → Phase 3 (H1 2026)</span>
+      </div>
+    </div>
+    <div class="pipeline-score"><span class="pill pill-high">HIGH → MAX</span></div>
+  </div>
+
+  <div class="pipeline-row">
+    <div class="pipeline-label">
+      <div class="pipeline-drug">Enozertinib</div>
+      <div class="pipeline-indication">NSCLC (Lung)</div>
+    </div>
+    <div class="pipeline-track">
+      <div class="pipeline-bar phase1b" style="width:38%;">
+        <span style="font-size:8px;">Phase 1b Expansion</span>
+      </div>
+    </div>
+    <div class="pipeline-score"><span class="pill pill-mod">HIGH FREQ</span></div>
+  </div>
+
+  <div class="pipeline-row">
+    <div class="pipeline-label">
+      <div class="pipeline-drug">ORIC-533</div>
+      <div class="pipeline-indication">Multiple Myeloma</div>
+    </div>
+    <div class="pipeline-track">
+      <div class="pipeline-bar shelved" style="width:22%;">
+        <span style="font-size:8px;">De-prioritized</span>
+      </div>
+    </div>
+    <div class="pipeline-score"><span class="pill pill-low">LOW</span></div>
+  </div>
+
+  <div class="pipeline-row">
+    <div class="pipeline-label">
+      <div class="pipeline-drug">PLK4 Inhibitor</div>
+      <div class="pipeline-indication">Breast (TRIM37)</div>
+    </div>
+    <div class="pipeline-track">
+      <div class="pipeline-bar" style="width:12%;background:var(--gray-300);color:var(--gray-600);">
+        <span style="font-size:8px;">Preclinical</span>
+      </div>
+    </div>
+    <div class="pipeline-score"><span class="pill pill-low">N/A</span></div>
+  </div>
+
+  <!-- Catalyst Timeline -->
+  <div class="section-title" style="margin-top:18px;"><span class="section-num">2</span> Catalyst Timeline — Key Risk Windows</div>
+  <div class="section-desc">Events that define the D&amp;O exposure curve through 2028</div>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-label">RP2D Data</div>
+      <div class="tl-dot active"></div>
+      <div class="tl-date">Q1 2026</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-label" style="color:var(--red);font-weight:800;">Phase 3 Start</div>
+      <div class="tl-dot active"></div>
+      <div class="tl-date" style="color:var(--red);">H1 2026</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-label">Eno Mono Data</div>
+      <div class="tl-dot"></div>
+      <div class="tl-date">H2 2026</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-label">J&amp;J Combo Data</div>
+      <div class="tl-dot"></div>
+      <div class="tl-date">H2 2026</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-label" style="color:var(--red);font-weight:800;">Phase 3 Readout</div>
+      <div class="tl-dot future"></div>
+      <div class="tl-date">~2027-2028</div>
+    </div>
+  </div>
+
+  <div class="keyfinding">
+    <div class="keyfinding-title">Phase Severity Analysis</div>
+    <div class="keyfinding-text">
+      <strong>Rinzimetostat</strong> is the dominant risk driver. Phase 3 initiation in H1 2026 moves this into <strong>Maximum Severity Risk</strong> — the market will price in success, and failure at this stage historically triggers the largest securities class actions. The Phase 1b dataset (n≈20, 55% PSA50 response) is encouraging but statistically underpowered to predict pivotal trial outcomes. <strong>Enozertinib</strong> sits in the "Valley of Death" (Phase 1b expansion, 33-40% historical advance rate), though the J&amp;J collaboration provides partial validation and cost de-risking. No NDA/BLA submissions pending — no PDUFA date or Accelerated Approval exposure at this time.
+    </div>
+  </div>
+
+  <!-- Business Model -->
+  <div class="section-title"><span class="section-num">3</span> Business Model &amp; Financial Resilience</div>
+  <div class="section-desc">Structure classification and capital adequacy assessment</div>
+
+  <div class="fin-grid">
+    <div class="fin-card">
+      <div class="fin-card-val">Platform</div>
+      <div class="fin-card-label">Structure</div>
+    </div>
+    <div class="fin-card flagged">
+      <div class="fin-card-val">~$1.07B</div>
+      <div class="fin-card-label">Market Cap</div>
+    </div>
+    <div class="fin-card">
+      <div class="fin-card-val">$412M</div>
+      <div class="fin-card-label">Cash (Proforma)</div>
+    </div>
+    <div class="fin-card">
+      <div class="fin-card-val">H2 2028</div>
+      <div class="fin-card-label">Runway</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
+    <div style="background:var(--gray-50);border-radius:6px;padding:12px 14px;border:1px solid var(--gray-100);">
+      <div style="font-size:9px;font-weight:700;color:var(--navy);margin-bottom:4px;">Platform Classification: Moderate Structural Risk</div>
+      <div style="font-size:9px;color:var(--gray-600);line-height:1.5;">Two meaningful clinical assets (ORIC-944 + enozertinib), J&amp;J collaboration, and early-stage PLK4. If lead asset fails, ~30-35% platform survival rate. Not a single-asset extinction story.</div>
+    </div>
+    <div style="background:var(--gray-50);border-radius:6px;padding:12px 14px;border:1px solid var(--gray-100);">
+      <div style="font-size:9px;font-weight:700;color:var(--navy);margin-bottom:4px;">Capital Markets Dependency</div>
+      <div style="font-size:9px;color:var(--gray-600);line-height:1.5;">$125M PIPE (May 2025), active ATM, $20M follow-on post-Q4. Each offering creates Section 11/12 liability exposure. FY2025 net loss: $129.5M. Phase 3 burn will substantially exceed this.</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="page-footer-text">Liberty IronPro MGA · Biotech D&amp;O Underwriting Framework · March 2026</div>
+    <div class="page-num">3</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 4: RED-FLAG AUDIT ==================== -->
+<div class="page content-page">
+  <div class="page-header">
+    <div class="page-header-left">ORIC Pharmaceuticals · D&amp;O Risk Profile</div>
+    <div class="page-header-right">Confidential</div>
+  </div>
+
+  <div class="page-title">Red-Flag Audit</div>
+  <div class="page-subtitle">Discrepancy analysis against 2024 securities litigation triggers</div>
+
+  <!-- Stat bar -->
+  <div style="display:flex;gap:8px;margin-bottom:16px;">
+    <div style="flex:1;background:var(--green-light);border:1px solid var(--green-bg);border-radius:6px;padding:12px;text-align:center;">
+      <div style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:22px;font-weight:800;color:var(--green);">34%</div>
+      <div style="font-size:8px;font-weight:700;color:var(--green);letter-spacing:1px;text-transform:uppercase;">CRL Trap Claims</div>
+      <div style="font-size:8px;color:var(--gray-500);margin-top:2px;">No FDA submissions pending</div>
+    </div>
+    <div style="flex:1;background:var(--orange-light);border:1px solid var(--orange-bg);border-radius:6px;padding:12px;text-align:center;">
+      <div style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:22px;font-weight:800;color:var(--orange);">52%</div>
+      <div style="font-size:8px;font-weight:700;color:var(--orange);letter-spacing:1px;text-transform:uppercase;">Efficacy Misrep Claims</div>
+      <div style="font-size:8px;color:var(--gray-500);margin-top:2px;">Promotional language flagged</div>
+    </div>
+    <div style="flex:1;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:6px;padding:12px;text-align:center;">
+      <div style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:22px;font-weight:800;color:var(--gray-600);">34%</div>
+      <div style="font-size:8px;font-weight:700;color:var(--gray-500);letter-spacing:1px;text-transform:uppercase;">Financial Claims</div>
+      <div style="font-size:8px;color:var(--gray-500);margin-top:2px;">Capital markets activity noted</div>
+    </div>
+  </div>
+
+  <!-- Flag items -->
+  <div class="section-title"><span class="section-num">4</span> Detailed Findings</div>
+  <div class="section-desc">Each finding mapped to the 2024 biotech SCA trigger taxonomy</div>
+
+  <div class="flag-item">
+    <div class="flag-icon green">✓</div>
+    <div class="flag-content">
+      <div class="flag-title">
+        CRL Trap (34% of 2024 claims)
+        <span class="pill pill-low">LOW RISK</span>
+      </div>
+      <div class="flag-body">No NDA/BLA submitted. No PDUFA date on the calendar. No CRL exposure. openFDA cross-reference: no published Complete Response Letters for ORIC. This risk vector activates only upon regulatory submission, estimated 2028+ at the earliest.</div>
+    </div>
+  </div>
+
+  <div class="flag-item" style="border-color:var(--orange-bg);">
+    <div class="flag-icon orange">⚠</div>
+    <div class="flag-content">
+      <div class="flag-title">
+        BioVie Standard — Efficacy Misrepresentation (52% of claims)
+        <span class="pill pill-mod">MODERATE</span>
+      </div>
+      <div class="flag-body">
+        <strong>Primary exposure:</strong> Management repeatedly uses "potential best-in-class" language across press releases for both assets. Rinzimetostat's 55% PSA50 and 59% ctDNA clearance rates are based on approximately 20 patients — a statistically thin basis for definitive efficacy claims. Enozertinib's "100% intracranial ORR" is drawn from a very small brain-mets cohort.<br><br>
+        <strong>Litigation vector:</strong> If Phase 3 data underperform Phase 1b numbers (common due to patient selection bias and small-n inflation), plaintiffs will allege management knew early data was not representative and inflated investor expectations. Need to audit 10-K Item 105 risk factors for hypothetical-vs-materialized framing gaps per BioVie precedent.
+      </div>
+    </div>
+  </div>
+
+  <div class="flag-item" style="border-color:#e9d5ff;">
+    <div class="flag-icon" style="background:#e9d5ff;">🔍</div>
+    <div class="flag-content">
+      <div class="flag-title">
+        Insider Selling Pre-Catalyst
+        <span class="pill pill-watch">WATCH</span>
+      </div>
+      <div class="flag-body">CEO Jacob Chacko sold 33,374 shares at ~$9.06 in December 2025, coinciding with a 7.5% stock decline. This occurred ahead of Phase 3 initiation decisions (H1 2026). Insider selling prior to binary clinical events is a top-five plaintiffs' exhibit in biotech SCA complaints. If the Phase 3 subsequently fails, this sale will be central to any loss-causation argument.</div>
+    </div>
+  </div>
+
+  <div class="flag-item">
+    <div class="flag-icon orange">$</div>
+    <div class="flag-content">
+      <div class="flag-title">
+        Financial &amp; Transactional Traps (34% / 20% of claims)
+        <span class="pill pill-mod">MODERATE</span>
+      </div>
+      <div class="flag-body">
+        <strong>No SPAC exposure</strong> — traditional IPO (2020). <strong>No restatements</strong> or material weakness identified. However, multiple capital raises create Section 11/12 exposure: $125M PIPE (May 2025), active ATM program, $20M post-Q4 raise. Each registration statement is a potential liability anchor if material omissions are later alleged. <strong>ORIC-533 de-prioritization</strong> may be a secondary vector if it was featured in offering materials as a key pipeline asset.
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing Considerations -->
+  <div class="section-title" style="margin-top:12px;"><span class="section-num">5</span> Underwriting Considerations</div>
+
+  <div style="background:linear-gradient(135deg,var(--navy),var(--dark-blue));color:white;border-radius:8px;padding:18px 22px;margin-top:6px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:6px;">Pricing Drivers</div>
+        <div style="font-size:9.5px;line-height:1.6;color:rgba(255,255,255,0.85);">
+          • Phase 3 binary event risk (H1 2026 – 2028)<br>
+          • Sub-$2B market cap in highest SCA frequency tier<br>
+          • Promotional language gap vs. small-n data<br>
+          • Capital markets dependency (multiple offerings)
+        </div>
+      </div>
+      <div>
+        <div style="font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:6px;">Mitigants</div>
+        <div style="font-size:9.5px;line-height:1.6;color:rgba(255,255,255,0.85);">
+          • Platform structure (2 clinical assets + J&amp;J collab)<br>
+          • Clean litigation history — no prior SCAs<br>
+          • Adequate cash runway through Phase 3 readout<br>
+          • No financial control deficiencies identified
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.12);margin-top:14px;padding-top:12px;">
+      <div style="font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px;">Recommendation</div>
+      <div style="font-size:10px;line-height:1.55;color:rgba(255,255,255,0.9);">
+        Price for the <strong>24-month maximum severity window</strong> beginning H1 2026. Consider structuring with a <strong>Phase 3 binary event sublimit or retention bump</strong> if available. Monitor insider selling patterns and promotional disclosure language through trial enrollment. Re-underwrite at Phase 3 interim analysis (if any) and at primary endpoint readout.
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="page-footer-text">Liberty IronPro MGA · Biotech D&amp;O Underwriting Framework · March 2026</div>
+    <div class="page-num">4</div>
+  </div>
+</div>
+
+
+
+</body></html>

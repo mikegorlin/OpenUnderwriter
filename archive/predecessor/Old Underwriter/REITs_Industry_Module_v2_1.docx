@@ -1,0 +1,698 @@
+**REITs / REAL ESTATE**
+
+**INDUSTRY MODULE**
+
+Supplemental Underwriting Guide
+
+Version 2.1 \| January 2026
+
+*Based on Empirical Analysis of 127 REIT Securities Cases*
+
+*Including Orchid Island Capital (ORC) Case Study*
+
+**EXECUTIVE SUMMARY**
+
+REITs face MODERATE filing frequency but EXTREME subsector variation.
+This module provides ACTIONABLE decision criteria with specific
+thresholds and point adjustments.
+
++-----------------------------------------------------------------------+
+| **NUCLEAR TRIGGERS - IMMEDIATE ESCALATION**                           |
+|                                                                       |
+| Active securities class action on Stanford SCAC                       |
+|                                                                       |
+| Non-traded REIT structure (suitability/NAV exposure)                  |
+|                                                                       |
+| AFFO payout ratio \>110% (dividend funded by debt/dilution)           |
+|                                                                       |
+| Office concentration \>70% in current market                          |
+|                                                                       |
+| Going concern opinion in most recent 10-K/10-Q                        |
+|                                                                       |
+| mREIT book value decline \>40% YoY                                    |
+|                                                                       |
+| Short seller report \<6 months (Hindenburg/Wolfpack)                  |
++-----------------------------------------------------------------------+
+
++-----------------------------------------------------------------------+
+| **KEY PROTECTIVE FACTORS**                                            |
+|                                                                       |
+| Data center / industrial focus with AI demand tailwind                |
+|                                                                       |
+| mREIT 100% Agency RMBS (government-guaranteed, zero credit risk)      |
+|                                                                       |
+| Internalized management (eliminates external manager conflicts)       |
+|                                                                       |
+| AFFO payout ratio \<85% with demonstrated dividend stability          |
+|                                                                       |
+| Zero or minimal long-term debt (eliminates refinancing risk)          |
+|                                                                       |
+| Clean Stanford SCAC and SEC Lit Releases (no prior suits)             |
++-----------------------------------------------------------------------+
+
+**SECTION 1: SUBSECTOR RISK TIERS**
+
+Use this table to immediately classify risk and set pricing
+expectations. Updated January 2026.
+
+  --------------- -------------- ------------- ----------------- -------------------
+  **Subsector**   **Risk**       **Premium**   **Scoring Adj**   **Action**
+
+  **Office (Class **CRITICAL**   +75-100%      +12 baseline      DECLINE or mgmt
+  B/C)**                                                         approval
+
+  **Non-Traded    **CRITICAL**   N/A           N/A               DECLINE -
+  REIT**                                                         suitability
+                                                                 exposure
+
+  Office (Class   **HIGH**       +50%          +8 baseline       Enhanced retention,
+  A)                                                             mgmt review
+
+  Life Science    **HIGH**       +40-60%       +6 baseline       Alexandria
+                                                                 litigation active
+
+  mREIT -         **HIGH**       +50%          +8 baseline       CRE credit exposure
+  Commercial                                                     
+
+  mREIT - Agency  **ELEVATED**   +25%          +4 baseline (ORC  Book value
+                                               case)             volatility
+
+  Healthcare -    **ELEVATED**   +30%          +5 baseline       Operator distress
+  SNF                                                            risk
+
+  Mall (Class A)  **ELEVATED**   +25%          +4 baseline       Anchor tenant risk
+
+  Multifamily     MODERATE       +10-15%       +2 baseline       Oversupply in
+  (Sun Belt)                                                     select markets
+
+  Triple Net      MODERATE       Base +10%     +2 if ext mgmt    Review external
+  Lease                                                          mgmt terms
+
+  Healthcare -    MODERATE       Base          0                 Standard terms
+  MOB                                                            
+
+  Strip Retail    **LOW**        Base          -2 protective     Undersupply, 96%+
+                                                                 occ
+
+  Industrial      **LOW**        -10%          -3 protective     Favorable -
+                                                                 AI/logistics
+
+  Data Center     **LOW**        -15%          -4 protective     AI tailwind, supply
+                                                                 constrained
+
+  Self-Storage    **LOW**        -10%          -2 protective     Counter-cyclical
+  --------------- -------------- ------------- ----------------- -------------------
+
+**SECTION 2: SCORING ADJUSTMENTS**
+
+Apply these adjustments to the base 10-factor score. All adjustments are
+ADDITIVE (positives reduce score, negatives increase).
+
+**2.1 REIT-Specific Additive Factors**
+
+These factors ADD to the base score:
+
+  ---------------------------- ------------ --------------------------------
+  **Risk Factor**              **Points**   **Verification Source**
+
+  Office (Class B/C) subsector **+12**      10-K property schedule; Costar
+  baseline                                  data
+
+  Office (Class A) subsector   **+8**       10-K property schedule; Costar
+  baseline                                  data
+
+  mREIT - Commercial baseline  **+8**       10-K loan schedule; CRE exposure
+                                            %
+
+  Life Science subsector       +6           10-K property type disclosure
+  baseline                                  
+
+  Healthcare - SNF subsector   +5           10-K operator coverage ratios
+  baseline                                  
+
+  mREIT - Agency baseline (ORC +4           10-K portfolio composition
+  case)                                     
+
+  Mall (Class A) subsector     +4           10-K tenant roster; anchor mix
+  baseline                                  
+
+  AFFO payout ratio \>110%     **+8**       Quarterly 8-K; calculate
+                                            DIV/AFFO
+
+  AFFO payout ratio 95-110%    **+6**       Quarterly 8-K; calculate
+                                            DIV/AFFO
+
+  AFFO payout ratio 90-95%     +3           Quarterly 8-K; calculate
+                                            DIV/AFFO
+
+  External management          +3           DEF 14A; management agreement
+  structure                                 
+
+  External mgmt + related      **+5**       DEF 14A Item 13; 10-K related
+  party txns                                party
+
+  Dividend cut \<12 months     **+6**       8-K dividend announcements
+
+  Dividend cut 12-24 months    **+5**       Historical dividend record
+
+  Multiple dividend cuts (3+)  +4           Full dividend history review
+
+  mREIT book value decline     **+8**       10-K/10-Q BV per share
+  \>40% YoY                                 
+
+  mREIT book value decline     **+5**       10-K/10-Q BV per share
+  20-40% YoY                                
+
+  mREIT book value decline     +3           10-K/10-Q BV per share
+  10-20% YoY                                
+
+  Debt maturing \<24mo \>40%   **+6**       10-K debt maturity schedule
+
+  Debt maturing \<24mo 30-40%  +4           10-K debt maturity schedule
+
+  Debt/EBITDA \>8x (equity     **+5**       10-K MD&A; calculate ratio
+  REIT)                                     
+
+  Short interest \>15%         **+5**       Fintel, MarketBeat
+
+  Short interest 8-15%         +3           Fintel, MarketBeat
+
+  AFFO excludes recurring      +4           10-K AFFO reconciliation vs
+  CapEx unlike peers                        peers
+
+  AFFO methodology changed     +3           Compare sequential 10-K AFFO
+  \<12 months                               tables
+  ---------------------------- ------------ --------------------------------
+
+**2.2 REIT-Specific Protective Factors**
+
+These factors REDUCE the base score:
+
+  ---------------------------- ------------ --------------------------------
+  **Protective Factor**        **Points**   **Verification Source**
+
+  Data Center subsector        **-4**       10-K property schedule
+
+  Industrial/Logistics         **-3**       10-K property schedule
+  subsector                                 
+
+  Strip Retail /               -2           10-K tenant roster
+  Grocery-anchored                          
+
+  Self-Storage subsector       -2           10-K property schedule
+
+  mREIT 100% Agency RMBS (ORC  **-3**       10-K portfolio composition
+  case)                                     
+
+  mREIT zero long-term debt    -2           10-K balance sheet
+  (repo only)                               
+
+  Internalized management      -2           DEF 14A structure review
+
+  AFFO payout ratio \<80%      -2           Calculate DIV/AFFO last 4Q
+
+  Debt/EBITDA \<5x with        -2           10-K debt schedule; no \>20% in
+  laddered maturities                       24mo
+
+  Investment grade tenant base -2           10-K tenant roster with ratings
+  \>50%                                     
+
+  Clean Stanford SCAC (no      -2           Stanford SCAC search + SEC Lit
+  prior suits)                              Releases
+
+  Dividend stable 5+ years     -2           Historical dividend record
+
+  CEO tenure \>10 years        -1           DEF 14A; 8-K 5.02 history
+  ---------------------------- ------------ --------------------------------
+
+**SECTION 3: mREIT EVALUATION FRAMEWORK**
+
+mREITs (mortgage REITs) require specialized analysis. The Orchid Island
+Capital (ORC) case study informed this framework.
+
+**3.1 mREIT Classification**
+
+  ---------------- ------------------------ -------------- ------------------
+  **Type**         **Portfolio Focus**      **Baseline**   **Key Risk**
+
+  **Agency**       Fannie/Freddie/Ginnie    +4 pts         Interest rate /
+                   MBS; govt guaranteed                    book value
+
+  **Hybrid**       Mix of Agency and        +6 pts         Credit + interest
+                   non-Agency                              rate
+
+  **Commercial**   CRE loans, office        +8 pts         CRE credit
+                   exposure, CMBS                          deterioration
+  ---------------- ------------------------ -------------- ------------------
+
+**3.2 mREIT Key Metrics Thresholds**
+
+  ----------------- -------------- -------------- -------------- ------------
+  **Metric**        **Healthy**    **Elevated**   **Critical**   **Points**
+
+  Book Value        \<10%          10-20%         \>20%          +3/+5/+8
+  Decline (YoY)                                                  
+
+  Dividend/BV Yield \<12%          12-16%         \>16%          0/+2/+4
+
+  Dividend          Stable 3yr     1-2 cuts       3+ cuts        -2/+3/+5
+  Sustainability                                                 
+
+  Leverage (D/E)    \<6x           6-8x           \>8x           0/+2/+4
+
+  Hedge Ratio       \>80%          50-80%         \<50%          -1/+1/+3
+  ----------------- -------------- -------------- -------------- ------------
+
+**3.3 ORC Case Study: Agency mREIT Scoring Example**
+
+Orchid Island Capital (ORC) analysis demonstrated net-zero adjustment:
+
+  ----------------------------------- -------------- ---------------------
+  **Factor**                          **Points**     **Evidence**
+
+  **ADDITIVE FACTORS**                               
+
+  Agency mREIT baseline               +4             100% Agency RMBS
+
+  External management (Bimini)        +3             DEF 14A; fee
+                                                     structure
+
+  **Subtotal Additives**              **+7**         
+
+  **PROTECTIVE FACTORS**                             
+
+  Clean litigation history since 2013 -2             Stanford SCAC search
+
+  100% Agency RMBS (zero credit risk) -3             10-K portfolio
+
+  Zero long-term debt (repo only)     -2             10-K balance sheet
+
+  **Subtotal Protectives**            **-7**         
+
+  **NET ADJUSTMENT**                  **0**          Factors offset
+  ----------------------------------- -------------- ---------------------
+
+**SECTION 4: EQUITY REIT EVALUATION**
+
+**4.1 Office REIT Risk Assessment (Current Crisis)**
+
+**Environment: Office vacancy 20.4% (record), CMBS delinquency 11.76%,
+OPI bankruptcy Oct 2025**
+
+  ------------------------ --------------- -------------- -------------------
+  **Red Flag**             **Threshold**   **Points**     **Action**
+
+  Class B/C concentration  \>50%           +12 baseline   DECLINE or mgmt
+                                                          approval
+
+  Government tenant        \>20%           +4             DOGE risk
+  exposure                                                assessment
+
+  Portfolio occupancy      \<80%           +5             Escalate
+
+  Same-store NOI negative  2+ quarters     +4             Review trend
+
+  Dividend despite FFO     Any             +5             Sustainability
+  decline                                                 review
+  ------------------------ --------------- -------------- -------------------
+
+**4.2 Triple Net Lease Analysis**
+
+Focus on tenant credit quality and external management conflicts (ARCP
+pattern).
+
+  ------------------------ --------------------- ------------ ------------------
+  **Factor**               **Threshold**         **Points**   **Verification**
+
+  Investment grade tenants \>50% = protective    -2           10-K tenant roster
+
+  Single tenant \>15%      Any tenant \>15%      +3           10-K concentration
+                           revenue                            
+
+  External management      Any + related party   +5           DEF 14A Item 13
+                           txns                               
+
+  AFFO methodology         Differs from peers    +4           Compare to O, NNN
+  aggressive                                                  
+  ------------------------ --------------------- ------------ ------------------
+
+**4.3 Healthcare REIT Risk Matrix**
+
+  ----------------- -------------- --------------- -------------- -------------
+  **Sub-Type**      **Baseline**   **Key Risk**    **Red Flag**   **Watch For**
+
+  SNF (Skilled      +5             Operator        Coverage       PACS
+  Nursing)                         distress        \<1.2x         litigation
+
+  Life Science      +6             Vacancy spike   Vacancy \>25%  Alexandria
+                                                                  case
+
+  Senior Housing    +3             Census recovery Occ \<80%      RIDEA
+                                                                  exposure
+
+  MOB (Med Office)  0              Reimbursement   Single system  Health system
+                                                                  M&A
+  ----------------- -------------- --------------- -------------- -------------
+
+**SECTION 5: DISCOVERY CHECKLIST**
+
+Use this checklist to ensure complete data collection. Each item maps to
+a scoring factor.
+
+**5.1 Financial Metrics (All REITs)**
+
+  ---- --------------------- --------------------- -------------------------
+       **Data Point**        **Source**            **Maps To**
+
+  \[   FFO per share (last 8 10-K, 10-Q, 8-K       Trend analysis,
+  \]   quarters)                                   sustainability
+
+  \[   AFFO per share +      10-K AFFO             F.3 proxy, manipulation
+  \]   methodology           reconciliation        risk
+
+  \[   AFFO payout ratio     DIV/AFFO for last 4Q  Dividend sustainability
+  \]   calculation                                 
+
+  \[   Debt/EBITDA or D/E    10-K MD&A             F.9 Financial Distress
+  \]   ratio                                       
+
+  \[   Debt maturity         10-K Note to          Refinancing risk
+  \]   schedule              financials            
+
+  \[   Same-store NOI trend  10-Q supplemental     Organic growth
+  \]                                               
+
+  \[   Dividend history (5   Historical records    Stability/cuts
+  \]   years)                                      
+  ---- --------------------- --------------------- -------------------------
+
+**5.2 mREIT-Specific Data**
+
+  ---- --------------------- --------------------- -------------------------
+       **Data Point**        **Source**            **Maps To**
+
+  \[   Portfolio composition 10-K portfolio        Classification
+  \]   (Agency %)            schedule              (Agency/Hybrid/CRE)
+
+  \[   Book value per share  10-K, 10-Q            Book value decline
+  \]   (current + YoY)                             scoring
+
+  \[   Hedge ratio /         10-K risk factors     Interest rate exposure
+  \]   duration gap                                
+
+  \[   Leverage ratio (D/E)  10-K balance sheet    F.9 Financial Distress
+  \]                                               
+
+  \[   CRE loan exposure (if 10-K loan schedule    Credit risk assessment
+  \]   commercial)                                 
+  ---- --------------------- --------------------- -------------------------
+
+**5.3 Governance (External Management Focus)**
+
+  ---- --------------------- --------------------- -------------------------
+       **Data Point**        **Source**            **Maps To**
+
+  \[   Internal vs External  DEF 14A               +3 if external
+  \]   management                                  
+
+  \[   Management fee        Management agreement  Conflict potential
+  \]   structure                                   
+
+  \[   Related party         DEF 14A Item 13; 10-K +5 if external + related
+  \]   transactions                                party
+
+  \[   Manager prior         Stanford SCAC; SEC    ARCP/Bimini pattern
+  \]   litigation            Lit                   
+  ---- --------------------- --------------------- -------------------------
+
+**SECTION 6: MANAGEMENT INTERVIEW FRAMEWORK**
+
+These questions are designed to position the underwriter as expert and
+surface hidden risks.
+
+**6.1 Core Questions (All REITs)**
+
+**Q1: AFFO Methodology**
+
+**\"Walk me through your AFFO calculation and how it compares to NAREIT
+FFO and key peers.\"**
+
+  ----------------------------------- -----------------------------------
+  **Best Answer**                     **Worst Answer**
+
+  Clear explanation; aligns with      Differs significantly from peers;
+  peers; stable methodology over      frequent changes; large unexplained
+  time; limited adjustments           adjustments; defensive response
+  ----------------------------------- -----------------------------------
+
+**Q2: Dividend Sustainability**
+
+**\"What is your AFFO payout ratio and how do you stress test dividend
+sustainability?\"**
+
+  ----------------------------------- -----------------------------------
+  **Best Answer**                     **Worst Answer**
+
+  Payout \<90%; clear cushion; stress Payout \>95%; dismissive of
+  scenarios discussed; willing to cut concern; relies on capital markets
+  if needed to protect balance sheet  access; \"never consider cutting\"
+  ----------------------------------- -----------------------------------
+
+**Q3: Debt Maturities**
+
+**\"Walk me through your debt maturity schedule and refinancing plan for
+near-term maturities.\"**
+
+  ----------------------------------- -----------------------------------
+  **Best Answer**                     **Worst Answer**
+
+  \<20% maturing in 24mo; multiple    \>30% maturing soon; vague
+  capital sources identified; strong  refinancing plans; single lender
+  bank relationships; laddered        reliance; dismissive of market
+  maturities                          conditions
+  ----------------------------------- -----------------------------------
+
+**Q4: Impairment Testing**
+
+**\"How do you approach impairment testing and property valuations?\"**
+
+  ----------------------------------- -----------------------------------
+  **Best Answer**                     **Worst Answer**
+
+  Regular third-party appraisals;     Infrequent valuations;
+  conservative cap rate assumptions;  management-only estimates; recent
+  no surprise impairments expected    surprise impairment (Alexandria
+                                      pattern)
+  ----------------------------------- -----------------------------------
+
+**6.2 mREIT-Specific Questions**
+
+**Q5: Hedging Strategy**
+
+**\"Walk me through your hedging strategy and current hedge ratio.\"**
+
+  ----------------------------------- -----------------------------------
+  **Best Answer**                     **Worst Answer**
+
+  Hedge ratio \>80%;                  Hedge ratio \<50%; reliance on
+  duration-matched; clear explanation market timing; dismissive of rate
+  of interest rate exposure           volatility risks
+  management                          
+  ----------------------------------- -----------------------------------
+
+**Q6: Book Value Volatility**
+
+**\"How do you think about book value volatility and dividend
+sustainability in rate-volatile environments?\"**
+
+  ----------------------------------- -----------------------------------
+  **Best Answer**                     **Worst Answer**
+
+  Acknowledges volatility inherent to Promises stable book value or
+  model; dividend set at sustainable  dividend; ignores rate sensitivity;
+  level through cycle; not chasing    \"different this time\" reasoning
+  yield                               
+  ----------------------------------- -----------------------------------
+
+**6.3 External Management Questions**
+
+**Q7: Fee Structure**
+
+**\"Describe your management fee structure and how it aligns management
+and shareholder interests.\"**
+
+  ----------------------------------- -----------------------------------
+  **Best Answer**                     **Worst Answer**
+
+  Performance-based component; fee    Purely AUM-based fee; no
+  holiday provisions; internalization performance component; defensive
+  path discussed                      about fee levels; no
+                                      internalization plans
+  ----------------------------------- -----------------------------------
+
+**Q8: Related Party Transactions**
+
+**\"Walk me through any transactions with affiliated entities and how
+conflicts are managed.\"**
+
+  ----------------------------------- -----------------------------------
+  **Best Answer**                     **Worst Answer**
+
+  Independent committee review;       Frequent related party deals;
+  third-party fairness opinions;      manager-controlled approval; no
+  clear policies; minimal             independent review; ARCP-style
+  transactions                        patterns
+  ----------------------------------- -----------------------------------
+
+**SECTION 7: TERMS & CONDITIONS GUIDANCE**
+
+**7.1 Retention Guidelines by Subsector**
+
+  ----------------- -------------- ------------------- -------------------
+  **Subsector**     **Market Cap** **Recommended SIR** **Notes**
+
+  Office (any       \<\$1B         \$2.5M - \$5M       Elevated vs.
+  class)                                               standard
+
+  Office (any       \$1B - \$5B    \$5M - \$10M        Crisis pricing
+  class)                                               
+
+  mREIT - Agency    \<\$1B         \$1.5M - \$3M       Per ORC analysis
+
+  mREIT -           \<\$1B         \$2.5M - \$5M       CRE credit exposure
+  Commercial                                           
+
+  Triple Net /      \<\$5B         \$1M - \$2.5M       Standard market
+  Industrial                                           
+
+  Data Center       Any            \$750K - \$1.5M     Favorable sector
+  ----------------- -------------- ------------------- -------------------
+
+**7.2 Recommended Exclusions**
+
+  ------------------------ ----------------- ----------------------------
+  **Exclusion**            **When to Apply** **Rationale**
+
+  External Management      All external mgmt ARCP pattern; fee conflict
+  Exclusion                                  exposure
+
+  AFFO Claims Exclusion    Aggressive        Non-GAAP manipulation risk
+                           methodology       
+
+  Prior Acts (Post-Issue)  Any red flags     Known issue protection
+
+  Specific Property        Known troubled    Alexandria LIC pattern
+  Exclusion                asset             
+  ------------------------ ----------------- ----------------------------
+
+**7.3 Layer Preference**
+
+  --------------------- ----------------- --------------------------------
+  **Subsector**         **Preference**    **Rationale**
+
+  Office                Excess only       Primary layer exposure
+                                          unacceptable in current market
+
+  mREIT - Agency        Primary OK        Zero credit risk; rate
+                                          volatility priced in
+
+  Data Center /         Full tower        Favorable risk profile
+  Industrial                              
+
+  External Management   Excess preferred  Conflict exposure; ARCP severity
+  --------------------- ----------------- --------------------------------
+
+**SECTION 8: REIT SETTLEMENT DATABASE**
+
+Reference database of significant REIT securities settlements for
+pattern recognition.
+
+  ----------------- ---------------- ---------- --------------- ------------------------
+  **Company**       **Settlement**   **Year**   **Root Cause**  **Key Lesson**
+
+  **ARCP/VEREIT**   **\$1.025B**     2020       AFFO            External mgmt conflict;
+                                                manipulation    largest ever
+
+  Cole Credit       \$120M           2015       Non-traded      Suitability / NAV
+  Property                                      fraud           manipulation
+
+  Equinix           \$41.5M          2025       AFFO misclass   Peer comparison critical
+
+  Brixmor           \$28M            2017       NOI smoothing   Consistent NOI = red
+                                                                flag
+
+  CBL & Associates  \$17.5M          2023       Concealed       Disclosure of material
+                                                litigation      suits
+
+  Wheeler REIT      \$7.125M         2025       Fiduciary       Dilution disclosure
+                                                breach          
+
+  Alexandria        Pending          2025       Impairment      Life science vacancy
+                                                timing          crisis
+
+  CTO Realty        Pending          2025       AFFO            Short seller trigger
+                                                manipulation    (Wolfpack)
+
+  Lineage           Pending          2025       IPO disclosure  Post-COVID normalization
+
+  OPI               Bankruptcy       2025       Refinancing     Office obsolescence;
+                                                failure         external mgmt
+  ----------------- ---------------- ---------- --------------- ------------------------
+
+**SECTION 9: REFERENCE TABLES**
+
+**9.1 Key Metrics by Subsector (January 2026)**
+
+  --------------- ----------- ----------- -------------- --------------- --------------
+  **Subsector**   **P/FFO**   **Yield**   **D/EBITDA**   **Occupancy**   **Baseline**
+
+  Office          8-10x       5-8%        6-8x           75-85%          +8 to +12
+
+  Life Science    12-16x      4-6%        5-7x           73%             +6
+
+  Mall            8-12x       5-7%        5-7x           88-93%          +4
+
+  Strip Retail    14-18x      4-5%        5-6x           96-97%          -2
+
+  Industrial      19-20x      3-4%        4-5x           94-96%          -3
+
+  Multifamily     18-19x      3-5%        5-6x           93-96%          +2
+
+  Data Center     22-28x      2-3%        5-6x           88-95%          -4
+
+  Self-Storage    18-22x      3-4%        4-5x           90-94%          -2
+
+  Healthcare      24-28x      4-6%        5-6x           85-92%          Varies
+
+  Net Lease       14-16x      5-6%        5-6x           98%+            +2 if ext
+
+  mREIT           0.8-1.1x BV 10-14%      5-8x D/E       N/A             +4 to +8
+  --------------- ----------- ----------- -------------- --------------- --------------
+
+**9.2 Current Market Statistics (January 2026)**
+
+  ----------------------------------- ----------------- ------------------
+  **Metric**                          **Value**         **Trend**
+
+  Office Vacancy (National)           **20.4%**         Record high
+
+  Office CMBS Delinquency             **11.76%**        Record high
+
+  Life Science Vacancy                **27%**           Elevated
+
+  Industrial Vacancy                  6.8%              Stable
+
+  Multifamily Vacancy                 6.5%              Slightly elevated
+
+  mREIT Average Yield                 12.65%            Elevated
+
+  REIT Litigation Increase (2024)     +14%              Rising
+
+  D&O Premium Change (Post-Cyan)      +47%              Significant
+  ----------------------------------- ----------------- ------------------
+
+\* \* \*
+
+*Module Version 2.1 \| January 2026 \| Internal Use*
+
+*Based on ORC Case Study and 127 REIT Securities Cases*

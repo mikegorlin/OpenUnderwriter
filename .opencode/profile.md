@@ -30,7 +30,7 @@
 - **GitHub**: mikegorlin
 - **Obsidian Vault**: GorlinVaultRemote (synced across devices)
 - **Open Brain**: Supabase-based thought capture (MCP tools: capture_thought, search_thoughts)
-- **Underwriting bench**: `~/projects/UW/do-uw` (angry-dolphin CLI — `analyze <TICKER>`)
+- **Underwriting bench**: `~/projects/UW/OpenUnderwriter` (angry-dolphin CLI — `analyze <TICKER>`)
 - **MCP integrations**: Supabase, Open Brain, EdgarTools, Brave Search, Playwright, Fetch, Context7, DuckDB, GitHub
 
 ## D&O Underwriting Domain Knowledge

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenCode D&O Underwriting - DeepSeek Conversion Status</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+        }
+        h1 {
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            border-bottom: 2px solid #2ecc71;
+            padding-bottom: 8px;
+        }
+        h3 {
+            border-left: 4px solid #f39c12;
+            padding-left: 10px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .status-inprogress {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .status-medium {
+            background-color: #e2e3e5;
+            color: #383d41;
+            border: 1px solid #d6d8db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #f1f8ff;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        .code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            background-color: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .progress-bar {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #3498db);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        .progress-text {
+            text-align: center;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-top: -25px;
+            margin-bottom: 25px;
+        }
+        .note-box {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .warning-box {
+            background-color: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .success-box {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        ul, ol {
+            padding-left: 25px;
+            margin: 15px 0;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .file-path {
+            color: #2980b9;
+            font-weight: 500;
+        }
+        .command {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .section {
+            background-color: white;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .timestamp {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            text-align: right;
+            margin-top: 30px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>OpenCode D&O Underwriting - DeepSeek Conversion Status</h1>
+    <div class="timestamp">Generated: March 30, 2026</div>
+
+    <div class="progress-bar">
+        <div class="progress-fill" style="width: 80%"></div>
+    </div>
+    <div class="progress-text">Overall Progress: 80% Complete</div>
+
+    <div class="section">
+        <h2>🎯 Goal</h2>
+        <p>Configure a dedicated <strong>OpenCode environment</strong> (running in Warp terminal with DeepSeek Reasoner model) for D&O underwriting analysis that:</p>
+        <ol>
+            <li><strong>Uses only open-source/DeepSeek LLM</strong> — no Claude or Anthropic API calls</li>
+            <li><strong>Maintains complete separation</strong> from the main <span class="code">do-uw</span> project (no contamination)</li>
+            <li><strong>Supports all MCP servers</strong> from CLAUDE.md (edgartools, brave-search, playwright, fetch, context7, duckdb, github, supabase)</li>
+            <li><strong>Provides agent swarm capabilities</strong> with GSD workflow enforcement</li>
+            <li><strong>Enables Supabase connectivity</strong> to GorlinBase D&O underwriting database</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>🔍 Key Discoveries</h2>
+        <ul>
+            <li><strong>DeepSeek API is OpenAI-compatible</strong> — Uses <span class="code">openai</span> Python package with <span class="code">base_url="https://api.deepseek.com"</span>. Models: <span class="code">deepseek-chat</span> (non-thinking) and <span class="code">deepseek-reasoner</span> (thinking mode), both DeepSeek-V3.2 with 128K context.</li>
+            <li><strong>OpenCode worktree is a separate git worktree</strong> — Located at <span class="file-path">.opencode/worktrees/opencode-do/</span>, contains a copy of source files that can be modified without affecting the main project.</li>
+            <li><strong>Current LLM extractor was hardcoded for Anthropic</strong> — Multiple files imported <span class="code">anthropic</span> and used <span class="code">ANTHROPIC_API_KEY</span>.</li>
+            <li><strong>API key provided</strong> — DeepSeek API key: <span class="code">sk-e718f5a3880543d18098bd9495ffd56a</span> (stored in worktree <span class="code">.env</span> as <span class="code">DEEPSEEK_API_KEY</span>).</li>
+            <li><strong>Batch extraction disabled</strong> — Anthropic batch API not compatible with DeepSeek; disabled with warning messages.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>✅ Accomplished</h2>
+        
+        <h3>1. OpenCode Worktree Setup</h3>
+        <ul>
+            <li>Created isolated worktree at <span class="file-path">.opencode/worktrees/opencode-do/</span></li>
+            <li>Configured <span class="code">opencode.json</span> with all MCP server definitions</li>
+            <li>Set up <span class="code">.env</span> with Supabase credentials and DeepSeek API key</li>
+            <li>Created user profile (<span class="file-path">.opencode/profile.md</span>) with D&O domain knowledge</li>
+            <li>Enabled oh-my-openagent plugin with GSD workflow enforcement</li>
+        </ul>
+
+        <h3>2. LLM Provider Switch</h3>
+        <ul>
+            <li><strong>Updated <span class="code">.env</span></strong>: replaced <span class="code">ANTHROPIC_API_KEY</span> with <span class="code">DEEPSEEK_API_KEY</span>, set <span class="code">DO_UW_LLM_MODEL=deepseek-chat</span></li>
+            <li><strong>Updated <span class="code">pyproject.toml</span></strong>: replaced <span class="code">anthropic>=0.79.0</span> with <span class="code">openai>=1.0.0</span> (kept <span class="code">instructor</span>)</li>
+            <li><strong>Rewrote <span class="file-path">src/do_uw/stages/extract/llm/extractor.py</span></strong>:
+                <ul>
+                    <li>Changed imports from <span class="code">anthropic</span> to <span class="code">openai</span></li>
+                    <li>Updated docstrings from "Anthropic/Claude" to "DeepSeek"</li>
+                    <li>Changed <span class="code">DEFAULT_LLM_MODEL</span> from <span class="code">claude-haiku-4-5-20251001</span> to <span class="code">deepseek-chat</span></li>
+                    <li>Reduced <span class="code">MAX_INPUT_TOKEN_ESTIMATE</span> from 190k to 120k (DeepSeek has 128k context)</li>
+                    <li>Updated <span class="code">_call_llm()</span> method to use <span class="code">openai.OpenAI()</span> with DeepSeek endpoint</li>
+                    <li>Changed API key check from <span class="code">ANTHROPIC_API_KEY</span> to <span class="code">DEEPSEEK_API_KEY</span></li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>3. Other File Updates</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>File</th>
+                    <th>Changes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="file-path">src/do_uw/stages/extract/ten_k_yoy.py</span></td>
+                    <td>Changed anthropic import to openai, updated API call format</td>
+                </tr>
+                <tr>
+                    <td><span class="file-path">src/do_uw/stages/benchmark/narrative_generator.py</span></td>
+                    <td>Changed <span class="code">_get_client()</span> to use OpenAI for DeepSeek</td>
+                </tr>
+                <tr>
+                    <td><span class="file-path">src/do_uw/stages/benchmark/commentary_generator.py</span></td>
+                    <td>Changed <span class="code">_get_client()</span> and API calls to OpenAI format</td>
+                </tr>
+                <tr>
+                    <td><span class="file-path">src/do_uw/validation/batch.py</span></td>
+                    <td>Disabled batch extraction (not compatible with DeepSeek), changed default model</td>
+                </tr>
+                <tr>
+                    <td><span class="file-path">src/do_uw/stages/acquire/gap_query_generator.py</span></td>
+                    <td>Changed anthropic imports to openai, updated API calls</td>
+                </tr>
+                <tr>
+                    <td><span class="file-path">src/do_uw/knowledge/ingestion_llm.py</span></td>
+                    <td>Updated for DeepSeek (fixed corrupted file)</td>
+                </tr>
+                <tr>
+                    <td><span class="file-path">src/do_uw/knowledge/pricing_ingestion.py</span></td>
+                    <td>Updated for DeepSeek (rewritten from original)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>4. Testing & Verification</h3>
+        <ul>
+            <li>Created <span class="file-path">test_deepseek.py</span> — verified API connection works</li>
+            <li>Created <span class="file-path">test_extractor.py</span> — verified LLMExtractor works with DeepSeek</li>
+        </ul>
+
+        <h3>5. Git Management</h3>
+        <ul>
+            <li><strong>Committed all changes</strong> to <span class="code">opencode-do</span> branch</li>
+            <li><strong>Pushed to remote</strong> (<span class="code">origin/opencode-do</span>)</li>
+            <li><strong>Commit message</strong>: "Convert Anthropic/Claude LLM to DeepSeek for OpenCode environment"</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>📋 Remaining Work</h2>
+        
+        <h3>High Priority (3 files with anthropic imports)</h3>
+        <ol>
+            <li><span class="file-path">src/do_uw/stages/render/charts/drop_investigator.py</span> — Still uses <span class="code">anthropic.Anthropic()</span> and <span class="code">ANTHROPIC_API_KEY</span></li>
+            <li><span class="file-path">src/do_uw/stages/render/charts/drop_catalyst_synthesizer.py</span> — Still uses <span class="code">anthropic.Anthropic()</span> and <span class="code">ANTHROPIC_API_KEY</span></li>
+            <li><span class="file-path">src/do_uw/stages/render/context_builders/risk_synthesis.py</span> — Still imports <span class="code">anthropic</span></li>
+        </ol>
+
+        <h3>Medium Priority</h3>
+        <ol start="4">
+            <li>Test full FUN pipeline through OpenCode with DeepSeek</li>
+            <li>Verify output separation — ensure outputs go to worktree output directory</li>
+            <li>Check MCP servers configuration and API keys</li>
+        </ol>
+
+        <div class="note-box">
+            <strong>Current Todo List:</strong><br>
+            <span class="status-completed status-badge">Completed</span> Update remaining anthropic imports in knowledge/ingestion_llm.py<br>
+            <span class="status-completed status-badge">Completed</span> Update remaining anthropic imports in knowledge/pricing_ingestion.py<br>
+            <span class="status-pending status-badge">Pending</span> Update remaining anthropic imports in stages/render/charts/drop_investigator.py<br>
+            <span class="status-pending status-badge">Pending</span> Update remaining anthropic imports in stages/render/charts/drop_catalyst_synthesizer.py<br>
+            <span class="status-pending status-badge">Pending</span> Update remaining anthropic imports in stages/render/context_builders/risk_synthesis.py<br>
+            <span class="status-pending status-badge">Pending</span> Test full FUN pipeline through OpenCode with DeepSeek<br>
+            <span class="status-pending status-badge">Pending</span> Verify output separation (worktree vs main project)<br>
+            <span class="status-pending status-badge">Pending</span> Check MCP servers configuration and API keys
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📁 File Structure Overview</h2>
+        
+        <h3>OpenCode Worktree Configuration</h3>
+        <ul>
+            <li><span class="file-path">.opencode/worktrees/opencode-do/</span> — Root of OpenCode worktree</li>
+            <li><span class="file-path">.opencode/worktrees/opencode-do/opencode.json</span> — MCP server definitions</li>
+            <li><span class="file-path">.opencode/worktrees/opencode-do/.env</span> — Environment variables (Supabase, DeepSeek API key)</li>
+            <li><span class="file-path">.opencode/worktrees/opencode-do/pyproject.toml</span> — Dependencies (updated to use openai)</li>
+        </ul>
+
+        <h3>LLM Extraction Files (Modified)</h3>
+        <ul>
+            <li><span class="file-path">.opencode/worktrees/opencode-do/src/do_uw/stages/extract/llm/extractor.py</span> — PRIMARY LLM extractor, fully converted to DeepSeek</li>
+            <li><span class="file-path">.opencode/worktrees/opencode-do/src/do_uw/stages/extract/ten_k_yoy.py</span> — Updated for DeepSeek</li>
+            <li><span class="file-path">.opencode/worktrees/opencode-do/src/do_uw/stages/benchmark/narrative_generator.py</span> — Updated for DeepSeek</li>
+            <li><span class="file-path">.opencode/worktrees/opencode-do/src/do_uw/stages/benchmark/commentary_generator.py</span> — Updated for DeepSeek</li>
+            <li><span class="file-path">.opencode/worktrees/opencode-do/src/do_uw/validation/batch.py</span> — Disabled batch extraction for DeepSeek</li>
+            <li><span class="file-path">.opencode/worktrees/opencode-do/src/do_uw/stages/acquire/gap_query_generator.py</span> — Updated for DeepSeek</li>
+        </ul>
+
+        <h3>Test Files</h3>
+        <ul>
+            <li><span class="file-path">.opencode/worktrees/opencode-do/test_deepseek.py</span> — Simple DeepSeek API test</li>
+            <li><span class="file-path">.opencode/worktrees/opencode-do/test_extractor.py</span> — LLMExtractor integration test</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>🚀 How to Resume on Another Computer</h2>
+        
+        <h3>Step 1: Clone the Repository</h3>
+        <div class="command">git clone https://github.com/mikegorlin/do-uw.git
+cd do-uw</div>
+
+        <h3>Step 2: Checkout OpenCode Worktree</h3>
+        <div class="command">git checkout opencode-do</div>
+
+        <h3>Step 3: Set Up Environment</h3>
+        <div class="command"># Install uv if not present
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Create and activate virtual environment
+uv venv
+source .venv/bin/activate  # On macOS/Linux
+# or .venv\Scripts\activate  # On Windows
+
+# Install dependencies
+uv sync</div>
+
+        <h3>Step 4: Configure Environment Variables</h3>
+        <div class="command"># Copy .env template
+cp .env.example .env
+
+# Edit .env and set:
+# DEEPSEEK_API_KEY=sk-e718f5a3880543d18098bd9495ffd56a
+# DO_UW_LLM_MODEL=deepseek-chat
+# SUPABASE_URL=your_supabase_url
+# SUPABASE_KEY=your_supabase_key</div>
+
+        <h3>Step 5: Complete Remaining Work</h3>
+        <div class="command"># Update remaining anthropic imports
+# 1. drop_investigator.py
+# 2. drop_catalyst_synthesizer.py  
+# 3. risk_synthesis.py
+
+# Test the pipeline
+uv run do-uw analyze FUN
+
+# Verify output goes to worktree directory
+ls -la .opencode/worktrees/opencode-do/output/</div>
+
+        <h3>Step 6: Run Tests</h3>
+        <div class="command"># Test DeepSeek API connection
+python test_deepseek.py
+
+# Test LLM extractor
+python test_extractor.py
+
+# Run full test suite
+uv run pytest tests/ -xvs</div>
+    </div>
+
+    <div class="section">
+        <h2>⚠️ Important Notes</h2>
+        <div class="warning-box">
+            <ol>
+                <li><strong>Never modify original files</strong> — All changes must be made in the OpenCode worktree only</li>
+                <li><strong>Output separation</strong> — OpenCode analysis outputs should go to its own output directory, not the main project's <span class="code">output/</span></li>
+                <li><strong>MCP servers</strong> — Some MCP servers may need API keys (Brave Search, GitHub)</li>
+                <li><strong>DeepSeek limitations</strong> — Batch extraction disabled; 128K context limit vs Claude's 200K</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📊 Progress Summary</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Completion</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Core LLM extraction</td>
+                    <td>100%</td>
+                    <td><span class="status-completed status-badge">Completed</span></td>
+                </tr>
+                <tr>
+                    <td>Knowledge ingestion</td>
+                    <td>100%</td>
+                    <td><span class="status-completed status-badge">Completed</span></td>
+                </tr>
+                <tr>
+                    <td>Remaining render files</td>
+                    <td>0%</td>
+                    <td><span class="status-pending status-badge">Pending</span></td>
+                </tr>
+                <tr>
+                    <td>Testing & verification</td>
+                    <td>50%</td>
+                    <td><span class="status-inprogress status-badge">In Progress</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Overall</strong></td>
+                    <td><strong>80%</strong></td>
+                    <td><span class="status-inprogress status-badge">In Progress</span></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="success-box">
+            <strong>Git Status:</strong> Committed and pushed to <span class="code">opencode-do</span> branch. Ready for resumption on another machine.
+        </div>
+    </div>
+
+    <div class="timestamp">
+        Report saved to: <span class="file-path">.opencode/worktrees/opencode-do/OPECODE_STATUS_REPORT.html</span><br>
+        Next steps: Complete remaining 3 files, test FUN pipeline, verify MCP servers
+    </div>
+</body>
+</html>

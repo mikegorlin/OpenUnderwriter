@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "nano-banana": {
+      "command": "npx",
+      "args": ["-y", "nano-banana-mcp"],
+      "env": {
+        "GEMINI_API_KEY": "${GEMINI_API_KEY}"
+      },
+      "_setup": "Get free Gemini API key at https://aistudio.google.com/apikey then add GEMINI_API_KEY to .env"
+    }
+  },
+  "_required_env_vars": {
+    "GEMINI_API_KEY": "Google Gemini API key for Nano Banana image generation. Free at https://aistudio.google.com/apikey",
+    "ANTHROPIC_API_KEY": "Anthropic API key for LLM extraction. Required for pipeline.",
+    "SUPABASE_ANON_KEY": "Supabase anon key for litigation database. Optional but recommended."
+  }
+}
