@@ -49,7 +49,7 @@ pricing/
 *.swo
 
 # Generated output files
-output/
+# output/ -- NOT ignored per user request
 
 # Local Claude/GSD tooling
 .agents/
