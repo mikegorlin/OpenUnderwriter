@@ -4,10 +4,10 @@
   "mcp": {
     "edgartools": {
       "type": "local",
-      "command": ["../../../.venv/bin/python", "-m", "edgar.ai.mcp.server"],
+      "command": [".venv/bin/python", "-m", "edgar.ai.mcp.server"],
       "enabled": true,
       "environment": {
-        "EDGAR_IDENTITY": "do-uw/0.1.0 (contact@example.com)"
+        "EDGAR_IDENTITY": "OpenUnderwriter/0.2.0 (contact@example.com)"
       }
     },
     "context7": {
@@ -52,11 +52,13 @@
         "MCP_API_KEY": "${MCP_API_KEY}"
       }
     },
-    "duckdb": {
+    "brain-analyzer": {
       "type": "local",
-      "command": ["./node_modules/.bin/duckdb-mcp"],
-      "enabled": false,
-      "comment": "Package installation incomplete; dist files missing"
+      "command": [".venv/bin/python", "-m", "do_uw.mcp_servers.brain_analyzer"],
+      "enabled": true,
+      "environment": {
+        "BRAIN_ROOT": "src/do_uw/brain"
+      }
     }
   }
 }

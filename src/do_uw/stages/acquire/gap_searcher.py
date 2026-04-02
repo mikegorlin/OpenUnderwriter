@@ -199,11 +199,11 @@ def run_gap_search(
 
     # Lazy import to avoid circular imports and module-load failures
     from do_uw.stages.acquire.gap_query_generator import (
-        generate_gap_queries_batch,
+        generate_gap_queries,
     )
 
     # Batch query generation for efficiency
-    queries = generate_gap_queries_batch(ranked[:available], company_name, ticker)
+    queries = generate_gap_queries(ranked[:available], company_name, ticker)
 
     searched = 0
     cached_hits = 0

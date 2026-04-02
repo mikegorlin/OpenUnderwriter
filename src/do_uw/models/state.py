@@ -77,6 +77,10 @@ class AcquiredData(BaseModel):
         default_factory=dict,
         description="Regulatory data (FDA, EPA, DOJ, etc.)",
     )
+    reference_data: dict[str, Any] = Field(
+        default_factory=dict,
+        description="Static reference data (sector hazard tiers, claim patterns, etc.)",
+    )
     filing_documents: dict[str, list[dict[str, str]]] = Field(
         default_factory=dict,
         description=(
@@ -89,9 +93,7 @@ class AcquiredData(BaseModel):
     # Acquisition metadata (populated by orchestrator).
     acquisition_metadata: dict[str, Any] = Field(
         default_factory=dict,
-        description=(
-            "Per-source metadata: timestamps, confidence, tier used, errors"
-        ),
+        description=("Per-source metadata: timestamps, confidence, tier used, errors"),
     )
     gate_results: list[dict[str, Any]] = Field(
         default_factory=lambda: [],
@@ -103,10 +105,7 @@ class AcquiredData(BaseModel):
     )
     blind_spot_results: dict[str, Any] = Field(
         default_factory=dict,
-        description=(
-            "Blind spot discovery search results "
-            "(pre and post structured acquisition)"
-        ),
+        description=("Blind spot discovery search results (pre and post structured acquisition)"),
     )
     llm_extractions: dict[str, Any] = Field(
         default_factory=dict,
@@ -189,18 +188,10 @@ class AnalysisResults(BaseModel):
 
     model_config = ConfigDict(frozen=False)
 
-    checks_executed: int = Field(
-        default=0, description="Number of checks that ran"
-    )
-    checks_passed: int = Field(
-        default=0, description="Checks that passed (no issue found)"
-    )
-    checks_failed: int = Field(
-        default=0, description="Checks that failed (issue detected)"
-    )
-    checks_skipped: int = Field(
-        default=0, description="Checks skipped due to missing data"
-    )
+    checks_executed: int = Field(default=0, description="Number of checks that ran")
+    checks_passed: int = Field(default=0, description="Checks that passed (no issue found)")
+    checks_failed: int = Field(default=0, description="Checks that failed (issue detected)")
+    checks_skipped: int = Field(default=0, description="Checks skipped due to missing data")
     gap_search_summary: dict[str, Any] = Field(
         default_factory=dict,
         description="Gap search re-evaluation summary: {updated, triggered, clear}",
@@ -309,39 +300,21 @@ class AnalysisState(BaseModel):
     model_config = ConfigDict(frozen=False)
 
     # Metadata
-    version: str = Field(
-        default="1.0.0", description="State schema version"
-    )
+    version: str = Field(default="1.0.0", description="State schema version")
     ticker: str = Field(description="Stock ticker being analyzed")
-    created_at: datetime = Field(
-        default_factory=lambda: datetime.now(tz=UTC)
-    )
-    updated_at: datetime = Field(
-        default_factory=lambda: datetime.now(tz=UTC)
-    )
+    created_at: datetime = Field(default_factory=lambda: datetime.now(tz=UTC))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(tz=UTC))
 
     # Pipeline progress -- all 7 stages start PENDING
     stages: dict[str, StageResult] = Field(default_factory=_default_stages)
 
     # Stage outputs
-    company: CompanyProfile | None = Field(
-        default=None, description="RESOLVE stage output"
-    )
-    acquired_data: AcquiredData | None = Field(
-        default=None, description="ACQUIRE stage output"
-    )
-    extracted: ExtractedData | None = Field(
-        default=None, description="EXTRACT stage output"
-    )
-    analysis: AnalysisResults | None = Field(
-        default=None, description="ANALYZE stage output"
-    )
-    scoring: ScoringResult | None = Field(
-        default=None, description="SCORE stage output"
-    )
-    benchmark: BenchmarkResult | None = Field(
-        default=None, description="BENCHMARK stage output"
-    )
+    company: CompanyProfile | None = Field(default=None, description="RESOLVE stage output")
+    acquired_data: AcquiredData | None = Field(default=None, description="ACQUIRE stage output")
+    extracted: ExtractedData | None = Field(default=None, description="EXTRACT stage output")
+    analysis: AnalysisResults | None = Field(default=None, description="ANALYZE stage output")
+    scoring: ScoringResult | None = Field(default=None, description="SCORE stage output")
+    benchmark: BenchmarkResult | None = Field(default=None, description="BENCHMARK stage output")
     executive_summary: ExecutiveSummary | None = Field(
         default=None,
         description="BENCHMARK stage output: executive summary",

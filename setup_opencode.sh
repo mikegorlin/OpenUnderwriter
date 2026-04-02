@@ -7,10 +7,10 @@ set -e
 echo "=== OpenCode Setup for D&O Underwriting ==="
 echo
 
-# Check if we're in the OpenCode worktree
+# Check if we're in the OpenUnderwriter directory
 if [ ! -f "opencode.json" ]; then
-    echo "Error: Must run from OpenCode worktree directory"
-    echo "Expected: /Users/gorlin/projects/UW/do-uw/.opencode/worktrees/opencode-do/"
+    echo "Error: Must run from OpenUnderwriter directory"
+    echo "Expected: /Users/gorlin/projects/UW/OpenUnderwriter/"
     exit 1
 fi
 
@@ -67,10 +67,10 @@ else
     echo "  ✅ GITHUB_TOKEN is set"
 fi
 
-if [ -z "$ANTHROPIC_API_KEY" ]; then
-    echo "  ⚠️  ANTHROPIC_API_KEY not set (LLM extraction may fail)"
+if [ -z "$DEEPSEEK_API_KEY" ]; then
+    echo "  ⚠️  DEEPSEEK_API_KEY not set (LLM extraction may fail for OpenCode DeepSeek branch)"
 else
-    echo "  ✅ ANTHROPIC_API_KEY is set"
+    echo "  ✅ DEEPSEEK_API_KEY is set"
 fi
 
 echo
@@ -92,8 +92,12 @@ else
     echo "  ❌ brave-search: not installed"
 fi
 
-if [ -f "node_modules/.bin/playwright-mcp" ]; then
-    echo "  ✅ playwright: installed"
+if [ -L "node_modules/.bin/playwright-mcp" ]; then
+    if [ -f "node_modules/.bin/playwright-mcp" ]; then
+        echo "  ✅ playwright: installed (binary works)"
+    else
+        echo "  ⚠️  playwright: symlink exists but target missing"
+    fi
 else
     echo "  ❌ playwright: not installed"
 fi
@@ -110,8 +114,8 @@ else
     echo "  ❌ github: not installed"
 fi
 
-if [ -f "node_modules/.bin/supabase-mcp" ]; then
-    echo "  ✅ supabase: installed"
+if [ -f "node_modules/.bin/supabase-mcp-claude" ]; then
+    echo "  ✅ supabase: installed (supabase-mcp-claude)"
 else
     echo "  ❌ supabase: not installed"
 fi
@@ -140,8 +144,8 @@ echo "   - Run: /mcp list"
 echo "   - Check that edgartools, playwright, fetch, supabase are connected"
 echo
 echo "4. Test the D&O pipeline:"
-echo "   - Run: ./gsd analyze AAPL  (from main directory)"
-echo "   - Or: cd ../.. && angry-dolphin analyze AAPL"
+echo "   - Run: uv run do-uw analyze AAPL  (from main directory)"
+echo "   - Or: ./run_aapl.sh  (test script)"
 echo
 echo "=== Agent Swarm Configuration ==="
 echo "oh-my-openagent plugin provides:"

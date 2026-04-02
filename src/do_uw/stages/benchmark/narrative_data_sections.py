@@ -412,14 +412,39 @@ def extract_litigation(state: AnalysisState) -> dict[str, Any]:
     sca_details = []
     for c in active_scas[:5]:
         detail: dict[str, Any] = {}
-        if c.case_name:
+        # Handle both CaseDetail objects and dicts (Supabase cases)
+        if hasattr(c, "case_name") and c.case_name:
             detail["case_name"] = c.case_name.value
-        if c.class_period_start and c.class_period_end:
-            detail["class_period"] = f"{c.class_period_start.value} to {c.class_period_end.value}"
-        if c.lead_counsel and c.lead_counsel.value:
-            detail["lead_counsel"] = c.lead_counsel.value
-        if c.lead_counsel_tier and c.lead_counsel_tier.value:
-            detail["lead_counsel_tier"] = c.lead_counsel_tier.value
+        elif isinstance(c, dict) and c.get("case_name"):
+            detail["case_name"] = c["case_name"]
+
+        # class_period_start and class_period_end
+        if hasattr(c, "class_period_start") and hasattr(c, "class_period_end"):
+            if c.class_period_start and c.class_period_end:
+                detail["class_period"] = (
+                    f"{c.class_period_start.value} to {c.class_period_end.value}"
+                )
+        elif isinstance(c, dict) and c.get("class_period_start") and c.get("class_period_end"):
+            detail["class_period"] = f"{c['class_period_start']} to {c['class_period_end']}"
+
+        # lead_counsel
+        if hasattr(c, "lead_counsel") and c.lead_counsel:
+            detail["lead_counsel"] = (
+                c.lead_counsel.value if hasattr(c.lead_counsel, "value") else str(c.lead_counsel)
+            )
+        elif isinstance(c, dict) and c.get("lead_counsel"):
+            detail["lead_counsel"] = c["lead_counsel"]
+
+        # lead_counsel_tier
+        if hasattr(c, "lead_counsel_tier") and c.lead_counsel_tier:
+            detail["lead_counsel_tier"] = (
+                c.lead_counsel_tier.value
+                if hasattr(c.lead_counsel_tier, "value")
+                else c.lead_counsel_tier
+            )
+        elif isinstance(c, dict) and c.get("lead_counsel_tier"):
+            detail["lead_counsel_tier"] = c["lead_counsel_tier"]
+
         sca_details.append(detail)
     if sca_details:
         data["sca_details"] = sca_details

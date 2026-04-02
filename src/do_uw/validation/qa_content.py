@@ -22,17 +22,38 @@ logger = logging.getLogger(__name__)
 
 # Source codes and status codes that should never appear in user-facing text
 _KNOWN_CODES = {
-    "DATA_UNAVAILABLE", "NOT_AUTO_EVALUATED", "MANUAL_ONLY",
-    "FALLBACK_ONLY", "SECTOR_CONDITIONAL", "SEC_FORM4",
-    "SEC_ENFORCEMENT", "MARKET_SHORT", "SEC_FRAMES",
-    "REFERENCE_DATA", "SEC_S1", "SEC_S3", "SEC_13DG",
-    "INSIDER_TRADES", "SEC_8K", "SCAC_SEARCH", "SEC_DEF14A",
-    "MARKET_PRICE", "SEC_10K", "NET_SELLING", "A_DISCLOSURE",
+    "DATA_UNAVAILABLE",
+    "NOT_AUTO_EVALUATED",
+    "MANUAL_ONLY",
+    "FALLBACK_ONLY",
+    "SECTOR_CONDITIONAL",
+    "SEC_FORM4",
+    "SEC_ENFORCEMENT",
+    "MARKET_SHORT",
+    "SEC_FRAMES",
+    "REFERENCE_DATA",
+    "SEC_S1",
+    "SEC_S3",
+    "SEC_13DG",
+    "INSIDER_TRADES",
+    "SEC_8K",
+    "SCAC_SEARCH",
+    "SEC_DEF14A",
+    "MARKET_PRICE",
+    "SEC_10K",
+    "NET_SELLING",
+    "A_DISCLOSURE",
 }
 
 # Signal IDs in audit appendix are intentional — don't flag these
-_AUDIT_SECTION_IDS = {"qa-audit", "signal-audit", "epistemological-trace",
-                       "coverage", "data-audit", "decision-record"}
+_AUDIT_SECTION_IDS = {
+    "qa-audit",
+    "signal-audit",
+    "epistemological-trace",
+    "coverage",
+    "data-audit",
+    "decision-record",
+}
 
 
 def check_html_content(output_dir: Path, state: Any) -> list[QACheck]:
@@ -102,25 +123,39 @@ def _check_screaming_snake(soup: Any) -> list[QACheck]:
     count = len(matches)
 
     if count == 0:
-        return [QACheck(
-            category="Content", name="Internal codes",
-            status="PASS", detail="No SCREAMING_SNAKE codes in user sections",
-            value="0",
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="Internal codes",
+                status="PASS",
+                detail="No SCREAMING_SNAKE codes in user sections",
+                value="0",
+            )
+        ]
     elif count <= 5:
         top = Counter(matches).most_common(3)
         detail = f"{count} internal codes leaked: {', '.join(f'{t}({c})' for t, c in top)}"
-        return [QACheck(
-            category="Content", name="Internal codes",
-            status="WARN", detail=detail, value=str(count),
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="Internal codes",
+                status="WARN",
+                detail=detail,
+                value=str(count),
+            )
+        ]
     else:
         top = Counter(matches).most_common(5)
         detail = f"{count} internal codes: {', '.join(f'{t}({c})' for t, c in top)}"
-        return [QACheck(
-            category="Content", name="Internal codes",
-            status="FAIL", detail=detail, value=str(count),
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="Internal codes",
+                status="FAIL",
+                detail=detail,
+                value=str(count),
+            )
+        ]
 
 
 def _check_na_count(soup: Any) -> list[QACheck]:
@@ -129,23 +164,35 @@ def _check_na_count(soup: Any) -> list[QACheck]:
     na_count = len(re.findall(r"\bN/A\b", text))
 
     if na_count <= 30:
-        return [QACheck(
-            category="Content", name="N/A values",
-            status="PASS", detail=f"{na_count} N/A values (acceptable)",
-            value=str(na_count),
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="N/A values",
+                status="PASS",
+                detail=f"{na_count} N/A values (acceptable)",
+                value=str(na_count),
+            )
+        ]
     elif na_count <= 80:
-        return [QACheck(
-            category="Content", name="N/A values",
-            status="WARN", detail=f"{na_count} N/A values — check for extraction gaps",
-            value=str(na_count),
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="N/A values",
+                status="WARN",
+                detail=f"{na_count} N/A values — check for extraction gaps",
+                value=str(na_count),
+            )
+        ]
     else:
-        return [QACheck(
-            category="Content", name="N/A values",
-            status="FAIL", detail=f"{na_count} N/A values — significant data gaps",
-            value=str(na_count),
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="N/A values",
+                status="FAIL",
+                detail=f"{na_count} N/A values — significant data gaps",
+                value=str(na_count),
+            )
+        ]
 
 
 def _check_truncation_artifacts(soup: Any) -> list[QACheck]:
@@ -172,6 +219,10 @@ def _check_truncation_artifacts(soup: Any) -> list[QACheck]:
         text = el.get_text(strip=True)
         if not text.endswith("...") or len(text) <= 20:
             continue
+        # Detect extraction truncation patterns (mention(s):, etc.)
+        if "mention(s):" in text:
+            extraction_truncated += 1
+            continue
         # Jinja truncate cuts mid-word: "some te..."
         # Extraction cuts at sentence end: "incidents, terr..."
         # Jinja truncate() produces exact character-count cuts with no trailing space.
@@ -189,17 +240,25 @@ def _check_truncation_artifacts(soup: Any) -> list[QACheck]:
         detail = f"No Jinja truncation detected"
         if extraction_truncated > 0:
             detail += f" ({extraction_truncated} extraction-time cuts — source data, not template)"
-        return [QACheck(
-            category="Content", name="Truncated text",
-            status=status, detail=detail, value=str(total),
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="Truncated text",
+                status=status,
+                detail=detail,
+                value=str(total),
+            )
+        ]
     else:
-        return [QACheck(
-            category="Content", name="Truncated text",
-            status="FAIL",
-            detail=f"{jinja_truncated} Jinja truncate() artifacts + {extraction_truncated} extraction cuts",
-            value=str(jinja_truncated),
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="Truncated text",
+                status="FAIL",
+                detail=f"{jinja_truncated} Jinja truncate() artifacts + {extraction_truncated} extraction cuts",
+                value=str(jinja_truncated),
+            )
+        ]
 
 
 def _check_raw_threshold_evidence(soup: Any) -> list[QACheck]:
@@ -227,25 +286,35 @@ def _check_raw_threshold_evidence(soup: Any) -> list[QACheck]:
         total += len(re.findall(pattern, user_text, re.IGNORECASE))
 
     if total == 0:
-        return [QACheck(
-            category="Content", name="Raw evidence",
-            status="PASS", detail="No raw threshold evidence in user sections",
-            value="0",
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="Raw evidence",
+                status="PASS",
+                detail="No raw threshold evidence in user sections",
+                value="0",
+            )
+        ]
     elif total <= 5:
-        return [QACheck(
-            category="Content", name="Raw evidence",
-            status="WARN",
-            detail=f"{total} raw threshold patterns — humanize before shipping",
-            value=str(total),
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="Raw evidence",
+                status="WARN",
+                detail=f"{total} raw threshold patterns — humanize before shipping",
+                value=str(total),
+            )
+        ]
     else:
-        return [QACheck(
-            category="Content", name="Raw evidence",
-            status="FAIL",
-            detail=f"{total} raw threshold patterns leaked to user sections",
-            value=str(total),
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="Raw evidence",
+                status="FAIL",
+                detail=f"{total} raw threshold patterns leaked to user sections",
+                value=str(total),
+            )
+        ]
 
 
 def _check_forensic_diversity(state: Any) -> list[QACheck]:
@@ -266,9 +335,13 @@ def _check_forensic_diversity(state: Any) -> list[QACheck]:
     for sig_id, result in sr.items():
         if not sig_id.startswith("FIN.FORENSIC."):
             continue
-        status = result.get("status") if isinstance(result, dict) else getattr(result, "status", None)
+        status = (
+            result.get("status") if isinstance(result, dict) else getattr(result, "status", None)
+        )
         if status in ("TRIGGERED", "CLEAR"):
-            val = result.get("value") if isinstance(result, dict) else getattr(result, "value", None)
+            val = (
+                result.get("value") if isinstance(result, dict) else getattr(result, "value", None)
+            )
             if isinstance(val, (int, float)):
                 forensic_values.append(float(val))
 
@@ -277,19 +350,25 @@ def _check_forensic_diversity(state: Any) -> list[QACheck]:
 
     unique = len(set(forensic_values))
     if unique >= 3:
-        return [QACheck(
-            category="Content", name="Forensic diversity",
-            status="PASS",
-            detail=f"{unique} unique values across {len(forensic_values)} forensic signals",
-            value=str(unique),
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="Forensic diversity",
+                status="PASS",
+                detail=f"{unique} unique values across {len(forensic_values)} forensic signals",
+                value=str(unique),
+            )
+        ]
     else:
-        return [QACheck(
-            category="Content", name="Forensic diversity",
-            status="FAIL",
-            detail=f"Only {unique} unique value(s) across {len(forensic_values)} signals — likely data mapping bug",
-            value=str(unique),
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="Forensic diversity",
+                status="FAIL",
+                detail=f"Only {unique} unique value(s) across {len(forensic_values)} signals — likely data mapping bug",
+                value=str(unique),
+            )
+        ]
 
 
 def _check_stock_drop_reasonableness(state: Any) -> list[QACheck]:
@@ -335,17 +414,24 @@ def _check_stock_drop_reasonableness(state: Any) -> list[QACheck]:
                 suspicious.append(f"{pct_f:.1f}% on {date_val or '?'}")
 
     if not suspicious:
-        return [QACheck(
-            category="Data", name="Stock drop reasonableness",
-            status="PASS", detail="All reported drops within reasonable bounds",
-        )]
+        return [
+            QACheck(
+                category="Data",
+                name="Stock drop reasonableness",
+                status="PASS",
+                detail="All reported drops within reasonable bounds",
+            )
+        ]
     else:
-        return [QACheck(
-            category="Data", name="Stock drop reasonableness",
-            status="WARN",
-            detail=f"{len(suspicious)} suspicious drop(s) >25%: {'; '.join(suspicious[:3])}. Verify against market data.",
-            value=str(len(suspicious)),
-        )]
+        return [
+            QACheck(
+                category="Data",
+                name="Stock drop reasonableness",
+                status="WARN",
+                detail=f"{len(suspicious)} suspicious drop(s) >25%: {'; '.join(suspicious[:3])}. Verify against market data.",
+                value=str(len(suspicious)),
+            )
+        ]
 
 
 # ---------------------------------------------------------------------------
@@ -375,10 +461,14 @@ def _check_section_content(soup: Any) -> list[QACheck]:
     checks: list[QACheck] = []
     uw_section = soup.find("section", id="uw-analysis")
     if not uw_section:
-        checks.append(QACheck(
-            category="Content", name="Section content",
-            status="FAIL", detail="No uw-analysis section found in output",
-        ))
+        checks.append(
+            QACheck(
+                category="Content",
+                name="Section content",
+                status="FAIL",
+                detail="No uw-analysis section found in output",
+            )
+        )
         return checks
 
     # Find all h2/h3 headings
@@ -403,7 +493,9 @@ def _check_section_content(soup: Any) -> list[QACheck]:
                 sibling_text = ""
                 for sib in list(parent.children):
                     if sib != h:
-                        sibling_text += (sib.get_text(strip=True) if hasattr(sib, "get_text") else str(sib))
+                        sibling_text += (
+                            sib.get_text(strip=True) if hasattr(sib, "get_text") else str(sib)
+                        )
                 if len(sibling_text) < min_chars:
                     empty_sections.append(f"{section_name} ({len(sibling_text)}ch)")
                 else:
@@ -411,19 +503,25 @@ def _check_section_content(soup: Any) -> list[QACheck]:
                 break
 
     if empty_sections:
-        checks.append(QACheck(
-            category="Content", name="Section content",
-            status="FAIL",
-            detail=f"Near-empty sections (likely context key mismatch): {', '.join(empty_sections)}",
-            value=str(len(empty_sections)),
-        ))
+        checks.append(
+            QACheck(
+                category="Content",
+                name="Section content",
+                status="FAIL",
+                detail=f"Near-empty sections (likely context key mismatch): {', '.join(empty_sections)}",
+                value=str(len(empty_sections)),
+            )
+        )
     else:
-        checks.append(QACheck(
-            category="Content", name="Section content",
-            status="PASS",
-            detail=f"{len(ok_sections)} major sections verified with substantive content",
-            value=str(len(ok_sections)),
-        ))
+        checks.append(
+            QACheck(
+                category="Content",
+                name="Section content",
+                status="PASS",
+                detail=f"{len(ok_sections)} major sections verified with substantive content",
+                value=str(len(ok_sections)),
+            )
+        )
 
     return checks
 
@@ -440,18 +538,25 @@ def _check_broken_urls(soup: Any) -> list[QACheck]:
             broken += 1
 
     if broken == 0:
-        return [QACheck(
-            category="Content", name="URL integrity",
-            status="PASS", detail="All URLs are well-formed",
-            value="0",
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="URL integrity",
+                status="PASS",
+                detail="All URLs are well-formed",
+                value="0",
+            )
+        ]
     else:
-        return [QACheck(
-            category="Content", name="URL integrity",
-            status="FAIL",
-            detail=f"{broken} broken URL(s) — likely stringified Python dict in href",
-            value=str(broken),
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="URL integrity",
+                status="FAIL",
+                detail=f"{broken} broken URL(s) — likely stringified Python dict in href",
+                value=str(broken),
+            )
+        ]
 
 
 def _check_empty_data_tables(soup: Any) -> list[QACheck]:
@@ -479,22 +584,32 @@ def _check_empty_data_tables(soup: Any) -> list[QACheck]:
             empty_tables += 1
 
     if empty_tables == 0:
-        return [QACheck(
-            category="Content", name="Table data",
-            status="PASS", detail="All data tables have populated cells",
-            value="0",
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="Table data",
+                status="PASS",
+                detail="All data tables have populated cells",
+                value="0",
+            )
+        ]
     elif empty_tables <= 3:
-        return [QACheck(
-            category="Content", name="Table data",
-            status="WARN",
-            detail=f"{empty_tables} table(s) with all-empty cells — check context builder output",
-            value=str(empty_tables),
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="Table data",
+                status="WARN",
+                detail=f"{empty_tables} table(s) with all-empty cells — check context builder output",
+                value=str(empty_tables),
+            )
+        ]
     else:
-        return [QACheck(
-            category="Content", name="Table data",
-            status="FAIL",
-            detail=f"{empty_tables} table(s) with all-empty cells — context key mismatch likely",
-            value=str(empty_tables),
-        )]
+        return [
+            QACheck(
+                category="Content",
+                name="Table data",
+                status="FAIL",
+                detail=f"{empty_tables} table(s) with all-empty cells — context key mismatch likely",
+                value=str(empty_tables),
+            )
+        ]

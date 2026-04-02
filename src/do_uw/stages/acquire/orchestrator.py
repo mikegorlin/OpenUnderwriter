@@ -35,6 +35,8 @@ from do_uw.stages.acquire.clients.news_client import NewsClient
 from do_uw.stages.acquire.clients.patent_client import fetch_ai_patents
 from do_uw.stages.acquire.clients.sec_client import SECFilingClient
 from do_uw.stages.acquire.clients.web_search import WebSearchClient
+from do_uw.stages.acquire.clients.sec_enforcement_client import SECEnforcementClient
+from do_uw.stages.acquire.clients.reference_data_client import ReferenceDataClient
 from do_uw.stages.acquire.fallback import DataAcquisitionError
 from do_uw.stages.acquire.inventory import AcquisitionInventory, check_inventory
 from do_uw.stages.acquire.gates import (
@@ -93,6 +95,8 @@ class AcquisitionOrchestrator:
             web_search=self._web_search,
         )
         self._news_client = NewsClient(web_search=self._web_search)
+        self._sec_enforcement_client = SECEnforcementClient()
+        self._reference_data_client = ReferenceDataClient()
 
         # Supplemental client (Phase B++++).
         self._courtlistener_client = CourtListenerClient()
@@ -143,6 +147,8 @@ class AcquisitionOrchestrator:
             or inv.needs_market_data
             or inv.needs_litigation
             or inv.needs_news
+            or inv.needs_regulatory_data
+            or inv.needs_reference_data
         ):
             logger.info("Phase B: Structured data acquisition")
             self._acquire_structured_data(state, acquired, inv)
@@ -244,24 +250,20 @@ class AcquisitionOrchestrator:
         # Automatic discovery — feed high-relevance blind spot results
         # through LLM ingestion for proposal generation.
         # Non-blocking: failures here never break the acquisition pipeline.
-        # DISABLED for debugging web search hang
-        # _run_discovery_hook(acquired.blind_spot_results, state.ticker)
+        _run_discovery_hook(acquired.blind_spot_results, state.ticker)
 
         # Phase E: Brain-driven gap search
         # Non-blocking: failures here DO NOT break the acquisition pipeline.
-        # DISABLED for debugging web search hang
-        logger.info(
-            "Phase E: Brain-driven gap search SKIPPED",
-        )
-        # try:
-        #     from do_uw.stages.acquire.gap_searcher import run_gap_search
-        #     run_gap_search(state, acquired, self._web_search, self._cache)
-        # except Exception:
-        #     logger.warning(
-        #         "Phase E: Gap search failed (non-blocking)",
-        #         exc_info=True,
-        #     )
-
+        # Phase E: Brain-driven gap search
+        # Non-blocking: failures here DO NOT break the acquisition pipeline.
+        try:
+            from do_uw.stages.acquire.gap_searcher import run_gap_search
+            run_gap_search(state, acquired, self._web_search, self._cache)
+        except Exception:
+            logger.warning(
+                "Phase E: Gap search failed (non-blocking)",
+                exc_info=True,
+            )
         return acquired
 
     def _run_blind_spot_sweep(
@@ -320,6 +322,18 @@ class AcquisitionOrchestrator:
                 self._news_client,
                 "web_search_results",
                 inv.needs_news if inv else True,
+            ),
+            (
+                "sec_enforcement",
+                self._sec_enforcement_client,
+                "regulatory_data",
+                inv.needs_regulatory_data if inv else True,
+            ),
+            (
+                "reference_data",
+                self._reference_data_client,
+                "reference_data",
+                inv.needs_reference_data if inv else True,
             ),
         ]
 
@@ -513,6 +527,10 @@ def _copy_complete_sources(
         acquired.blind_spot_results = existing.blind_spot_results
     if not inv.needs_patents:
         acquired.patent_data = existing.patent_data
+    if not inv.needs_regulatory_data:
+        acquired.regulatory_data = existing.regulatory_data
+    if not inv.needs_reference_data:
+        acquired.reference_data = existing.reference_data
     if not inv.needs_logo:
         acquired.company_logo_b64 = existing.company_logo_b64
 
@@ -663,6 +681,10 @@ def _determine_acquired_sources(acquired: AcquiredData) -> set[str]:
     # SEC enforcement also detected from filing extraction metadata.
     if acquired.acquisition_metadata and acquired.acquisition_metadata.get("sec_enforcement"):
         sources.add("SEC_ENFORCEMENT")
+
+    # Reference data (static config files).
+    if acquired.reference_data:
+        sources.add("REFERENCE_DATA")
 
     return sources
 

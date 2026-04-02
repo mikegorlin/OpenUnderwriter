@@ -12,9 +12,19 @@ if TYPE_CHECKING:
     from do_uw.models.state import ExtractedData
 
 
-def _text_signal_value(
-    extracted: ExtractedData, signal_name: str
-) -> str | None:
+def _truncate_context(ctx: str, limit: int = 300) -> str:
+    """Truncate context at word boundary, adding ellipsis only if truncated."""
+    if len(ctx) <= limit:
+        return ctx
+    # Find last space within limit
+    truncated = ctx[:limit]
+    last_space = truncated.rfind(" ")
+    if last_space > limit * 0.8:  # If space found in reasonable position
+        truncated = ctx[:last_space]
+    return truncated + "…"
+
+
+def _text_signal_value(extracted: ExtractedData, signal_name: str) -> str | None:
     """Get display value from a text signal, or None if signal wasn't extracted.
 
     Returns a value for BOTH present and absent signals -- "not mentioned"
@@ -28,12 +38,13 @@ def _text_signal_value(
         return "Not mentioned in 10-K filing"
     count = sig.get("mention_count", 0)
     ctx = sig.get("context", "")
-    return f"{count} mention(s): {ctx[:120]}" if ctx else f"{count} mention(s) in 10-K"
+    if ctx:
+        truncated = _truncate_context(ctx)
+        return f"{count} mention(s): {truncated}"
+    return f"{count} mention(s) in 10-K"
 
 
-def _text_signal_count(
-    extracted: ExtractedData, signal_name: str
-) -> int | None:
+def _text_signal_count(extracted: ExtractedData, signal_name: str) -> int | None:
     """Get mention count from a text signal as a number.
 
     Returns 0 for signals that are present but not mentioned.
@@ -101,9 +112,7 @@ def compute_guidance_fields(
     else:
         result["beat_rate"] = safe_sourced_fn(eg.beat_rate)
         result["guidance_provided"] = (
-            "Yes" if eg.quarters else (
-                "Withdrawn" if eg.guidance_withdrawals > 0 else None
-            )
+            "Yes" if eg.quarters else ("Withdrawn" if eg.guidance_withdrawals > 0 else None)
         )
         result["guidance_philosophy"] = eg.philosophy if eg.philosophy else None
 

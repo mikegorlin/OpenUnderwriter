@@ -12,7 +12,7 @@ echo "Starting AAPL analysis at $(date)" | tee -a "$LOG_FILE"
 echo "Logging to: $LOG_FILE" | tee -a "$LOG_FILE"
 
 # Run the analysis with verbose output
-uv run angry-dolphin analyze AAPL --verbose 2>&1 | tee -a "$LOG_FILE"
+uv run do-uw analyze AAPL --verbose 2>&1 | tee -a "$LOG_FILE"
 
 EXIT_CODE=${PIPESTATUS[0]}
 

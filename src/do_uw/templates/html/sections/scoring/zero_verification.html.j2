@@ -18,7 +18,7 @@
     <tr class="{{ 'bg-green-100' if loop.index is odd else 'bg-green-50' }}">
       <td class="p-1 font-semibold">{{ zv.factor_id }} &mdash; {{ zv.factor_name }}</td>
       <td class="p-1 text-green-600 font-mono font-semibold">{{ zv.points }}</td>
-      <td class="p-1 text-xs">{{ zv.evidence }}</td>
+      <td class="p-1 text-xs">{{ zv.evidence | humanize_evidence }}</td>
       <td class="p-1 text-xs text-gray-400">{{ zv.source | default('', true) }}</td>
     </tr>
     {% endfor %}

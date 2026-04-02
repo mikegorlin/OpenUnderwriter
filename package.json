@@ -9,6 +9,9 @@
   "dependencies": {
     "@brave/brave-search-mcp-server": "^2.0.75",
     "@playwright/mcp": "^0.0.68",
+    "ajv-formats": "^3.0.1",
+    "cac": "^7.0.0",
+    "commander": "^14.0.2",
     "duckdb-mcp": "^1.0.4",
     "fetch-mcp": "^0.0.5",
     "github-mcp": "^0.0.7",

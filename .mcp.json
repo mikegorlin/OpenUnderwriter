@@ -7,11 +7,19 @@
         "GEMINI_API_KEY": "${GEMINI_API_KEY}"
       },
       "_setup": "Get free Gemini API key at https://aistudio.google.com/apikey then add GEMINI_API_KEY to .env"
+    },
+    "brain-analyzer": {
+      "command": ".venv/bin/python",
+      "args": ["-m", "do_uw.mcp_servers.brain_analyzer"],
+      "env": {
+        "BRAIN_ROOT": "src/do_uw/brain"
+      },
+      "_setup": "Brain analyzer MCP server for inspecting YAML signals. Requires uv virtual environment with do_uw package installed."
     }
   },
   "_required_env_vars": {
     "GEMINI_API_KEY": "Google Gemini API key for Nano Banana image generation. Free at https://aistudio.google.com/apikey",
-    "ANTHROPIC_API_KEY": "Anthropic API key for LLM extraction. Required for pipeline.",
+    "DEEPSEEK_API_KEY": "DeepSeek API key for LLM extraction. Required for OpenCode DeepSeek branch.",
     "SUPABASE_ANON_KEY": "Supabase anon key for litigation database. Optional but recommended."
   }
 }

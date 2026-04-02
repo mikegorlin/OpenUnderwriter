@@ -116,11 +116,11 @@
     {% if gv.directors and gv.directors | length > 0 %}
     <div style="flex:1;background:white;border:1px solid #E5E7EB;border-radius:5px;padding:8px 10px">
       <div style="font-size:8pt;color:#1F3A5C;text-transform:uppercase;letter-spacing:0.3px;font-weight:700;margin-bottom:4px">Board Tenure Distribution</div>
-      {% set _dc = gv.directors | length %}{% set _dbh = 14 %}{% set _dg = 3 %}{% set _dlw = 90 %}{% set _dcw = 200 %}
+       {% set _dc = gv.directors | length %}{% set _dbh = 14 %}{% set _dg = 3 %}{% set _dlw = 120 %}{% set _dcw = 200 %}
       {% set _dsw = _dlw + _dcw + 40 %}{% set _dsh = _dc * (_dbh + _dg) + 2 %}
       <svg width="100%" viewBox="0 0 {{ _dsw }} {{ _dsh }}" xmlns="http://www.w3.org/2000/svg" style="font-family:Inter,system-ui,sans-serif">
         {% for d in gv.directors %}{% set _dy = loop.index0 * (_dbh + _dg) + 1 %}{% set _traw = d.tenure | string | replace('yr','') | replace('N/A','0') %}{% set _tv = _traw | float %}{% set _tb = [_tv * (_dcw / 30), _dcw - 2] | min %}
-        <text x="{{ _dlw - 4 }}" y="{{ _dy + _dbh / 2 + 1 }}" text-anchor="end" font-size="7" fill="#374151" dominant-baseline="middle">{{ d.name | truncate(14, True, '..') }}</text>
+        <text x="{{ _dlw - 4 }}" y="{{ _dy + _dbh / 2 + 1 }}" text-anchor="end" font-size="7" fill="#374151" dominant-baseline="middle">{{ d.name }}</text>
         <rect x="{{ _dlw }}" y="{{ _dy }}" width="{{ _dcw }}" height="{{ _dbh }}" rx="2" fill="#F3F4F6"/>
         <rect x="{{ _dlw }}" y="{{ _dy + 1 }}" width="{{ _tb }}" height="{{ _dbh - 2 }}" rx="2" fill="{% if _tv >= 15 %}#D97706{% elif _tv >= 8 %}#3B82F6{% else %}#16A34A{% endif %}" opacity="0.8"/>
         <text x="{{ _dlw + _tb + 3 }}" y="{{ _dy + _dbh / 2 + 1 }}" font-size="7" font-weight="600" fill="#374151" dominant-baseline="middle">{{ d.tenure }}</text>
@@ -188,7 +188,16 @@
         </tr>
         {% endfor %}
       </table>
-      {% if gv.departures_18mo > 0 %}<div style="font-size:8pt;color:#DC2626;font-weight:600;margin-top:4px">Departures (18mo): {{ gv.departures_18mo }}</div>{% endif %}
+        {% set departures = gv.departures_18mo %}
+{% if departures is number %}
+  {% if departures > 0 %}
+<div style="font-size:8pt;color:#DC2626;font-weight:600;margin-top:4px">Departures (18mo): {{ departures }}</div>
+  {% endif %}
+{% elif departures is iterable %}
+  {% if departures|length > 0 %}
+<div style="font-size:8pt;color:#DC2626;font-weight:600;margin-top:4px">Departures (18mo): {{ departures|length }}</div>
+  {% endif %}
+{% endif %}
     </td>
     {# Board #}
     <td style="width:50%;vertical-align:top">

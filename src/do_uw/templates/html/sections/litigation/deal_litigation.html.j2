@@ -39,7 +39,7 @@
   {% else %}
   {% set ma_notes = lit.get('ma_activity_notes', []) %}
   {% if ma_notes %}
-  <p class="text-sm text-gray-500 italic my-2">No deal-related litigation identified. Note: {{ company_name }} has recent M&amp;A activity ({{ ma_notes | join('; ') | truncate(300) }}) &mdash; deal litigation typically emerges 6&ndash;18 months post-closing.</p>
+  <p class="text-sm text-gray-500 italic my-2">No deal-related litigation identified. Note: {{ company_name }} has recent M&amp;A activity ({{ ma_notes | join('; ') }}) &mdash; deal litigation typically emerges 6&ndash;18 months post-closing.</p>
   {% else %}
   <p class="text-sm text-gray-500 italic my-2">No deal-related litigation identified.</p>
   {% endif %}

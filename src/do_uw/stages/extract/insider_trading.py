@@ -50,10 +50,19 @@ EXPECTED_FIELDS: list[str] = [
 
 # SEC Form 4 transaction codes to human-readable types.
 TX_CODE_MAP: dict[str, str] = {
-    "P": "BUY", "S": "SELL", "A": "GRANT", "M": "EXERCISE",
-    "F": "TAX_WITHHOLD", "G": "GIFT", "D": "DISPOSITION",
-    "C": "CONVERSION", "J": "OTHER", "K": "EQUITY_SWAP",
-    "U": "TENDER", "W": "WILL_OR_ESTATE", "I": "DISCRETIONARY",
+    "P": "BUY",
+    "S": "SELL",
+    "A": "GRANT",
+    "M": "EXERCISE",
+    "F": "TAX_WITHHOLD",
+    "G": "GIFT",
+    "D": "DISPOSITION",
+    "C": "CONVERSION",
+    "J": "OTHER",
+    "K": "EQUITY_SWAP",
+    "U": "TENDER",
+    "W": "WILL_OR_ESTATE",
+    "I": "DISCRETIONARY",
 }
 
 LOOKBACK_MONTHS = 18
@@ -93,9 +102,11 @@ def parse_form4_xml(
 
     doc_10b5_1 = _detect_10b5_1(root, xml_text)
     rel_flags = {
-        "is_director": is_director, "is_officer": is_officer,
+        "is_director": is_director,
+        "is_officer": is_officer,
         "is_ten_pct_owner": is_ten_pct,
-        "accession_number": accession_number, "is_amendment": is_amendment,
+        "accession_number": accession_number,
+        "is_amendment": is_amendment,
     }
 
     for tx_el in root.findall(".//nonDerivativeTransaction"):
@@ -183,7 +194,10 @@ def _extract_plan_adoption_date(footnote_text: str) -> str | None:
             date_str = m.group(1)
             # Try parsing common formats
             for fmt in (
-                "%B %d, %Y", "%B %d %Y", "%m/%d/%Y", "%m-%d-%Y",
+                "%B %d, %Y",
+                "%B %d %Y",
+                "%m/%d/%Y",
+                "%m-%d-%Y",
             ):
                 try:
                     dt = datetime.strptime(date_str.strip(), fmt)
@@ -206,9 +220,7 @@ def _parse_single_tx(
     if not tx_date_str:
         return None
 
-    shares_val = _safe_float(
-        _xml_text(tx_el, ".//transactionAmounts/transactionShares/value")
-    )
+    shares_val = _safe_float(_xml_text(tx_el, ".//transactionAmounts/transactionShares/value"))
     price_val = _safe_float(
         _xml_text(tx_el, ".//transactionAmounts/transactionPricePerShare/value")
     )
@@ -251,10 +263,13 @@ def _parse_single_tx(
         total_value=sourced_float(total_val, source) if total_val is not None else None,
         is_10b5_1=(
             SourcedValue[bool](
-                value=is_10b5_1, source=source,
-                confidence=Confidence.HIGH, as_of=now(),
+                value=is_10b5_1,
+                source=source,
+                confidence=Confidence.HIGH,
+                as_of=now(),
             )
-            if is_10b5_1 is not None else None
+            if is_10b5_1 is not None
+            else None
         ),
         # Unknown 10b5-1 status should be treated as potentially discretionary
         # (conservative for D&O risk). Only mark as non-discretionary when
@@ -282,6 +297,38 @@ def _safe_float(val: str) -> float | None:
         return float(val)
     except ValueError:
         return None
+
+
+def _get_shares_outstanding(state: AnalysisState) -> float | None:
+    """Get shares outstanding from XBRL or company profile."""
+    # Try company-level first
+    if state.company:
+        company_so = getattr(state.company, "shares_outstanding", None)
+        if company_so is not None:
+            val = company_so.value if hasattr(company_so, "value") else company_so
+            f = _safe_float(str(val)) if val is not None else None
+            if f and f > 0:
+                return f
+
+    # Try XBRL financials
+    try:
+        financials = state.extracted.financials if state.extracted else None
+        statements = financials.statements if financials else None
+        if statements and isinstance(statements, dict):
+            for key in (
+                "shares_outstanding",
+                "CommonStockSharesOutstanding",
+                "EntityCommonStockSharesOutstanding",
+            ):
+                val = statements.get(key)
+                if val is not None:
+                    f = _safe_float(str(val)) if val is not None else None
+                    if f and f > 0:
+                        return f
+    except Exception:
+        pass
+
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -315,13 +362,10 @@ def _extract_from_form4s(state: AnalysisState) -> list[InsiderTransaction]:
     # Deduplicate 4/A over original Form 4
     all_txns = _deduplicate_transactions(all_txns)
 
-    cutoff_str = (
-        datetime.now(tz=UTC) - timedelta(days=LOOKBACK_MONTHS * 30)
-    ).strftime("%Y-%m-%d")
+    cutoff_str = (datetime.now(tz=UTC) - timedelta(days=LOOKBACK_MONTHS * 30)).strftime("%Y-%m-%d")
 
     filtered = [
-        tx for tx in all_txns
-        if tx.transaction_date and tx.transaction_date.value >= cutoff_str
+        tx for tx in all_txns if tx.transaction_date and tx.transaction_date.value >= cutoff_str
     ]
     filtered.sort(
         key=lambda t: t.transaction_date.value if t.transaction_date else "",
@@ -329,7 +373,8 @@ def _extract_from_form4s(state: AnalysisState) -> list[InsiderTransaction]:
     )
     logger.info(
         "Parsed %d insider transactions from %d Form 4 documents",
-        len(filtered), len(form4_docs),
+        len(filtered),
+        len(form4_docs),
     )
     return filtered
 
@@ -359,7 +404,8 @@ def detect_cluster_selling(
     sell within window_days of each other.
     """
     sales = [
-        tx for tx in transactions
+        tx
+        for tx in transactions
         if tx.transaction_type == "SELL"
         and tx.transaction_date is not None
         and tx.insider_name is not None
@@ -367,9 +413,7 @@ def detect_cluster_selling(
     if len(sales) < min_insiders:
         return []
 
-    sales.sort(
-        key=lambda t: t.transaction_date.value if t.transaction_date else ""
-    )
+    sales.sort(key=lambda t: t.transaction_date.value if t.transaction_date else "")
 
     clusters: list[InsiderClusterEvent] = []
     seen_windows: set[str] = set()
@@ -409,13 +453,15 @@ def detect_cluster_selling(
                     ):
                         actual_end = tx.transaction_date.value
 
-                clusters.append(InsiderClusterEvent(
-                    start_date=anchor_date.value,
-                    end_date=actual_end,
-                    insider_count=len(insiders_in_window),
-                    insiders=sorted(insiders_in_window.keys()),
-                    total_value=sum(insiders_in_window.values()),
-                ))
+                clusters.append(
+                    InsiderClusterEvent(
+                        start_date=anchor_date.value,
+                        end_date=actual_end,
+                        insider_count=len(insiders_in_window),
+                        insiders=sorted(insiders_in_window.keys()),
+                        total_value=sum(insiders_in_window.values()),
+                    )
+                )
 
     return clusters
 
@@ -506,9 +552,12 @@ def extract_insider_trading(
     if not transactions:
         warnings.append("No insider transaction data available")
         report = create_report(
-            extractor_name="insider_trading", expected=EXPECTED_FIELDS,
-            found=found, source_filing=source_filing,
-            fallbacks_used=fallbacks, warnings=warnings,
+            extractor_name="insider_trading",
+            expected=EXPECTED_FIELDS,
+            found=found,
+            source_filing=source_filing,
+            fallbacks_used=fallbacks,
+            warnings=warnings,
         )
         log_report(report)
         return analysis, report
@@ -524,12 +573,16 @@ def extract_insider_trading(
 
     aggs = compute_aggregates(transactions)
     analysis.net_buying_selling = sourced_str(
-        cast(str, aggs["net_direction"]), source_filing, Confidence.MEDIUM,
+        cast(str, aggs["net_direction"]),
+        source_filing,
+        Confidence.MEDIUM,
     )
     found.append("net_direction")
 
     analysis.pct_10b5_1 = sourced_float(
-        cast(float, aggs["pct_10b5_1"]), source_filing, Confidence.MEDIUM,
+        cast(float, aggs["pct_10b5_1"]),
+        source_filing,
+        Confidence.MEDIUM,
     )
     found.append("10b5_1_classification")
 
@@ -540,9 +593,7 @@ def extract_insider_trading(
     exercise_sell_events = detect_exercise_sell_patterns(transactions)
     analysis.exercise_sell_events = exercise_sell_events
     if exercise_sell_events:
-        warnings.append(
-            f"Exercise-sell patterns detected: {len(exercise_sell_events)} event(s)"
-        )
+        warnings.append(f"Exercise-sell patterns detected: {len(exercise_sell_events)} event(s)")
 
     # Phase 71-02: Filing timing analysis
     eight_k_filings = get_eight_k_filings(state)
@@ -551,8 +602,7 @@ def extract_insider_trading(
     if timing_suspects:
         red_flags = [s for s in timing_suspects if s.severity == "RED_FLAG"]
         warnings.append(
-            f"Filing timing suspects: {len(timing_suspects)} "
-            f"({len(red_flags)} RED_FLAG)"
+            f"Filing timing suspects: {len(timing_suspects)} ({len(red_flags)} RED_FLAG)"
         )
 
     # Phase 71-01: Ownership concentration + trajectories
@@ -560,15 +610,22 @@ def extract_insider_trading(
         run_ownership_analysis,
     )
 
+    shares_outstanding = _get_shares_outstanding(state)
     ownership_warnings = run_ownership_analysis(
-        transactions, clusters, analysis,
+        transactions,
+        clusters,
+        analysis,
+        shares_outstanding,
     )
     warnings.extend(ownership_warnings)
 
     report = create_report(
-        extractor_name="insider_trading", expected=EXPECTED_FIELDS,
-        found=found, source_filing=source_filing,
-        fallbacks_used=fallbacks, warnings=warnings,
+        extractor_name="insider_trading",
+        expected=EXPECTED_FIELDS,
+        found=found,
+        source_filing=source_filing,
+        fallbacks_used=fallbacks,
+        warnings=warnings,
     )
     log_report(report)
     return analysis, report

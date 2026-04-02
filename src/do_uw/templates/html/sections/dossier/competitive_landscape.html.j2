@@ -65,7 +65,7 @@
         <td class="px-2 py-2 text-center {{ 'text-green-700' if moat.present == 'Yes' else 'text-risk-red' }}">{{ moat.present }}</td>
         <td class="px-2 py-2 text-center">{{ moat.strength }}</td>
         <td class="px-2 py-2 text-center">{{ moat.durability }}</td>
-        <td class="p-1 text-xs">{{ moat.evidence }}</td>
+        <td class="p-1 text-xs">{{ moat.evidence | humanize_evidence }}</td>
         <td class="p-1 text-xs do-callout">{{ moat.do_risk }}</td>
       </tr>
       {% endfor %}

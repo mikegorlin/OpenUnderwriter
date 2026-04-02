@@ -8,7 +8,7 @@ A comprehensive Directors & Officers liability underwriting analysis system that
 - **400 Brain Signals**: YAML-driven risk evaluation framework covering 8 peril categories and 16 causal chains
 - **10-Factor Scoring**: Composite risk scoring with 11 CRF gates and tier classification (WIN to NO TOUCH)
 - **Multi-Source Data Acquisition**: SEC EDGAR filings (10-K, 10-Q, 8-K, DEF 14A, Form 4), yfinance market data, Stanford SCAC litigation, CourtListener federal dockets, Brave Search + Exa semantic search, Financial Modeling Prep ratios
-- **LLM Extraction**: Claude API with instructor for structured data extraction from SEC filings
+- **LLM Extraction**: DeepSeek API with instructor for structured data extraction from SEC filings (OpenCode-optimized)
 - **Peer Benchmarking**: 7-metric sector-relative comparison with percentile proxy
 - **5-Layer Narrative Architecture**: Verdict, thesis, evidence, implications, context with bull/bear framing
 - **Three Output Formats**: HTML (primary, CIQ-level density), Word (.docx), PDF (via Playwright)
@@ -28,7 +28,8 @@ Set these environment variables for enhanced data acquisition:
 
 | Variable | Service | Purpose |
 |----------|---------|---------|
-| `ANTHROPIC_API_KEY` | Anthropic Claude | LLM extraction from SEC filings (required) |
+| `DEEPSEEK_API_KEY` | DeepSeek API | LLM extraction from SEC filings (required for OpenCode) |
+| `DO_UW_LLM_MODEL` | DeepSeek Model | Model to use for LLM extraction (default: deepseek-chat) |
 | `BRAVE_API_KEY` | Brave Search | Blind spot discovery and gap search |
 | `EXA_API_KEY` | Exa | Neural semantic search for D&O-relevant content |
 | `FMP_API_KEY` | Financial Modeling Prep | Supplemental financial ratios and ownership |
@@ -39,14 +40,15 @@ Set these environment variables for enhanced data acquisition:
 ```bash
 # Clone and install dependencies
 git clone <repo-url>
-cd do-uw
+cd OpenUnderwriter
 uv sync
 
 # Install Playwright browsers (for PDF generation)
 uv run playwright install chromium
 
 # Set required API key
-export ANTHROPIC_API_KEY="your-key-here"
+export DEEPSEEK_API_KEY="your-deepseek-api-key-here"
+export DO_UW_LLM_MODEL="deepseek-chat"  # or "deepseek-reasoner" for reasoning model
 ```
 
 ## Usage

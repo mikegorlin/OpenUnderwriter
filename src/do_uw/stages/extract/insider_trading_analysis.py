@@ -12,6 +12,7 @@ from collections import defaultdict
 from do_uw.models.market_events import (
     InsiderClusterEvent,
     InsiderTransaction,
+    InsiderTradingAnalysis,
     OwnershipConcentrationAlert,
     OwnershipTrajectoryPoint,
 )
@@ -19,9 +20,7 @@ from do_uw.models.market_events import (
 logger = logging.getLogger(__name__)
 
 # C-suite title patterns for elevated alert levels.
-_C_SUITE_PATTERN = re.compile(
-    r"(?i)\b(CEO|CFO|COO|CLO|CTO|CIO|CISO|Chief)\b"
-)
+_C_SUITE_PATTERN = re.compile(r"(?i)\b(CEO|CFO|COO|CLO|CTO|CIO|CISO|Chief)\b")
 
 # Ownership concentration thresholds (from brain signal config).
 _RED_FLAG_PCT = 50.0
@@ -95,12 +94,19 @@ def _get_role(tx: InsiderTransaction) -> str:
 def compute_ownership_concentration(
     transactions: list[InsiderTransaction],
     cluster_events: list[InsiderClusterEvent],
+    shares_outstanding: float | None = None,
 ) -> list[OwnershipConcentrationAlert]:
     """Compute ownership concentration alerts with tiered severity.
 
     Returns alerts for insiders who sold significant portions of their
     holdings. C-suite gets WARNING/RED_FLAG; directors get INFORMATIONAL.
     10b5-1 plans reduce severity. Cluster overlap compounds severity.
+
+    Args:
+        transactions: List of insider transactions.
+        cluster_events: List of cluster selling events.
+        shares_outstanding: Total shares outstanding for %O/S calculation.
+                           If None, outstanding_pct will be None.
     """
     cluster_names: set[str] = set()
     for cluster in cluster_events:
@@ -124,34 +130,39 @@ def compute_ownership_concentration(
         # Handle purchases as POSITIVE signal
         if buys and not sells:
             sample = buys[0]
-            alerts.append(OwnershipConcentrationAlert(
-                insider_name=name,
-                role=_get_role(sample),
-                severity="POSITIVE",
-                personal_pct_sold=0.0,
-                shares_sold=0.0,
-                shares_remaining=(
-                    sample.shares_owned_following.value
-                    if sample.shares_owned_following else 0.0
-                ),
-                lookback_months=_LOOKBACK_MONTHS,
-                is_10b5_1=False,
-                is_c_suite=_is_c_suite(sample),
-                compounds_with_cluster=False,
-            ))
+            # Calculate % of shares outstanding sold (0% for buys)
+            outstanding_pct_val = None
+            if shares_outstanding and shares_outstanding > 0:
+                outstanding_pct_val = 0.0
+
+            alerts.append(
+                OwnershipConcentrationAlert(
+                    insider_name=name,
+                    role=_get_role(sample),
+                    severity="POSITIVE",
+                    personal_pct_sold=0.0,
+                    outstanding_pct=outstanding_pct_val,
+                    shares_sold=0.0,
+                    shares_remaining=(
+                        sample.shares_owned_following.value
+                        if sample.shares_owned_following
+                        else 0.0
+                    ),
+                    lookback_months=_LOOKBACK_MONTHS,
+                    is_10b5_1=False,
+                    is_c_suite=_is_c_suite(sample),
+                    compounds_with_cluster=False,
+                )
+            )
             continue
 
         if not sells:
             continue
 
         # Compute total shares sold and remaining
-        total_sold = sum(
-            (t.shares.value if t.shares else 0.0) for t in sells
-        )
+        total_sold = sum((t.shares.value if t.shares else 0.0) for t in sells)
         # Use last transaction's shares_owned_following as remaining
-        sells_with_following = [
-            t for t in sells if t.shares_owned_following is not None
-        ]
+        sells_with_following = [t for t in sells if t.shares_owned_following is not None]
         if not sells_with_following:
             continue
 
@@ -160,7 +171,9 @@ def compute_ownership_concentration(
             key=lambda t: t.transaction_date.value if t.transaction_date else "",
         )
         last_tx = sells_with_following[-1]
-        shares_remaining = last_tx.shares_owned_following.value if last_tx.shares_owned_following else 0.0
+        shares_remaining = (
+            last_tx.shares_owned_following.value if last_tx.shares_owned_following else 0.0
+        )
 
         # personal_pct = sold / (sold + remaining) * 100
         total_holding = total_sold + shares_remaining
@@ -170,29 +183,37 @@ def compute_ownership_concentration(
 
         sample = sells[0]
         c_suite = _is_c_suite(sample)
-        has_10b5_1 = any(
-            t.is_10b5_1 and t.is_10b5_1.value is True for t in sells
-        )
+        has_10b5_1 = any(t.is_10b5_1 and t.is_10b5_1.value is True for t in sells)
         in_cluster = name in cluster_names
 
         # Determine severity
         severity = _determine_severity(
-            personal_pct, c_suite, has_10b5_1, in_cluster,
+            personal_pct,
+            c_suite,
+            has_10b5_1,
+            in_cluster,
         )
 
-        alerts.append(OwnershipConcentrationAlert(
-            insider_name=name,
-            role=_get_role(sample),
-            severity=severity,
-            personal_pct_sold=round(personal_pct, 1),
-            outstanding_pct=None,
-            shares_sold=total_sold,
-            shares_remaining=shares_remaining,
-            lookback_months=_LOOKBACK_MONTHS,
-            is_10b5_1=has_10b5_1,
-            is_c_suite=c_suite,
-            compounds_with_cluster=in_cluster,
-        ))
+        # Calculate % of shares outstanding sold, if shares_outstanding available
+        outstanding_pct_val = None
+        if shares_outstanding and shares_outstanding > 0:
+            outstanding_pct_val = round((total_sold / shares_outstanding) * 100.0, 1)
+
+        alerts.append(
+            OwnershipConcentrationAlert(
+                insider_name=name,
+                role=_get_role(sample),
+                severity=severity,
+                personal_pct_sold=round(personal_pct, 1),
+                outstanding_pct=outstanding_pct_val,
+                shares_sold=total_sold,
+                shares_remaining=shares_remaining,
+                lookback_months=_LOOKBACK_MONTHS,
+                is_10b5_1=has_10b5_1,
+                is_c_suite=c_suite,
+                compounds_with_cluster=in_cluster,
+            )
+        )
 
     return alerts
 
@@ -246,12 +267,16 @@ def build_ownership_trajectories(
         for tx in txns:
             shares_val = tx.shares.value if tx.shares else 0.0
             change = shares_val if tx.transaction_type == "BUY" else -shares_val
-            points.append(OwnershipTrajectoryPoint(
-                date=tx.transaction_date.value if tx.transaction_date else "",
-                shares_owned=tx.shares_owned_following.value if tx.shares_owned_following else 0.0,
-                transaction_type=tx.transaction_type,
-                change=change,
-            ))
+            points.append(
+                OwnershipTrajectoryPoint(
+                    date=tx.transaction_date.value if tx.transaction_date else "",
+                    shares_owned=tx.shares_owned_following.value
+                    if tx.shares_owned_following
+                    else 0.0,
+                    transaction_type=tx.transaction_type,
+                    change=change,
+                )
+            )
         if points:
             trajectories[name] = points
 
@@ -267,22 +292,29 @@ def run_ownership_analysis(
     transactions: list[InsiderTransaction],
     cluster_events: list[InsiderClusterEvent],
     analysis: "InsiderTradingAnalysis",
+    shares_outstanding: float | None = None,
 ) -> list[str]:
     """Run ownership concentration + trajectory, return warning messages.
 
     Modifies *analysis* in place (sets ownership_alerts and
     ownership_trajectories) and returns a list of human-readable
     warning strings suitable for the extraction report.
+
+    Args:
+        transactions: List of insider transactions.
+        cluster_events: List of cluster selling events.
+        analysis: InsiderTradingAnalysis to modify.
+        shares_outstanding: Total shares outstanding for %O/S calculation.
+                            If None, outstanding_pct will be None.
     """
     warnings: list[str] = []
 
-    alerts = compute_ownership_concentration(transactions, cluster_events)
+    alerts = compute_ownership_concentration(transactions, cluster_events, shares_outstanding)
     analysis.ownership_alerts = alerts
     if alerts:
         red_flags = [a for a in alerts if a.severity == "RED_FLAG"]
         warnings.append(
-            f"Ownership concentration alerts: {len(alerts)} "
-            f"({len(red_flags)} RED_FLAG)"
+            f"Ownership concentration alerts: {len(alerts)} ({len(red_flags)} RED_FLAG)"
         )
 
     trajectories = build_ownership_trajectories(transactions)

@@ -18,9 +18,7 @@ INFO_ONLY_TYPES = frozenset(
 
 # Regex to extract leading numeric value from threshold strings
 # Matches patterns like ">25%", "<1.0", ">=50", "$10M", "<-1.78", etc.
-NUMERIC_RE = re.compile(
-    r"[<>]=?\s*\$?\s*(-?[\d]+(?:\.[\d]+)?)\s*[%MBKmT]?"
-)
+NUMERIC_RE = re.compile(r"[<>]=?\s*\$?\s*(-?[\d]+(?:\.[\d]+)?)\s*[%MBKmT]?")
 
 
 def extract_factors(check: dict[str, Any]) -> list[str]:
@@ -178,28 +176,41 @@ def try_numeric_compare(
     if red_cmp is None and yellow_cmp is None:
         return None
 
+    # Helper to humanize threshold evidence
+    def humanize_threshold_evidence(val: float, direction: str, thresh: float, level: str) -> str:
+        """Convert 'Value X exceeds red threshold Y' to 'X (elevated vs benchmark of Y)'."""
+        # Format numbers nicely
+        val_str = f"{val:.2f}" if val != int(val) else str(int(val))
+        thresh_str = f"{thresh:.2f}" if thresh != int(thresh) else str(int(thresh))
+        if direction == "exceeds" or direction == "above":
+            return f"{val_str} (elevated vs benchmark of {thresh_str})"
+        else:  # below
+            return f"{val_str} (below benchmark of {thresh_str})"
+
     # Check red threshold
     if red_cmp is not None:
         op, red_num = red_cmp
         if op == ">" and numeric_val > red_num:
-            return (SignalStatus.TRIGGERED, "red",
-                    f"Value {numeric_val} exceeds red threshold {red_num}")
+            evidence = humanize_threshold_evidence(numeric_val, "exceeds", red_num, "red")
+            return (SignalStatus.TRIGGERED, "red", evidence)
         if op == "<" and numeric_val < red_num:
-            return (SignalStatus.TRIGGERED, "red",
-                    f"Value {numeric_val} below red threshold {red_num}")
+            evidence = humanize_threshold_evidence(numeric_val, "below", red_num, "red")
+            return (SignalStatus.TRIGGERED, "red", evidence)
 
     # Check yellow threshold
     if yellow_cmp is not None:
         op, yellow_num = yellow_cmp
         if op == ">" and numeric_val > yellow_num:
-            return (SignalStatus.TRIGGERED, "yellow",
-                    f"Value {numeric_val} exceeds yellow threshold {yellow_num}")
+            evidence = humanize_threshold_evidence(numeric_val, "exceeds", yellow_num, "yellow")
+            return (SignalStatus.TRIGGERED, "yellow", evidence)
         if op == "<" and numeric_val < yellow_num:
-            return (SignalStatus.TRIGGERED, "yellow",
-                    f"Value {numeric_val} below yellow threshold {yellow_num}")
+            evidence = humanize_threshold_evidence(numeric_val, "below", yellow_num, "yellow")
+            return (SignalStatus.TRIGGERED, "yellow", evidence)
 
-    return (SignalStatus.CLEAR, "clear",
-            f"Value {numeric_val} within thresholds")
+    # Clear case
+    val_str = f"{numeric_val:.2f}" if numeric_val != int(numeric_val) else str(int(numeric_val))
+    evidence = f"Verified (value: {val_str})"
+    return (SignalStatus.CLEAR, "clear", evidence)
 
 
 __all__ = [

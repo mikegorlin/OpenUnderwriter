@@ -25,8 +25,10 @@ def generate_gap_query(check: dict[str, Any], company_name: str, ticker: str) ->
     Returns:
         Search query string.
     """
-    # FORCE TEMPLATE FALLBACK for debugging web search hang
-    return _generate_via_template(check, company_name, ticker)
+    try:
+        return _generate_via_llm(check, company_name, ticker)
+    except Exception:
+        return _generate_via_template(check, company_name, ticker)
 
 
 def _generate_via_template(check: dict[str, Any], company_name: str, ticker: str) -> str:
@@ -132,14 +134,13 @@ def _generate_via_llm(check: dict[str, Any], company_name: str, ticker: str) -> 
     return first_line
 
 
-def generate_gap_queries_batch(
+def generate_gap_queries(
     checks: list[dict[str, Any]], company_name: str, ticker: str
 ) -> dict[str, str]:
-    """Generate queries for multiple checks in a single LLM call (more efficient).
+    """Generate search queries for multiple checks in batch.
 
-    When len(checks) > 3, batches all checks into one prompt and parses
-    numbered responses. Falls back to per-check template generation if
-    batch parsing fails.
+    Uses LLM batch generation when possible, falls back to template
+    for any failures.
 
     Args:
         checks: List of check dicts.
@@ -151,8 +152,12 @@ def generate_gap_queries_batch(
     """
     if not checks:
         return {}
-    # FORCE TEMPLATE FALLBACK for debugging web search hang
-    return {c["id"]: _generate_via_template(c, company_name, ticker) for c in checks}
+    # Try LLM batch generation first
+    try:
+        return _batch_via_llm(checks, company_name, ticker)
+    except Exception:
+        # Fall back to template for all checks
+        return {c["id"]: _generate_via_template(c, company_name, ticker) for c in checks}
 
 
 def _batch_via_llm(checks: list[dict[str, Any]], company_name: str, ticker: str) -> dict[str, str]:

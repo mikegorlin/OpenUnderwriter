@@ -11,6 +11,7 @@ Split from sca_extractor.py to stay under 500-line limit.
 from __future__ import annotations
 
 import re
+import logging
 from datetime import date
 from typing import Any, cast
 
@@ -39,6 +40,7 @@ from do_uw.stages.extract.sourced import (
     sourced_int,
     sourced_str,
 )
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Source-specific parsers

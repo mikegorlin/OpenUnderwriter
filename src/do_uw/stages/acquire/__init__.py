@@ -63,6 +63,7 @@ class AcquireStage:
         Derives brain requirements before creating the orchestrator so
         acquisition is brain-aware. Brain failures never block acquisition.
         """
+        print(f"DEBUG ACQUIRE: Entering run method for stage {self.name}")
         state.mark_stage_running(self.name)
         try:
             # Derive brain-driven acquisition requirements.
@@ -75,8 +76,7 @@ class AcquireStage:
                 brain_manifest = derive_brain_requirements()
             except Exception:
                 logger.info(
-                    "Brain requirement derivation failed; "
-                    "proceeding without brain guidance",
+                    "Brain requirement derivation failed; proceeding without brain guidance",
                     exc_info=True,
                 )
 

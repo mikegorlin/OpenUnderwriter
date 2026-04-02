@@ -1,4 +1,5 @@
 """UW Analysis extended sections — context builders for sections 2-6."""
+
 from __future__ import annotations
 
 import logging
@@ -12,15 +13,21 @@ from do_uw.stages.render.formatters import safe_float
 logger = logging.getLogger(__name__)
 
 _TIER_COLORS = {
-    "WIN": "#16A34A", "PREFERRED": "#22C55E", "WRITE": "#2563EB",
-    "WATCH": "#D97706", "WALK": "#DC2626", "NO_TOUCH": "#7F1D1D",
+    "WIN": "#16A34A",
+    "PREFERRED": "#22C55E",
+    "WRITE": "#2563EB",
+    "WATCH": "#D97706",
+    "WALK": "#DC2626",
+    "NO_TOUCH": "#7F1D1D",
 }
+
 
 def _to_dict(obj: Any) -> dict[str, Any]:
     """Convert Pydantic model or dict to plain dict."""
     if isinstance(obj, dict):
         return obj
     return obj.model_dump() if hasattr(obj, "model_dump") else {}
+
 
 def _sv(v: Any) -> Any:
     """Extract .value from SourcedValue dicts/lists or return raw.
@@ -41,6 +48,7 @@ def _sv(v: Any) -> Any:
                 extracted.append(item)
         return extracted
     return v
+
 
 def _format_allegations(case: dict[str, Any]) -> str:
     """Extract clean allegations text from a litigation case dict.
@@ -119,7 +127,7 @@ def _structure_exec_narrative(raw: str) -> dict[str, Any]:
     # Re-join as sentences
     all_sentences: list[str] = []
     for para in paragraphs:
-        sents = re.split(r'(?<=[^A-Z][.!?])\s+(?=[A-Z])', para)
+        sents = re.split(r"(?<=[^A-Z][.!?])\s+(?=[A-Z])", para)
         all_sentences.extend(s.strip() for s in sents if s.strip())
 
     sentences = all_sentences
@@ -131,7 +139,11 @@ def _structure_exec_narrative(raw: str) -> dict[str, Any]:
     thesis_end = 0
     # If first paragraph is just a recommendation label, use it alone
     for i, s in enumerate(sentences):
-        if s.startswith("Underwriting Recommendation:") or s.startswith("WRITE") or s.startswith("WATCH"):
+        if (
+            s.startswith("Underwriting Recommendation:")
+            or s.startswith("WRITE")
+            or s.startswith("WATCH")
+        ):
             thesis = s
             thesis_end = i
             break
@@ -146,25 +158,48 @@ def _structure_exec_narrative(raw: str) -> dict[str, Any]:
     recommendation = ""
 
     risk_keywords = (
-        "active securities", "litigation", "deduction", "consumed", "ceiling",
-        "elevate", "risk", "exposure", "class action", "filing-driven",
-        "historical pattern", "premium architecture", "upper quartile",
+        "active securities",
+        "litigation",
+        "deduction",
+        "consumed",
+        "ceiling",
+        "elevate",
+        "risk",
+        "exposure",
+        "class action",
+        "filing-driven",
+        "historical pattern",
+        "premium architecture",
+        "upper quartile",
     )
     mitigant_keywords = (
-        "positive", "zero active", "clean audit", "no material",
-        "safe", "offsetting", "downward pressure", "absence of",
-        "minimal", "disconnected from disclosure",
+        "positive",
+        "zero active",
+        "clean audit",
+        "no material",
+        "safe",
+        "offsetting",
+        "downward pressure",
+        "absence of",
+        "minimal",
+        "disconnected from disclosure",
     )
     condition_keywords = (
-        "Terms must", "must incorporate", "mandatory", "automatic",
-        "sublimit", "notice protocol", "quarterly", "reporting",
+        "Terms must",
+        "must incorporate",
+        "mandatory",
+        "automatic",
+        "sublimit",
+        "notice protocol",
+        "quarterly",
+        "reporting",
     )
 
-    for s in sentences[thesis_end + 1:]:
+    for s in sentences[thesis_end + 1 :]:
         s_lower = s.lower()
         if any(k in s_lower for k in condition_keywords):
             # Extract numbered conditions from within the sentence
-            cond_match = re.findall(r'\((\d+)\)\s*([^(]+?)(?=\(\d+\)|$)', s)
+            cond_match = re.findall(r"\((\d+)\)\s*([^(]+?)(?=\(\d+\)|$)", s)
             if cond_match:
                 for _num, cond_text in cond_match:
                     conditions.append(cond_text.strip().rstrip(",;. "))
@@ -199,6 +234,7 @@ def _add_underwriting_critical_negatives(
     status. This supplements factor-based negatives with hard findings.
     """
     from do_uw.stages.render.sca_counter import get_active_genuine_scas
+
     existing_names = {n["name"].lower() for n in negatives}
 
     # 1. Active SCAs — the single most important D&O risk signal
@@ -214,13 +250,16 @@ def _add_underwriting_critical_negatives(
                 ev += f" Stock drop: {drop}%."
         else:
             ev = "Active securities class action pending — direct D&O liability exposure."
-        negatives.append({
-            "name": "Active Securities Class Action",
-            "factor_id": "SCA",
-            "points": "10.0", "max": "10",
-            "ratio": 1.0,
-            "evidence": ev,
-        })
+        negatives.append(
+            {
+                "name": "Active Securities Class Action",
+                "factor_id": "SCA",
+                "points": "10.0",
+                "max": "10",
+                "ratio": 1.0,
+                "evidence": ev,
+            }
+        )
 
     # 2. Extreme stock drawdown (>25% in recent period)
     md = state.acquired_data.market_data if state.acquired_data else None
@@ -232,24 +271,31 @@ def _add_underwriting_critical_negatives(
             if h52 > 0 and price > 0:
                 drawdown = (h52 - price) / h52 * 100
                 if drawdown >= 25 and "drawdown" not in " ".join(existing_names):
-                    negatives.append({
-                        "name": "Severe Stock Drawdown",
-                        "factor_id": "DRAWDOWN",
-                        "points": f"{min(drawdown / 10, 10):.1f}", "max": "10",
-                        "ratio": min(drawdown / 100, 1.0),
-                        "evidence": (
-                            f"{drawdown:.0f}% decline from 52-week high of ${h52:.2f} "
-                            f"to ${price:.2f}. Drawdowns >25% are the primary trigger for "
-                            f"Section 10(b) loss causation theories in SCA litigation."
-                        ),
-                    })
+                    negatives.append(
+                        {
+                            "name": "Severe Stock Drawdown",
+                            "factor_id": "DRAWDOWN",
+                            "points": f"{min(drawdown / 10, 10):.1f}",
+                            "max": "10",
+                            "ratio": min(drawdown / 100, 1.0),
+                            "evidence": (
+                                f"{drawdown:.0f}% decline from 52-week high of ${h52:.2f} "
+                                f"to ${price:.2f}. Drawdowns >25% are the primary trigger for "
+                                f"Section 10(b) loss causation theories in SCA litigation."
+                            ),
+                        }
+                    )
 
     # 3. Extreme leverage (D/E > 200%)
     if state.extracted and state.extracted.financials:
         fin = state.extracted.financials
         de = getattr(fin, "debt_to_equity", None)
         de_val = de.value if hasattr(de, "value") else de
-        if de_val is None and state.acquired_data and isinstance(state.acquired_data.market_data, dict):
+        if (
+            de_val is None
+            and state.acquired_data
+            and isinstance(state.acquired_data.market_data, dict)
+        ):
             de_val = safe_float(
                 state.acquired_data.market_data.get("info", {}).get("debtToEquity", 0), 0
             )
@@ -257,17 +303,20 @@ def _add_underwriting_critical_negatives(
                 de_val = de_val / 100
         de_float = safe_float(de_val, 0)
         if de_float > 2.0 and "leverage" not in " ".join(existing_names):
-            negatives.append({
-                "name": "Extreme Leverage",
-                "factor_id": "LEVERAGE",
-                "points": f"{min(de_float, 10):.1f}", "max": "10",
-                "ratio": min(de_float / 5, 1.0),
-                "evidence": (
-                    f"Debt-to-equity ratio of {de_float * 100:.0f}%. "
-                    f"Extreme leverage amplifies D&O exposure through going-concern "
-                    f"risk, covenant breach potential, and balance sheet fragility."
-                ),
-            })
+            negatives.append(
+                {
+                    "name": "Extreme Leverage",
+                    "factor_id": "LEVERAGE",
+                    "points": f"{min(de_float, 10):.1f}",
+                    "max": "10",
+                    "ratio": min(de_float / 5, 1.0),
+                    "evidence": (
+                        f"Debt-to-equity ratio of {de_float * 100:.0f}%. "
+                        f"Extreme leverage amplifies D&O exposure through going-concern "
+                        f"risk, covenant breach potential, and balance sheet fragility."
+                    ),
+                }
+            )
 
     # 4. CHRONIC/REPEAT SCA filer
     if state.acquired_data:
@@ -277,19 +326,30 @@ def _add_underwriting_critical_negatives(
             cases = lit_data.get("supabase_cases", [])
         elif lit_data:
             cases = getattr(lit_data, "supabase_cases", []) or []
-        if len(cases) >= 3 and "chronic" not in " ".join(existing_names) and "repeat" not in " ".join(existing_names):
-            settled = [c for c in cases if isinstance(c, dict) and str(c.get("case_status", "")).upper() == "SETTLED"]
+        if (
+            len(cases) >= 3
+            and "chronic" not in " ".join(existing_names)
+            and "repeat" not in " ".join(existing_names)
+        ):
+            settled = [
+                c
+                for c in cases
+                if isinstance(c, dict) and str(c.get("case_status", "")).upper() == "SETTLED"
+            ]
             total_settled = sum(c.get("settlement_amount_m", 0) or 0 for c in settled)
             ev = f"CHRONIC SCA filer — {len(cases)} filings."
             if total_settled:
                 ev += f" Total settlements: ${total_settled:.1f}M."
-            negatives.append({
-                "name": "Chronic SCA Filer",
-                "factor_id": "CHRONIC",
-                "points": f"{min(len(cases) * 2, 10):.1f}", "max": "10",
-                "ratio": min(len(cases) / 5, 1.0),
-                "evidence": ev,
-            })
+            negatives.append(
+                {
+                    "name": "Chronic SCA Filer",
+                    "factor_id": "CHRONIC",
+                    "points": f"{min(len(cases) * 2, 10):.1f}",
+                    "max": "10",
+                    "ratio": min(len(cases) / 5, 1.0),
+                    "evidence": ev,
+                }
+            )
 
 
 def build_exec_summary_context(state: AnalysisState) -> dict[str, Any]:
@@ -335,7 +395,9 @@ def build_exec_summary_context(state: AnalysisState) -> dict[str, Any]:
             # Extract the useful part of do_context (after the jargon prefix)
             if do_ctx:
                 parts = do_ctx.strip().split(". ", 1)
-                if len(parts) > 1 and ("signals elevated" in parts[0] or "caution zone" in parts[0]):
+                if len(parts) > 1 and (
+                    "signals elevated" in parts[0] or "caution zone" in parts[0]
+                ):
                     explanation = parts[1]
                 else:
                     explanation = do_ctx
@@ -415,7 +477,9 @@ def build_exec_summary_context(state: AnalysisState) -> dict[str, Any]:
             if not isinstance(sig, dict):
                 continue
             sig_factors = sig.get("factors", [])
-            if fid in sig_factors or fid.replace(".", "") in [sf.replace(".", "") for sf in sig_factors]:
+            if fid in sig_factors or fid.replace(".", "") in [
+                sf.replace(".", "") for sf in sig_factors
+            ]:
                 total_count += 1
                 if sig.get("status") in ("CLEAR", "NOT_TRIGGERED"):
                     clear_count += 1
@@ -439,7 +503,9 @@ def build_exec_summary_context(state: AnalysisState) -> dict[str, Any]:
             if pct >= 90:
                 return f"No material {fname.lower()} concerns identified in current filings"
             elif pct >= 70:
-                return f"Limited {fname.lower()} exposure — most risk indicators within normal range"
+                return (
+                    f"Limited {fname.lower()} exposure — most risk indicators within normal range"
+                )
             else:
                 return f"Below-average {fname.lower()} risk relative to scoring thresholds"
         return f"Low risk: minimal {fname.lower()} indicators detected"
@@ -509,13 +575,15 @@ def build_exec_summary_context(state: AnalysisState) -> dict[str, Any]:
     # Red flags
     red_flags = scoring.get("red_flags", [])
     rf_items = []
-    for rf in (red_flags or []):
+    for rf in red_flags or []:
         if rf.get("triggered"):
-            rf_items.append({
-                "name": rf.get("flag_name", ""),
-                "evidence": rf.get("evidence", []),
-                "max_tier": rf.get("max_tier", ""),
-            })
+            rf_items.append(
+                {
+                    "name": rf.get("flag_name", ""),
+                    "evidence": rf.get("evidence", []),
+                    "max_tier": rf.get("max_tier", ""),
+                }
+            )
 
     # Commentary
     commentary_factual, commentary_bullets = _get_commentary(state, "executive_summary")
@@ -537,6 +605,7 @@ def build_exec_summary_context(state: AnalysisState) -> dict[str, Any]:
         "key_positives": positives[:6],
         "red_flags": rf_items,
     }
+
 
 def build_financial_context(state: AnalysisState) -> dict[str, Any]:
     """Build financial analysis section context."""
@@ -599,7 +668,7 @@ def build_financial_context(state: AnalysisState) -> dict[str, Any]:
             sd = _to_dict(stmts)
             inc = sd.get("income_statement", {})
             periods = inc.get("periods", []) or []
-            for item in (inc.get("line_items", []) or []):
+            for item in inc.get("line_items", []) or []:
                 label = (item.get("label", "") or "").lower()
                 vals = item.get("values", {})
                 if "revenue" in label or "net sales" in label:
@@ -613,8 +682,11 @@ def build_financial_context(state: AnalysisState) -> dict[str, Any]:
 
     def _zc(z: str) -> str:
         z = (z or "").lower()
-        return "#16A34A" if z in ("safe", "strong", "manipulation unlikely") else (
-            "#D97706" if z in ("grey", "gray", "moderate", "warning") else "#DC2626")
+        return (
+            "#16A34A"
+            if z in ("safe", "strong", "manipulation unlikely")
+            else ("#D97706" if z in ("grey", "gray", "moderate", "warning") else "#DC2626")
+        )
 
     def _distress_do_context(model: str, score: float | None, zone: str | None) -> str:
         """Generate correct D&O context for distress models using ACTUAL zone, not signal."""
@@ -624,34 +696,54 @@ def build_financial_context(state: AnalysisState) -> dict[str, Any]:
         s = f"{score:.2f}"
         if model == "altman":
             if z in ("distress",):
-                return (f"Altman Z-Score of {s} is in the distress zone (below 1.81) — historically associated "
-                        "with 2-3x higher D&O claim frequency and increased exposure to insolvency-related claims.")
+                return (
+                    f"Altman Z-Score of {s} is in the distress zone (below 1.81) — historically associated "
+                    "with 2-3x higher D&O claim frequency and increased exposure to insolvency-related claims."
+                )
             if z in ("grey", "gray"):
-                return (f"Altman Z-Score of {s} is in the grey zone (1.81-2.99) — moderate financial stress "
-                        "that could amplify D&O claim severity if stock price declines coincide with negative disclosures.")
-            return (f"Altman Z-Score of {s} is in the safe zone (above 2.99) — low bankruptcy probability, "
-                    "a protective factor for D&O risk.")
+                return (
+                    f"Altman Z-Score of {s} is in the grey zone (1.81-2.99) — moderate financial stress "
+                    "that could amplify D&O claim severity if stock price declines coincide with negative disclosures."
+                )
+            return (
+                f"Altman Z-Score of {s} is in the safe zone (above 2.99) — low bankruptcy probability, "
+                "a protective factor for D&O risk."
+            )
         if model == "beneish":
             if "manip" in z:
-                return (f"Beneish M-Score of {s} exceeds -2.22 threshold — elevated earnings manipulation probability. "
-                        "Restatement risk is a primary driver of SCA filings.")
-            return (f"Beneish M-Score of {s} is below -2.22 threshold — low earnings manipulation probability. "
-                    "Reduces restatement risk.")
+                return (
+                    f"Beneish M-Score of {s} exceeds -2.22 threshold — elevated earnings manipulation probability. "
+                    "Restatement risk is a primary driver of SCA filings."
+                )
+            return (
+                f"Beneish M-Score of {s} is below -2.22 threshold — low earnings manipulation probability. "
+                "Reduces restatement risk."
+            )
         if model == "ohlson":
             if z in ("distress",):
-                return (f"Ohlson O-Score of {s} indicates elevated bankruptcy probability — "
-                        "heightened exposure to insolvency-related D&O claims.")
-            return (f"Ohlson O-Score of {s} indicates low bankruptcy probability — "
-                    "supportive of favorable D&O risk profile.")
+                return (
+                    f"Ohlson O-Score of {s} indicates elevated bankruptcy probability — "
+                    "heightened exposure to insolvency-related D&O claims."
+                )
+            return (
+                f"Ohlson O-Score of {s} indicates low bankruptcy probability — "
+                "supportive of favorable D&O risk profile."
+            )
         if model == "piotroski":
             if z in ("weak",):
-                return (f"Piotroski F-Score of {score:.0f}/9 indicates weak financial position — "
-                        "deteriorating fundamentals increase D&O exposure.")
+                return (
+                    f"Piotroski F-Score of {score:.0f}/9 indicates weak financial position — "
+                    "deteriorating fundamentals increase D&O exposure."
+                )
             if z in ("grey", "gray", "moderate"):
-                return (f"Piotroski F-Score of {score:.0f}/9 indicates moderate financial position — "
-                        "mixed signals warrant monitoring.")
-            return (f"Piotroski F-Score of {score:.0f}/9 indicates strong financial position — "
-                    "positive for D&O risk assessment.")
+                return (
+                    f"Piotroski F-Score of {score:.0f}/9 indicates moderate financial position — "
+                    "mixed signals warrant monitoring."
+                )
+            return (
+                f"Piotroski F-Score of {score:.0f}/9 indicates strong financial position — "
+                "positive for D&O risk assessment."
+            )
         return ""
 
     # 4.7.2 + 4.7.3 Tax jurisdiction + UTB (placeholder — needs --fresh with new XBRL concepts)
@@ -689,13 +781,17 @@ def build_financial_context(state: AnalysisState) -> dict[str, Any]:
     commentary_factual, commentary_bullets = _get_commentary(state, "financial")
 
     # Section opener — data-driven D&O connection
-    section_opener = _build_section_opener("financial", state, {
-        "revenue": fmt_large_number(rev),
-        "net_income": fmt_large_number(ni),
-        "rev_growth": f"{rev_growth * 100:+.1f}% YoY" if rev_growth is not None else "N/A",
-        "beneish_zone": b_zone.title() if b_zone else "",
-        "altman_zone": a_zone.title() if a_zone else "",
-    })
+    section_opener = _build_section_opener(
+        "financial",
+        state,
+        {
+            "revenue": fmt_large_number(rev),
+            "net_income": fmt_large_number(ni),
+            "rev_growth": f"{rev_growth * 100:+.1f}% YoY" if rev_growth is not None else "N/A",
+            "beneish_zone": b_zone.title() if b_zone else "",
+            "altman_zone": a_zone.title() if a_zone else "",
+        },
+    )
 
     # Revenue provenance — derive from XBRL statements when available
     revenue_source = "N/A"
@@ -707,7 +803,7 @@ def build_financial_context(state: AnalysisState) -> dict[str, Any]:
             sd_prov = _to_dict(fin_stmts)
             inc_prov = sd_prov.get("income_statement", {})
             prov_periods = inc_prov.get("periods", []) or []
-            for prov_item in (inc_prov.get("line_items", []) or []):
+            for prov_item in inc_prov.get("line_items", []) or []:
                 prov_label = (prov_item.get("label", "") or "").lower()
                 if "revenue" in prov_label or "net sales" in prov_label:
                     prov_vals = prov_item.get("values", {})
@@ -736,14 +832,18 @@ def build_financial_context(state: AnalysisState) -> dict[str, Any]:
         "cash": fmt_large_number(cash),
         "debt": fmt_large_number(debt),
         "current_ratio": f"{cr:.2f}" if cr else "N/A",
-        "goodwill_pct": f"{gw_pct:.1f}%" if gw_pct else ("Minimal" if gw is not None and gw == 0 else "N/A"),
+        "goodwill_pct": f"{gw_pct:.1f}%"
+        if gw_pct
+        else ("Minimal" if gw is not None and gw == 0 else "N/A"),
         "gross_margin": f"{gm * 100:.1f}%" if gm else "N/A",
         "op_margin": f"{om * 100:.1f}%" if om else "N/A",
         "net_margin": f"{nm * 100:.1f}%" if nm else "N/A",
         "ebitda_margin": f"{em * 100:.1f}%" if em else "N/A",
         "revenue_growth": f"{rev_growth * 100:.1f}%" if rev_growth is not None else "N/A",
         "earnings_growth": f"{earn_growth * 100:.1f}%" if earn_growth is not None else "N/A",
-        "earnings_quarterly_growth": f"{earn_q_growth * 100:.1f}%" if earn_q_growth is not None else "N/A",
+        "earnings_quarterly_growth": f"{earn_q_growth * 100:.1f}%"
+        if earn_q_growth is not None
+        else "N/A",
         "return_on_equity": f"{roe * 100:.1f}%" if roe is not None else "N/A",
         "return_on_assets": f"{roa * 100:.1f}%" if roa is not None else "N/A",
         "quick_ratio": f"{qr:.2f}" if qr is not None else "N/A",
@@ -863,29 +963,33 @@ def _build_unified_financial_snapshot(
                     def _fy_label(p: str) -> str:
                         return p.replace("FY", "")[:4] if p else ""
 
-                    annual_rows.append({
-                        "label": display_label,
-                        "latest_period": _fy_label(p_latest),
-                        "latest_value": fmt_large_number(latest),
-                        "prior_period": _fy_label(p_prior),
-                        "prior_value": fmt_large_number(prior),
-                        "yoy_pct": f"{yoy:+.1f}%" if yoy is not None else "N/A",
-                        "yoy_color": "#16A34A" if yoy is not None and yoy >= 0 else "#DC2626",
-                    })
+                    annual_rows.append(
+                        {
+                            "label": display_label,
+                            "latest_period": _fy_label(p_latest),
+                            "latest_value": fmt_large_number(latest),
+                            "prior_period": _fy_label(p_prior),
+                            "prior_value": fmt_large_number(prior),
+                            "yoy_pct": f"{yoy:+.1f}%" if yoy is not None else "N/A",
+                            "yoy_color": "#16A34A" if yoy is not None and yoy >= 0 else "#DC2626",
+                        }
+                    )
 
                 # Add EPS from yfinance
                 eps_ttm = info.get("trailingEps")
                 eps_fwd = info.get("forwardEps")
                 if eps_ttm is not None:
-                    annual_rows.append({
-                        "label": "EPS (TTM)",
-                        "latest_period": "TTM",
-                        "latest_value": f"${eps_ttm:.2f}",
-                        "prior_period": "Fwd",
-                        "prior_value": f"${eps_fwd:.2f}" if eps_fwd is not None else "N/A",
-                        "yoy_pct": "",
-                        "yoy_color": "#6B7280",
-                    })
+                    annual_rows.append(
+                        {
+                            "label": "EPS (TTM)",
+                            "latest_period": "TTM",
+                            "latest_value": f"${eps_ttm:.2f}",
+                            "prior_period": "Fwd",
+                            "prior_value": f"${eps_fwd:.2f}" if eps_fwd is not None else "N/A",
+                            "yoy_pct": "",
+                            "yoy_color": "#6B7280",
+                        }
+                    )
 
     result["annual"] = annual_rows
 
@@ -899,14 +1003,16 @@ def _build_unified_financial_snapshot(
             q_data: list[dict[str, Any]] = []
             for q in yq_list[:5]:
                 if isinstance(q, dict):
-                    q_data.append({
-                        "period": _format_quarter_label(q.get("period", "")),
-                        "revenue": q.get("revenue"),
-                        "gross_profit": q.get("gross_profit"),
-                        "op_income": q.get("operating_income"),
-                        "net_income": q.get("net_income"),
-                        "eps": q.get("diluted_eps") or q.get("eps"),
-                    })
+                    q_data.append(
+                        {
+                            "period": _format_quarter_label(q.get("period", "")),
+                            "revenue": q.get("revenue"),
+                            "gross_profit": q.get("gross_profit"),
+                            "op_income": q.get("operating_income"),
+                            "net_income": q.get("net_income"),
+                            "eps": q.get("diluted_eps") or q.get("eps"),
+                        }
+                    )
 
             # Build row per metric across quarters
             for metric_key, display_label in [
@@ -929,12 +1035,14 @@ def _build_unified_financial_snapshot(
                         prior_val = q_data[i + 1].get(metric_key)
                         if prior_val is not None and prior_val != 0:
                             qoq = (val - prior_val) / abs(prior_val) * 100
-                    row["quarters"].append({
-                        "period": qd["period"],
-                        "value": formatted,
-                        "qoq_pct": f"{qoq:+.1f}%" if qoq is not None else "",
-                        "qoq_color": "#16A34A" if qoq is not None and qoq >= 0 else "#DC2626",
-                    })
+                    row["quarters"].append(
+                        {
+                            "period": qd["period"],
+                            "value": formatted,
+                            "qoq_pct": f"{qoq:+.1f}%" if qoq is not None else "",
+                            "qoq_color": "#16A34A" if qoq is not None and qoq >= 0 else "#DC2626",
+                        }
+                    )
                 q_rows.append(row)
 
     result["quarterly"] = q_rows
@@ -953,10 +1061,12 @@ def _build_unified_financial_snapshot(
         ("Net Debt", net_debt),
         ("Total Assets", ta_val),
     ]:
-        bs_rows.append({
-            "label": label,
-            "value": fmt_large_number(val),
-        })
+        bs_rows.append(
+            {
+                "label": label,
+                "value": fmt_large_number(val),
+            }
+        )
 
     result["balance_sheet"] = bs_rows
 
@@ -999,11 +1109,13 @@ def _build_quarterly_balance(state: AnalysisState) -> list[dict[str, Any]]:
         row: dict[str, Any] = {"label": display_label, "cells": []}
         for i, p in enumerate(periods):
             v = vals[i] if i < len(vals) else None
-            row["cells"].append({
-                "period": _format_q_period(p),
-                "raw": v,
-                "display": fmt_large_number(v) if v is not None else "—",
-            })
+            row["cells"].append(
+                {
+                    "period": _format_q_period(p),
+                    "raw": v,
+                    "display": fmt_large_number(v) if v is not None else "—",
+                }
+            )
         result.append(row)
     return result
 
@@ -1043,11 +1155,13 @@ def _build_quarterly_cashflow(state: AnalysisState) -> list[dict[str, Any]]:
         row: dict[str, Any] = {"label": display_label, "cells": []}
         for i, p in enumerate(periods):
             v = vals[i] if i < len(vals) else None
-            row["cells"].append({
-                "period": _format_q_period(p),
-                "raw": v,
-                "display": fmt_large_number(v) if v is not None else "—",
-            })
+            row["cells"].append(
+                {
+                    "period": _format_q_period(p),
+                    "raw": v,
+                    "display": fmt_large_number(v) if v is not None else "—",
+                }
+            )
         result.append(row)
     return result
 
@@ -1086,7 +1200,7 @@ def _build_annual_income(state: AnalysisState) -> dict[str, Any] | None:
 
     rows: list[dict[str, Any]] = []
     for search_term, display_label in target_labels:
-        for item in (inc.get("line_items", []) or []):
+        for item in inc.get("line_items", []) or []:
             label_lower = (item.get("label", "") or "").lower()
             if search_term in label_lower:
                 vals = item.get("values", {})
@@ -1108,12 +1222,14 @@ def _build_annual_income(state: AnalysisState) -> dict[str, Any] | None:
                         display = f"${v_float:.2f}" if v_float is not None else "—"
                     else:
                         display = fmt_large_number(v_float) if v_float is not None else "—"
-                    row_vals.append({
-                        "period": p,
-                        "display": display,
-                        "yoy": yoy,
-                        "yoy_color": _yoy_color(yoy, display_label),
-                    })
+                    row_vals.append(
+                        {
+                            "period": p,
+                            "display": display,
+                            "yoy": yoy,
+                            "yoy_color": _yoy_color(yoy, display_label),
+                        }
+                    )
                     prev_v = v_float
                 rows.append({"label": display_label, "cells": row_vals})
                 break
@@ -1155,7 +1271,7 @@ def _build_xbrl_balance_highlights(state: AnalysisState) -> dict[str, Any] | Non
 
     rows: list[dict[str, Any]] = []
     for search_term, display_label in target_labels:
-        for item in (bs.get("line_items", []) or []):
+        for item in bs.get("line_items", []) or []:
             label_lower = (item.get("label", "") or "").lower()
             if search_term in label_lower:
                 vals = item.get("values", {})
@@ -1169,12 +1285,14 @@ def _build_xbrl_balance_highlights(state: AnalysisState) -> dict[str, Any] | Non
                     if v_float is not None and prev_v is not None and prev_v != 0:
                         change_pct = (v_float - prev_v) / abs(prev_v) * 100
                         yoy = f"{change_pct:+.1f}%"
-                    row_vals.append({
-                        "period": p,
-                        "display": fmt_large_number(v_float) if v_float is not None else "—",
-                        "yoy": yoy,
-                        "yoy_color": _yoy_color(yoy, display_label),
-                    })
+                    row_vals.append(
+                        {
+                            "period": p,
+                            "display": fmt_large_number(v_float) if v_float is not None else "—",
+                            "yoy": yoy,
+                            "yoy_color": _yoy_color(yoy, display_label),
+                        }
+                    )
                     prev_v = v_float
                 rows.append({"label": display_label, "cells": row_vals})
                 break
@@ -1219,33 +1337,43 @@ def _build_audit_alerts(state: AnalysisState) -> list[dict[str, str]]:
     audit = fin.get("audit", {}) or {}
     # Restatement
     if audit.get("has_restatement"):
-        alerts.append({
-            "type": "Restatement",
-            "severity": "HIGH",
-            "detail": audit.get("restatement_detail", "Restatement disclosed in filings"),
-        })
+        alerts.append(
+            {
+                "type": "Restatement",
+                "severity": "HIGH",
+                "detail": audit.get("restatement_detail", "Restatement disclosed in filings"),
+            }
+        )
     # Auditor change
     if audit.get("auditor_change"):
-        alerts.append({
-            "type": "Auditor Change",
-            "severity": "HIGH",
-            "detail": audit.get("auditor_change_detail", "Change in independent auditor"),
-        })
+        alerts.append(
+            {
+                "type": "Auditor Change",
+                "severity": "HIGH",
+                "detail": audit.get("auditor_change_detail", "Change in independent auditor"),
+            }
+        )
     # Material weakness
     if audit.get("material_weakness"):
-        alerts.append({
-            "type": "Material Weakness",
-            "severity": "HIGH",
-            "detail": audit.get("material_weakness_detail", "Material weakness in ICFR disclosed"),
-        })
+        alerts.append(
+            {
+                "type": "Material Weakness",
+                "severity": "HIGH",
+                "detail": audit.get(
+                    "material_weakness_detail", "Material weakness in ICFR disclosed"
+                ),
+            }
+        )
     # Q4 revenue loading
     q4_pct = fin.get("q4_revenue_pct")
     if q4_pct and safe_float(q4_pct, 0) > 35:
-        alerts.append({
-            "type": "Q4 Revenue Loading",
-            "severity": "MEDIUM",
-            "detail": f"Q4 = {q4_pct}% of annual revenue (>35% threshold)",
-        })
+        alerts.append(
+            {
+                "type": "Q4 Revenue Loading",
+                "severity": "MEDIUM",
+                "detail": f"Q4 = {q4_pct}% of annual revenue (>35% threshold)",
+            }
+        )
     return alerts
 
 
@@ -1261,12 +1389,14 @@ def _build_debt_maturity(state: AnalysisState) -> list[dict[str, Any]] | None:
     result = []
     for m in maturity[:8]:  # Max 8 years
         amt = safe_float(m.get("amount", 0), 0)
-        result.append({
-            "year": m.get("year", ""),
-            "amount": fmt_large_number(amt) if amt else "—",
-            "bar_height": max(4, int(50 * amt / max_val)),
-            "near_term": m.get("near_term", False),
-        })
+        result.append(
+            {
+                "year": m.get("year", ""),
+                "amount": fmt_large_number(amt) if amt else "—",
+                "bar_height": max(4, int(50 * amt / max_val)),
+                "near_term": m.get("near_term", False),
+            }
+        )
     return result if result else None
 
 
@@ -1302,7 +1432,7 @@ def build_governance_context(state: AnalysisState) -> dict[str, Any]:
     # Build yfinance officer lookup by name fragment
     yf_officers = {}
     info = _get_yfinance_info(state)
-    for o in (info.get("companyOfficers", []) or []):
+    for o in info.get("companyOfficers", []) or []:
         if isinstance(o, dict) and o.get("name"):
             # Key by last name for fuzzy matching
             parts = o["name"].replace("Mr. ", "").replace("Ms. ", "").replace("Mrs. ", "").split()
@@ -1323,13 +1453,17 @@ def build_governance_context(state: AnalysisState) -> dict[str, Any]:
             yf = yf_officers.get(name_parts[-1].lower(), {})
             age = yf.get("age")
             total_pay = yf.get("totalPay")
-        executives.append({
-            "name": name or "N/A",
-            "title": title or "N/A",
-            "tenure": f"{tenure:.0f}yr" if tenure else "N/A",
-            "age": age,
-            "compensation": fmt_large_number(total_comp or total_pay) if (total_comp or total_pay) else "N/A",
-        })
+        executives.append(
+            {
+                "name": name or "N/A",
+                "title": title or "N/A",
+                "tenure": f"{tenure:.0f}yr" if tenure else "N/A",
+                "age": age,
+                "compensation": fmt_large_number(total_comp or total_pay)
+                if (total_comp or total_pay)
+                else "N/A",
+            }
+        )
 
     # Board forensics (directors)
     bf_raw = gov.get("board_forensics", []) or []
@@ -1353,20 +1487,23 @@ def build_governance_context(state: AnalysisState) -> dict[str, Any]:
         is_overboarded = bool(d.get("is_overboarded"))
         # Count total boards (this company + other boards)
         total_board_count = 1 + len(other_boards)
-        directors.append({
-            "name": name or "N/A",
-            "tenure": f"{tenure:.0f}yr" if tenure else "N/A",
-            "independent": "Yes" if is_ind else ("No" if is_ind is False else "N/A"),
-            "committees": (
-                role if isinstance(role, str)
-                else (", ".join(role) if isinstance(role, list) else "N/A")
-            ),
-            "qualification_tags": qual_tags,
-            "age": age_val,
-            "other_boards": other_boards,
-            "is_overboarded": is_overboarded,
-            "total_board_count": total_board_count,
-        })
+        directors.append(
+            {
+                "name": name or "N/A",
+                "tenure": f"{tenure:.0f}yr" if tenure else "N/A",
+                "independent": "Yes" if is_ind else ("No" if is_ind is False else "N/A"),
+                "committees": (
+                    role
+                    if isinstance(role, str)
+                    else (", ".join(role) if isinstance(role, list) else "N/A")
+                ),
+                "qualification_tags": qual_tags,
+                "age": age_val,
+                "other_boards": other_boards,
+                "is_overboarded": is_overboarded,
+                "total_board_count": total_board_count,
+            }
+        )
 
     # Board column-visibility flags — hide all-dash columns
     board_has_any_other_boards = any(bool(d.get("other_boards")) for d in directors)
@@ -1380,11 +1517,13 @@ def build_governance_context(state: AnalysisState) -> dict[str, Any]:
     for h in (own.get("top_holders", []) or [])[:5]:
         hv = _sv(h)
         if isinstance(hv, dict):
-            top_holders.append({
-                "name": hv.get("name", "N/A"),
-                "pct": f"{hv.get('pct_out', 0) * 100:.1f}%",
-                "shares": fmt_large_number(hv.get("shares")),
-            })
+            top_holders.append(
+                {
+                    "name": hv.get("name", "N/A"),
+                    "pct": f"{hv.get('pct_out', 0) * 100:.1f}%",
+                    "shares": fmt_large_number(hv.get("shares")),
+                }
+            )
 
     # Compensation
     ceo_comp = _sv(comp.get("ceo_total_comp"))
@@ -1454,13 +1593,15 @@ def build_governance_context(state: AnalysisState) -> dict[str, Any]:
     for key, label in component_labels.items():
         val = safe_float(gov_score_raw.get(key), None)
         if val is not None:
-            gov_score_components.append({
-                "label": label,
-                "score": f"{val:.1f}",
-                "max": "10",
-                "pct": val / 10 * 100,
-                "color": "#16A34A" if val >= 7 else ("#D97706" if val >= 4 else "#DC2626"),
-            })
+            gov_score_components.append(
+                {
+                    "label": label,
+                    "score": f"{val:.1f}",
+                    "max": "10",
+                    "pct": val / 10 * 100,
+                    "color": "#16A34A" if val >= 7 else ("#D97706" if val >= 4 else "#DC2626"),
+                }
+            )
 
     # Narrative & commentary
     gov_narrative = ""
@@ -1486,12 +1627,16 @@ def build_governance_context(state: AnalysisState) -> dict[str, Any]:
                 ceo_tenure_years = t
             break
 
-    section_opener = _build_section_opener("governance", state, {
-        "board_size": str(board_size) if board_size else "N/A",
-        "independence_ratio": f"{independence * 100:.0f}%" if independence else "N/A",
-        "chair_name": chair_name,
-        "ceo_tenure": ceo_tenure_years,
-    })
+    section_opener = _build_section_opener(
+        "governance",
+        state,
+        {
+            "board_size": str(board_size) if board_size else "N/A",
+            "independence_ratio": f"{independence * 100:.0f}%" if independence else "N/A",
+            "chair_name": chair_name,
+            "ceo_tenure": ceo_tenure_years,
+        },
+    )
 
     return {
         "board_size": board_size or "N/A",
@@ -1507,7 +1652,9 @@ def build_governance_context(state: AnalysisState) -> dict[str, Any]:
         "iss_audit": iss_audit,
         "iss_rights": iss_rights,
         "governance_summary": governance_summary,
-        "governance_total_score": f"{gov_total_score:.1f}" if gov_total_score is not None else None,
+        "governance_total_score": f"{gov_total_score:.1f}"
+        if gov_total_score is not None
+        else None,
         "governance_score_components": gov_score_components,
         "executives": executives,
         "directors": directors,
@@ -1549,6 +1696,7 @@ def build_governance_context(state: AnalysisState) -> dict[str, Any]:
         "stability_score": _sv(lead.get("stability_score")),
     }
 
+
 def _build_ceo_comp_breakdown(comp: dict[str, Any]) -> dict[str, Any] | None:
     """Build CEO compensation breakdown from comp_analysis data."""
     total = safe_float(_sv(comp.get("ceo_total_comp")), None)
@@ -1573,13 +1721,15 @@ def _build_ceo_comp_breakdown(comp: dict[str, Any]) -> dict[str, Any] | None:
     ]:
         if val and total > 0:
             pct = val / total * 100
-            components.append({
-                "label": label,
-                "amount": fmt_large_number(val),
-                "pct": f"{pct:.1f}%",
-                "pct_raw": pct,
-                "color": color,
-            })
+            components.append(
+                {
+                    "label": label,
+                    "amount": fmt_large_number(val),
+                    "pct": f"{pct:.1f}%",
+                    "pct_raw": pct,
+                    "color": color,
+                }
+            )
 
     return {
         "total": fmt_large_number(total),
@@ -1610,21 +1760,23 @@ def _build_board_forensic_details(bf_raw: list[dict[str, Any]]) -> list[dict[str
         true_independence = d.get("true_independence_concerns", []) or []
         qual_tags = d.get("qualification_tags", []) or []
 
-        details.append({
-            "name": name,
-            "qualifications": qualifications,
-            "age": int(age) if age else None,
-            "tenure": f"{tenure:.0f} years" if tenure else None,
-            "independent": "Yes" if is_ind else ("No" if is_ind is False else "N/A"),
-            "committees": committees,
-            "other_boards": other_boards,
-            "is_overboarded": is_overboarded,
-            "prior_litigation": [_sv(pl) for pl in prior_lit] if prior_lit else [],
-            "interlocks": interlocks,
-            "relationship_flags": relationship_flags,
-            "true_independence_concerns": true_independence,
-            "qualification_tags": qual_tags,
-        })
+        details.append(
+            {
+                "name": name,
+                "qualifications": qualifications,
+                "age": int(age) if age else None,
+                "tenure": f"{tenure:.0f} years" if tenure else None,
+                "independent": "Yes" if is_ind else ("No" if is_ind is False else "N/A"),
+                "committees": committees,
+                "other_boards": other_boards,
+                "is_overboarded": is_overboarded,
+                "prior_litigation": [_sv(pl) for pl in prior_lit] if prior_lit else [],
+                "interlocks": interlocks,
+                "relationship_flags": relationship_flags,
+                "true_independence_concerns": true_independence,
+                "qualification_tags": qual_tags,
+            }
+        )
     return details
 
 
@@ -1671,23 +1823,25 @@ def build_litigation_context(state: AnalysisState) -> dict[str, Any]:
             except (ValueError, TypeError):
                 pass
 
-        scas.append({
-            "case_name": _sv(s.get("case_name")) or "N/A",
-            "status": _sv(s.get("status")) or "N/A",
-            "court": _sv(s.get("court")) or "N/A",
-            "filing_date": _sv(s.get("filing_date")) or "N/A",
-            "allegations": _format_allegations(s),
-            "legal_theories": theories,
-            "class_period_start": _sv(s.get("class_period_start")) or "",
-            "class_period_end": _sv(s.get("class_period_end")) or "",
-            "docket_number": _sv(s.get("docket_number")) or "",
-            "named_defendants": defendants,
-            "lead_counsel": _sv(s.get("lead_counsel")) or "",
-            "procedural_posture": _sv(s.get("procedural_posture")) or "",
-            "damages_claimed": _sv(s.get("damages_claimed")) or "",
-            "settlement_amount": settlement_display,
-            "case_duration": "",  # TODO: compute from filing_date + resolution_date
-        })
+        scas.append(
+            {
+                "case_name": _sv(s.get("case_name")) or "N/A",
+                "status": _sv(s.get("status")) or "N/A",
+                "court": _sv(s.get("court")) or "N/A",
+                "filing_date": _sv(s.get("filing_date")) or "N/A",
+                "allegations": _format_allegations(s),
+                "legal_theories": theories,
+                "class_period_start": _sv(s.get("class_period_start")) or "",
+                "class_period_end": _sv(s.get("class_period_end")) or "",
+                "docket_number": _sv(s.get("docket_number")) or "",
+                "named_defendants": defendants,
+                "lead_counsel": _sv(s.get("lead_counsel")) or "",
+                "procedural_posture": _sv(s.get("procedural_posture")) or "",
+                "damages_claimed": _sv(s.get("damages_claimed")) or "",
+                "settlement_amount": settlement_display,
+                "case_duration": "",  # TODO: compute from filing_date + resolution_date
+            }
+        )
 
     # Derivative suits — filter ghost entries (no case name, date, or court)
     derivs = lit.get("derivative_suits", []) or []
@@ -1702,16 +1856,18 @@ def build_litigation_context(state: AnalysisState) -> dict[str, Any]:
         has_court = court not in ("", "N/A")
         if not has_name and not has_date and not has_court:
             continue
-        deriv_cases.append({
-            "case_name": case_name or "N/A",
-            "status": _sv(d.get("status")) or "N/A",
-            "filing_date": filing_date or "N/A",
-        })
+        deriv_cases.append(
+            {
+                "case_name": case_name or "N/A",
+                "status": _sv(d.get("status")) or "N/A",
+                "filing_date": filing_date or "N/A",
+            }
+        )
 
     # Regulatory — may be SourcedValue dicts with nested value
     regs = lit.get("regulatory_proceedings", []) or []
     reg_cases = []
-    for r in (regs if isinstance(regs, list) else []):
+    for r in regs if isinstance(regs, list) else []:
         rv = _sv(r)  # unwrap SourcedValue
         if isinstance(rv, dict):
             name = rv.get("agency") or rv.get("agency_name") or "N/A"
@@ -1728,15 +1884,17 @@ def build_litigation_context(state: AnalysisState) -> dict[str, Any]:
     if isinstance(sec_raw, dict):
         # Single enforcement dict — wrap as list for uniform handling
         sec_raw = [sec_raw] if sec_raw else []
-    for s in (sec_raw if isinstance(sec_raw, list) else []):
+    for s in sec_raw if isinstance(sec_raw, list) else []:
         if isinstance(s, str):
             sec_cases.append({"action_type": s, "status": "N/A", "description": ""})
         elif isinstance(s, dict):
-            sec_cases.append({
-                "action_type": _sv(s.get("action_type")) or "N/A",
-                "status": _sv(s.get("status")) or "N/A",
-                "description": _sv(s.get("description")) or "",
-            })
+            sec_cases.append(
+                {
+                    "action_type": _sv(s.get("action_type")) or "N/A",
+                    "status": _sv(s.get("status")) or "N/A",
+                    "description": _sv(s.get("description")) or "",
+                }
+            )
 
     # 6.3.3 Industry sweep detection
     sec_enf = lit.get("sec_enforcement", {})
@@ -1785,46 +1943,60 @@ def build_litigation_context(state: AnalysisState) -> dict[str, Any]:
             repose_open = bool(_sv(sw.get("repose_open")))
             sol_expiry = _sv(sw.get("sol_expiry")) or ""
             repose_expiry = _sv(sw.get("repose_expiry")) or ""
-            sol_windows.append({
-                "claim_type": str(claim).replace("_", " "),
-                "sol_years": sol_yrs,
-                "repose_years": repose_yrs,
-                "sol_open": sol_open,
-                "repose_open": repose_open,
-                "sol_expiry": str(sol_expiry)[:10],
-                "repose_expiry": str(repose_expiry)[:10],
-            })
+            sol_windows.append(
+                {
+                    "claim_type": str(claim).replace("_", " "),
+                    "sol_years": sol_yrs,
+                    "repose_years": repose_yrs,
+                    "sol_open": sol_open,
+                    "repose_open": repose_open,
+                    "sol_expiry": str(sol_expiry)[:10],
+                    "repose_expiry": str(repose_expiry)[:10],
+                }
+            )
         # Sort by repose years descending for visual impact
         sol_windows.sort(key=lambda x: x["repose_years"], reverse=True)
 
     # Case status counts for status summary visualization
     all_cases = scas + deriv_cases + sec_cases + reg_cases
-    status_active = sum(1 for c in all_cases if c.get("status", "").upper() in ("ACTIVE", "PENDING"))
+    status_active = sum(
+        1 for c in all_cases if c.get("status", "").upper() in ("ACTIVE", "PENDING")
+    )
     status_settled = sum(1 for c in all_cases if c.get("status", "").upper() == "SETTLED")
     status_dismissed = sum(1 for c in all_cases if c.get("status", "").upper() == "DISMISSED")
     status_appeal = sum(1 for c in all_cases if c.get("status", "").upper() == "APPEAL")
-    status_other = len(all_cases) - status_active - status_settled - status_dismissed - status_appeal
+    status_other = (
+        len(all_cases) - status_active - status_settled - status_dismissed - status_appeal
+    )
 
     # Section opener — data-driven litigation context
-    section_opener = _build_section_opener("litigation", state, {
-        "active_matter_count": active_count,
-        "historical_matter_count": historical_count,
-        "sol_window_count": sol_count,
-    })
+    section_opener = _build_section_opener(
+        "litigation",
+        state,
+        {
+            "active_matter_count": active_count,
+            "historical_matter_count": historical_count,
+            "sol_window_count": sol_count,
+        },
+    )
 
     # Contingent liabilities — unwrap SourcedValues for template display
     cont_raw = lit.get("contingent_liabilities", []) or []
     contingent_items: list[dict[str, str]] = []
-    for c in (cont_raw if isinstance(cont_raw, list) else []):
+    for c in cont_raw if isinstance(cont_raw, list) else []:
         desc = _sv(c.get("description") if isinstance(c, dict) else c) or ""
-        classification = _sv(c.get("asc_450_classification") if isinstance(c, dict) else None) or ""
+        classification = (
+            _sv(c.get("asc_450_classification") if isinstance(c, dict) else None) or ""
+        )
         source_note = _sv(c.get("source_note") if isinstance(c, dict) else None) or ""
-        contingent_items.append({
-            "description": str(desc),
-            "classification": str(classification) if classification else "Reasonably Possible",
-            "amount_range": "—",
-            "source": str(source_note),
-        })
+        contingent_items.append(
+            {
+                "description": str(desc),
+                "classification": str(classification) if classification else "Reasonably Possible",
+                "amount_range": "—",
+                "source": str(source_note),
+            }
+        )
 
     return {
         "scas": scas,
@@ -1850,6 +2022,7 @@ def build_litigation_context(state: AnalysisState) -> dict[str, Any]:
         "total_cases": len(all_cases),
     }
 
+
 def build_scoring_context(state: AnalysisState) -> dict[str, Any]:
     """Build scoring & risk profile section context."""
     scoring = _get_scoring(state)
@@ -1873,7 +2046,8 @@ def build_scoring_context(state: AnalysisState) -> dict[str, Any]:
         if not evidence_text and triggered > 0:
             triggered_names = [
                 s.get("signal_id", "").split(".")[-1].replace("_", " ")
-                for s in sigs if s.get("status") == "TRIGGERED"
+                for s in sigs
+                if s.get("status") == "TRIGGERED"
             ][:4]
             if triggered_names:
                 # Human-readable: list the risk areas found, not signal counts
@@ -1881,17 +2055,19 @@ def build_scoring_context(state: AnalysisState) -> dict[str, Any]:
                 if triggered > 4:
                     evidence_text += f" (+{triggered - 4} more)"
 
-        factor_rows.append({
-            "factor_id": fid,
-            "name": name,
-            "points": f"{pts:.1f}",
-            "max_points": f"{mx:.0f}",
-            "pct": pct,
-            "bar_color": "#DC2626" if pct >= 30 else ("#F59E0B" if pct >= 10 else "#16A34A"),
-            "evidence": evidence_text,
-            "triggered_signals": triggered,
-            "total_signals": total_sigs,
-        })
+        factor_rows.append(
+            {
+                "factor_id": fid,
+                "name": name,
+                "points": f"{pts:.1f}",
+                "max_points": f"{mx:.0f}",
+                "pct": pct,
+                "bar_color": "#DC2626" if pct >= 30 else ("#F59E0B" if pct >= 10 else "#16A34A"),
+                "evidence": evidence_text,
+                "triggered_signals": triggered,
+                "total_signals": total_sigs,
+            }
+        )
 
     qs = safe_float(scoring.get("quality_score"), 0)
     trp = safe_float(scoring.get("total_risk_points"), 0)
@@ -1903,12 +2079,14 @@ def build_scoring_context(state: AnalysisState) -> dict[str, Any]:
     rf_list = []
     for rf in red_flags:
         if rf.get("triggered"):
-            rf_list.append({
-                "name": rf.get("flag_name", ""),
-                "evidence": rf.get("evidence", []),
-                "max_tier": rf.get("max_tier", ""),
-                "ceiling": rf.get("ceiling_applied", ""),
-            })
+            rf_list.append(
+                {
+                    "name": rf.get("flag_name", ""),
+                    "evidence": rf.get("evidence", []),
+                    "max_tier": rf.get("max_tier", ""),
+                    "ceiling": rf.get("ceiling_applied", ""),
+                }
+            )
 
     # Narrative & commentary
     score_narrative = ""
@@ -1929,6 +2107,7 @@ def build_scoring_context(state: AnalysisState) -> dict[str, Any]:
         "commentary_bullets": commentary_bullets,
     }
 
+
 def build_questions_context(state: AnalysisState) -> list[dict[str, Any]]:
     """Build management questions section context."""
     pcn = {}
@@ -1940,20 +2119,24 @@ def build_questions_context(state: AnalysisState) -> list[dict[str, Any]]:
     questions = []
     for i, q in enumerate(raw):
         text = (
-            q if isinstance(q, str)
+            q
+            if isinstance(q, str)
             else (q.get("question", str(q)) if isinstance(q, dict) else str(q))
         )
         # Clean up quoted strings
         text = text.strip().strip('"').strip("'")
         # Infer topic from content
         topic = _infer_topic(text)
-        questions.append({
-            "number": i + 1,
-            "text": text,
-            "topic": topic,
-            "priority": "HIGH" if i < 4 else ("MEDIUM" if i < 8 else "STANDARD"),
-        })
+        questions.append(
+            {
+                "number": i + 1,
+                "text": text,
+                "topic": topic,
+                "priority": "HIGH" if i < 4 else ("MEDIUM" if i < 8 else "STANDARD"),
+            }
+        )
     return questions
+
 
 def _infer_topic(text: str) -> str:
     """Infer question topic from content keywords."""
@@ -1969,6 +2152,7 @@ def _infer_topic(text: str) -> str:
         if any(w in t for w in kws):
             return topic
     return "General"
+
 
 def _get_commentary(state: AnalysisState, section_key: str) -> tuple[str, str]:
     """Extract dual-voice commentary for a section. Returns (factual, bullets)."""
@@ -1994,7 +2178,7 @@ def _extract_goodwill_from_xbrl(state: AnalysisState) -> Any:
             return None
         sd = _to_dict(stmts)
         bs = sd.get("balance_sheet", {})
-        for item in (bs.get("line_items", []) or []):
+        for item in bs.get("line_items", []) or []:
             label = (item.get("label", "") or "").lower()
             if label in ("goodwill", "goodwill and other intangible assets"):
                 vals = item.get("values", {})
@@ -2026,28 +2210,51 @@ def _structure_company_narrative(raw: str) -> dict[str, Any]:
     text = re.sub(r"^#+ .+\n?", "", raw, flags=re.MULTILINE).strip()
 
     # Split on sentence boundaries (avoid splitting on Inc., Corp., Ltd., etc.)
-    sentences = re.split(r'(?<=[^A-Z][.!?])\s+(?=[A-Z])', text)
+    sentences = re.split(r"(?<=[^A-Z][.!?])\s+(?=[A-Z])", text)
     if not sentences:
         return {}
 
     # Revenue/money flow keywords (primary)
     revenue_primary_kw = (
-        "business model", "hardware business", "services revenue",
-        "product sales", "recurring", "subscription",
-        "earnings contribution", "margin compression", "capital allocation",
-        "iphone-dependent", "revenue model",
+        "business model",
+        "hardware business",
+        "services revenue",
+        "product sales",
+        "recurring",
+        "subscription",
+        "earnings contribution",
+        "margin compression",
+        "capital allocation",
+        "iphone-dependent",
+        "revenue model",
     )
     # Revenue secondary (only if no risk keywords dominate)
     revenue_secondary_kw = (
-        "revenue", "iphone", "segment", "margin",
+        "revenue",
+        "iphone",
+        "segment",
+        "margin",
     )
     # D&O risk keywords
     risk_kw = (
-        "litigation", "regulatory", "enforcement", "d&o", "director",
-        "fiduciary", "shareholder", "derivative", "sec enforcement",
-        "doj", "settlement", "claims", "patent disputes",
-        "antitrust", "employment litigation", "wage",
-        "fines exceeding", "injunction",
+        "litigation",
+        "regulatory",
+        "enforcement",
+        "d&o",
+        "director",
+        "fiduciary",
+        "shareholder",
+        "derivative",
+        "sec enforcement",
+        "doj",
+        "settlement",
+        "claims",
+        "patent disputes",
+        "antitrust",
+        "employment litigation",
+        "wage",
+        "fines exceeding",
+        "injunction",
     )
 
     overview_parts: list[str] = []
@@ -2120,9 +2327,13 @@ def _build_section_opener(
 
         extras: list[str] = []
         if sp is not None:
-            extras.append(f"Short interest is {'minimal' if sp < 0.03 else 'elevated'} at {sp * 100:.1f}%")
+            extras.append(
+                f"Short interest is {'minimal' if sp < 0.03 else 'elevated'} at {sp * 100:.1f}%"
+            )
         if num_analysts and rec_key:
-            extras.append(f"The {rec_key} consensus from {num_analysts} analysts suggests {'strong' if rec_key == 'BUY' else 'mixed'} market confidence")
+            extras.append(
+                f"The {rec_key} consensus from {num_analysts} analysts suggests {'strong' if rec_key == 'BUY' else 'mixed'} market confidence"
+            )
         if extras:
             opener += " " + ". ".join(extras) + "."
         do_risk = _build_do_risk_sentence(section, state, context_data)
@@ -2164,7 +2375,9 @@ def _build_section_opener(
 
         parts: list[str] = []
         if board_size and board_size != "N/A":
-            ind_str = f" ({independence} independent)" if independence and independence != "N/A" else ""
+            ind_str = (
+                f" ({independence} independent)" if independence and independence != "N/A" else ""
+            )
             parts.append(f"{ticker}'s board of {board_size} directors{ind_str}")
         opener = " ".join(parts) + "." if parts else ""
 
@@ -2188,7 +2401,9 @@ def _build_section_opener(
         else:
             parts.append(f"{ticker} has no active securities class actions")
         if historical > 0:
-            parts.append(f"{historical} historical matter{'s' if historical > 1 else ''} establish litigation precedent")
+            parts.append(
+                f"{historical} historical matter{'s' if historical > 1 else ''} establish litigation precedent"
+            )
         opener = ". ".join(parts) + "." if parts else ""
 
         if sol_windows and sol_windows > 0:
@@ -2319,8 +2534,9 @@ def _build_risk_profile_card(
     what = ""
     if business_description:
         import re
+
         # Split on sentence boundaries (avoid splitting on Inc., Corp., Ltd., etc.)
-        sents = re.split(r'(?<=[^A-Z][.!?])\s+(?=[A-Z])', business_description)
+        sents = re.split(r"(?<=[^A-Z][.!?])\s+(?=[A-Z])", business_description)
         what = sents[0].rstrip(".") + "." if sents else business_description[:200]
         # Ensure reasonable length
         if len(what) > 300:
@@ -2344,10 +2560,14 @@ def _build_risk_profile_card(
         if name:
             concentration.append(name[:80])
     # Geographic concentration
-    non_us = [g for g in (geographic_footprint or []) if "america" not in g.get("region", "").lower()]
+    non_us = [
+        g for g in (geographic_footprint or []) if "america" not in g.get("region", "").lower()
+    ]
     if len(non_us) >= 3:
         intl_pcts = [g.get("percentage", "") for g in non_us[:3]]
-        concentration.append(f"International: {', '.join(g.get('region', '') for g in non_us[:3])}")
+        concentration.append(
+            f"International: {', '.join(g.get('region', '') for g in non_us[:3])}"
+        )
 
     # D&O triggers
     triggers: list[str] = []
@@ -2369,6 +2589,7 @@ def _build_risk_profile_card(
             from do_uw.stages.render.context_builders.uw_analysis_infographics import (
                 fmt_large_number,
             )
+
             litigation_target.append(
                 f"{fmt_large_number(mcap)} market cap = maximum plaintiff damages pool"
             )
@@ -2379,15 +2600,14 @@ def _build_risk_profile_card(
             emp_str = f"{employees:,} employees"
             if jur_count > 1:
                 emp_str += f" across {jur_count}+ jurisdictions"
-            litigation_target.append(
-                f"{emp_str} = broad employment litigation surface"
-            )
+            litigation_target.append(f"{emp_str} = broad employment litigation surface")
         # Stakeholder count (customers, developers, etc.) from business description
         if business_description:
             import re as _re
+
             # Look for large stakeholder numbers in the description
             stakeholder_matches = _re.findall(
-                r'(\d+[\d,]*\s*(?:million|billion|M|B)?\+?\s*(?:developer|customer|user|subscriber|member|merchant|partner|seller|vendor)s?)',
+                r"(\d+[\d,]*\s*(?:million|billion|M|B)?\+?\s*(?:developer|customer|user|subscriber|member|merchant|partner|seller|vendor)s?)",
                 business_description,
                 _re.IGNORECASE,
             )
@@ -2426,10 +2646,13 @@ def build_company_context(state: AnalysisState) -> dict[str, Any]:
         # Capture the 1-3 words immediately before the parenthesized block
         pct_matches = re.findall(
             r"(\w+(?:\s+\w+){0,2})\s*\([^)]*?~?(\d+)%\s+of\s+revenue\)",
-            rmt_full, re.IGNORECASE,
+            rmt_full,
+            re.IGNORECASE,
         )
         for label, pct in pct_matches:
-            clean_label = re.sub(r"^(?:of|and|a|the|mix|recurring)\s+", "", label.strip(), flags=re.IGNORECASE)
+            clean_label = re.sub(
+                r"^(?:of|and|a|the|mix|recurring)\s+", "", label.strip(), flags=re.IGNORECASE
+            )
             if clean_label:
                 # Shorten "Services Revenue" -> "Services", "Product Sales" -> "Products"
                 short = clean_label.title()
@@ -2453,12 +2676,14 @@ def build_company_context(state: AnalysisState) -> dict[str, Any]:
         v = _sv(sl)
         if isinstance(v, dict):
             rev_amt = v.get("revenue_amount") or v.get("revenue")
-            seg_lifecycle.append({
-                "name": v.get("name", "N/A"),
-                "stage": v.get("stage", "N/A"),
-                "growth_rate": v.get("growth_rate"),
-                "revenue_amount": rev_amt,
-            })
+            seg_lifecycle.append(
+                {
+                    "name": v.get("name", "N/A"),
+                    "stage": v.get("stage", "N/A"),
+                    "growth_rate": v.get("growth_rate"),
+                    "revenue_amount": rev_amt,
+                }
+            )
 
     seg_margins_raw = comp.get("segment_margins", []) or []
     seg_margins = []
@@ -2472,12 +2697,14 @@ def build_company_context(state: AnalysisState) -> dict[str, Any]:
             if prior is not None and prior == 0.0:
                 prior = None
                 change = None  # Change is meaningless without real prior
-            seg_margins.append({
-                "name": v.get("name", "N/A"),
-                "margin_pct": f"{margin_pct:.1f}%" if margin_pct is not None else "N/A",
-                "prior_margin_pct": f"{prior:.1f}%" if prior is not None else "N/A",
-                "change_bps": f"{change:+.0f}bps" if change is not None else "N/A",
-            })
+            seg_margins.append(
+                {
+                    "name": v.get("name", "N/A"),
+                    "margin_pct": f"{margin_pct:.1f}%" if margin_pct is not None else "N/A",
+                    "prior_margin_pct": f"{prior:.1f}%" if prior is not None else "N/A",
+                    "change_bps": f"{change:+.0f}bps" if change is not None else "N/A",
+                }
+            )
 
     # 2.5.4 Disruption risk
     dr_raw = _sv(comp.get("disruption_risk"))
@@ -2488,7 +2715,9 @@ def build_company_context(state: AnalysisState) -> dict[str, Any]:
         disruption_risk = {
             "level": level,
             "threats": threats if isinstance(threats, list) else [str(threats)],
-            "color": "#DC2626" if level == "HIGH" else ("#D97706" if level == "MODERATE" else "#16A34A"),
+            "color": "#DC2626"
+            if level == "HIGH"
+            else ("#D97706" if level == "MODERATE" else "#16A34A"),
         }
 
     # 2.8.1 Subsidiary structure
@@ -2499,14 +2728,24 @@ def build_company_context(state: AnalysisState) -> dict[str, Any]:
         # jurisdictions may be a list of dicts — extract count, not raw list
         if isinstance(jur_raw, list):
             jur_count = sub_raw.get("jurisdiction_count") or len(jur_raw)
-            high_reg = sum(1 for j in jur_raw if isinstance(j, dict) and j.get("regulatory_regime") == "HIGH_REG")
-            low_reg = sum(1 for j in jur_raw if isinstance(j, dict) and j.get("regulatory_regime") == "LOW_REG")
+            high_reg = sum(
+                1
+                for j in jur_raw
+                if isinstance(j, dict) and j.get("regulatory_regime") == "HIGH_REG"
+            )
+            low_reg = sum(
+                1
+                for j in jur_raw
+                if isinstance(j, dict) and j.get("regulatory_regime") == "LOW_REG"
+            )
         else:
             jur_count = jur_raw
             high_reg = sub_raw.get("high_reg") or sub_raw.get("high_regulation_count", "N/A")
             low_reg = sub_raw.get("low_reg") or sub_raw.get("low_regulation_count", "N/A")
         subsidiary_structure = {
-            "count": sub_raw.get("total_subsidiaries") or sub_raw.get("count") or sub_raw.get("total_count", "N/A"),
+            "count": sub_raw.get("total_subsidiaries")
+            or sub_raw.get("count")
+            or sub_raw.get("total_count", "N/A"),
             "jurisdictions": jur_count,
             "high_reg": high_reg,
             "low_reg": low_reg,
@@ -2564,7 +2803,7 @@ def build_company_context(state: AnalysisState) -> dict[str, Any]:
             gov_lead = state.extracted.governance.leadership
             if gov_lead:
                 gov_lead_d = _to_dict(gov_lead)
-                for ex in (gov_lead_d.get("executives", []) or []):
+                for ex in gov_lead_d.get("executives", []) or []:
                     ex_title = _sv(ex.get("title")) or ""
                     if "chief executive" in ex_title.lower() or "ceo" in ex_title.lower():
                         t = _sv(ex.get("tenure_years"))
@@ -2575,7 +2814,7 @@ def build_company_context(state: AnalysisState) -> dict[str, Any]:
         # Enrich from yfinance companyOfficers if still missing
         if not ceo_tenure:
             yf_info = _get_yfinance_info(state)
-            for o in (yf_info.get("companyOfficers", []) or []):
+            for o in yf_info.get("companyOfficers", []) or []:
                 if isinstance(o, dict):
                     o_title = (o.get("title") or "").lower()
                     if "ceo" in o_title or "chief executive" in o_title:
@@ -2604,8 +2843,11 @@ def build_company_context(state: AnalysisState) -> dict[str, Any]:
             "has_succession_plan": has_succession,
             "risk_score": f"{risk_score:.0f}" if risk_score is not None else "N/A",
             "color": (
-                "#DC2626" if risk_score and risk_score >= 7 else
-                "#D97706" if risk_score and risk_score >= 4 else "#16A34A"
+                "#DC2626"
+                if risk_score and risk_score >= 7
+                else "#D97706"
+                if risk_score and risk_score >= 4
+                else "#16A34A"
             ),
         }
 
@@ -2615,11 +2857,13 @@ def build_company_context(state: AnalysisState) -> dict[str, Any]:
     for e in events_raw:
         v = _sv(e)
         if isinstance(v, dict):
-            events.append({
-                "date": v.get("date", ""),
-                "event": v.get("event") or v.get("description", ""),
-                "type": v.get("type") or v.get("category", ""),
-            })
+            events.append(
+                {
+                    "date": v.get("date", ""),
+                    "event": v.get("event") or v.get("description", ""),
+                    "type": v.get("type") or v.get("category", ""),
+                }
+            )
 
     # Enrich timeline from 8-K LLM extractions — ALWAYS try to replace generic "8-K filing" text
     _enrich_from_llm = (
@@ -2659,7 +2903,11 @@ def build_company_context(state: AnalysisState) -> dict[str, Any]:
                         if restruct_charge and isinstance(restruct_charge, (int, float)):
                             desc += f" (${restruct_charge / 1_000_000:.0f}M charge)"
                     elif agr_summary:
-                        desc = f"{agr_type_raw}: {agr_summary[:150]}" if agr_type_raw else agr_summary[:200]
+                        desc = (
+                            f"{agr_type_raw}: {agr_summary[:150]}"
+                            if agr_type_raw
+                            else agr_summary[:200]
+                        )
                     elif etype:
                         desc = etype
                 # Determine event type
@@ -2681,11 +2929,13 @@ def build_company_context(state: AnalysisState) -> dict[str, Any]:
                     category = "Shareholder"
                 elif any(i in ("4.01", "4.02") for i in items):
                     category = "Audit"
-                events.append({
-                    "date": edate[:10] if edate else "",
-                    "event": desc[:200] if desc else etype,
-                    "type": category,
-                })
+                events.append(
+                    {
+                        "date": edate[:10] if edate else "",
+                        "event": desc[:200] if desc else etype,
+                        "type": category,
+                    }
+                )
             events.sort(key=lambda x: x["date"], reverse=True)
 
     # M&A from XBRL cash flow
@@ -2705,28 +2955,63 @@ def build_company_context(state: AnalysisState) -> dict[str, Any]:
     for cc in cust_conc_raw:
         v = _sv(cc)
         if isinstance(v, dict):
-            customer_concentration.append({
-                "customer": v.get("customer", "N/A"),
-                "revenue_pct": v.get("revenue_pct"),
-            })
+            customer_concentration.append(
+                {
+                    "customer": v.get("customer", "N/A"),
+                    "revenue_pct": v.get("revenue_pct"),
+                }
+            )
         elif isinstance(v, str) and v:
             customer_concentration.append({"customer": v, "revenue_pct": None})
 
     # 2.4.2 Geographic footprint
     geo_raw = comp.get("geographic_footprint", []) or []
     geographic_footprint = []
+    # Compute total subsidiaries for percentage calculation
+    total_subsidiaries = 0.0
+    jurisdiction_data = []
     for gf in geo_raw:
         v = _sv(gf)
         if isinstance(v, dict):
-            pct_str = v.get("percentage", "N/A")
-            # Extract numeric percentage for bar widths (e.g. "$178.4B (42.8%)" -> 42.8)
-            pct_match = re.search(r"(\d+\.?\d*)%", str(pct_str))
-            pct_num = float(pct_match.group(1)) if pct_match else 0.0
-            geographic_footprint.append({
-                "region": v.get("region", "N/A"),
-                "percentage": pct_str,
+            jurisdiction = v.get("jurisdiction", "N/A")
+            subsidiary_count = safe_float(v.get("subsidiary_count", 0.0))
+            tax_haven = v.get("tax_haven", "").lower() == "true"
+            jurisdiction_data.append(
+                {
+                    "jurisdiction": jurisdiction,
+                    "subsidiary_count": subsidiary_count,
+                    "tax_haven": tax_haven,
+                }
+            )
+            total_subsidiaries += subsidiary_count
+
+    # Build geographic footprint with percentages
+    for entry in jurisdiction_data:
+        region = entry["jurisdiction"]
+        count = entry["subsidiary_count"]
+        tax_haven = entry["tax_haven"]
+
+        # Create display string
+        if count == 1.0:
+            detail = "1 subsidiary"
+        else:
+            detail = f"{int(count) if count.is_integer() else count} subsidiaries"
+        if tax_haven:
+            detail += " (Tax Haven)"
+
+        # Calculate percentage for bar width visualization
+        pct_num = 0.0
+        if total_subsidiaries > 0:
+            pct_num = (count / total_subsidiaries) * 100.0
+        pct_str = f"{pct_num:.1f}%" if total_subsidiaries > 0 else "N/A"
+
+        geographic_footprint.append(
+            {
+                "region": region,
+                "percentage": detail,  # Using detail as the display string
                 "pct_num": pct_num,
-            })
+            }
+        )
 
     # 2.4.3 Supplier concentration
     sup_raw = comp.get("supplier_concentration", []) or []
@@ -2734,10 +3019,12 @@ def build_company_context(state: AnalysisState) -> dict[str, Any]:
     for sc in sup_raw:
         v = _sv(sc)
         if isinstance(v, dict):
-            supplier_concentration.append({
-                "supplier": v.get("supplier", "N/A"),
-                "cost_pct": v.get("cost_pct"),
-            })
+            supplier_concentration.append(
+                {
+                    "supplier": v.get("supplier", "N/A"),
+                    "cost_pct": v.get("cost_pct"),
+                }
+            )
         elif isinstance(v, str) and v:
             supplier_concentration.append({"supplier": v, "cost_pct": None})
 
@@ -2747,10 +3034,12 @@ def build_company_context(state: AnalysisState) -> dict[str, Any]:
     for de in doex_raw:
         v = _sv(de)
         if isinstance(v, dict):
-            do_exposure_factors.append({
-                "factor": v.get("factor", ""),
-                "reason": v.get("reason", ""),
-            })
+            do_exposure_factors.append(
+                {
+                    "factor": v.get("factor", ""),
+                    "reason": v.get("reason", ""),
+                }
+            )
 
     # Filer category
     filer_raw = _sv(comp.get("filer_category"))
@@ -2805,8 +3094,12 @@ def build_company_context(state: AnalysisState) -> dict[str, Any]:
 
     # Company Risk Profile card — answers "what/how/where/why" at a glance
     risk_profile = _build_risk_profile_card(
-        business_description, revenue_model_type, customer_concentration,
-        supplier_concentration, geographic_footprint, do_exposure_factors,
+        business_description,
+        revenue_model_type,
+        customer_concentration,
+        supplier_concentration,
+        geographic_footprint,
+        do_exposure_factors,
         state=state,
     )
 
@@ -2892,8 +3185,12 @@ def build_ma_profile_context(state: AnalysisState) -> dict[str, Any]:
     if spend is None and ma_forensics:
         spend = safe_float(ma_forensics.get("total_acquisition_spend"), None)
 
-    goodwill_growth = safe_float(ma_forensics.get("goodwill_growth_rate"), None) if ma_forensics else None
-    acq_to_rev = safe_float(ma_forensics.get("acquisition_to_revenue"), None) if ma_forensics else None
+    goodwill_growth = (
+        safe_float(ma_forensics.get("goodwill_growth_rate"), None) if ma_forensics else None
+    )
+    acq_to_rev = (
+        safe_float(ma_forensics.get("acquisition_to_revenue"), None) if ma_forensics else None
+    )
     acq_years = ma_forensics.get("acquisition_years", []) if ma_forensics else []
     is_serial = ma_forensics.get("is_serial_acquirer", False) if ma_forensics else False
 
@@ -2967,7 +3264,9 @@ def build_ma_profile_context(state: AnalysisState) -> dict[str, Any]:
                 if isinstance(result, dict):
                     signal_statuses[sig_id] = result
                 else:
-                    signal_statuses[sig_id] = result.model_dump() if hasattr(result, "model_dump") else {}
+                    signal_statuses[sig_id] = (
+                        result.model_dump() if hasattr(result, "model_dump") else {}
+                    )
 
     # --- Determine overall risk level ---
     if goodwill_pct_equity is not None and goodwill_pct_equity > 50:
@@ -2995,9 +3294,13 @@ def build_ma_profile_context(state: AnalysisState) -> dict[str, Any]:
     return {
         "goodwill": fmt_large_number(goodwill) if goodwill is not None else "N/A",
         "goodwill_raw": goodwill,
-        "goodwill_pct_equity": f"{goodwill_pct_equity:.1f}%" if goodwill_pct_equity is not None else "N/A",
+        "goodwill_pct_equity": f"{goodwill_pct_equity:.1f}%"
+        if goodwill_pct_equity is not None
+        else "N/A",
         "spend": fmt_large_number(spend) if spend is not None else "N/A",
-        "spend_pct_revenue": f"{spend_pct_revenue:.1f}%" if spend_pct_revenue is not None else "N/A",
+        "spend_pct_revenue": f"{spend_pct_revenue:.1f}%"
+        if spend_pct_revenue is not None
+        else "N/A",
         "acquisitions": acquisitions,
         "acquisition_count": len(acquisitions) or len(acq_years),
         "goodwill_change": gw_change if gw_change else "N/A",
@@ -3087,18 +3390,20 @@ def build_market_extended_context(state: AnalysisState) -> dict[str, Any]:
                     beat_miss = ""
                     surprise_str = ""
 
-                quarterly.append({
-                    "period": _format_quarter_label(period),
-                    "revenue": fmt_large_number(rev),
-                    "yoy_pct": yoy_pct,
-                    "gross_margin": gross_margin,
-                    "op_margin": op_margin,
-                    "net_income": fmt_large_number(ni),
-                    "eps": f"${eps:.2f}" if eps is not None else "N/A",
-                    "eps_estimate": eps_est_str,
-                    "beat_miss": beat_miss,
-                    "surprise_pct": surprise_str,
-                })
+                quarterly.append(
+                    {
+                        "period": _format_quarter_label(period),
+                        "revenue": fmt_large_number(rev),
+                        "yoy_pct": yoy_pct,
+                        "gross_margin": gross_margin,
+                        "op_margin": op_margin,
+                        "net_income": fmt_large_number(ni),
+                        "eps": f"${eps:.2f}" if eps is not None else "N/A",
+                        "eps_estimate": eps_est_str,
+                        "beat_miss": beat_miss,
+                        "surprise_pct": surprise_str,
+                    }
+                )
 
     # 3.7.2 + 5.4.2 Insider transaction table (scienter-focused)
     insider_txns: list[dict[str, Any]] = []
@@ -3137,55 +3442,69 @@ def build_market_extended_context(state: AnalysisState) -> dict[str, Any]:
             clusters = ia_dict.get("cluster_events", []) or []
             insider_cluster_count = len(clusters)
             for ce in clusters:
-                insider_cluster_events.append({
-                    "start_date": ce.get("start_date", ""),
-                    "end_date": ce.get("end_date", ""),
-                    "insider_count": ce.get("insider_count", 0),
-                    "insiders": ce.get("insiders", []),
-                    "total_value": fmt_large_number(ce.get("total_value", 0)),
-                })
+                insider_cluster_events.append(
+                    {
+                        "start_date": ce.get("start_date", ""),
+                        "end_date": ce.get("end_date", ""),
+                        "insider_count": ce.get("insider_count", 0),
+                        "insiders": ce.get("insiders", []),
+                        "total_value": fmt_large_number(ce.get("total_value", 0)),
+                    }
+                )
 
             # Timing suspects
             suspects = ia_dict.get("timing_suspects", []) or []
             insider_timing_count = len(suspects)
             for ts_item in suspects:
-                insider_timing_suspects.append({
-                    "insider_name": ts_item.get("insider_name", ""),
-                    "transaction_date": ts_item.get("transaction_date", ""),
-                    "transaction_type": ts_item.get("transaction_type", ""),
-                    "filing_date": ts_item.get("filing_date", ""),
-                    "filing_item": ts_item.get("filing_item", ""),
-                    "filing_sentiment": ts_item.get("filing_sentiment", ""),
-                    "days_before_filing": ts_item.get("days_before_filing", 0),
-                    "transaction_value": fmt_large_number(ts_item.get("transaction_value", 0)),
-                    "severity": ts_item.get("severity", "AMBER"),
-                })
+                insider_timing_suspects.append(
+                    {
+                        "insider_name": ts_item.get("insider_name", ""),
+                        "transaction_date": ts_item.get("transaction_date", ""),
+                        "transaction_type": ts_item.get("transaction_type", ""),
+                        "filing_date": ts_item.get("filing_date", ""),
+                        "filing_item": ts_item.get("filing_item", ""),
+                        "filing_sentiment": ts_item.get("filing_sentiment", ""),
+                        "days_before_filing": ts_item.get("days_before_filing", 0),
+                        "transaction_value": fmt_large_number(ts_item.get("transaction_value", 0)),
+                        "severity": ts_item.get("severity", "AMBER"),
+                    }
+                )
 
             # Exercise-and-sell events
             ex_sells = ia_dict.get("exercise_sell_events", []) or []
             insider_exercise_sell_count = len(ex_sells)
             for es in ex_sells:
                 _exercise_sell_keys.add(f"{es.get('owner', '')}|{es.get('date', '')}")
-                insider_exercise_sells.append({
-                    "owner": es.get("owner", ""),
-                    "date": es.get("date", ""),
-                    "exercised_shares": f"{int(es.get('exercised_shares', 0)):,}" if es.get("exercised_shares") else "0",
-                    "sold_shares": f"{int(es.get('sold_shares', 0)):,}" if es.get("sold_shares") else "0",
-                    "sold_value": fmt_large_number(es.get("sold_value", 0)),
-                    "is_10b5_1": es.get("is_10b5_1", False),
-                })
+                insider_exercise_sells.append(
+                    {
+                        "owner": es.get("owner", ""),
+                        "date": es.get("date", ""),
+                        "exercised_shares": f"{int(es.get('exercised_shares', 0)):,}"
+                        if es.get("exercised_shares")
+                        else "0",
+                        "sold_shares": f"{int(es.get('sold_shares', 0)):,}"
+                        if es.get("sold_shares")
+                        else "0",
+                        "sold_value": fmt_large_number(es.get("sold_value", 0)),
+                        "is_10b5_1": es.get("is_10b5_1", False),
+                    }
+                )
 
             # Ownership alerts
             alerts = ia_dict.get("ownership_alerts", []) or []
             for oa in alerts:
-                insider_ownership_alerts.append({
-                    "insider_name": oa.get("insider_name", ""),
-                    "role": oa.get("role", ""),
-                    "severity": oa.get("severity", "INFORMATIONAL"),
-                    "personal_pct_sold": oa.get("personal_pct_sold", 0.0),
-                    "shares_sold": f"{int(oa.get('shares_sold', 0)):,}" if oa.get("shares_sold") else "0",
-                    "is_c_suite": oa.get("is_c_suite", False),
-                })
+                insider_ownership_alerts.append(
+                    {
+                        "insider_name": oa.get("insider_name", ""),
+                        "role": oa.get("role", ""),
+                        "severity": oa.get("severity", "INFORMATIONAL"),
+                        "personal_pct_sold": oa.get("personal_pct_sold", 0.0),
+                        "shares_sold": f"{int(oa.get('shares_sold', 0)):,}"
+                        if oa.get("shares_sold")
+                        else "0",
+                        "is_c_suite": oa.get("is_c_suite", False),
+                    }
+                )
 
             # Transactions with enriched fields (title, 10b5-1, exercise-sell flag)
             for t in (ia_dict.get("transactions", []) or [])[:20]:
@@ -3221,18 +3540,20 @@ def build_market_extended_context(state: AnalysisState) -> dict[str, Any]:
                         pct = (shares_val / (after_val + shares_val)) * 100
                         pct_holdings = f"{pct:.0f}%"
 
-                insider_txns.append({
-                    "date": date_str,
-                    "name": name,
-                    "role": role_label,
-                    "type": ttype,
-                    "shares": f"{int(shares):,}" if shares else "N/A",
-                    "value": fmt_large_number(value) if value else "N/A",
-                    "is_10b5_1": bool(is_10b5_1_val),
-                    "is_exercise_sell": is_exercise_sell,
-                    "pct_holdings": pct_holdings,
-                    "is_c_suite": is_officer,
-                })
+                insider_txns.append(
+                    {
+                        "date": date_str,
+                        "name": name,
+                        "role": role_label,
+                        "type": ttype,
+                        "shares": f"{int(shares):,}" if shares else "N/A",
+                        "value": fmt_large_number(value) if value else "N/A",
+                        "is_10b5_1": bool(is_10b5_1_val),
+                        "is_exercise_sell": is_exercise_sell,
+                        "pct_holdings": pct_holdings,
+                        "is_c_suite": is_officer,
+                    }
+                )
 
     # Insider net direction summary
     insider_net_direction = ""
@@ -3278,20 +3599,25 @@ def build_market_extended_context(state: AnalysisState) -> dict[str, Any]:
         scienter_factors.append("low 10b5-1 coverage")
     if insider_cluster_count > 0:
         scienter_score += 2
-        scienter_factors.append(f"{insider_cluster_count} cluster selling event{'s' if insider_cluster_count > 1 else ''}")
+        scienter_factors.append(
+            f"{insider_cluster_count} cluster selling event{'s' if insider_cluster_count > 1 else ''}"
+        )
     if insider_timing_count > 0:
         scienter_score += 2
-        scienter_factors.append(f"{insider_timing_count} suspiciously timed transaction{'s' if insider_timing_count > 1 else ''}")
+        scienter_factors.append(
+            f"{insider_timing_count} suspiciously timed transaction{'s' if insider_timing_count > 1 else ''}"
+        )
     if insider_exercise_sell_count > 0:
         scienter_score += 1
-        scienter_factors.append(f"{insider_exercise_sell_count} exercise-and-sell pattern{'s' if insider_exercise_sell_count > 1 else ''}")
+        scienter_factors.append(
+            f"{insider_exercise_sell_count} exercise-and-sell pattern{'s' if insider_exercise_sell_count > 1 else ''}"
+        )
     if insider_net_label == "NET SELLER":
         scienter_score += 1
         scienter_factors.append("net selling posture")
     # C-suite selling carries extra weight
     csuite_selling = any(
-        t.get("is_c_suite") and t.get("type") in ("SELL", "SALE")
-        for t in insider_txns
+        t.get("is_c_suite") and t.get("type") in ("SELL", "SALE") for t in insider_txns
     )
     if csuite_selling:
         scienter_score += 1
@@ -3346,7 +3672,9 @@ def build_market_extended_context(state: AnalysisState) -> dict[str, Any]:
     if state.extracted and state.extracted.market:
         ae = getattr(state.extracted.market, "adverse_events", None)
         if ae:
-            score_val = ae.total_score.value if hasattr(ae.total_score, "value") else ae.total_score
+            score_val = (
+                ae.total_score.value if hasattr(ae.total_score, "value") else ae.total_score
+            )
             if score_val is not None:
                 adverse_score = f"{float(score_val):.1f}"
             adverse_count = ae.event_count or 0
@@ -3412,7 +3740,7 @@ def _extract_xbrl_ma(state: AnalysisState) -> float | None:
             return None
         sd = _to_dict(stmts)
         cf = sd.get("cash_flow_statement", {})
-        for item in (cf.get("line_items", []) or []):
+        for item in cf.get("line_items", []) or []:
             label = (item.get("label", "") or "").lower()
             if any(kw in label for kw in ("acqui", "business_comb", "merger")):
                 vals = item.get("values", {})
@@ -3456,11 +3784,13 @@ def build_forensic_composites_context(state: AnalysisState) -> dict[str, Any] | 
             if sk in ("overall_score", "zone", "sub_scores"):
                 continue
             if isinstance(sv_raw, dict) and "score" in sv_raw:
-                sub_scores.append({
-                    "name": sv_raw.get("name", sk).replace("_", " ").title(),
-                    "score": f"{safe_float(sv_raw['score'], 0):.0f}",
-                    "evidence": sv_raw.get("evidence", ""),
-                })
+                sub_scores.append(
+                    {
+                        "name": sv_raw.get("name", sk).replace("_", " ").title(),
+                        "score": f"{safe_float(sv_raw['score'], 0):.0f}",
+                        "evidence": sv_raw.get("evidence", ""),
+                    }
+                )
         return {
             "label": label,
             "score": f"{score:.0f}" if score is not None else "N/A",
@@ -3536,20 +3866,24 @@ def build_xbrl_forensics_context(state: AnalysisState) -> dict[str, Any] | None:
             for mk in ("dsri", "gmi", "aqi", "sgi", "depi", "sgai", "tata", "lvgi"):
                 mv = safe_float(cat_data.get(mk), None)
                 if mv is not None:
-                    metrics.append({
-                        "name": mk.upper(),
-                        "value": f"{mv:.4f}",
-                        "zone_label": "",
-                        "zone_color": "#6B7280",
-                        "trend": "",
-                    })
-            categories.append({
-                "label": cat_label,
-                "summary": f"Composite: {composite:.2f}" if composite is not None else "",
-                "summary_badge": badge_label,
-                "summary_color": badge_color,
-                "metrics": metrics,
-            })
+                    metrics.append(
+                        {
+                            "name": mk.upper(),
+                            "value": f"{mv:.4f}",
+                            "zone_label": "",
+                            "zone_color": "#6B7280",
+                            "trend": "",
+                        }
+                    )
+            categories.append(
+                {
+                    "label": cat_label,
+                    "summary": f"Composite: {composite:.2f}" if composite is not None else "",
+                    "summary_badge": badge_label,
+                    "summary_color": badge_color,
+                    "metrics": metrics,
+                }
+            )
             continue
 
         # Standard structure: each metric has value/zone/trend/confidence
@@ -3581,23 +3915,27 @@ def build_xbrl_forensics_context(state: AnalysisState) -> dict[str, Any] | None:
             else:
                 val_str = str(val)
 
-            metrics.append({
-                "name": metric_key.replace("_", " ").title(),
-                "value": val_str,
-                "zone_label": badge_label,
-                "zone_color": badge_color,
-                "trend": _trend_arrow(trend),
-                "confidence": confidence,
-            })
+            metrics.append(
+                {
+                    "name": metric_key.replace("_", " ").title(),
+                    "value": val_str,
+                    "zone_label": badge_label,
+                    "zone_color": badge_color,
+                    "trend": _trend_arrow(trend),
+                    "confidence": confidence,
+                }
+            )
 
         if metrics:
-            categories.append({
-                "label": cat_label,
-                "summary": "",
-                "summary_badge": "",
-                "summary_color": "",
-                "metrics": metrics,
-            })
+            categories.append(
+                {
+                    "label": cat_label,
+                    "summary": "",
+                    "summary_badge": "",
+                    "summary_color": "",
+                    "metrics": metrics,
+                }
+            )
 
     return {"categories": categories} if categories else None
 
@@ -3665,14 +4003,16 @@ def build_nlp_signals_context(state: AnalysisState) -> dict[str, Any] | None:
 
         # Friendly name
         short_name = key.replace("NLP.", "").replace(".", " ").replace("_", " ").title()
-        nlp_signals.append({
-            "key": key,
-            "name": short_name,
-            "value": str(val) if val is not None else "N/A",
-            "badge": badge,
-            "badge_color": badge_color,
-            "evidence": str(evidence)[:200] if evidence else "",
-        })
+        nlp_signals.append(
+            {
+                "key": key,
+                "name": short_name,
+                "value": str(val) if val is not None else "N/A",
+                "badge": badge,
+                "badge_color": badge_color,
+                "evidence": str(evidence)[:200] if evidence else "",
+            }
+        )
 
     # Narrative coherence from extracted governance
     coherence = {}
@@ -3741,11 +4081,13 @@ def build_settlement_prediction_context(state: AnalysisState) -> dict[str, Any] 
     for ck, cl in char_labels.items():
         cv = chars.get(ck)
         if cv is not None:
-            char_badges.append({
-                "label": cl,
-                "present": bool(cv),
-                "color": "#DC2626" if cv else "#16A34A",
-            })
+            char_badges.append(
+                {
+                    "label": cl,
+                    "present": bool(cv),
+                    "color": "#DC2626" if cv else "#16A34A",
+                }
+            )
 
     # Tower risk
     tower = sp.get("tower_risk", {}) or {}
@@ -3762,13 +4104,15 @@ def build_settlement_prediction_context(state: AnalysisState) -> dict[str, Any] 
             continue
         share = safe_float(ld.get("expected_loss_share_pct"), None)
         loss = safe_float(ld.get("expected_loss_amount"), None)
-        layers.append({
-            "name": ll,
-            "share_pct": f"{share:.1f}%" if share is not None else "N/A",
-            "share_raw": share or 0,
-            "expected_loss": fmt_large_number(loss) if loss is not None else "N/A",
-            "characterization": ld.get("risk_characterization", ""),
-        })
+        layers.append(
+            {
+                "name": ll,
+                "share_pct": f"{share:.1f}%" if share is not None else "N/A",
+                "share_raw": share or 0,
+                "expected_loss": fmt_large_number(loss) if loss is not None else "N/A",
+                "characterization": ld.get("risk_characterization", ""),
+            }
+        )
 
     return {
         "ddl_amount": fmt_large_number(ddl) if ddl is not None else "N/A",
@@ -3803,7 +4147,7 @@ def build_peril_map_context(state: AnalysisState) -> dict[str, Any] | None:
 
     # Assessments table
     assessments = []
-    for a in (pm.get("assessments", []) or []):
+    for a in pm.get("assessments", []) or []:
         if not isinstance(a, dict):
             continue
         ptype = a.get("plaintiff_type", "")
@@ -3812,27 +4156,31 @@ def build_peril_map_context(state: AnalysisState) -> dict[str, Any] | None:
         triggered = a.get("triggered_signal_count", 0)
         total = a.get("evaluated_signal_count", 0)
         findings = a.get("key_findings", []) or []
-        assessments.append({
-            "plaintiff_type": ptype.replace("_", " ").title(),
-            "probability": prob.replace("_", " ").title(),
-            "prob_color": _peril_color(prob),
-            "severity": sev.replace("_", " ").title(),
-            "sev_color": _peril_color(sev),
-            "signals": f"{triggered}/{total}",
-            "findings": [str(f)[:150] for f in findings[:3]],
-        })
+        assessments.append(
+            {
+                "plaintiff_type": ptype.replace("_", " ").title(),
+                "probability": prob.replace("_", " ").title(),
+                "prob_color": _peril_color(prob),
+                "severity": sev.replace("_", " ").title(),
+                "sev_color": _peril_color(sev),
+                "signals": f"{triggered}/{total}",
+                "findings": [str(f)[:150] for f in findings[:3]],
+            }
+        )
 
     # Bear cases
     bear_cases = []
-    for bc in (pm.get("bear_cases", []) or []):
+    for bc in pm.get("bear_cases", []) or []:
         if not isinstance(bc, dict):
             continue
-        bear_cases.append({
-            "theory": bc.get("theory", ""),
-            "plaintiff_type": (bc.get("plaintiff_type", "") or "").replace("_", " ").title(),
-            "summary": bc.get("committee_summary", ""),
-            "evidence_count": len(bc.get("evidence_chain", []) or []),
-        })
+        bear_cases.append(
+            {
+                "theory": bc.get("theory", ""),
+                "plaintiff_type": (bc.get("plaintiff_type", "") or "").replace("_", " ").title(),
+                "summary": bc.get("committee_summary", ""),
+                "evidence_count": len(bc.get("evidence_chain", []) or []),
+            }
+        )
 
     # Coverage gaps
     gaps = pm.get("coverage_gaps", []) or []
@@ -3860,24 +4208,30 @@ def build_executive_risk_context(state: AnalysisState) -> dict[str, Any] | None:
     findings = er.get("key_findings", []) or []
 
     individuals: list[dict[str, Any]] = []
-    for ind in (er.get("individual_scores", []) or []):
+    for ind in er.get("individual_scores", []) or []:
         if not isinstance(ind, dict):
             continue
         score = safe_float(ind.get("total_score"), 0)
-        individuals.append({
-            "name": ind.get("person_name", "N/A"),
-            "role": ind.get("role", ""),
-            "score": f"{score:.1f}",
-            "score_raw": score,
-            "score_color": "#DC2626" if score >= 1.0 else ("#D97706" if score > 0 else "#16A34A"),
-            "findings": ind.get("findings", []) or [],
-            "tenure_flag": score > 0 and ind.get("tenure_stability", 0) > 0,
-        })
+        individuals.append(
+            {
+                "name": ind.get("person_name", "N/A"),
+                "role": ind.get("role", ""),
+                "score": f"{score:.1f}",
+                "score_raw": score,
+                "score_color": "#DC2626"
+                if score >= 1.0
+                else ("#D97706" if score > 0 else "#16A34A"),
+                "findings": ind.get("findings", []) or [],
+                "tenure_flag": score > 0 and ind.get("tenure_stability", 0) > 0,
+            }
+        )
 
     return {
         "weighted_score": f"{weighted:.2f}" if weighted is not None else "N/A",
         "weighted_raw": weighted or 0,
-        "weighted_color": "#DC2626" if (weighted or 0) >= 1.0 else ("#D97706" if (weighted or 0) > 0.2 else "#16A34A"),
+        "weighted_color": "#DC2626"
+        if (weighted or 0) >= 1.0
+        else ("#D97706" if (weighted or 0) > 0.2 else "#16A34A"),
         "highest_risk": highest or "None",
         "findings": [str(f) for f in findings[:5]],
         "individuals": individuals,
@@ -3917,18 +4271,24 @@ def build_temporal_signals_context(state: AnalysisState) -> dict[str, Any] | Non
         latest_val = None
         prior_val = None
         if periods:
-            latest_val = safe_float(periods[0].get("value") if isinstance(periods[0], dict) else None, None)
+            latest_val = safe_float(
+                periods[0].get("value") if isinstance(periods[0], dict) else None, None
+            )
             if len(periods) > 1:
-                prior_val = safe_float(periods[1].get("value") if isinstance(periods[1], dict) else None, None)
-        signals.append({
-            "name": name,
-            "classification": cls.replace("_", " ").title(),
-            "class_color": _class_color(cls),
-            "change_pct": f"{change:+.1f}%" if change is not None else "N/A",
-            "latest_value": latest_val,
-            "prior_value": prior_val,
-            "evidence": sig.get("evidence", ""),
-        })
+                prior_val = safe_float(
+                    periods[1].get("value") if isinstance(periods[1], dict) else None, None
+                )
+        signals.append(
+            {
+                "name": name,
+                "classification": cls.replace("_", " ").title(),
+                "class_color": _class_color(cls),
+                "change_pct": f"{change:+.1f}%" if change is not None else "N/A",
+                "latest_value": latest_val,
+                "prior_value": prior_val,
+                "evidence": sig.get("evidence", ""),
+            }
+        )
 
     return {
         "summary": summary,
@@ -3938,6 +4298,7 @@ def build_temporal_signals_context(state: AnalysisState) -> dict[str, Any] | Non
 
 def _get_scoring(state: AnalysisState) -> dict[str, Any]:
     return _to_dict(state.scoring) if state.scoring else {}
+
 
 def _get_yfinance_info(state: AnalysisState) -> dict[str, Any]:
     if state.acquired_data and state.acquired_data.market_data:

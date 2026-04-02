@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import logging
 
+from do_uw.models.common import Confidence
 from do_uw.models.market import (
     MarketSignals,
     ShortInterestProfile,
@@ -24,7 +25,6 @@ from do_uw.models.market_events import (
     InsiderTradingAnalysis,
     StockDropAnalysis,
 )
-from do_uw.models.common import Confidence
 from do_uw.models.state import AnalysisState
 from do_uw.stages.extract.validation import ExtractionReport
 
@@ -92,6 +92,9 @@ def run_market_extractors(
     # Write intermediate market signals to state so adverse event
     # scorer can read them from state.extracted.market.
     _ensure_extracted_market(state, signals)
+
+    # 6b. MARKET_PRICE coverage validation
+    _run_market_price_coverage(state, reports)
 
     # 8. Adverse event score (MUST be last -- reads other sub-models)
     signals.adverse_events = _run_adverse_events(state, reports)
@@ -188,9 +191,7 @@ def _run_earnings_guidance(
         llm_ten_k = get_llm_ten_k(state)
         guidance_text = llm_ten_k.guidance_language if llm_ten_k else None
 
-        analysis, report = extract_earnings_guidance(
-            state, guidance_text=guidance_text
-        )
+        analysis, report = extract_earnings_guidance(state, guidance_text=guidance_text)
         reports.append(report)
         logger.info("SECT4-06: Earnings guidance extracted")
         return analysis
@@ -246,6 +247,31 @@ def _run_capital_markets(
         return CapitalMarketsActivity()
 
 
+def _run_market_price_coverage(
+    state: AnalysisState,
+    reports: list[ExtractionReport],
+) -> None:
+    """Validate MARKET_PRICE field coverage."""
+    try:
+        from do_uw.stages.extract.market_price_extractor import (
+            extract_market_price_coverage,
+        )
+
+        coverage_dict, report = extract_market_price_coverage(state)
+        reports.append(report)
+        logger.info(
+            "SECT4-06b: MARKET_PRICE coverage: %d/%d fields (%.1f%%)",
+            coverage_dict["extracted_count"],
+            coverage_dict["total_required"],
+            coverage_dict["coverage_pct"],
+        )
+    except Exception:
+        logger.warning(
+            "SECT4-06b: MARKET_PRICE coverage validation failed",
+            exc_info=True,
+        )
+
+
 def _run_adverse_events(
     state: AnalysisState,
     reports: list[ExtractionReport],
@@ -282,9 +308,7 @@ def _run_forward_statements(
             extract_forward_statements,
         )
 
-        forward_stmts, catalysts, growth_estimates, report = (
-            extract_forward_statements(state)
-        )
+        forward_stmts, catalysts, growth_estimates, report = extract_forward_statements(state)
         reports.append(report)
 
         # Store on state.forward_looking (initialized via default_factory)
@@ -298,8 +322,7 @@ def _run_forward_statements(
         state.forward_looking.growth_estimates = growth_estimates
 
         logger.info(
-            "SECT4-10: Forward statements: %d statements, %d catalysts, "
-            "%d estimates",
+            "SECT4-10: Forward statements: %d statements, %d catalysts, %d estimates",
             len(forward_stmts),
             len(catalysts),
             len(growth_estimates),
@@ -317,7 +340,8 @@ def _run_forward_statements(
 
 
 def _enrich_with_eight_k_events(
-    state: AnalysisState, signals: MarketSignals,
+    state: AnalysisState,
+    signals: MarketSignals,
 ) -> None:
     """Integrate LLM 8-K events into market signals and cross-domain state.
 
@@ -384,9 +408,7 @@ def _enrich_with_eight_k_events(
             periods_list: list[str] = []
             if isinstance(periods_raw, list):
                 for p in periods_raw:
-                    periods_list.append(
-                        p.value if hasattr(p, "value") else str(p)
-                    )
+                    periods_list.append(p.value if hasattr(p, "value") else str(p))
             reason_raw = r.get("reason")
             reason_str: str | None = None
             if reason_raw is not None and hasattr(reason_raw, "value"):
@@ -407,7 +429,9 @@ def _enrich_with_eight_k_events(
     if agreements or terminations or acquisitions:
         logger.info(
             "SECT4: Found %d agreements, %d terminations, %d acquisitions from 8-K",
-            len(agreements), len(terminations), len(acquisitions),
+            len(agreements),
+            len(terminations),
+            len(acquisitions),
         )
     if restatements:
         logger.info("SECT4: Found %d restatements from 8-K", len(restatements))
@@ -422,9 +446,7 @@ def _enrich_with_eight_k_events(
     if bylaws_changes:
         logger.info("SECT4: Found %d bylaws amendments from 8-K", len(bylaws_changes))
     if ethics_changes:
-        logger.warning(
-            "SECT4: Found %d ethics code changes from 8-K", len(ethics_changes)
-        )
+        logger.warning("SECT4: Found %d ethics code changes from 8-K", len(ethics_changes))
 
 
 # ------------------------------------------------------------------
@@ -435,7 +457,7 @@ def _enrich_with_eight_k_events(
 def _run_eight_k_item_classifier(
     state: AnalysisState,
     reports: list[ExtractionReport],
-) -> "EightKItemSummary":
+) -> EightKItemSummary:
     """Run deterministic 8-K item classification.
 
     Parses raw 8-K filing text for Item X.XX patterns, merges with
@@ -488,9 +510,7 @@ def _run_eight_k_item_classifier(
 # ------------------------------------------------------------------
 
 
-def _ensure_extracted_market(
-    state: AnalysisState, signals: MarketSignals
-) -> None:
+def _ensure_extracted_market(state: AnalysisState, signals: MarketSignals) -> None:
     """Write intermediate market signals to state for adverse scorer."""
     from do_uw.models.state import ExtractedData
 

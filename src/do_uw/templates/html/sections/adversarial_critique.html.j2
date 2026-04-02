@@ -241,7 +241,7 @@
     {% if c.evidence %}
       <ul class="adv-evidence">
         {% for e in c.evidence[:4] %}
-          <li>{{ e }}</li>
+           <li>{{ e | humanize_evidence }}</li>
         {% endfor %}
         {% if c.evidence | length > 4 %}
           <li style="color:#adb5bd">+ {{ c.evidence | length - 4 }} more</li>

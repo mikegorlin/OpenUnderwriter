@@ -30,6 +30,8 @@ class AcquisitionInventory:
     needs_patents: bool = True
     needs_logo: bool = True
     needs_frames: bool = True
+    needs_regulatory_data: bool = True
+    needs_reference_data: bool = True
     skip_reasons: dict[str, str] = field(default_factory=dict)
 
 
@@ -68,10 +70,7 @@ def check_inventory(acquired: AcquiredData | None) -> AcquisitionInventory:
 
     # Market data: complete if has history_1y or stock_info.
     if acquired.market_data:
-        has_key_data = (
-            "history_1y" in acquired.market_data
-            or "stock_info" in acquired.market_data
-        )
+        has_key_data = "history_1y" in acquired.market_data or "stock_info" in acquired.market_data
         if has_key_data:
             inv.needs_market_data = False
             inv.skip_reasons["market_data"] = (
@@ -114,5 +113,15 @@ def check_inventory(acquired: AcquiredData | None) -> AcquisitionInventory:
     if acquired.filings and acquired.filings.get("frames"):
         inv.needs_frames = False
         inv.skip_reasons["frames"] = "Already have SEC Frames data"
+
+    # Regulatory data: complete if regulatory_data exists and has content.
+    if acquired.regulatory_data:
+        inv.needs_regulatory_data = False
+        inv.skip_reasons["regulatory_data"] = "Already have regulatory data"
+
+    # Reference data: complete if reference_data exists and has content.
+    if acquired.reference_data:
+        inv.needs_reference_data = False
+        inv.skip_reasons["reference_data"] = "Already have reference data"
 
     return inv

@@ -20,6 +20,18 @@ def _safe_sv(sv: Any) -> Any:
     return sv.value
 
 
+def _truncate_context(ctx: str, limit: int = 300) -> str:
+    """Truncate context at word boundary, adding ellipsis only if truncated."""
+    if len(ctx) <= limit:
+        return ctx
+    # Find last space within limit
+    truncated = ctx[:limit]
+    last_space = truncated.rfind(" ")
+    if last_space > limit * 0.8:  # If space found in reasonable position
+        truncated = ctx[:last_space]
+    return truncated + "…"
+
+
 def _text_sig(extracted: ExtractedData, name: str) -> str | None:
     """Get display value from a text signal, or None if signal wasn't extracted.
 
@@ -34,7 +46,8 @@ def _text_sig(extracted: ExtractedData, name: str) -> str | None:
     count = sig.get("mention_count", 0)
     ctx = sig.get("context", "")
     if ctx:
-        return f"{count} mention(s): {ctx[:120]}"
+        truncated = _truncate_context(ctx)
+        return f"{count} mention(s): {truncated}"
     return f"{count} mention(s) in 10-K"
 
 
@@ -79,9 +92,7 @@ def _map_fwrd_disc(
     """Map FWRD.DISC.* checks to text signals + existing data."""
     if suffix == "risk_factor_evolution":
         result["value"] = len(extracted.risk_factors)
-        result["new_risk_factors"] = sum(
-            1 for rf in extracted.risk_factors if rf.is_new_this_year
-        )
+        result["new_risk_factors"] = sum(1 for rf in extracted.risk_factors if rf.is_new_this_year)
     elif suffix == "mda_depth":
         result["value"] = _text_sig(extracted, "mda_depth")
     elif suffix == "non_gaap_reconciliation":
@@ -89,9 +100,7 @@ def _map_fwrd_disc(
     elif suffix == "segment_consistency":
         result["value"] = _text_sig(extracted, "segment_consistency")
     elif suffix == "related_party_completeness":
-        result["value"] = _text_sig(
-            extracted, "related_party_completeness"
-        )
+        result["value"] = _text_sig(extracted, "related_party_completeness")
     elif suffix == "metric_consistency":
         result["value"] = _text_sig(extracted, "metric_consistency")
     elif suffix == "guidance_methodology":
@@ -101,14 +110,10 @@ def _map_fwrd_disc(
     elif suffix == "sec_comment_letters":
         lit = extracted.litigation
         if lit is not None:
-            result["value"] = _safe_sv(
-                lit.sec_enforcement.comment_letter_count
-            )
+            result["value"] = _safe_sv(lit.sec_enforcement.comment_letter_count)
     elif suffix == "disclosure_quality_composite":
         has_mda = _text_sig(extracted, "mda_depth") is not None
-        has_nongaap = (
-            _text_sig(extracted, "non_gaap_reconciliation") is not None
-        )
+        has_nongaap = _text_sig(extracted, "non_gaap_reconciliation") is not None
         has_rf = len(extracted.risk_factors) > 0
         score = sum([has_mda, has_nongaap, has_rf])
         result["value"] = f"{score}/3 disclosure components present"
@@ -176,21 +181,16 @@ def _map_fwrd_event(
             result["refinancing_risk"] = _safe_sv(fin.refinancing_risk)
             result["debt_structure"] = _safe_sv(fin.debt_structure)
             if result.get("refinancing_risk") or result.get("debt_structure"):
-                result["value"] = result.get(
-                    "refinancing_risk", result.get("debt_structure")
-                )
+                result["value"] = result.get("refinancing_risk", result.get("debt_structure"))
     elif suffix == "lockup_expiry":
         if mkt is not None:
-            result["offerings_3yr_count"] = len(
-                mkt.capital_markets.offerings_3yr
-            )
+            result["offerings_3yr_count"] = len(mkt.capital_markets.offerings_3yr)
             result["value"] = result["offerings_3yr_count"]
     elif suffix == "litigation_milestone":
         if lit is not None:
-            active = len([
-                c for c in lit.securities_class_actions
-                if _safe_sv(c.status) == "ACTIVE"
-            ])
+            active = len(
+                [c for c in lit.securities_class_actions if _safe_sv(c.status) == "ACTIVE"]
+            )
             result["active_sca_count"] = active
             result["derivative_suit_count"] = len(lit.derivative_suits)
             result["value"] = active + len(lit.derivative_suits)
@@ -213,17 +213,11 @@ def _map_fwrd_event(
     elif suffix == "contract_renewal":
         result["value"] = _text_sig(extracted, "contract_renewal_event")
     elif suffix == "regulatory_decision":
-        result["value"] = _text_sig(
-            extracted, "regulatory_decision_event"
-        )
+        result["value"] = _text_sig(extracted, "regulatory_decision_event")
     elif suffix == "customer_retention":
-        result["value"] = _text_sig(
-            extracted, "customer_retention_event"
-        )
+        result["value"] = _text_sig(extracted, "customer_retention_event")
     elif suffix == "employee_retention":
-        result["value"] = _text_sig(
-            extracted, "employee_retention_event"
-        )
+        result["value"] = _text_sig(extracted, "employee_retention_event")
     elif suffix == "proxy_deadline":
         if extracted.governance is not None:
             ca = extracted.governance.comp_analysis
@@ -245,20 +239,14 @@ def _map_fwrd_narrative(
     """Map FWRD.NARRATIVE.* checks to existing extracted data."""
     if suffix == "disclosure_quality":
         if extracted.financials is not None:
-            result["value"] = _safe_sv(
-                extracted.financials.audit.opinion_type
-            )
+            result["value"] = _safe_sv(extracted.financials.audit.opinion_type)
     elif suffix == "risk_factors":
         result["risk_factor_count"] = len(extracted.risk_factors)
-        result["new_risk_factors"] = sum(
-            1 for rf in extracted.risk_factors if rf.is_new_this_year
-        )
+        result["new_risk_factors"] = sum(1 for rf in extracted.risk_factors if rf.is_new_this_year)
         result["value"] = len(extracted.risk_factors)
     elif suffix == "non_gaap":
         if extracted.financials is not None:
-            result["value"] = _safe_sv(
-                extracted.financials.earnings_quality
-            )
+            result["value"] = _safe_sv(extracted.financials.earnings_quality)
     elif suffix == "sec_comment":
         if extracted.litigation is not None:
             result["comment_letter_count"] = _safe_sv(
@@ -277,9 +265,7 @@ def _map_fwrd_narrative(
     elif suffix == "narrative_coherence_composite":
         gov = extracted.governance
         if gov is not None:
-            result["value"] = _safe_sv(
-                gov.narrative_coherence.overall_assessment
-            )
+            result["value"] = _safe_sv(gov.narrative_coherence.overall_assessment)
     elif suffix == "auditor_cams":
         fin = extracted.financials
         if fin is not None:
@@ -353,23 +339,15 @@ def _map_fwrd_warn(
     elif suffix == "job_posting_patterns":
         result["value"] = _text_sig(extracted, "compliance_hiring")
     elif suffix == "ai_revenue_concentration":
-        result["value"] = _text_sig(
-            extracted, "ai_revenue_concentration"
-        )
+        result["value"] = _text_sig(extracted, "ai_revenue_concentration")
     elif suffix == "hyperscaler_dependency":
-        result["value"] = _text_sig(
-            extracted, "technology_dependency"
-        )
+        result["value"] = _text_sig(extracted, "technology_dependency")
     elif suffix == "gpu_allocation":
         result["value"] = _text_sig(extracted, "ai_risk_exposure")
     elif suffix == "data_center_risk":
-        result["value"] = _text_sig(
-            extracted, "technology_dependency"
-        )
+        result["value"] = _text_sig(extracted, "technology_dependency")
     elif suffix == "customer_churn_signals":
-        result["value"] = _text_sig(
-            extracted, "customer_churn_signals"
-        )
+        result["value"] = _text_sig(extracted, "customer_churn_signals")
     elif suffix == "partner_stability":
         result["value"] = _text_sig(extracted, "partner_stability")
 
@@ -435,7 +413,9 @@ def _map_web_search_warn(
                 # Check for negative news signals in whistleblower indicators
                 lit = extracted.litigation
                 if lit is not None and lit.whistleblower_indicators:
-                    result["value"] = f"{len(lit.whistleblower_indicators)} whistleblower indicator(s) detected"
+                    result["value"] = (
+                        f"{len(lit.whistleblower_indicators)} whistleblower indicator(s) detected"
+                    )
                 else:
                     result["value"] = "No investigative journalism risk signal detected"
         else:

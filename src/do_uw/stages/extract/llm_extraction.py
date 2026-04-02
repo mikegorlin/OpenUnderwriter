@@ -37,8 +37,8 @@ _FILING_PRIORITY: dict[str, int] = {
 _MAX_EXTRACT_WORKERS = 1
 
 # Cap total filings per company to bound cost (~$0.10-0.20 per filing).
-# Reduced for speed (user: "push it to the limit")
-_MAX_FILINGS_PER_COMPANY = 1
+# Increased from 1 to 3 to extract 10-K, DEF 14A, and latest 8-K (user: "increase LLM extraction filing limit"). Note: Post-annual quarterly filings (priority 80) may be selected over 8-K (priority 70).
+_MAX_FILINGS_PER_COMPANY = 3
 
 # Post-annual quarterly filings (10-Q/6-K filed after latest 10-K) get
 # boosted priority so they survive the cap. Set above 8-K (70) but

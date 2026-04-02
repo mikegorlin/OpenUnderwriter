@@ -264,7 +264,10 @@ def get_filing_documents(
 
     if state.acquired_data is None:
         return {}
-    raw = state.acquired_data.filing_documents
+    try:
+        raw = state.acquired_data.filing_documents
+    except AttributeError:
+        raw = None
     if raw:
         return cast(dict[str, list[dict[str, Any]]], raw)
     # Fallback: check filings dict (in case stored there instead).

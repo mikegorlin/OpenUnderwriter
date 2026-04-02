@@ -1,7 +1,7 @@
 [project]
-name = "angry-dolphin"
+name = "open-underwriter"
 version = "0.2.0"
-description = "Angry Dolphin Underwriting -- D&O Liability Worksheet System"
+description = "OpenUnderwriter -- D&O Liability Worksheet System (OpenCode DeepSeek-optimized)"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -31,6 +31,7 @@ dependencies = [
     "playwright>=1.58.0",
     "pyyaml>=6.0",
     "ruamel-yaml>=0.19.1",
+    "mcp>=1.26.0",
 ]
 
 [project.optional-dependencies]

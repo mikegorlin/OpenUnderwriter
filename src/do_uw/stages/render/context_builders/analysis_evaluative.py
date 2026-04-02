@@ -30,11 +30,11 @@ def _clean_committee_summary(text: str) -> str:
     match = _RAW_EVIDENCE_RE.search(text)
     if not match:
         return text
-    prefix = text[:match.start()].rstrip()
+    prefix = text[: match.start()].rstrip()
     if prefix.endswith("."):
         return prefix
     last_dot = prefix.rfind(".")
-    return prefix[:last_dot + 1] if last_dot > 10 else prefix + "."
+    return prefix[: last_dot + 1] if last_dot > 10 else prefix + "."
 
 
 def extract_forensic_composites(
@@ -62,7 +62,14 @@ def extract_forensic_composites(
                 break
 
         if data is None:
-            composites.append({"name": label, "score": "N/A", "interpretation": "Not available", "sub_scores": {}})
+            composites.append(
+                {
+                    "name": label,
+                    "score": "N/A",
+                    "interpretation": "Not available",
+                    "sub_scores": {},
+                }
+            )
             continue
         if isinstance(data, dict):
             score = data.get("overall_score", data.get("score", data.get("value", "N/A")))
@@ -74,14 +81,23 @@ def extract_forensic_composites(
                     sub_scores[sn.replace("_", " ").title()] = (
                         f"{sv:.0f}/100" if isinstance(sv, (int, float)) else str(sv)
                     )
-            composites.append({
-                "name": label,
-                "score": f"{score:.0f}/100" if isinstance(score, (int, float)) else str(score),
-                "interpretation": str(zone).replace("_", " ").title() if zone else "N/A",
-                "sub_scores": sub_scores,
-            })
+            composites.append(
+                {
+                    "name": label,
+                    "score": f"{score:.0f}/100" if isinstance(score, (int, float)) else str(score),
+                    "interpretation": str(zone).replace("_", " ").title() if zone else "N/A",
+                    "sub_scores": sub_scores,
+                }
+            )
         else:
-            composites.append({"name": label, "score": f"{data:.0f}/100" if isinstance(data, (int, float)) else str(data), "interpretation": "N/A", "sub_scores": {}})
+            composites.append(
+                {
+                    "name": label,
+                    "score": f"{data:.0f}/100" if isinstance(data, (int, float)) else str(data),
+                    "interpretation": "N/A",
+                    "sub_scores": {},
+                }
+            )
 
     return {"composites": composites, "raw": fc}
 
@@ -105,10 +121,14 @@ def extract_executive_risk(
 
     # Enrich with EXEC.* signal results when available
     exec_signals = safe_get_signals_by_prefix(signal_results, "EXEC.")
-    signal_findings: list[str] = []
+    signal_findings_raw: list[str] = []
+    signal_findings_humanized: list[str] = []
     for sig in exec_signals:
         if sig.status in ("TRIGGERED", "ELEVATED") and sig.evidence:
-            signal_findings.append(sig.evidence)
+            raw = sig.evidence
+            humanized = humanize_check_evidence(raw)
+            signal_findings_raw.append(raw)
+            signal_findings_humanized.append(humanized)
 
     cleaned_findings: list[dict[str, str]] = []
     if isinstance(findings, list):
@@ -126,12 +146,14 @@ def extract_executive_risk(
         cleaned_findings.append({"person": "", "detail": str(findings)})
 
     # Append signal-derived findings not already present
-    for sf in signal_findings[:5]:
-        if not any(sf[:50] in cf["detail"] for cf in cleaned_findings):
-            cleaned_findings.append({"person": "", "detail": sf[:200]})
+    for raw, humanized in zip(signal_findings_raw[:5], signal_findings_humanized[:5]):
+        if not any(raw[:50] in cf["detail"] for cf in cleaned_findings):
+            cleaned_findings.append({"person": "", "detail": humanized[:200]})
 
     return {
-        "weighted_score": f"{weighted_score:.0f}" if isinstance(weighted_score, (int, float)) else str(weighted_score),
+        "weighted_score": f"{weighted_score:.0f}"
+        if isinstance(weighted_score, (int, float))
+        else str(weighted_score),
         "risk_level": str(risk_level),
         "findings": cleaned_findings,
     }
@@ -160,22 +182,27 @@ def extract_temporal_signals(
     result: list[dict[str, str]] = []
     for sig in signals:
         if isinstance(sig, dict):
-            result.append({
-                "type": str(sig.get("type", sig.get("signal_type", "Unknown"))),
-                "direction": str(sig.get("direction", sig.get("trend", "N/A"))),
-                "magnitude": str(sig.get("magnitude", sig.get("change_pct", "N/A"))),
-                "description": str(sig.get("description", sig.get("narrative", ""))),
-            })
+            result.append(
+                {
+                    "type": str(sig.get("type", sig.get("signal_type", "Unknown"))),
+                    "direction": str(sig.get("direction", sig.get("trend", "N/A"))),
+                    "magnitude": str(sig.get("magnitude", sig.get("change_pct", "N/A"))),
+                    "description": str(sig.get("description", sig.get("narrative", ""))),
+                }
+            )
 
     # Enrich with DISC.* trend signals
     disc_signals = safe_get_signals_by_prefix(signal_results, "DISC.")
     for sig in disc_signals:
         if sig.status in ("TRIGGERED", "ELEVATED") and sig.evidence:
-            result.append({
-                "type": sig.signal_id, "direction": sig.status,
-                "magnitude": str(sig.value) if sig.value else "N/A",
-                "description": sig.evidence[:200],
-            })
+            result.append(
+                {
+                    "type": sig.signal_id,
+                    "direction": sig.status,
+                    "magnitude": str(sig.value) if sig.value else "N/A",
+                    "description": sig.evidence[:200],
+                }
+            )
 
     return result if result else None
 
@@ -197,12 +224,17 @@ def _format_readability(readability: Any) -> str:
 
 
 def extract_nlp_signals(
-    state: AnalysisState, *, signal_results: dict[str, Any] | None = None,
+    state: AnalysisState,
+    *,
+    signal_results: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     """Extract NLP signals, sentiment profile, and narrative coherence."""
     from do_uw.stages.render.context_builders._nlp_helpers import (
-        build_lm_trends, extract_coherence_data, extract_sentiment_data,
+        build_lm_trends,
+        extract_coherence_data,
+        extract_sentiment_data,
     )
+
     nlp = state.analysis.nlp_signals if state.analysis else None
     sentiment_data = extract_sentiment_data(state)
     coherence_data = extract_coherence_data(state)
@@ -228,10 +260,13 @@ def extract_nlp_signals(
     # Enrich with NLP.* signal results
     for sig in safe_get_signals_by_prefix(signal_results, "NLP."):
         if sig.status in ("TRIGGERED", "ELEVATED"):
-            result.setdefault("signal_alerts", []).append({
-                "signal_id": sig.signal_id, "status": sig.status,
-                "evidence": sig.evidence[:200] if sig.evidence else "",
-            })
+            result.setdefault("signal_alerts", []).append(
+                {
+                    "signal_id": sig.signal_id,
+                    "status": sig.status,
+                    "evidence": sig.evidence[:200] if sig.evidence else "",
+                }
+            )
     return result
 
 
@@ -255,23 +290,37 @@ def extract_peril_map(
         if not isinstance(a, dict):
             continue
         findings = a.get("key_findings", [])
-        assessments.append({
-            "type": str(a.get("plaintiff_type", a.get("peril_type", "Unknown"))).replace("_", " ").title(),
-            "probability": str(a.get("probability_band", a.get("likelihood", "N/A"))).replace("_", " "),
-            "severity": str(a.get("severity_band", a.get("severity", "N/A"))).replace("_", " "),
-            "evidence": "; ".join(humanize_check_evidence(str(f)) for f in findings[:2]) if findings else "",
-        })
+        assessments.append(
+            {
+                "type": str(a.get("plaintiff_type", a.get("peril_type", "Unknown")))
+                .replace("_", " ")
+                .title(),
+                "probability": str(a.get("probability_band", a.get("likelihood", "N/A"))).replace(
+                    "_", " "
+                ),
+                "severity": str(a.get("severity_band", a.get("severity", "N/A"))).replace(
+                    "_", " "
+                ),
+                "evidence": "; ".join(humanize_check_evidence(str(f)) for f in findings[:2])
+                if findings
+                else "",
+            }
+        )
 
     bear_cases: list[dict[str, str]] = []
     for bc in pm.get("bear_cases", []):
         if not isinstance(bc, dict):
             continue
-        bear_cases.append({
-            "theory": str(bc.get("theory", "Unknown")).replace("_", " ").title(),
-            "summary": _clean_committee_summary(str(bc.get("committee_summary", bc.get("summary", "")))),
-            "probability": str(bc.get("probability_band", "N/A")).replace("_", " "),
-            "severity": str(bc.get("severity_estimate", "N/A")).replace("_", " "),
-        })
+        bear_cases.append(
+            {
+                "theory": str(bc.get("theory", "Unknown")).replace("_", " ").title(),
+                "summary": _clean_committee_summary(
+                    str(bc.get("committee_summary", bc.get("summary", "")))
+                ),
+                "probability": str(bc.get("probability_band", "N/A")).replace("_", " "),
+                "severity": str(bc.get("severity_estimate", "N/A")).replace("_", " "),
+            }
+        )
 
     if not overall and assessments:
         prob_order = {"critical": 4, "elevated": 3, "moderate": 2, "low": 1}
@@ -279,8 +328,7 @@ def extract_peril_map(
             (prob_order.get(a["probability"].lower(), 0), a["type"]) for a in assessments
         )
         key_plaintiffs = [
-            a["type"] for a in assessments
-            if prob_order.get(a["probability"].lower(), 0) >= 3
+            a["type"] for a in assessments if prob_order.get(a["probability"].lower(), 0) >= 3
         ]
         if key_plaintiffs:
             overall = f"{highest_prob[1]} exposure ({highest_prob[0]}) -- {', '.join(key_plaintiffs)} present significant risk"

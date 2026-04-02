@@ -48,12 +48,8 @@ class StockDropEvent(BaseModel):
         default=None,
         description="Percentage decline (negative number, e.g. -15.3)",
     )
-    drop_type: str = Field(
-        default="", description="SINGLE_DAY or MULTI_DAY classification"
-    )
-    period_days: int = Field(
-        default=1, description="Duration of decline in trading days"
-    )
+    drop_type: str = Field(default="", description="SINGLE_DAY or MULTI_DAY classification")
+    period_days: int = Field(default=1, description="Duration of decline in trading days")
     sector_return_pct: SourcedValue[float] | None = Field(
         default=None,
         description="Sector ETF return over same period for comparison",
@@ -66,9 +62,7 @@ class StockDropEvent(BaseModel):
         default=None,
         description="Identified catalyst: earnings miss, restatement, etc.",
     )
-    close_price: float | None = Field(
-        default=None, description="Closing price on drop date"
-    )
+    close_price: float | None = Field(default=None, description="Closing price on drop date")
     recovery_days: int | None = Field(
         default=None,
         description="Trading days until stock recovered to pre-drop price level",
@@ -81,7 +75,7 @@ class StockDropEvent(BaseModel):
         default="",
         description="URL to 8-K filing or news article explaining trigger",
     )
-    trigger_description: str = Field(
+    trigger_description: str | None = Field(
         default="",
         description="One-line description of what caused the drop (from 8-K content or web search)",
     )
@@ -189,9 +183,7 @@ class StockDropAnalysis(BaseModel):
         default_factory=lambda: [],
         description="Multi-day slide periods exceeding threshold",
     )
-    analysis_period_months: int = Field(
-        default=18, description="Lookback period in months"
-    )
+    analysis_period_months: int = Field(default=18, description="Lookback period in months")
     worst_single_day: StockDropEvent | None = Field(
         default=None, description="Largest single-day decline"
     )
@@ -227,18 +219,14 @@ class InsiderTransaction(BaseModel):
 
     model_config = ConfigDict(frozen=False)
 
-    insider_name: SourcedValue[str] | None = Field(
-        default=None, description="Name of the insider"
-    )
+    insider_name: SourcedValue[str] | None = Field(default=None, description="Name of the insider")
     title: SourcedValue[str] | None = Field(
         default=None, description="Title/role (CEO, CFO, Director, etc.)"
     )
     transaction_date: SourcedValue[str] | None = Field(
         default=None, description="Date of transaction (YYYY-MM-DD)"
     )
-    transaction_type: str = Field(
-        default="", description="BUY, SELL, EXERCISE, GIFT, etc."
-    )
+    transaction_type: str = Field(default="", description="BUY, SELL, EXERCISE, GIFT, etc.")
     transaction_code: str = Field(
         default="",
         description="SEC transaction code (P=purchase, S=sale, etc.)",
@@ -269,27 +257,17 @@ class InsiderTransaction(BaseModel):
         default=None,
         description="Post-transaction shares owned (non-derivative or derivative)",
     )
-    is_director: bool = Field(
-        default=False, description="reportingOwnerRelationship isDirector"
-    )
-    is_officer: bool = Field(
-        default=False, description="reportingOwnerRelationship isOfficer"
-    )
+    is_director: bool = Field(default=False, description="reportingOwnerRelationship isDirector")
+    is_officer: bool = Field(default=False, description="reportingOwnerRelationship isOfficer")
     is_ten_pct_owner: bool = Field(
         default=False, description="reportingOwnerRelationship isTenPercentOwner"
     )
-    ownership_nature: str = Field(
-        default="D", description="D=direct, I=indirect"
-    )
+    ownership_nature: str = Field(default="D", description="D=direct, I=indirect")
     indirect_ownership_explanation: str = Field(
         default="", description="e.g. 'By Trust', 'By LLC'"
     )
-    accession_number: str = Field(
-        default="", description="SEC accession number for dedup"
-    )
-    is_amendment: bool = Field(
-        default=False, description="True if from Form 4/A filing"
-    )
+    accession_number: str = Field(default="", description="SEC accession number for dedup")
+    is_amendment: bool = Field(default=False, description="True if from Form 4/A filing")
     is_superseded: bool = Field(
         default=False, description="True if original replaced by 4/A amendment"
     )
@@ -306,9 +284,7 @@ class OwnershipConcentrationAlert(BaseModel):
         default="INFORMATIONAL",
         description="RED_FLAG, WARNING, INFORMATIONAL, POSITIVE",
     )
-    personal_pct_sold: float = Field(
-        default=0.0, description="% of own holdings sold in window"
-    )
+    personal_pct_sold: float = Field(default=0.0, description="% of own holdings sold in window")
     outstanding_pct: float | None = Field(
         default=None, description="% of shares outstanding (if available)"
     )
@@ -342,22 +318,14 @@ class InsiderClusterEvent(BaseModel):
 
     model_config = ConfigDict(frozen=False)
 
-    start_date: str = Field(
-        default="", description="Start of cluster window (YYYY-MM-DD)"
-    )
-    end_date: str = Field(
-        default="", description="End of cluster window (YYYY-MM-DD)"
-    )
-    insider_count: int = Field(
-        default=0, description="Number of insiders in cluster"
-    )
+    start_date: str = Field(default="", description="Start of cluster window (YYYY-MM-DD)")
+    end_date: str = Field(default="", description="End of cluster window (YYYY-MM-DD)")
+    insider_count: int = Field(default=0, description="Number of insiders in cluster")
     insiders: list[str] = Field(
         default_factory=lambda: [],
         description="Names of insiders in the cluster",
     )
-    total_value: float = Field(
-        default=0.0, description="Combined dollar value of cluster sales"
-    )
+    total_value: float = Field(default=0.0, description="Combined dollar value of cluster sales")
 
 
 class ExerciseSellEvent(BaseModel):
@@ -463,9 +431,7 @@ class EarningsQuarterRecord(BaseModel):
 
     model_config = ConfigDict(frozen=False)
 
-    quarter: str = Field(
-        default="", description="Quarter label (e.g. Q3 2025)"
-    )
+    quarter: str = Field(default="", description="Quarter label (e.g. Q3 2025)")
     consensus_eps_low: SourcedValue[float] | None = Field(
         default=None, description="Low end of analyst consensus EPS estimate"
     )
@@ -478,15 +444,11 @@ class EarningsQuarterRecord(BaseModel):
     guidance_revenue_high: SourcedValue[float] | None = Field(
         default=None, description="High end of revenue guidance (millions)"
     )
-    actual_eps: SourcedValue[float] | None = Field(
-        default=None, description="Actual reported EPS"
-    )
+    actual_eps: SourcedValue[float] | None = Field(default=None, description="Actual reported EPS")
     actual_revenue: SourcedValue[float] | None = Field(
         default=None, description="Actual reported revenue (millions)"
     )
-    result: str = Field(
-        default="", description="BEAT, MISS, or MEET"
-    )
+    result: str = Field(default="", description="BEAT, MISS, or MEET")
     miss_magnitude_pct: SourcedValue[float] | None = Field(
         default=None,
         description="How much the miss was as pct of guidance midpoint",
@@ -560,15 +522,12 @@ class EarningsGuidanceAnalysis(BaseModel):
     guidance_frequency: str | None = Field(
         default=None,
         description=(
-            "How often guidance is issued: 'quarterly', 'annual', 'none'. "
-            "None if not determined."
+            "How often guidance is issued: 'quarterly', 'annual', 'none'. None if not determined."
         ),
     )
     guidance_history: list[str] = Field(
         default_factory=lambda: [],
-        description=(
-            "Key guidance changes: 'Withdrew Q2 2024', 'Narrowed Q3 2024', etc."
-        ),
+        description=("Key guidance changes: 'Withdrew Q2 2024', 'Narrowed Q3 2024', etc."),
     )
 
 
@@ -610,12 +569,8 @@ class AnalystSentimentProfile(BaseModel):
     target_price_low: SourcedValue[float] | None = Field(
         default=None, description="Lowest analyst target price"
     )
-    recent_upgrades: int = Field(
-        default=0, description="Upgrades in trailing 90 days"
-    )
-    recent_downgrades: int = Field(
-        default=0, description="Downgrades in trailing 90 days"
-    )
+    recent_upgrades: int = Field(default=0, description="Upgrades in trailing 90 days")
+    recent_downgrades: int = Field(default=0, description="Downgrades in trailing 90 days")
 
 
 # ---------------------------------------------------------------------------
@@ -643,9 +598,7 @@ class CapitalMarketsOffering(BaseModel):
     date: SourcedValue[str] | None = Field(
         default=None, description="Offering/filing date (YYYY-MM-DD)"
     )
-    amount: SourcedValue[float] | None = Field(
-        default=None, description="Offering amount in USD"
-    )
+    amount: SourcedValue[float] | None = Field(default=None, description="Offering amount in USD")
     section_11_window_end: str = Field(
         default="",
         description="End of Section 11 statute of limitations (YYYY-MM-DD)",
@@ -709,9 +662,7 @@ class AdverseEventScore(BaseModel):
     total_score: SourcedValue[float] | None = Field(
         default=None, description="Composite adverse event score (0-100)"
     )
-    event_count: int = Field(
-        default=0, description="Total adverse events identified"
-    )
+    event_count: int = Field(default=0, description="Total adverse events identified")
     severity_breakdown: dict[str, int] = Field(
         default_factory=dict,
         description="Count by severity: LOW, MEDIUM, HIGH, CRITICAL",

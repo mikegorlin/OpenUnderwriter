@@ -82,7 +82,7 @@
                 {%- if f.trend == 'deteriorating' %} text-red-600
                 {%- elif f.trend == 'improving' %} text-green-600
                 {%- else %} text-gray-500{% endif %}">{{ f.trend if f.trend and f.trend != 'N/A' else '—' }}</td>{% endif %}
-              <td class="py-1 pl-2 text-xs text-gray-600">{{ f.evidence | humanize_evidence if f.evidence else '' }}</td>
+              <td class="py-1 pl-2 text-xs text-gray-600">{{ f.do_context | humanize_evidence if f.do_context else '' }}</td>
             </tr>
             {# Fix 3: Channel stuffing false positive context for high-volume distributor models #}
             {% if 'channel stuffing' in (f.label | lower) and (f.severity == 'warning' or f.severity == 'critical') %}

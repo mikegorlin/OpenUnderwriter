@@ -150,18 +150,25 @@ class Pipeline:
 
         for index, stage in enumerate(self._stages):
             stage_result = state.stages.get(stage.name)
+            print(
+                f"DEBUG PIPELINE: stage={stage.name}, index={index}, status={stage_result.status if stage_result else 'None'}, stage_result exists? {stage_result is not None}"
+            )
 
             # Resume support: skip completed stages
             if stage_result is not None and stage_result.status == StageStatus.COMPLETED:
                 self._callbacks.on_stage_skip(stage.name, index, total)
                 logger.info("Skipping completed stage: %s", stage.name)
+                print(f"DEBUG PIPELINE: Skipping completed stage {stage.name}")
                 continue
 
             # Validate preconditions
             try:
+                print(f"DEBUG PIPELINE: Before validate_input for {stage.name}")
                 stage.validate_input(state)
+                print(f"DEBUG PIPELINE: validate_input passed for {stage.name}")
             except ValueError as exc:
                 error_msg = f"Validation failed for {stage.name}: {exc}"
+                print(f"DEBUG PIPELINE: Validation failed: {error_msg}")
                 state.mark_stage_failed(stage.name, error_msg)
                 self._callbacks.on_stage_fail(stage.name, index, total, error_msg)
                 self._save_state(state)
@@ -171,9 +178,12 @@ class Pipeline:
             # Execute stage
             self._callbacks.on_stage_start(stage.name, index, total)
             try:
+                print(f"DEBUG PIPELINE: Before stage.run for {stage.name}")
                 stage.run(state)
+                print(f"DEBUG PIPELINE: stage.run completed for {stage.name}")
             except Exception as exc:
                 error_msg = f"Stage {stage.name} failed: {exc}"
+                print(f"DEBUG PIPELINE: Stage {stage.name} failed: {exc}")
                 state.mark_stage_failed(stage.name, str(exc))
                 self._callbacks.on_stage_fail(stage.name, index, total, error_msg)
                 self._save_state(state)

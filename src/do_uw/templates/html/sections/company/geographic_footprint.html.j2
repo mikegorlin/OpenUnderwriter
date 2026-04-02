@@ -1,9 +1,21 @@
 {# Geographic Footprint — extracted from company.html.j2 #}
 {% set geo = co.get('geographic_footprint', []) %}
 {% if geo %}
-<h3>Geographic Footprint</h3>
-{{ data_table(
-  ['Country / Region', 'Revenue %'],
-  geo|map(attribute='region')|list|zip(geo|map(attribute='detail')|list)|list
-) }}
+  {# Transform SourcedValue dicts to display values #}
+  {% set rows = [] %}
+  {% for item in geo %}
+    {% set val = item.value if item is mapping and 'value' in item else item %}
+    {% set region = val.get('jurisdiction', val.get('region', '')) %}
+    {% set detail = val.get('subsidiary_count', val.get('detail', '')) %}
+    {% if detail is number %}
+      {% set detail = detail|string + ' subsidiaries' %}
+    {% endif %}
+    {% set _ = rows.append([region, detail]) %}
+  {% endfor %}
+  {# Only show if at least one row has non-empty data #}
+  {% set has_data = rows|select('first')|list|length > 0 %}
+  {% if has_data %}
+    <h3>Geographic Footprint</h3>
+    {{ data_table(['Country / Region', 'Detail'], rows) }}
+  {% endif %}
 {% endif %}

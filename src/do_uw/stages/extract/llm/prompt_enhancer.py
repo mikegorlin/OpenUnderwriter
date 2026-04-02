@@ -8,7 +8,7 @@ the Pydantic schema are excluded to avoid duplication.
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from pydantic import BaseModel
 
@@ -46,8 +46,8 @@ def _format_type_hint(hint: dict[str, Any] | None) -> str:
     """Format extraction hint into a type description for the LLM."""
     if not hint:
         return "text"
-    expected_type = hint.get("expected_type", "text")
-    return _TYPE_DESCRIPTIONS.get(expected_type, expected_type)
+    expected_type: str = cast(str, hint.get("expected_type", "text"))
+    return cast(str, _TYPE_DESCRIPTIONS.get(expected_type, expected_type))
 
 
 def enhance_prompt_with_brain_requirements(
@@ -96,16 +96,12 @@ def enhance_prompt_with_brain_requirements(
     if not targets:
         return base_prompt
 
-    # Cap at 20 targets to keep prompt manageable
-    if len(targets) > 20:
-        targets = targets[:20]
-        targets.append(f"  ... and {len(requirements) - 20} more fields")
+    # No cap - extract all brain fields (DeepSeek models have 128K context window)
 
     enhancement = (
         "\n\nADDITIONAL EXTRACTION TARGETS (from underwriting brain):\n"
         "Extract these if found in the document. Report as key-value "
-        "pairs in the brain_fields dict. If not found, omit.\n"
-        + "\n".join(targets)
+        "pairs in the brain_fields dict. If not found, omit.\n" + "\n".join(targets)
     )
 
     logger.info(
