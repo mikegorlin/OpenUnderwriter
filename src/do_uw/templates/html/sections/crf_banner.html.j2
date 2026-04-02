@@ -15,7 +15,7 @@
     {% for alert in alerts %}
     <a href="{{ alert.section_link | default('#scoring') }}"
        class="crf-pill crf-pill--{{ alert.severity | lower }}"
-       title="{{ alert.get('evidence', '') | truncate(200) }}">
+        title="{{ alert.get('evidence', '') }}">
       {% if alert.severity == 'CRITICAL' %}
         <span class="crf-pill-icon">&#9679;</span>
       {% else %}

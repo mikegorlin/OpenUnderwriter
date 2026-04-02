@@ -107,8 +107,8 @@
         <tr class="{{ 'bg-red-50' if status == 'TRIGGERED' else ('bg-amber-50' if status == 'ELEVATED' else '') }}">
           <td class="px-2 py-1 font-mono font-semibold">{{ check.get('signal_id', '—') }}</td>
           <td class="px-2 py-1 font-semibold">{{ check.get('signal_name', check.get('signal_id', '—')) }}</td>
-          {% if ns_qa.show_finding %}<td class="px-2 py-1">{{ finding | truncate(120) }}</td>{% endif %}
-          {% if ns_qa.show_source %}<td class="px-2 py-1 text-gray-500">{{ src_text | humanize_source | truncate(40) }}</td>{% endif %}
+          {% if ns_qa.show_finding %}<td class="px-2 py-1">{{ finding }}</td>{% endif %}
+          {% if ns_qa.show_source %}<td class="px-2 py-1 text-gray-500">{{ src_text | humanize_source }}</td>{% endif %}
           <td class="px-2 py-1">
             {% if conf == 'HIGH' %}
               <span class="qa-conf qa-conf-high">HIGH</span>

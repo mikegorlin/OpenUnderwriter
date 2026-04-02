@@ -80,7 +80,7 @@
         <tr class="signal-detail-row">
           <td colspan="7" class="signal-detail-cell">
             {% for t in row.top_triggered %}
-            <span class="signal-detail-tag" title="{{ t.evidence | truncate(200) }}">{{ t.id }}</span>
+            <span class="signal-detail-tag" title="{{ t.evidence }}">{{ t.id }}</span>
             {% endfor %}
           </td>
         </tr>
