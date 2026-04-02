@@ -1,0 +1,680 @@
+{
+  "web_news": [
+    {
+      "title": "Newsroom - Apple",
+      "url": "https://www.apple.com/newsroom/",
+      "snippet": "Latest News. QUICK READ. Apple adds new partners to its ... Or call 1-800-MY-APPLE (1-800-692-7753). United States Espa\u00f1ol. Copyright \u00a9 2026 Apple Inc."
+    },
+    {
+      "title": "Apple Inc. (AAPL) Latest Stock News & Headlines - Yahoo Finance",
+      "url": "https://finance.yahoo.com/quote/AAPL/news/",
+      "snippet": "Get the latest Apple Inc. (AAPL) stock news and headlines to help you in your trading and investing decisions."
+    },
+    {
+      "title": "Investor Relations - Apple",
+      "url": "https://investor.apple.com/investor-relations/default.aspx",
+      "snippet": "News and Results. Investor Updates. FY 26 First Quarter Results. Apple ... Copyright \u00a9 2026 Apple Inc. All rights reserved. Privacy Policy \u00b7 Terms of Use ..."
+    },
+    {
+      "title": "Breaking News on iPhone, iPad, Macbook, Apple TV & More",
+      "url": "https://www.nbcnews.com/tech/apple",
+      "snippet": "An Apple Watch Ultra 2 at the new Apple Inc. store. SeongJoon Cho / Bloomberg via Getty Images. Business News \u00b7 Apple Watch getting redesigned blood oxygen ..."
+    },
+    {
+      "title": "Apple News+ - Apple",
+      "url": "https://www.apple.com/apple-news/",
+      "snippet": "Apple News makes it easy to stay up to date with the news and ... Or call 1-800-MY-APPLE (1-800-692-7753). United States. Copyright \u00a9 2026 Apple Inc."
+    },
+    {
+      "title": "AAPL: Apple Inc - Stock Price, Quote and News - CNBC",
+      "url": "https://www.cnbc.com/quotes/AAPL",
+      "snippet": "Get Apple Inc (AAPL:NASDAQ) real-time stock quotes, news, price and financial information from CNBC."
+    },
+    {
+      "title": "Apple Inc | Reuters",
+      "url": "https://www.reuters.com/company/apple-inc/",
+      "snippet": "The latest international Apple Inc news and views from Reuters - one of the world's largest news agencies."
+    },
+    {
+      "title": "Apple Inc. (NasdaqGS:AAPL) : Articles - Law360",
+      "url": "https://www.law360.com/companies/apple-inc",
+      "snippet": "The latest litigation news involving the company Apple Inc. (NasdaqGS:AAPL)"
+    }
+  ],
+  "yfinance_news": [
+    {
+      "id": "cdb2aa99-4222-485f-b060-b44167377cfd",
+      "content": {
+        "id": "cdb2aa99-4222-485f-b060-b44167377cfd",
+        "contentType": "VIDEO",
+        "title": "Amazon partners up with Delta to provide high-speed internet",
+        "description": "<p>Yahoo Finance Tech Editor Dan Howley talks to Market Domination Host Josh Lipton about a recently announced partnership between Delta Air Lines (<a target=\"_blank\" rel=\"\" class=\"link\" href=\"https://finance.yahoo.com/quote/DAL/\" data-i13n=\"slk:DAL;cpos:1;pos:1\">DAL</a>) and Amazon (<a target=\"_blank\" rel=\"\" class=\"link\" href=\"https://finance.yahoo.com/quote/AMZN/\" data-i13n=\"slk:AMZN);cpos:2;pos:1\">AMZN)</a> to use Amazon's Low Earth Orbit (LEO) satellites to provide internet access on flights.</p>",
+        "summary": "Yahoo Finance Tech Editor Dan Howley talks to Market Domination Host Josh Lipton about a recently announced partnership between Delta Air Lines (DAL) and Amazon (AMZN) to use Amazon's Low Earth Orbit (LEO) satellites to provide internet access on flights.",
+        "pubDate": "2026-03-31T21:33:46Z",
+        "displayTime": "",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://s.yimg.com/uu/api/res/1.2/CKVp0E2p_jZigd068_G4XQ--~B/aD0yOTA0O3c9NTE2MzthcHBpZD15dGFjaHlvbg--/https://d29szjachogqwa.cloudfront.net/images/user-uploaded/b040cc10-2c6d-11f1-b3bd-a573cde07a88_72067cf589866d9a62bb53d141d67307e3976e2bb881047f776fbd1d7188d3aa.com/creatr-uploaded-images/2026-03/b040cc10-2c6d-11f1-b3bd-a573cde07a88",
+          "originalWidth": 5163,
+          "originalHeight": 2904,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/CKVp0E2p_jZigd068_G4XQ--~B/aD0yOTA0O3c9NTE2MzthcHBpZD15dGFjaHlvbg--/https://d29szjachogqwa.cloudfront.net/images/user-uploaded/b040cc10-2c6d-11f1-b3bd-a573cde07a88_72067cf589866d9a62bb53d141d67307e3976e2bb881047f776fbd1d7188d3aa.com/creatr-uploaded-images/2026-03/b040cc10-2c6d-11f1-b3bd-a573cde07a88",
+              "width": 5163,
+              "height": 2904,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/_O7VEHzY15THWMOG9gjySg--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://d29szjachogqwa.cloudfront.net/images/user-uploaded/b040cc10-2c6d-11f1-b3bd-a573cde07a88_72067cf589866d9a62bb53d141d67307e3976e2bb881047f776fbd1d7188d3aa.com/creatr-uploaded-images/2026-03/b040cc10-2c6d-11f1-b3bd-a573cde07a88",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Yahoo Finance Video",
+          "url": "https://finance.yahoo.com/",
+          "sourceId": "video.yahoofinance.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/video/amazon-partners-up-with-delta-to-provide-high-speed-internet-213346771.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/video/amazon-partners-up-with-delta-to-provide-high-speed-internet-213346771.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": true
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": {
+          "storylineItems": [
+            {
+              "content": {
+                "id": "e3a9571e-b651-4275-968b-2684eab64846",
+                "contentType": "VIDEO",
+                "isHosted": true,
+                "title": "Mag 7 still isn't a safe haven, but retail investors remain loyal",
+                "thumbnail": {
+                  "originalUrl": "https://s.yimg.com/uu/api/res/1.2/H.XozhpGyisPfgmhCwIfJQ--~B/aD0zMTczO3c9NTY0MTthcHBpZD15dGFjaHlvbg--/https://d29szjachogqwa.cloudfront.net/images/user-uploaded/97d1de30-17e1-11f1-aded-4dfc2ca1b724_fcc19498a10955dfae859b42fea13e4f39af9d337e90efbe55ad738af8cb7a03.com/creatr-uploaded-images/2026-02/97d1de30-17e1-11f1-aded-4dfc2ca1b724",
+                  "originalWidth": 5641,
+                  "originalHeight": 3173,
+                  "caption": "",
+                  "resolutions": null
+                },
+                "provider": {
+                  "displayName": "Yahoo Finance Video",
+                  "sourceId": "video.yahoofinance.com"
+                },
+                "previewUrl": null,
+                "providerContentUrl": "",
+                "canonicalUrl": {
+                  "url": "https://finance.yahoo.com/video/mag-7-still-isnt-a-safe-haven-but-retail-investors-remain-loyal-141831896.html"
+                },
+                "clickThroughUrl": {
+                  "url": "https://finance.yahoo.com/video/mag-7-still-isnt-a-safe-haven-but-retail-investors-remain-loyal-141831896.html"
+                }
+              }
+            },
+            {
+              "content": {
+                "id": "1c9feba1-876b-47d2-a1e9-730761a09dea",
+                "contentType": "STORY",
+                "isHosted": true,
+                "title": "Whoop is raising $575 million from investors and star athletes including Cristiano Ronaldo, LeBron James",
+                "thumbnail": {
+                  "originalUrl": "https://s.yimg.com/os/creatr-uploaded-images/2026-03/2d229e30-2ccc-11f1-9bdb-e75e41ff0d8a",
+                  "originalWidth": 4095,
+                  "originalHeight": 2730,
+                  "caption": "",
+                  "resolutions": null
+                },
+                "provider": {
+                  "displayName": "Yahoo Finance",
+                  "sourceId": "yahoofinance.com"
+                },
+                "previewUrl": null,
+                "providerContentUrl": "",
+                "canonicalUrl": {
+                  "url": "https://finance.yahoo.com/news/whoop-is-raising-575-million-from-investors-and-star-athletes-including-cristiano-ronaldo-lebron-james-100052893.html"
+                },
+                "clickThroughUrl": {
+                  "url": "https://finance.yahoo.com/news/whoop-is-raising-575-million-from-investors-and-star-athletes-including-cristiano-ronaldo-lebron-james-100052893.html"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "bde43f86-34cb-3748-9739-be29e751710b",
+      "content": {
+        "id": "bde43f86-34cb-3748-9739-be29e751710b",
+        "contentType": "STORY",
+        "title": "Apple's 50-year journey from garage to tech titan",
+        "description": "",
+        "summary": "In early 1976 in California, Steve Wozniak had just completed the design of a computer circuit board he intended to share with fellow hobbyists at a prominent local club.  Apple's services business, which houses \u200bits App Store, Apple Music and its streaming service, has become a major \u200bdriver of growth as its expanding base of devices brings in \u200bsteady income from subscriptions and commissions on app sales.",
+        "pubDate": "2026-04-01T00:31:40Z",
+        "displayTime": "2026-04-01T00:31:40Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/reuters-finance.com/12053f4b58cbbfd5dafeb9006ffaf212",
+          "originalWidth": 800,
+          "originalHeight": 533,
+          "caption": "FILE PHOTO: People walk by the Apple store on Fifth Avenue in New York",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/EMw3_bKUPmG2Qyw9j2QVzA--~B/aD01MzM7dz04MDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/reuters-finance.com/12053f4b58cbbfd5dafeb9006ffaf212",
+              "width": 800,
+              "height": 533,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/GW5ct4X1VCvH02DNhlXKhA--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/reuters-finance.com/12053f4b58cbbfd5dafeb9006ffaf212",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Reuters",
+          "url": "http://www.reuters.com/",
+          "sourceId": "reuters-finance.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/sectors/technology/articles/apples-50-journey-garage-tech-003140629.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/sectors/technology/articles/apples-50-journey-garage-tech-003140629.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "b194232e-16e3-3ca5-8a54-6b97dd200a5e",
+      "content": {
+        "id": "b194232e-16e3-3ca5-8a54-6b97dd200a5e",
+        "contentType": "STORY",
+        "title": "Warren Buffett Made a $19.8 Billion Bet and It's Not on AI",
+        "description": "",
+        "summary": "The Oracle of Omaha made a surprising final pick that's already paying off.",
+        "pubDate": "2026-03-31T23:25:00Z",
+        "displayTime": "2026-03-31T23:25:00Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/motleyfool.com/540ed2aa848a920a7b89eb001296a34e",
+          "originalWidth": 1400,
+          "originalHeight": 933,
+          "caption": "Legendary investor Warren Buffett.",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/ekxIULPsZd52FfWrtZV5ww--~B/aD05MzM7dz0xNDAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/motleyfool.com/540ed2aa848a920a7b89eb001296a34e",
+              "width": 1400,
+              "height": 933,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/X7yf3U82Miv733nA4L29.A--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/motleyfool.com/540ed2aa848a920a7b89eb001296a34e",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Motley Fool",
+          "url": "http://www.fool.com/",
+          "sourceId": "motleyfool.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.fool.com/investing/2026/03/31/warren-buffett-made-a-198-billion-bet-and-its-not/",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/warren-buffett-made-19-8-232500946.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "1bbcadb8-48e0-3ee4-99c1-8384720d497f",
+      "content": {
+        "id": "1bbcadb8-48e0-3ee4-99c1-8384720d497f",
+        "contentType": "STORY",
+        "title": "Iran\u2019s Revolutionary Guard Threatens to Strike U.S. Companies in Mideast",
+        "description": "",
+        "summary": "Iran\u2019s Islamic Revolutionary Guard Corps issued a warning to several major international corporations, alleging their involvement in operations conducted by the U.S. and Israel against Iran and said they would be treated as \u201clegitimate targets.",
+        "pubDate": "2026-03-31T22:38:13Z",
+        "displayTime": "2026-03-31T22:38:13Z",
+        "isHosted": false,
+        "bypassModal": false,
+        "previewUrl": "https://finance.yahoo.com/m/1bbcadb8-48e0-3ee4-99c1-8384720d497f/iran%E2%80%99s-revolutionary-guard.html",
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/wsj.com/018af8dc322b274f976dd142b5f4d7a3",
+          "originalWidth": 1280,
+          "originalHeight": 640,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/EuCl5qYRQl6eJIWXvwvr_w--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/018af8dc322b274f976dd142b5f4d7a3",
+              "width": 1280,
+              "height": 640,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/oTL7xJmoYaYaaO738L.vYA--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/wsj.com/018af8dc322b274f976dd142b5f4d7a3",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "The Wall Street Journal",
+          "url": "http://www.wsj.com/",
+          "sourceId": "wsj.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.wsj.com/livecoverage/iran-war-news-updates/card/iran-s-revolutionary-guard-threatens-to-strike-u-s-companies-in-mideast-APuLgbsQubah2185AiC8?siteid=yhoof2&yptr=yahoo",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": null,
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "87ff54ff-d844-398b-8f1e-5cade41b124c",
+      "content": {
+        "id": "87ff54ff-d844-398b-8f1e-5cade41b124c",
+        "contentType": "STORY",
+        "title": "Wedbush Reiterates Outperform on Apple Inc. (AAPL) Amid Anticipation of Foldable iPhone",
+        "description": "",
+        "summary": "Apple Inc. (NASDAQ:AAPL) is among the 8 Stocks Owned by President Donald Trump in his Stock Portfolio. On March 27, Wedbush analyst Daniel Ives reiterated an Outperform rating on the stock with a price target of $350. The update follows the tech giant\u2019s announcement during the week to host its annual Worldwide Developers Conference (WWDC) from [\u2026]",
+        "pubDate": "2026-03-31T22:37:51Z",
+        "displayTime": "2026-03-31T22:37:51Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/insidermonkey.com/bd47dc2e86b4a3086f845d200d9daf1f",
+          "originalWidth": 1456,
+          "originalHeight": 816,
+          "caption": "Wedbush Reiterates Outperform on Apple Inc. (AAPL) Amid Anticipation of Foldable iPhone",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/fTPNobtT0bdcSxj2xXAamw--~B/aD04MTY7dz0xNDU2O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/bd47dc2e86b4a3086f845d200d9daf1f",
+              "width": 1456,
+              "height": 816,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/ERk7UFMt6k8ofjYa8ja0kw--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/insidermonkey.com/bd47dc2e86b4a3086f845d200d9daf1f",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Insider Monkey",
+          "url": "http://www.insidermonkey.com",
+          "sourceId": "insidermonkey.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/wedbush-reiterates-outperform-apple-inc-223751025.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/wedbush-reiterates-outperform-apple-inc-223751025.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "d5df42bd-a3c7-32a5-a7f8-90a25f23c604",
+      "content": {
+        "id": "d5df42bd-a3c7-32a5-a7f8-90a25f23c604",
+        "contentType": "STORY",
+        "title": "Could This Be the Big Catalyst That Sends Apple's Stock Soaring in 2026? (Hint: It's Not Artificial Intelligence)",
+        "description": "",
+        "summary": "A foldable iPhone could be coming soon.",
+        "pubDate": "2026-03-31T22:20:00Z",
+        "displayTime": "2026-03-31T22:20:00Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/motleyfool.com/3d9a1673d9eeb7ddf3ceddc281beda83",
+          "originalWidth": 1400,
+          "originalHeight": 1115,
+          "caption": "A couple walking and looking at a cell phone.",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/Nki1MdKow31ex1JV3OroSw--~B/aD0xMTE1O3c9MTQwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/motleyfool.com/3d9a1673d9eeb7ddf3ceddc281beda83",
+              "width": 1400,
+              "height": 1115,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/YXO_20BEFXEUCH1OjRUHAA--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/motleyfool.com/3d9a1673d9eeb7ddf3ceddc281beda83",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Motley Fool",
+          "url": "http://www.fool.com/",
+          "sourceId": "motleyfool.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.fool.com/investing/2026/03/31/could-this-be-the-big-catalyst-that-sends-apples-s/",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/could-big-catalyst-sends-apples-222000770.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "9f0fb90c-4b85-35b3-b11a-b679f033f255",
+      "content": {
+        "id": "9f0fb90c-4b85-35b3-b11a-b679f033f255",
+        "contentType": "STORY",
+        "title": "Apple Tests Smarter Siri to Catch Up in AI Race",
+        "description": "",
+        "summary": "New feature aims to handle multiple commands at once as Apple upgrades its AI strategy",
+        "pubDate": "2026-03-31T21:23:28Z",
+        "displayTime": "2026-03-31T21:23:28Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": null,
+        "provider": {
+          "displayName": "GuruFocus.com",
+          "url": "http://www.gurufocus.com/",
+          "sourceId": "us.finance.gurufocus"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/sectors/technology/articles/apple-tests-smarter-siri-catch-212328905.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/sectors/technology/articles/apple-tests-smarter-siri-catch-212328905.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "db8d518a-164b-3533-a754-d634b83f742e",
+      "content": {
+        "id": "db8d518a-164b-3533-a754-d634b83f742e",
+        "contentType": "STORY",
+        "title": "Assessing Apple (AAPL) Valuation After Recent Share Price Pullback And Tariff Concerns",
+        "description": "",
+        "summary": "Apple (AAPL) is back in focus after recent trading left the stock about 7% lower over the past month and roughly 9% lower over the past 3 months, prompting fresh questions about valuation. See our latest analysis for Apple. At around $246.63 per share, Apple\u2019s recent 1 month share price return of roughly a 7% decline and year to date share price return of about a 9% decline contrast with a stronger 1 year total shareholder return of around 11%. This suggests shorter term momentum has faded...",
+        "pubDate": "2026-03-31T21:12:22Z",
+        "displayTime": "2026-03-31T21:12:22Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/simply_wall_st__316/69084628647944e382f8e555f97913e8",
+          "originalWidth": 1194,
+          "originalHeight": 432,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/fBnY8upz5XxbZDDWlufZ9w--~B/aD00MzI7dz0xMTk0O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/simply_wall_st__316/69084628647944e382f8e555f97913e8",
+              "width": 1194,
+              "height": 432,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/bU5AIomYRBg3WBNqAswADg--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/simply_wall_st__316/69084628647944e382f8e555f97913e8",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Simply Wall St.",
+          "url": "https://simplywall.st/",
+          "sourceId": "simply_wall_st__316"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/assessing-apple-aapl-valuation-recent-211222550.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/assessing-apple-aapl-valuation-recent-211222550.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "aead691d-383d-3990-b83b-ea19a604416e",
+      "content": {
+        "id": "aead691d-383d-3990-b83b-ea19a604416e",
+        "contentType": "STORY",
+        "title": "Apple May Finally Make Siri Less Frustrating",
+        "description": "",
+        "summary": "New feature could change how people actually use it",
+        "pubDate": "2026-03-31T20:58:35Z",
+        "displayTime": "2026-03-31T20:58:35Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": null,
+        "provider": {
+          "displayName": "GuruFocus.com",
+          "url": "http://www.gurufocus.com/",
+          "sourceId": "us.finance.gurufocus"
+        },
+        "canonicalUrl": {
+          "url": "https://tech.yahoo.com/ai/apple-intelligence/articles/apple-may-finally-siri-less-205835002.html",
+          "site": "tech",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://tech.yahoo.com/ai/apple-intelligence/articles/apple-may-finally-siri-less-205835002.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "b9124d57-c680-3f57-87f9-1c36f31957e5",
+      "content": {
+        "id": "b9124d57-c680-3f57-87f9-1c36f31957e5",
+        "contentType": "STORY",
+        "title": "Apple Inc. (AAPL) Focused on Service Monetization to Accelerate Revenue Growth",
+        "description": "",
+        "summary": "Apple Inc. (NASDAQ:AAPL) is one of the best stocks to invest in for good returns. On March 24, analysts at Evercore ISI reiterated their Outperform rating for Apple Inc. (NASDAQ:AAPL), impressed by strong momentum in the company\u2019s services segment. The research firm maintains a $330 price target on the stock in anticipation of the service [\u2026]",
+        "pubDate": "2026-03-31T20:55:18Z",
+        "displayTime": "2026-03-31T20:55:18Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/insidermonkey.com/87472fde590d6153807e2c5eebd62ad6",
+          "originalWidth": 1280,
+          "originalHeight": 853,
+          "caption": "Apple Inc. (AAPL) Focused on Service Monetization to Accelerate Revenue Growth",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/BAcMPyqY.CGTjKjwM3j9hQ--~B/aD04NTM7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/87472fde590d6153807e2c5eebd62ad6",
+              "width": 1280,
+              "height": 853,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/Fnr2PNhxpSA4kubznCnBTg--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/insidermonkey.com/87472fde590d6153807e2c5eebd62ad6",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Insider Monkey",
+          "url": "http://www.insidermonkey.com",
+          "sourceId": "insidermonkey.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/apple-inc-aapl-focused-monetization-190118847.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/apple-inc-aapl-focused-monetization-190118847.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    }
+  ]
+}

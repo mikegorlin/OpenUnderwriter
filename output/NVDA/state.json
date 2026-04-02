@@ -1,0 +1,260 @@
+{
+  "version": "1.0.0",
+  "ticker": "NVDA",
+  "created_at": "2026-04-02T03:55:47.697866Z",
+  "updated_at": "2026-04-02T03:55:48.896231Z",
+  "stages": {
+    "resolve": {
+      "stage": "resolve",
+      "status": "completed",
+      "started_at": "2026-04-02T03:55:47.699496Z",
+      "completed_at": "2026-04-02T03:55:48.896220Z",
+      "duration_seconds": 1.196724,
+      "error": null
+    },
+    "acquire": {
+      "stage": "acquire",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "duration_seconds": null,
+      "error": null
+    },
+    "extract": {
+      "stage": "extract",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "duration_seconds": null,
+      "error": null
+    },
+    "analyze": {
+      "stage": "analyze",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "duration_seconds": null,
+      "error": null
+    },
+    "score": {
+      "stage": "score",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "duration_seconds": null,
+      "error": null
+    },
+    "benchmark": {
+      "stage": "benchmark",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "duration_seconds": null,
+      "error": null
+    },
+    "render": {
+      "stage": "render",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "duration_seconds": null,
+      "error": null
+    }
+  },
+  "company": {
+    "identity": {
+      "ticker": "NVDA",
+      "legal_name": {
+        "value": "NVIDIA CORP",
+        "source": "SEC EDGAR submissions",
+        "confidence": "HIGH",
+        "as_of": "2026-04-02T03:55:47.707043Z",
+        "retrieved_at": "2026-04-02T03:55:47.707058Z"
+      },
+      "cik": {
+        "value": "1045810",
+        "source": "SEC EDGAR submissions",
+        "confidence": "HIGH",
+        "as_of": "2026-04-02T03:55:47.707064Z",
+        "retrieved_at": "2026-04-02T03:55:47.707065Z"
+      },
+      "sic_code": {
+        "value": "3674",
+        "source": "SEC EDGAR submissions",
+        "confidence": "HIGH",
+        "as_of": "2026-04-02T03:55:47.707067Z",
+        "retrieved_at": "2026-04-02T03:55:47.707068Z"
+      },
+      "naics_code": null,
+      "exchange": {
+        "value": "Nasdaq",
+        "source": "SEC EDGAR submissions",
+        "confidence": "HIGH",
+        "as_of": "2026-04-02T03:55:47.707071Z",
+        "retrieved_at": "2026-04-02T03:55:47.707071Z"
+      },
+      "sector": {
+        "value": "TECH",
+        "source": "SEC EDGAR submissions",
+        "confidence": "HIGH",
+        "as_of": "2026-04-02T03:55:47.707072Z",
+        "retrieved_at": "2026-04-02T03:55:47.707073Z"
+      },
+      "state_of_incorporation": {
+        "value": "DE",
+        "source": "SEC EDGAR submissions",
+        "confidence": "HIGH",
+        "as_of": "2026-04-02T03:55:47.707074Z",
+        "retrieved_at": "2026-04-02T03:55:47.707075Z"
+      },
+      "fiscal_year_end": {
+        "value": "01-31",
+        "source": "SEC EDGAR submissions",
+        "confidence": "HIGH",
+        "as_of": "2026-04-02T03:55:47.707076Z",
+        "retrieved_at": "2026-04-02T03:55:47.707077Z"
+      },
+      "is_fpi": false,
+      "entity_type": {
+        "value": "operating",
+        "source": "SEC EDGAR submissions",
+        "confidence": "HIGH",
+        "as_of": "2026-04-02T03:55:47.707078Z",
+        "retrieved_at": "2026-04-02T03:55:47.707078Z"
+      },
+      "sic_description": {
+        "value": "Semiconductors & Related Devices",
+        "source": "SEC EDGAR submissions",
+        "confidence": "HIGH",
+        "as_of": "2026-04-02T03:55:47.707069Z",
+        "retrieved_at": "2026-04-02T03:55:47.707070Z"
+      },
+      "all_tickers": [
+        "NVDA"
+      ]
+    },
+    "business_description": null,
+    "market_cap": {
+      "value": 4271603712000.0,
+      "source": "yfinance",
+      "confidence": "MEDIUM",
+      "as_of": "2026-04-02T03:55:48.851091Z",
+      "retrieved_at": "2026-04-02T03:55:48.851106Z"
+    },
+    "employee_count": {
+      "value": 42000,
+      "source": "yfinance",
+      "confidence": "MEDIUM",
+      "as_of": "2026-04-02T03:55:48.851131Z",
+      "retrieved_at": "2026-04-02T03:55:48.851142Z"
+    },
+    "filer_category": null,
+    "years_public": null,
+    "revenue_segments": [],
+    "geographic_footprint": [],
+    "subsidiary_count": null,
+    "gics_code": null,
+    "industry_classification": null,
+    "business_model_description": null,
+    "customer_concentration": [],
+    "supplier_concentration": [],
+    "operational_complexity": null,
+    "workforce_distribution": null,
+    "operational_resilience": null,
+    "subsidiary_structure": null,
+    "business_changes": [],
+    "revenue_model_type": null,
+    "key_person_risk": null,
+    "segment_lifecycle": [],
+    "disruption_risk": null,
+    "segment_margins": [],
+    "goodwill_balance": null,
+    "acquisitions_total_spend": null,
+    "acquisitions": [],
+    "goodwill_change_description": null,
+    "do_exposure_factors": [],
+    "event_timeline": [],
+    "section_summary": null,
+    "risk_classification": null,
+    "risk_classification_confidence": null
+  },
+  "acquired_data": null,
+  "extracted": null,
+  "analysis": null,
+  "scoring": null,
+  "benchmark": null,
+  "executive_summary": null,
+  "classification": null,
+  "hazard_profile": null,
+  "active_playbook_id": "TECH_SAAS",
+  "forward_looking": {
+    "forward_statements": [],
+    "credibility": null,
+    "catalysts": [],
+    "growth_estimates": [],
+    "monitoring_triggers": [],
+    "posture": null,
+    "quick_screen": null,
+    "watch_items": [],
+    "zero_verifications": []
+  },
+  "dossier": {
+    "business_description_plain": "",
+    "core_do_exposure": "",
+    "revenue_flow_diagram": "",
+    "revenue_flow_narrative": "",
+    "revenue_card": [],
+    "segment_dossiers": [],
+    "concentration_dimensions": [],
+    "unit_economics": [],
+    "unit_economics_narrative": "",
+    "waterfall_rows": [],
+    "waterfall_narrative": "",
+    "competitive_landscape": {
+      "peers": [],
+      "moat_dimensions": [],
+      "competitive_position_narrative": "",
+      "do_commentary": ""
+    },
+    "emerging_risks": [],
+    "asc_606_elements": [],
+    "billings_vs_revenue_narrative": "",
+    "source_filings": [],
+    "extraction_confidence": "MEDIUM"
+  },
+  "alt_data": {
+    "esg": {
+      "controversies": [],
+      "ratings": {},
+      "greenwashing_indicators": [],
+      "mission_alignment": "",
+      "risk_level": "LOW",
+      "do_relevance": ""
+    },
+    "ai_washing": {
+      "ai_claims_present": false,
+      "indicators": [],
+      "scienter_risk": "LOW",
+      "do_relevance": ""
+    },
+    "tariff": {
+      "supply_chain_exposure": "",
+      "manufacturing_locations": [],
+      "international_revenue_pct": "",
+      "tariff_risk_factors": [],
+      "risk_level": "LOW",
+      "do_relevance": ""
+    },
+    "peer_sca": {
+      "peer_scas": [],
+      "sector": "",
+      "contagion_risk": "LOW",
+      "do_relevance": ""
+    }
+  },
+  "stock_patterns": [],
+  "multi_horizon_returns": {},
+  "analyst_consensus": {},
+  "drop_narrative": "",
+  "pipeline_metadata": {}
+}

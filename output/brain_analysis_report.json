@@ -1,0 +1,80 @@
+{
+  "summary": {
+    "total_signals": 601,
+    "layers": {
+      "signal": 410,
+      "hazard": 137,
+      "data_element": 3,
+      "peril_confirming": 25,
+      "unknown": 26
+    },
+    "work_types": {
+      "evaluate": 448,
+      "extract": 104,
+      "display": 2,
+      "infer": 21,
+      "acquire": 26
+    },
+    "factors": {
+      "F3": 127,
+      "F5": 33,
+      "F6": 39,
+      "F2": 32,
+      "F9": 46,
+      "F8": 15,
+      "F1": 81,
+      "F10": 122,
+      "F4": 21,
+      "F7": 32
+    },
+    "rap_classes": {
+      "environment": 128,
+      "host": 204,
+      "agent": 269
+    },
+    "schema_versions": {
+      "1": 48,
+      "3": 513,
+      "4": 40
+    }
+  },
+  "coverage": {
+    "data_sources": {
+      "DERIVED": 73,
+      "XBRL": 48,
+      "SEC_10K": 284,
+      "INSIDER_TRADES": 2,
+      "MARKET_PRICE": 2,
+      "SEC_10Q": 7,
+      "SEC_FRAMES": 7,
+      "SEC_8K": 19,
+      "SEC_DEF14A": 94,
+      "SEC_S1": 1,
+      "REFERENCE_DATA": 4,
+      "MARKET_DATA": 30,
+      "COURT_RECORDS": 19,
+      "SEC_ENFORCEMENT": 4,
+      "SEC_FILINGS": 4,
+      "WEB_SEARCH": 3
+    },
+    "required_data": {
+      "SEC_10K": 339,
+      "MARKET_PRICE": 38,
+      "SEC_10Q": 30,
+      "SEC_8K": 49,
+      "SEC_FRAMES": 6,
+      "SEC_DEF14A": 96,
+      "SCAC_SEARCH": 26,
+      "SEC_ENFORCEMENT": 21,
+      "SEC_FORM4": 23,
+      "SEC_13DG": 15,
+      "MARKET_SHORT": 6
+    }
+  },
+  "recommendations": [
+    "Enhance SEC_ENFORCEMENT signal coverage (currently 4 signals)",
+    "Add more WEB_SEARCH signals for blind spot detection",
+    "Increase peril_id assignments to enable peril-based analysis",
+    "Consider adding sector-specific signal overlays"
+  ]
+}

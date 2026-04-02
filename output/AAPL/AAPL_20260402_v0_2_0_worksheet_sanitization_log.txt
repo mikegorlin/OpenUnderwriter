@@ -1,0 +1,4 @@
+Sanitizer made 67 substitution(s):
+  jargon: 13
+  markdown: 6
+  python_serial: 48

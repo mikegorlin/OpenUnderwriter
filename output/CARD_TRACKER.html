@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>D&O Worksheet — Card Tracker</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,-apple-system,sans-serif;background:#F8FAFC;color:#1E293B;padding:0}
+.hero{text-align:center;padding:32px 24px 24px;background:white;border-bottom:1px solid #E2E8F0}
+.hero h1{font-size:24px;font-weight:900;color:#0F172A}
+.hero .sub{font-size:12px;color:#64748B;margin-top:4px}
+.progress{display:flex;justify-content:center;gap:24px;margin-top:16px}
+.prog{text-align:center}
+.prog-num{font-size:28px;font-weight:900}
+.prog-label{font-size:9px;color:#94A3B8;text-transform:uppercase;letter-spacing:0.5px;font-weight:600}
+.prog-bar{width:200px;height:8px;background:#E5E7EB;border-radius:4px;margin:12px auto 0;overflow:hidden}
+.prog-fill{height:8px;border-radius:4px;background:#16A34A}
+
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);border-bottom:1px solid #E2E8F0;padding:8px 16px;display:flex;flex-wrap:wrap;justify-content:center;gap:4px}
+.nav a{font-size:10px;font-weight:600;padding:4px 10px;border-radius:5px;text-decoration:none;color:white}
+
+.section{max-width:1200px;margin:0 auto;padding:24px 16px 8px}
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.sec-num{font-size:28px;font-weight:900;line-height:1;font-family:'JetBrains Mono',monospace;opacity:0.2}
+.sec-title{font-size:16px;font-weight:800}
+.sec-line{flex:1;height:2px;border-radius:1px;opacity:0.15}
+.sec-stats{font-size:9px;color:#64748B;font-weight:600}
+
+.card-row{display:grid;grid-template-columns:40px 1fr 140px 50px 50px 50px 50px;gap:8px;padding:8px 12px;border-bottom:1px solid #F1F5F9;align-items:center;font-size:10px;background:white;border-left:3px solid transparent}
+.card-row:hover{background:#FAFBFC}
+.card-row-hdr{background:#F9FAFB;font-weight:700;color:#64748B;font-size:8px;text-transform:uppercase;letter-spacing:0.5px;border-left-color:transparent !important}
+.card-id{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:12px}
+.card-title-col{font-weight:700;color:#1E293B}
+.card-title-col .sub-count{font-size:8px;color:#94A3B8;font-weight:400;margin-left:4px}
+.card-sources{display:flex;flex-wrap:wrap;gap:2px}
+.card-status{font-size:9px;font-weight:600;padding:2px 6px;border-radius:3px;text-align:center}
+.st-not_started{background:#F1F5F9;color:#64748B}
+.st-css_only{background:#DBEAFE;color:#1D4ED8}
+.st-template_rewrite{background:#FEF3C7;color:#92400E}
+.st-data_verified{background:#DCFCE7;color:#166534}
+.st-qa_passed{background:#D1FAE5;color:#065F46}
+.check{font-size:14px;text-align:center}
+.notes{font-size:8px;color:#94A3B8;grid-column:2/-1;padding:0 0 4px}
+
+.legend{max-width:1200px;margin:16px auto;padding:0 16px;display:flex;gap:12px;flex-wrap:wrap;font-size:9px;color:#64748B}
+.legend-item{display:flex;align-items:center;gap:4px}
+
+details>summary{list-style:none}
+details>summary::marker{display:none}
+details[open]>summary{color:#64748B !important}
+details[open]>summary::before{content:""}
+.footer{text-align:center;padding:32px 24px;color:#94A3B8;font-size:10px;border-top:1px solid #E2E8F0;margin-top:24px;background:white}
+</style></head><body>
+
+<div class="hero">
+<h1>Card Tracker — D&O Worksheet Redesign</h1>
+<div class="sub">52 cards across 12 sections. Pipeline: Designed → Data Verified → LLM Synthesis → QA Tested</div>
+<div class="progress">
+<div class="prog"><div class="prog-num">52</div><div class="prog-label">Total Cards</div></div>
+<div class="prog"><div class="prog-num" style="color:#1D4ED8">3</div><div class="prog-label">Designed</div></div>
+<div class="prog"><div class="prog-num" style="color:#D97706">0</div><div class="prog-label">Data Verified</div></div>
+<div class="prog"><div class="prog-num" style="color:#7C3AED">0</div><div class="prog-label">LLM Synthesis</div></div>
+<div class="prog"><div class="prog-num" style="color:#16A34A">0</div><div class="prog-label">QA Tested</div></div>
+</div>
+<div class="prog-bar"><div class="prog-fill" style="width:0%;background:#16A34A"></div></div>
+</div>
+<div class="nav">
+<a href="#sec-0" style="background:#0F172A">0 Overview (1)</a>
+<a href="#sec-1" style="background:#6D28D9">1 Exec Brief (2)</a>
+<a href="#sec-2" style="background:#0369A1">2 Company (6)</a>
+<a href="#sec-3" style="background:#EA580C">3 Stock & Market (6)</a>
+<a href="#sec-4" style="background:#059669">4 Financial (7)</a>
+<a href="#sec-5" style="background:#D97706">5 Governance (5)</a>
+<a href="#sec-6" style="background:#DC2626">6 Litigation (5)</a>
+<a href="#sec-7" style="background:#7C3AED">7 Industry (2)</a>
+<a href="#sec-8" style="background:#0891B2">8 Scoring (13)</a>
+<a href="#sec-9" style="background:#4338CA">9 UW Framework (1)</a>
+<a href="#sec-10" style="background:#BE185D">10 Meeting Prep (1)</a>
+<a href="#sec-11" style="background:#64748B">11 Audit Trail (3)</a>
+</div>
+<div class="legend">
+<div class="legend-item"><b>Pipeline:</b></div>
+<div class="legend-item">✅ Designed — card frame, header, sub-blocks, colors match catalog spec</div>
+<div class="legend-item">✅ Data — all sources hooked up, values verified against state.json</div>
+<div class="legend-item">✅ LLM — narrative synthesis done, story quality checked</div>
+<div class="legend-item">✅ QA — visual QA across 3+ tickers, no data loss, no formatting issues</div>
+<div class="legend-item">⬜ = Not done yet</div>
+</div>
+<div class="section" id="sec-0">
+<div class="sec-hdr"><div class="sec-num" style="color:#0F172A">00</div><div class="sec-title">Overview</div><div class="sec-line" style="background:#0F172A"></div><div class="sec-stats">1/1 designed</div></div>
+<div class="card-row card-row-hdr"><div>ID</div><div>Card Title</div><div>Data Sources</div><div>Designed</div><div>Data</div><div>LLM</div><div>QA</div></div>
+<div class="card-row" style="border-left-color:#0F172A">
+<div class="card-id" style="color:#0F172A">00</div>
+<div class="card-title-col">Decision Dashboard<span class="sub-count">7 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DCFCE7;color:#166534">XBRL</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FEF3C7;color:#92400E">yfinance</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DBEAFE;color:#1D4ED8">Web</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#E0F2FE;color:#075985">Supabase</span></div>
+<div class="check">✅</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0F172A;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 7 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0F172A;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">5Y Stock Strip</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DBEAFE;color:#1D4ED8">CHART</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0F172A;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">6 Financial Mini-Cards</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DCFCE7;color:#166534">CARDS</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0F172A;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Litigation Status Bar</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF2F2;color:#991B1B">ALERT</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0F172A;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">2Y Drop Investigation Chart</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DBEAFE;color:#1D4ED8">CHART+LEGEND</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0F172A;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Key Risk Findings</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF2F2;color:#991B1B">ALERT</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0F172A;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">F</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">UW Priority Metrics</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DCFCE7;color:#166534">4 CARDS</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0F172A;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">G</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Plaintiff Exposure Matrix</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div style="border-left:3px solid #0F172A;padding:2px 12px 4px 52px;background:white;border-bottom:1px solid #F1F5F9;font-size:8px;color:#94A3B8">Card frame + Overview rename done. Internal elements not restyled yet.</div>
+</div>
+<div class="section" id="sec-1">
+<div class="sec-hdr"><div class="sec-num" style="color:#6D28D9">01</div><div class="sec-title">Exec Brief</div><div class="sec-line" style="background:#6D28D9"></div><div class="sec-stats">2/2 designed</div></div>
+<div class="card-row card-row-hdr"><div>ID</div><div>Card Title</div><div>Data Sources</div><div>Designed</div><div>Data</div><div>LLM</div><div>QA</div></div>
+<div class="card-row" style="border-left-color:#6D28D9">
+<div class="card-id" style="color:#6D28D9">01</div>
+<div class="card-title-col">Recommendation & Red Flags<span class="sub-count">3 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span></div>
+<div class="check">✅</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #6D28D9;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 3 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#6D28D9;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Recommendation Box</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF2F2;color:#991B1B">VERDICT</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#6D28D9;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Critical Red Flags</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF2F2;color:#991B1B">ALERT</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#6D28D9;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Key Negatives & Positives</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div style="border-left:3px solid #6D28D9;padding:2px 12px 4px 52px;background:white;border-bottom:1px solid #F1F5F9;font-size:8px;color:#94A3B8">Card frame done. Old header removed.</div>
+<div class="card-row" style="border-left-color:#6D28D9">
+<div class="card-id" style="color:#6D28D9">02</div>
+<div class="card-title-col">Risk Thesis & Commentary<span class="sub-count">2 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span></div>
+<div class="check">✅</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #6D28D9;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 2 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#6D28D9;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Risk Thesis</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F3E8FF;color:#7C3AED">NARRATIVE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#6D28D9;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Dual-Voice Commentary</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F3E8FF;color:#7C3AED">NARRATIVE</span>
+</div>
+</div></details>
+<div style="border-left:3px solid #6D28D9;padding:2px 12px 4px 52px;background:white;border-bottom:1px solid #F1F5F9;font-size:8px;color:#94A3B8">Card frame done.</div>
+</div>
+<div class="section" id="sec-2">
+<div class="sec-hdr"><div class="sec-num" style="color:#0369A1">02</div><div class="sec-title">Company</div><div class="sec-line" style="background:#0369A1"></div><div class="sec-stats">0/6 designed</div></div>
+<div class="card-row card-row-hdr"><div>ID</div><div>Card Title</div><div>Data Sources</div><div>Designed</div><div>Data</div><div>LLM</div><div>QA</div></div>
+<div class="card-row" style="border-left-color:#0369A1">
+<div class="card-id" style="color:#0369A1">03</div>
+<div class="card-title-col">Business Description & Revenue Model<span class="sub-count">5 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0369A1;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 5 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Company Profile (LLM 4-section)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F3E8FF;color:#7C3AED">NARRATIVE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Summary Cards (6)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DCFCE7;color:#166534">CARDS</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Business Description</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F3E8FF;color:#7C3AED">NARRATIVE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Classification</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Revenue Model</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0369A1">
+<div class="card-id" style="color:#0369A1">04</div>
+<div class="card-title-col">Revenue Deep Dive<span class="sub-count">5 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DCFCE7;color:#166534">XBRL</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0369A1;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 5 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Revenue Segments</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Unit Economics</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Revenue Waterfall</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">ASC 606</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Revenue Mix Bar</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DBEAFE;color:#1D4ED8">CHART</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0369A1">
+<div class="card-id" style="color:#0369A1">05</div>
+<div class="card-title-col">Concentration Risk<span class="sub-count">4 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DCFCE7;color:#166534">XBRL</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0369A1;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 4 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Customer Concentration</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Supplier Concentration</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Concentration Assessment</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Geographic Footprint</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0369A1">
+<div class="card-id" style="color:#0369A1">06</div>
+<div class="card-title-col">Risk Factors & D&O Exposure<span class="sub-count">4 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0369A1;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 4 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Risk Factors (D&O-Relevant)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">D&O Exposure Factors</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF2F2;color:#991B1B">BADGES</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Emerging Risk Radar</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Risk Classification</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF2F2;color:#991B1B">VERDICT</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0369A1">
+<div class="card-id" style="color:#0369A1">07</div>
+<div class="card-title-col">10-K YoY & Peer SCA<span class="sub-count">3 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#E0F2FE;color:#075985">Supabase</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0369A1;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 3 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">10-K YoY Analysis</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Risk Factor Review</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Peer SCA Contagion</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0369A1">
+<div class="card-id" style="color:#0369A1">08</div>
+<div class="card-title-col">Sector Risk, Regulatory & News<span class="sub-count">3 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DBEAFE;color:#1D4ED8">Web</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0369A1;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 3 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Sector-Specific D&O Concerns</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F3E8FF;color:#7C3AED">NARRATIVE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Regulatory Environment</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F3E8FF;color:#7C3AED">NARRATIVE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0369A1;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Key Events & News</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FFF7ED;color:#9A3412">TIMELINE</span>
+</div>
+</div></details>
+</div>
+<div class="section" id="sec-3">
+<div class="sec-hdr"><div class="sec-num" style="color:#EA580C">03</div><div class="sec-title">Stock & Market</div><div class="sec-line" style="background:#EA580C"></div><div class="sec-stats">0/6 designed</div></div>
+<div class="card-row card-row-hdr"><div>ID</div><div>Card Title</div><div>Data Sources</div><div>Designed</div><div>Data</div><div>LLM</div><div>QA</div></div>
+<div class="card-row" style="border-left-color:#EA580C">
+<div class="card-id" style="color:#EA580C">09</div>
+<div class="card-title-col">Stock Performance & Drop Investigation<span class="sub-count">4 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FEF3C7;color:#92400E">yfinance</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DBEAFE;color:#1D4ED8">Web</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #EA580C;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 4 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Market Summary Cards (6)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DCFCE7;color:#166534">CARDS</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Stock Charts (1Y+5Y)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F1F5F9;color:#475569">2 CHARTS</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Price Performance</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Drop Investigation Chart+Legend</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DBEAFE;color:#1D4ED8">CHART+LEGEND</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#EA580C">
+<div class="card-id" style="color:#EA580C">10</div>
+<div class="card-title-col">Insider Trading & Scienter Risk<span class="sub-count">5 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FEF3C7;color:#92400E">yfinance</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #EA580C;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 5 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Insider Trading Timeline</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FFF7ED;color:#9A3412">TIMELINE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Scienter Risk Strip (4 cards)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DCFCE7;color:#166534">CARDS</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Cluster Selling Alert</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF2F2;color:#991B1B">ALERT</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Pre-Event Trading Suspects</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF2F2;color:#991B1B">ALERT</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Insider Trading Table</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#EA580C">
+<div class="card-id" style="color:#EA580C">11</div>
+<div class="card-title-col">Technical Analysis Charts<span class="sub-count">5 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FEF3C7;color:#92400E">yfinance</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #EA580C;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 5 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Drawdown (1Y+5Y)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F1F5F9;color:#475569">2 CHARTS</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Volatility & Beta (1Y+5Y)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F1F5F9;color:#475569">2 CHARTS</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Relative Performance (1Y+5Y)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F1F5F9;color:#475569">2 CHARTS</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Drop vs Sector Scatter (1Y+5Y)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F1F5F9;color:#475569">2 CHARTS</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Stock Performance Stats</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#EA580C">
+<div class="card-id" style="color:#EA580C">12</div>
+<div class="card-title-col">Earnings & Guidance<span class="sub-count">5 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FEF3C7;color:#92400E">yfinance</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #EA580C;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 5 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Quarterly Earnings Table</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Beat/Miss History</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Guidance Track Record</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Earnings Reaction Analysis</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Earnings Miss Scenario</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F3E8FF;color:#7C3AED">NARRATIVE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#EA580C">
+<div class="card-id" style="color:#EA580C">13</div>
+<div class="card-title-col">Analyst Coverage & Estimates<span class="sub-count">3 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FEF3C7;color:#92400E">yfinance</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #EA580C;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 3 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Forward Estimates</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Analyst Revision Trends</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Recent Analyst Actions</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#EA580C">
+<div class="card-id" style="color:#EA580C">14</div>
+<div class="card-title-col">Capital Returns, Sentiment & 8-K<span class="sub-count">4 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FEF3C7;color:#92400E">yfinance</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #EA580C;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 4 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Capital Returns</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">NLP & Sentiment Dashboard</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Return Correlation</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#EA580C;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">8-K Event Classification</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+</div>
+<div class="section" id="sec-4">
+<div class="sec-hdr"><div class="sec-num" style="color:#059669">04</div><div class="sec-title">Financial</div><div class="sec-line" style="background:#059669"></div><div class="sec-stats">0/7 designed</div></div>
+<div class="card-row card-row-hdr"><div>ID</div><div>Card Title</div><div>Data Sources</div><div>Designed</div><div>Data</div><div>LLM</div><div>QA</div></div>
+<div class="card-row" style="border-left-color:#059669">
+<div class="card-id" style="color:#059669">15</div>
+<div class="card-title-col">Annual Financial Comparison<span class="sub-count">1 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DCFCE7;color:#166534">XBRL</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #059669;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 1 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Annual Comparison (FY vs FY-1)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#059669">
+<div class="card-id" style="color:#059669">16</div>
+<div class="card-title-col">Key Metrics & Quarterly Trends<span class="sub-count">4 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DCFCE7;color:#166534">XBRL</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FEF3C7;color:#92400E">yfinance</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #059669;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 4 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">8 Metric Cards</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DCFCE7;color:#166534">CARDS</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Key Financial Metrics</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Quarterly Trends (8Q)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Quarterly Updates</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#059669">
+<div class="card-id" style="color:#059669">17</div>
+<div class="card-title-col">Distress & Forensic Models<span class="sub-count">5 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DCFCE7;color:#166534">XBRL</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #059669;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 5 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Distress Models</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Forensic Dashboard</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Earnings Quality</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Bankruptcy Risk</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Margin+Forensic 2-Column</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F1F5F9;color:#475569">2-COL</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#059669">
+<div class="card-id" style="color:#059669">18</div>
+<div class="card-title-col">Audit & Tax Profile<span class="sub-count">4 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DCFCE7;color:#166534">XBRL</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #059669;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 4 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Audit Profile</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Tax Risk Profile</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Audit Disclosure Alerts</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF2F2;color:#991B1B">ALERT</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Tax Jurisdiction Breakdown</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#059669">
+<div class="card-id" style="color:#059669">19</div>
+<div class="card-title-col">Debt, Liquidity & Balance Sheet Risk<span class="sub-count">7 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DCFCE7;color:#166534">XBRL</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #059669;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 7 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Debt Structure</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Debt Maturity Schedule</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DBEAFE;color:#1D4ED8">CHART</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Liquidity & Solvency</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Goodwill & Intangibles</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Capital Allocation</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">F</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Cash Flow Adequacy</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">G</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Refinancing Risk</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#059669">
+<div class="card-id" style="color:#059669">20</div>
+<div class="card-title-col">Peer Benchmarking<span class="sub-count">3 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FEF3C7;color:#92400E">yfinance</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DCFCE7;color:#166534">XBRL</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #059669;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 3 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Peer Group</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Comparison Matrix</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Peer Benchmarking (SEC)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#059669">
+<div class="card-id" style="color:#059669">21</div>
+<div class="card-title-col">MD&A & Filing Analysis<span class="sub-count">3 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #059669;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 3 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">MD&A Analysis</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F3E8FF;color:#7C3AED">NARRATIVE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Risk Factor Analysis</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#059669;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Filing Patterns & Whistleblower</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+</div>
+<div class="section" id="sec-5">
+<div class="sec-hdr"><div class="sec-num" style="color:#D97706">05</div><div class="sec-title">Governance</div><div class="sec-line" style="background:#D97706"></div><div class="sec-stats">0/5 designed</div></div>
+<div class="card-row card-row-hdr"><div>ID</div><div>Card Title</div><div>Data Sources</div><div>Designed</div><div>Data</div><div>LLM</div><div>QA</div></div>
+<div class="card-row" style="border-left-color:#D97706">
+<div class="card-id" style="color:#D97706">22</div>
+<div class="card-title-col">Board Composition & Skills<span class="sub-count">6 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #D97706;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 6 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Board Summary Cards (7)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DCFCE7;color:#166534">CARDS</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Board Composition</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Skills Matrix</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Committee Membership</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Tenure Distribution</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">F</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">3 Governance SVGs</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F1F5F9;color:#475569">3 VISUALS</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#D97706">
+<div class="card-id" style="color:#D97706">23</div>
+<div class="card-title-col">Board Forensic Profiles<span class="sub-count">1 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DBEAFE;color:#1D4ED8">Web</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #D97706;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 1 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Board Forensic Profiles</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#D97706">
+<div class="card-id" style="color:#D97706">24</div>
+<div class="card-title-col">Officer Investigation & People Risk<span class="sub-count">4 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DBEAFE;color:#1D4ED8">Web</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #D97706;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 4 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Officer Background Investigation</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">People Risk</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Executive Risk Profiles</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Tenure & Stability</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#D97706">
+<div class="card-id" style="color:#D97706">25</div>
+<div class="card-title-col">Compensation & Ownership<span class="sub-count">5 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FEF3C7;color:#92400E">yfinance</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DBEAFE;color:#1D4ED8">Web</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #D97706;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 5 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Compensation Analysis</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Ownership Structure</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Insider Trading Detail</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Activist Risk</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">ISS QualityScore (5)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DCFCE7;color:#166534">CARDS</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#D97706">
+<div class="card-id" style="color:#D97706">26</div>
+<div class="card-title-col">Prior Litigation & Governance Structure<span class="sub-count">4 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DBEAFE;color:#1D4ED8">Web</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #D97706;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 4 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Prior Litigation Exposure</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Structural Governance</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Shareholder Rights</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#D97706;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Transparency & Disclosure</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+</div>
+<div class="section" id="sec-6">
+<div class="sec-hdr"><div class="sec-num" style="color:#DC2626">06</div><div class="sec-title">Litigation</div><div class="sec-line" style="background:#DC2626"></div><div class="sec-stats">0/5 designed</div></div>
+<div class="card-row card-row-hdr"><div>ID</div><div>Card Title</div><div>Data Sources</div><div>Designed</div><div>Data</div><div>LLM</div><div>QA</div></div>
+<div class="card-row" style="border-left-color:#DC2626">
+<div class="card-id" style="color:#DC2626">27</div>
+<div class="card-title-col">Active Litigation & Defense<span class="sub-count">6 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#E0F2FE;color:#075985">Supabase</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DBEAFE;color:#1D4ED8">Web</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #DC2626;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 6 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#DC2626;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Header Badges</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF2F2;color:#991B1B">BADGES</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#DC2626;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Summary Cards (6)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DCFCE7;color:#166534">CARDS</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#DC2626;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Case Status Circles</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#EDE9FE;color:#6D28D9">VISUAL</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#DC2626;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">SCA Case Cards</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DCFCE7;color:#166534">CASE CARDS</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#DC2626;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Derivative Suits</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F1F5F9;color:#475569">LIST</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#DC2626;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">F</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Defense Strength</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#DC2626">
+<div class="card-id" style="color:#DC2626">28</div>
+<div class="card-title-col">Exposure Windows & SOL<span class="sub-count">2 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #DC2626;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 2 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#DC2626;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">SOL Active Windows</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#DC2626;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Theoretical Exposure Windows</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#DC2626">
+<div class="card-id" style="color:#DC2626">29</div>
+<div class="card-title-col">SEC & Regulatory Enforcement<span class="sub-count">2 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DBEAFE;color:#1D4ED8">Web</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #DC2626;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 2 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#DC2626;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">SEC Enforcement Pipeline</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#DC2626;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Regulatory Proceedings</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#DC2626">
+<div class="card-id" style="color:#DC2626">30</div>
+<div class="card-title-col">Historical Litigation & Timeline<span class="sub-count">3 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DCFCE7;color:#166534">XBRL</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DBEAFE;color:#1D4ED8">Web</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #DC2626;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 3 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#DC2626;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Deal/M&A Litigation</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#DC2626;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Litigation Timeline</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DBEAFE;color:#1D4ED8">CHART</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#DC2626;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Contingent Liabilities</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#DC2626">
+<div class="card-id" style="color:#DC2626">31</div>
+<div class="card-title-col">Other Matters & Whistleblower<span class="sub-count">2 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DBEAFE;color:#1D4ED8">Web</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #DC2626;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 2 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#DC2626;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Whistleblower Indicators</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#DC2626;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Workforce/Product/Environmental</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+</div>
+<div class="section" id="sec-7">
+<div class="sec-hdr"><div class="sec-num" style="color:#7C3AED">07</div><div class="sec-title">Industry</div><div class="sec-line" style="background:#7C3AED"></div><div class="sec-stats">0/2 designed</div></div>
+<div class="card-row card-row-hdr"><div>ID</div><div>Card Title</div><div>Data Sources</div><div>Designed</div><div>Data</div><div>LLM</div><div>QA</div></div>
+<div class="card-row" style="border-left-color:#7C3AED">
+<div class="card-id" style="color:#7C3AED">32</div>
+<div class="card-title-col">Competitive & Strategic Position<span class="sub-count">4 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#E0F2FE;color:#075985">Supabase</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #7C3AED;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 4 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#7C3AED;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Competitive Position</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F3E8FF;color:#7C3AED">NARRATIVE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#7C3AED;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Strategic Assessment</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F3E8FF;color:#7C3AED">NARRATIVE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#7C3AED;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Sector Claim Profile (3)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DCFCE7;color:#166534">CARDS</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#7C3AED;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">D&O Tier Distribution</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DBEAFE;color:#1D4ED8">CHART</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#7C3AED">
+<div class="card-id" style="color:#7C3AED">33</div>
+<div class="card-title-col">AI Risk & Biotech Module<span class="sub-count">2 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#FFE4E6;color:#9F1239">SEC</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #7C3AED;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 2 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#7C3AED;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">AI Risk Dimensions</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#7C3AED;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Biotech Module</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F3E8FF;color:#7C3AED">NARRATIVE</span>
+</div>
+</div></details>
+</div>
+<div class="section" id="sec-8">
+<div class="sec-hdr"><div class="sec-num" style="color:#0891B2">08</div><div class="sec-title">Scoring</div><div class="sec-line" style="background:#0891B2"></div><div class="sec-stats">0/13 designed</div></div>
+<div class="card-row card-row-hdr"><div>ID</div><div>Card Title</div><div>Data Sources</div><div>Designed</div><div>Data</div><div>LLM</div><div>QA</div></div>
+<div class="card-row" style="border-left-color:#0891B2">
+<div class="card-id" style="color:#0891B2">34</div>
+<div class="card-title-col">Tier & Factor Scoring<span class="sub-count">5 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0891B2;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 5 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Tier Classification</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF2F2;color:#991B1B">VERDICT</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Factor Score Table</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Per-Factor Detail</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Critical Risk Flags</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF2F2;color:#991B1B">ALERT</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Radar Chart</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#DBEAFE;color:#1D4ED8">CHART</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0891B2">
+<div class="card-id" style="color:#0891B2">35</div>
+<div class="card-title-col">Loss Analysis & Scenarios<span class="sub-count">3 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0891B2;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 3 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Claim Probability</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Severity Scenarios</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Tower Recommendation</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0891B2">
+<div class="card-id" style="color:#0891B2">36</div>
+<div class="card-title-col">Peril Assessment & Mapping<span class="sub-count">3 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0891B2;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 3 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Peril Assessment</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Peril Map</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Allegation Theory Mapping</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0891B2">
+<div class="card-id" style="color:#0891B2">37</div>
+<div class="card-title-col">Investigative Depth<span class="sub-count">5 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0891B2;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 5 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Hazard Profile (IES)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Forensic Composites</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Temporal Signals</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Pattern Detection</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Executive Risk Profile</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0891B2">
+<div class="card-id" style="color:#0891B2">38</div>
+<div class="card-title-col">UW Posture & Calibration<span class="sub-count">4 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0891B2;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 4 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">UW Posture</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F3E8FF;color:#7C3AED">NARRATIVE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Calibration Notes</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F3E8FF;color:#7C3AED">NARRATIVE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Zero Verification</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Dual-Voice Commentary</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F3E8FF;color:#7C3AED">NARRATIVE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0891B2">
+<div class="card-id" style="color:#0891B2">39</div>
+<div class="card-title-col">Altman Z-Score & Distress Models<span class="sub-count">3 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DCFCE7;color:#166534">XBRL</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0891B2;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 3 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Altman Z (Original)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Altman Z'' Double-Prime</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Ohlson O-Score</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0891B2">
+<div class="card-id" style="color:#0891B2">40</div>
+<div class="card-title-col">Beneish M-Score (Manipulation)<span class="sub-count">8 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DCFCE7;color:#166534">XBRL</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0891B2;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 8 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">DSRI</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">GMI</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">AQI</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">SGI</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">DEPI</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">F</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">SGAI</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">G</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">LVGI</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">H</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">TATA</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0891B2">
+<div class="card-id" style="color:#0891B2">41</div>
+<div class="card-title-col">Piotroski F-Score (Health)<span class="sub-count">3 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DCFCE7;color:#166534">XBRL</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0891B2;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 3 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Profitability Signals (4)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Leverage/Liquidity (3)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Efficiency (2)</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0891B2">
+<div class="card-id" style="color:#0891B2">42</div>
+<div class="card-title-col">Hazard Profile (H1-H7)<span class="sub-count">8 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0891B2;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 8 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">H1-Business</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">H2-People</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">H3-Financial</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">H4-Governance</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">H5-Maturity</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">F</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">H6-Environment</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">G</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">H7-Emerging</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">H</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Interactions</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0891B2">
+<div class="card-id" style="color:#0891B2">43</div>
+<div class="card-title-col">AI Risk Scoring<span class="sub-count">5 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0891B2;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 5 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Revenue Displacement</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Workforce Automation</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Cost Vulnerability</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Moat Erosion</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Regulatory/IP</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0891B2">
+<div class="card-id" style="color:#0891B2">44</div>
+<div class="card-title-col">Frequency & Severity Modeling<span class="sub-count">6 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#E0F2FE;color:#075985">Supabase</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0891B2;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 6 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Frequency Model</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Severity Percentiles</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Settlement Regression</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Bear Case</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F3E8FF;color:#7C3AED">NARRATIVE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Precedent Match</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">F</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Peer Outlier</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0891B2">
+<div class="card-id" style="color:#0891B2">45</div>
+<div class="card-title-col">7-Lens Peril Mapping<span class="sub-count">7 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0891B2;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 7 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Shareholders</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Regulators</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Employees</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Customers/Suppliers</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Business Partners</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">F</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Investors</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">G</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">General Public</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#0891B2">
+<div class="card-id" style="color:#0891B2">46</div>
+<div class="card-title-col">Pattern Detection & Red Flags<span class="sub-count">4 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #0891B2;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 4 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Pattern Detection</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Red Flag Gates</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF2F2;color:#991B1B">ALERT</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Conjunction Scanning</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#0891B2;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Adversarial Critique</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F3E8FF;color:#7C3AED">NARRATIVE</span>
+</div>
+</div></details>
+</div>
+<div class="section" id="sec-9">
+<div class="sec-hdr"><div class="sec-num" style="color:#4338CA">09</div><div class="sec-title">UW Framework</div><div class="sec-line" style="background:#4338CA"></div><div class="sec-stats">0/1 designed</div></div>
+<div class="card-row card-row-hdr"><div>ID</div><div>Card Title</div><div>Data Sources</div><div>Designed</div><div>Data</div><div>LLM</div><div>QA</div></div>
+<div class="card-row" style="border-left-color:#4338CA">
+<div class="card-id" style="color:#4338CA">47</div>
+<div class="card-title-col">Underwriting Decision Questions<span class="sub-count">2 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #4338CA;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 2 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#4338CA;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Domain Question Groups</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F0F9FF;color:#0C4A6E">Q&A</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#4338CA;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Per-Question Detail</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F0F9FF;color:#0C4A6E">Q&A</span>
+</div>
+</div></details>
+</div>
+<div class="section" id="sec-10">
+<div class="sec-hdr"><div class="sec-num" style="color:#BE185D">10</div><div class="sec-title">Meeting Prep</div><div class="sec-line" style="background:#BE185D"></div><div class="sec-stats">0/1 designed</div></div>
+<div class="card-row card-row-hdr"><div>ID</div><div>Card Title</div><div>Data Sources</div><div>Designed</div><div>Data</div><div>LLM</div><div>QA</div></div>
+<div class="card-row" style="border-left-color:#BE185D">
+<div class="card-id" style="color:#BE185D">48</div>
+<div class="card-title-col">Meeting Preparation Questions<span class="sub-count">1 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F3E8FF;color:#7C3AED">LLM</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #BE185D;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 1 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#BE185D;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Prioritized Questions</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F1F5F9;color:#475569">LIST</span>
+</div>
+</div></details>
+</div>
+<div class="section" id="sec-11">
+<div class="sec-hdr"><div class="sec-num" style="color:#64748B">11</div><div class="sec-title">Audit Trail</div><div class="sec-line" style="background:#64748B"></div><div class="sec-stats">0/3 designed</div></div>
+<div class="card-row card-row-hdr"><div>ID</div><div>Card Title</div><div>Data Sources</div><div>Designed</div><div>Data</div><div>LLM</div><div>QA</div></div>
+<div class="card-row" style="border-left-color:#64748B">
+<div class="card-id" style="color:#64748B">49</div>
+<div class="card-title-col">Signal Disposition Audit<span class="sub-count">2 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #64748B;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 2 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#64748B;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">QA Audit Trail</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#64748B;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">14 Category Breakdowns</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#F1F5F9;color:#475569">TABLES</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#64748B">
+<div class="card-id" style="color:#64748B">50</div>
+<div class="card-title-col">Data Coverage & Gaps<span class="sub-count">4 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span> <span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#DBEAFE;color:#1D4ED8">Web</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #64748B;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 4 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#64748B;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Market Data Full Detail</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#64748B;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Per-Section Coverage</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#64748B;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Data Gaps</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#64748B;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Blind Spot Discovery</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+<div class="card-row" style="border-left-color:#64748B">
+<div class="card-id" style="color:#64748B">51</div>
+<div class="card-title-col">Decision Record & Provenance<span class="sub-count">5 elements</span></div>
+<div class="card-sources"><span style="font-size:7px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F1F5F9;color:#475569">Computed</span></div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+<div class="check">⬜</div>
+</div>
+<details style="border-left:3px solid #64748B;background:white;border-bottom:1px solid #F1F5F9">
+<summary style="padding:4px 12px 4px 52px;font-size:9px;color:#94A3B8;cursor:pointer;list-style:none">▸ 5 sub-elements</summary>
+<div style="padding:2px 12px 8px 52px">
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#64748B;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">A</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Decision Record</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#E0F2FE;color:#075985">KV</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#64748B;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">B</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Sources & Provenance</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#64748B;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">C</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Epistemological Trace</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#64748B;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Pipeline Status</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:2px 0">
+<span style="width:16px;height:16px;border-radius:3px;background:#64748B;color:white;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center">E</span>
+<span style="font-size:9px;font-weight:600;color:#1E293B;flex:1">Render Audit</span>
+<span style="font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;background:#FEF3C7;color:#92400E">TABLE</span>
+</div>
+</div></details>
+</div>
+<div class="footer">
+<p><strong>Card Tracker</strong> — 52 cards · 3 designed · 0 data verified · 0 LLM synthesis · 0 QA tested</p>
+<p style="margin-top:4px;color:#CBD5E1">Update CARD_STATUS in build_card_tracker.py as work progresses</p>
+</div></body></html>
