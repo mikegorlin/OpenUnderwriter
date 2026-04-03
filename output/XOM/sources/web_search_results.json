@@ -1,0 +1,608 @@
+{
+  "web_news": [
+    {
+      "title": "XOM: Exxon Mobil Corp - Stock Price, Quote and News - CNBC",
+      "url": "https://www.cnbc.com/quotes/XOM",
+      "snippet": "Get Exxon Mobil Corp (XOM:NYSE) real-time stock quotes, news, price and financial information from CNBC."
+    },
+    {
+      "title": "Exxon Mobil Corp | Reuters",
+      "url": "https://www.reuters.com/company/exxon-mobil-corp/",
+      "snippet": "The latest international Exxon Mobil Corp news and views from Reuters - one of the world's largest news agencies."
+    },
+    {
+      "title": "Exxon Mobil Corp - AP News",
+      "url": "https://apnews.com/hub/exxon-mobil-corp",
+      "snippet": "Exxon Mobil Corp \u00b7 Exxon Mobil deal with Pioneer gets FTC nod, but former Pioneer CEO Scott Sheffield barred from board \u00b7 Exxon Mobil profit declines in 1st ..."
+    },
+    {
+      "title": "Exxon Mobil Corp. News - Recent Updates & Announcements",
+      "url": "https://www.bccresearch.com/company-index/profile/exxon-mobil-corp/news?srsltid=AfmBOor_pVH2n-roE7D-5wnP_8-yjP3gCf7Q77PZBMb7Jt0dV5m5zlAn",
+      "snippet": "Stay updated with the latest news, developments, and announcements related to Exxon Mobil Corp.."
+    },
+    {
+      "title": "XOM Stock Price Quote & News - Exxon Mobil - Robinhood",
+      "url": "https://robinhood.com/us/en/stocks/XOM/",
+      "snippet": "Exxon Mobil Corp. engages in the exploration, development, and distribution of oil, gas, and petroleum products. It operates through the following segments: ..."
+    },
+    {
+      "title": "XOM - Exxon Mobil Corp. | News - OTC Markets",
+      "url": "https://www.otcmarkets.com/stock/XOM/news",
+      "snippet": "Learn specific company news and information about Exxon Mobil Corp. XOM. ... Exxon Mobil Corp. Common Stock. 151.58. 3.45. 2.33%. Delayed (15 Min) Trade Data ..."
+    },
+    {
+      "title": "Exxon Mobil Corp. XOM | US News Best Stocks",
+      "url": "https://money.usnews.com/investing/stocks/xom-exxon-mobil-corp",
+      "snippet": "Exxon Mobil Corp. News. Oil and Gas Stocks. The Iran conflict is giving oil companies a windfall, but don't forget about natural gas. Matt WhittakerMarch 9 ..."
+    },
+    {
+      "title": "XOM - EXXON MOBIL CORP | Stock Quotes from Fidelity Investments",
+      "url": "https://digital.fidelity.com/prgw/digital/research/quote/dashboard/summary?symbol=XOM",
+      "snippet": "Get the latest XOM - EXXON MOBIL CORP quote information including top holdings and analyst ratings. View now."
+    }
+  ],
+  "yfinance_news": [
+    {
+      "id": "1bf172c2-f415-4f21-82d3-ba009b6fd8c2",
+      "content": {
+        "id": "1bf172c2-f415-4f21-82d3-ba009b6fd8c2",
+        "contentType": "VIDEO",
+        "title": "Are oil stocks still undervalued vs. Big Tech?",
+        "description": "<p>EMJ Capital founderiEric Jackson joins Yahoo Finance Executive Editor Brian Sozzi, Ines Ferr\u00e9, and Jared Blikre to discuss whether energy (<a target=\"_blank\" rel=\"\" class=\"link\" href=\"https://finance.yahoo.com/quote/XLE/\" data-i13n=\"slk:XLE;cpos:1;pos:1\">XLE</a>) stocks still have room to run and how they stack up against beaten-down Big Tech names.</p>",
+        "summary": "EMJ Capital founderiEric Jackson joins Yahoo Finance Executive Editor Brian Sozzi, Ines Ferr\u00e9, and Jared Blikre to discuss whether energy (XLE) stocks still have room to run and how they stack up against beaten-down Big Tech names.",
+        "pubDate": "2026-04-02T15:30:00Z",
+        "displayTime": "",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://s.yimg.com/os/creatr-uploaded-images/2025-06/cb511940-5079-11f0-adef-fb798283b03c",
+          "originalWidth": 6000,
+          "originalHeight": 4000,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/ZNq3VpBHweWj8jvwc8smvw--~B/aD00MDAwO3c9NjAwMDthcHBpZD15dGFjaHlvbg--/https://media-mbst-pub-ue1.s3.amazonaws.com/creatr-uploaded-images/2025-06/cb511940-5079-11f0-adef-fb798283b03c",
+              "width": 6000,
+              "height": 4000,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/Mm4KpervF.R_ohc0Gym2og--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media-mbst-pub-ue1.s3.amazonaws.com/creatr-uploaded-images/2025-06/cb511940-5079-11f0-adef-fb798283b03c",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Yahoo Finance Video",
+          "url": "https://finance.yahoo.com/",
+          "sourceId": "video.yahoofinance.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/video/are-oil-stocks-still-undervalued-vs-big-tech-153000331.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/video/are-oil-stocks-still-undervalued-vs-big-tech-153000331.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": true
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "f9f433fd-154c-44f9-9bc0-1630d8da6a08",
+      "content": {
+        "id": "f9f433fd-154c-44f9-9bc0-1630d8da6a08",
+        "contentType": "STORY",
+        "title": "Oil prices have ripped higher, yet investors keep making this mistake with energy stocks",
+        "description": "",
+        "summary": "Oil stocks continue to make a lot of sense, says Citi analyst.",
+        "pubDate": "2026-04-02T11:50:15Z",
+        "displayTime": "2026-04-02T11:50:15Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://s.yimg.com/os/creatr-uploaded-images/2026-04/c5346aa0-2e89-11f1-b7e7-1fc2f4f234ee",
+          "originalWidth": 7241,
+          "originalHeight": 4827,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/j0SkITT7IT1J2x.zsBMtKA--~B/aD00ODI3O3c9NzI0MTthcHBpZD15dGFjaHlvbg--/https://s.yimg.com/os/creatr-uploaded-images/2026-04/c5346aa0-2e89-11f1-b7e7-1fc2f4f234ee",
+              "width": 7241,
+              "height": 4827,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/cXMzQ2dXXPy8AdoVrbg9FQ--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://s.yimg.com/os/creatr-uploaded-images/2026-04/c5346aa0-2e89-11f1-b7e7-1fc2f4f234ee",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Yahoo Finance",
+          "url": "http://finance.yahoo.com/",
+          "sourceId": "yahoofinance.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/news/oil-prices-have-ripped-higher-yet-investors-keep-making-this-mistake-with-energy-stocks-115015019.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/news/oil-prices-have-ripped-higher-yet-investors-keep-making-this-mistake-with-energy-stocks-115015019.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": true
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "086861b8-82b9-3c9b-ac12-d2fb5b401908",
+      "content": {
+        "id": "086861b8-82b9-3c9b-ac12-d2fb5b401908",
+        "contentType": "STORY",
+        "title": "How The ExxonMobil (XOM) Investment Story Is Shifting With Oil Prices And Cash Return Debates",
+        "description": "",
+        "summary": "Exxon Mobil\u2019s modelled fair value has been reset from US$151.42 to US$160.17, giving you an updated reference point for how analysts are framing upside and downside around the stock. Across Wall Street, that revision sits within a broader debate that now hinges on oil price assumptions, conflict related risk premiums, and how much cash flow strength is already reflected in current targets. As you read on, you will see how to interpret these shifting narratives and what to watch as new...",
+        "pubDate": "2026-04-02T23:12:50Z",
+        "displayTime": "2026-04-02T23:12:50Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/simply_wall_st__316/d0e83f1986544c84469d81df07bf81f3",
+          "originalWidth": 1194,
+          "originalHeight": 432,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/I_JpHpI3ISFxuPw1W7uK5w--~B/aD00MzI7dz0xMTk0O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/simply_wall_st__316/d0e83f1986544c84469d81df07bf81f3",
+              "width": 1194,
+              "height": 432,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/oQP0e__bbOY0_GismpPwWQ--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/simply_wall_st__316/d0e83f1986544c84469d81df07bf81f3",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Simply Wall St.",
+          "url": "https://simplywall.st/",
+          "sourceId": "simply_wall_st__316"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/sectors/energy/articles/exxonmobil-xom-investment-story-shifting-231250835.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/sectors/energy/articles/exxonmobil-xom-investment-story-shifting-231250835.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "a82ea9e1-044f-3d36-9c9d-552cfeb1a7e8",
+      "content": {
+        "id": "a82ea9e1-044f-3d36-9c9d-552cfeb1a7e8",
+        "contentType": "STORY",
+        "title": "Stocks to Watch Thursday Recap: Delta Air Lines, General Motors, Exxon",
+        "description": "",
+        "summary": "\u2198\ufe0f Delta Air Lines (DAL), United Airlines (UAL): Both airline stocks closed lower on the prospect of a longer-lasting Iran war. The longer the conflict goes on, the longer jet-fuel prices will likely stay elevated.",
+        "pubDate": "2026-04-02T20:40:45Z",
+        "displayTime": "2026-04-02T20:40:45Z",
+        "isHosted": false,
+        "bypassModal": false,
+        "previewUrl": "https://finance.yahoo.com/m/a82ea9e1-044f-3d36-9c9d-552cfeb1a7e8/stocks-to-watch-thursday.html",
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/wsj.com/1424406a62364bb5549183d5f9680983",
+          "originalWidth": 1280,
+          "originalHeight": 640,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/9eBZTXh4BJSMCSq8u5IruA--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/1424406a62364bb5549183d5f9680983",
+              "width": 1280,
+              "height": 640,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/WefONNHhw71OICg4KaITBQ--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/wsj.com/1424406a62364bb5549183d5f9680983",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "The Wall Street Journal",
+          "url": "http://www.wsj.com/",
+          "sourceId": "wsj.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-04-02-2026/card/stocks-to-watch-thursday-apple-exxon-asml-5yEIPwytHTecXoDVQk4n?siteid=yhoof2&yptr=yahoo",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": null,
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "0ef2e461-98e5-3976-972f-f29248ed290d",
+      "content": {
+        "id": "0ef2e461-98e5-3976-972f-f29248ed290d",
+        "contentType": "STORY",
+        "title": "What Oil Shock? S&P 500 Estimates Keep Rising. These Stocks' Views Rise Most.",
+        "description": "",
+        "summary": "S&P 500 earnings are expected to climb 13.2% year over year in the first quarter, a FactSet report Friday said. That would make it the sixth consecutive quarter of double-digit growth.",
+        "pubDate": "2026-04-02T20:32:00Z",
+        "displayTime": "2026-04-02T20:32:00Z",
+        "isHosted": false,
+        "bypassModal": false,
+        "previewUrl": "https://finance.yahoo.com/m/0ef2e461-98e5-3976-972f-f29248ed290d/what-oil-shock-s-p-500.html",
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/ibd.com/909696db3c2779f1494a1950a6b620b7",
+          "originalWidth": 1000,
+          "originalHeight": 563,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/BTO8gmEuWfSxn6rZZJh24g--~B/aD01NjM7dz0xMDAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/ibd.com/909696db3c2779f1494a1950a6b620b7",
+              "width": 1000,
+              "height": 563,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/9wA85obg34kkLDhgvj_bNA--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/ibd.com/909696db3c2779f1494a1950a6b620b7",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Investor's Business Daily",
+          "url": "http://www.investors.com/",
+          "sourceId": "ibd.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.investors.com/news/sp-500-q1-earnings-sandisk-micron-stock/?src=A00220&yptr=yahoo",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": null,
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "1a5f5660-f916-3758-af5c-af25c0c2e751",
+      "content": {
+        "id": "1a5f5660-f916-3758-af5c-af25c0c2e751",
+        "contentType": "STORY",
+        "title": "Venture Global Jumps as Oil Rally Ignites Energy Stocks",
+        "description": "",
+        "summary": "Energy Stocks Climb as Trump's Iran Comments Shake Markets",
+        "pubDate": "2026-04-02T20:26:45Z",
+        "displayTime": "2026-04-02T20:26:45Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": null,
+        "provider": {
+          "displayName": "GuruFocus.com",
+          "url": "http://www.gurufocus.com/",
+          "sourceId": "us.finance.gurufocus"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/sectors/energy/articles/venture-global-jumps-oil-rally-202645358.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/sectors/energy/articles/venture-global-jumps-oil-rally-202645358.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "fa76bceb-a5ef-31b8-b64f-25174e904dba",
+      "content": {
+        "id": "fa76bceb-a5ef-31b8-b64f-25174e904dba",
+        "contentType": "STORY",
+        "title": "Oil Surge Shakes Markets As Tech Slips",
+        "description": "",
+        "summary": "Energy stocks rise while chips and airlines fall",
+        "pubDate": "2026-04-02T20:14:55Z",
+        "displayTime": "2026-04-02T20:14:55Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": null,
+        "provider": {
+          "displayName": "GuruFocus.com",
+          "url": "http://www.gurufocus.com/",
+          "sourceId": "us.finance.gurufocus"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/oil-surge-shakes-markets-tech-201455844.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/oil-surge-shakes-markets-tech-201455844.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "ffcee845-2fd1-3be3-b89c-dd96a33430dc",
+      "content": {
+        "id": "ffcee845-2fd1-3be3-b89c-dd96a33430dc",
+        "contentType": "STORY",
+        "title": "Chevron vs ExxonMobil: Which Energy Stock Will Win In The New Oil Landscape?",
+        "description": "",
+        "summary": "Energy company Chevron (NYSE:CVX) and ExxonMobil (NYSE:XOM) both closed out full-year 2025 with record production, rising shareholder returns, and dividend increases. Oil has since surged to $104.69 per barrel, making this the right moment to ask which integrated oil giant is the better dividend stock. Record Output, But the Dividend Math Tells Two Different Stories ... Chevron vs ExxonMobil: Which Energy Stock Will Win In The New Oil Landscape?",
+        "pubDate": "2026-04-02T14:18:09Z",
+        "displayTime": "2026-04-02T14:18:09Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/24_7_wall_st__718/cc098cfd6492778ed3a7b49663fb3f74",
+          "originalWidth": 1376,
+          "originalHeight": 768,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/XdIhYkj_tMtm2.wbw_mXWg--~B/aD03Njg7dz0xMzc2O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/24_7_wall_st__718/cc098cfd6492778ed3a7b49663fb3f74",
+              "width": 1376,
+              "height": 768,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/rAnAUoQWmDqEHWSb5w0_.w--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/24_7_wall_st__718/cc098cfd6492778ed3a7b49663fb3f74",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "24/7 Wall St.",
+          "url": "https://247wallst.com/",
+          "sourceId": "24_7_wall_st__718"
+        },
+        "canonicalUrl": {
+          "url": "https://247wallst.com/investing/2026/04/02/chevron-vs-exxonmobil-which-energy-stock-will-win-in-the-new-oil-landscape/",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/sectors/energy/articles/chevron-vs-exxonmobil-energy-stock-141809262.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "cf43c617-7719-3680-83d7-89ab5e1f1d0a",
+      "content": {
+        "id": "cf43c617-7719-3680-83d7-89ab5e1f1d0a",
+        "contentType": "STORY",
+        "title": "Diamondback Rallies. It Knocked Another Energy Stock Off a List of Top Oil Picks.",
+        "description": "",
+        "summary": "Diamondback is widely seen as a leader in U.S. shale and has kept tight control of production levels, Mizuho analyst Nitin Kumar says.",
+        "pubDate": "2026-04-02T14:06:00Z",
+        "displayTime": "2026-04-02T14:06:00Z",
+        "isHosted": false,
+        "bypassModal": false,
+        "previewUrl": "https://finance.yahoo.com/m/cf43c617-7719-3680-83d7-89ab5e1f1d0a/diamondback-rallies-it.html",
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/Barrons.com/22422bcf715104c7af6483ebeaf6d5df",
+          "originalWidth": 1280,
+          "originalHeight": 640,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/9tKq88dIdwnLT_8KrCcIAw--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/Barrons.com/22422bcf715104c7af6483ebeaf6d5df",
+              "width": 1280,
+              "height": 640,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/VECaQfNQC2TY8NhbUFgpjA--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/Barrons.com/22422bcf715104c7af6483ebeaf6d5df",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Barrons.com",
+          "url": "http://www.barrons.com/",
+          "sourceId": "Barrons.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.barrons.com/articles/diamondback-stock-conocophillips-oil-6a3da76a?siteid=yhoof2&yptr=yahoo",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": null,
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "c17b6d0e-4d54-332a-a989-d65fe04140b6",
+      "content": {
+        "id": "c17b6d0e-4d54-332a-a989-d65fe04140b6",
+        "contentType": "STORY",
+        "title": "An Arms Race With Flesh-Eating Bugs on the Edge of Cattle Country",
+        "description": "",
+        "summary": "Plus, the energy industry reckons with higher prices, and how Exxon touted its algae biofuel despite scientists\u2019 doubts.",
+        "pubDate": "2026-04-02T13:40:00Z",
+        "displayTime": "2026-04-02T13:40:00Z",
+        "isHosted": false,
+        "bypassModal": false,
+        "previewUrl": "https://finance.yahoo.com/m/c17b6d0e-4d54-332a-a989-d65fe04140b6/an-arms-race-with.html",
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/wsj.com/7b2c285183be07ca3c4e8242b25a59a8",
+          "originalWidth": 1200,
+          "originalHeight": 630,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/Fwf5HL4GsEGPbDfR3MJBPg--~B/aD02MzA7dz0xMjAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/7b2c285183be07ca3c4e8242b25a59a8",
+              "width": 1200,
+              "height": 630,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/c34MZxHLZOfDYN2BBjM9ww--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/wsj.com/7b2c285183be07ca3c4e8242b25a59a8",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "The Wall Street Journal",
+          "url": "http://www.wsj.com/",
+          "sourceId": "wsj.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.wsj.com/science/environment/an-arms-race-with-flesh-eating-bugs-on-the-edge-of-cattle-country-9e0bdf5a?siteid=yhoof2&yptr=yahoo",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": null,
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    }
+  ]
+}

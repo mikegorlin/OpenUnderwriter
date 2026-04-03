@@ -1,0 +1,733 @@
+{
+  "web_news": [
+    {
+      "title": "NVDA: NVIDIA Corp - Stock Price, Quote and News - CNBC",
+      "url": "https://www.cnbc.com/quotes/NVDA",
+      "snippet": "NVIDIA Corp NVDA:NASDAQ ; Close. 175.75 quote price arrow up +1.35 (+0.77%) ; Volume. 149,784,268 ; 52 week range. 86.62 - 212.19."
+    },
+    {
+      "title": "NVIDIA Corporation (NVDA) Stock Price, News, Quote & History",
+      "url": "https://finance.yahoo.com/quote/NVDA/",
+      "snippet": "$1 trillion in GPU revenue by 2027. Nvidia Corp., based in Santa Clara, California, is a visual computing company with worldwide operations and markets. The ..."
+    },
+    {
+      "title": "News Archive | NVIDIA Newsroom",
+      "url": "https://nvidianews.nvidia.com/news/aws-and-?page=475",
+      "snippet": "SANTA CLARA, CA -- NVIDIA Corp. (NASDAQ: NVDA) Revenue grew 2 percent quarter-on-quarter to $1.0 billion GAAP net income increased to $137.6 million, or ..."
+    },
+    {
+      "title": "NVIDIA Corp | Reuters",
+      "url": "https://www.reuters.com/company/nvidia-corp/",
+      "snippet": "The latest international NVIDIA Corp news and views from Reuters - one of the world's largest news agencies."
+    },
+    {
+      "title": "NVIDIA News Today (NVDA) - Investing.com",
+      "url": "https://www.investing.com/equities/nvidia-corp-news",
+      "snippet": "Find the latest NVIDIA news today, including breaking NVIDIA stock news, key announcements, and market-moving updates. Summarize NVDA's latest news."
+    },
+    {
+      "title": "NVIDIA: NVDA Stock Price Quote & News - Robinhood",
+      "url": "https://robinhood.com/us/en/stocks/NVDA/",
+      "snippet": "NVIDIA Corp. engages in the design and manufacture of computer graphics processors, chipsets, and related multimedia software."
+    },
+    {
+      "title": "NVIDIA Corp NVDA | US News Best Stocks",
+      "url": "https://money.usnews.com/investing/stocks/nvda-nvidia-corp",
+      "snippet": "NVIDIA Corp. engages in the design and manufacture of computer graphics processors, chipsets, and related multimedia software."
+    },
+    {
+      "title": "NVIDIA Corporation (NVDA) Latest Press Releases & Corporate News",
+      "url": "https://finance.yahoo.com/quote/NVDA/press-releases/",
+      "snippet": "BetterInvesting\u2122 Magazine Update on NVIDIA Corp. (NASDAQ: NVDA) and ..."
+    },
+    {
+      "title": "NVDA - NVIDIA Corp News - Morningstar",
+      "url": "https://www.morningstar.com/stocks/xnas/nvda/news",
+      "snippet": "Nvidia Invests $2 Billion in Marvell as Part of Chip Partnership \u00b7 Marvell's stock soars. \u00b7 BetterInvesting\u2122 Magazine Update on NVIDIA Corp. \u00b7 Lumentum Plans New ..."
+    },
+    {
+      "title": "NVIDIA Corp. Stock Quote (U.S. - NVDA - MarketWatch",
+      "url": "https://www.marketwatch.com/investing/stock/nvda?gaa_at=eafs&gaa_n=AWEtsqc_jIqQihPB_AwM-Ew9b9djOTqJshL9KliMWCVvW6Ue1NsvnF8hnRtZ&gaa_ts=69cdab45&gaa_sig=w3IWTQTYpXoYsOnWmJX0-bhFpIDAsA2OJPH9OnUbtwxxB2xC0YyK8Hl_OXdNFdltNqSkmpnG0S9c82DiuCX_cw%3D%3D",
+      "snippet": "NVDA | Complete NVIDIA Corp. stock news by MarketWatch. View real-time stock prices and stock quotes for a full financial overview."
+    }
+  ],
+  "yfinance_news": [
+    {
+      "id": "308f44af-33c1-48ea-b12c-c9572cd19d50",
+      "content": {
+        "id": "308f44af-33c1-48ea-b12c-c9572cd19d50",
+        "contentType": "STORY",
+        "title": "Tech stocks today: Anthropic does damage control after Claude leak, Iran threatens Big Tech operations",
+        "description": "",
+        "summary": "Live coverage of \"Magnificent Seven\" stocks, and the latest technology news.",
+        "pubDate": "2026-03-13T14:42:20Z",
+        "displayTime": "2026-04-01T21:18:29Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://s.yimg.com/os/creatr-uploaded-images/2026-03/67fc4050-1d50-11f1-afef-c29f4e25b61f",
+          "originalWidth": 6495,
+          "originalHeight": 4425,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/XFP_bXjmtFhm1bkhi.N8hQ--~B/aD00NDI1O3c9NjQ5NTthcHBpZD15dGFjaHlvbg--/https://media-mbst-pub-ue1.s3.amazonaws.com/creatr-uploaded-images/2026-03/67fc4050-1d50-11f1-afef-c29f4e25b61f",
+              "width": 6495,
+              "height": 4425,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/GaOHslhBkzXG3poQbajV2Q--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media-mbst-pub-ue1.s3.amazonaws.com/creatr-uploaded-images/2026-03/67fc4050-1d50-11f1-afef-c29f4e25b61f",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Yahoo Finance",
+          "url": "http://finance.yahoo.com/",
+          "sourceId": "yahoofinance.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/sectors/technology/article/tech-stocks-today-anthropic-does-damage-control-after-claude-leak-iran-threatens-big-tech-operations-144220238.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/sectors/technology/article/tech-stocks-today-anthropic-does-damage-control-after-claude-leak-iran-threatens-big-tech-operations-144220238.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": true
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": {
+          "storylineItems": [
+            {
+              "content": {
+                "id": "ef8c3752-c206-4db4-ac79-bad4682daac6",
+                "contentType": "VIDEO",
+                "isHosted": true,
+                "title": "Why Q2 earnings will be so important, according to Liz Ann Sonders",
+                "thumbnail": {
+                  "originalUrl": "https://s.yimg.com/uu/api/res/1.2/mMA3C..iOpqRJIBZnkZFbg--~B/aD0zNjQwO3c9NjQ3MjthcHBpZD15dGFjaHlvbg--/https://d29szjachogqwa.cloudfront.net/images/user-uploaded/d779504c-50df-4feb-8841-c6fcd832700a_8500ceafbaf910e4444789d1ec28583c1e5bc27ddc5adc0d180d92c58f3c7d36.net/images/2026-04/d779504c-50df-4feb-8841-c6fcd832700a",
+                  "originalWidth": 6472,
+                  "originalHeight": 3640,
+                  "caption": "",
+                  "resolutions": null
+                },
+                "provider": {
+                  "displayName": "Yahoo Finance Video",
+                  "sourceId": "video.yahoofinance.com"
+                },
+                "previewUrl": null,
+                "providerContentUrl": "",
+                "canonicalUrl": {
+                  "url": "https://finance.yahoo.com/video/why-q2-earnings-will-be-so-important-according-to-liz-ann-sonders-151500887.html"
+                },
+                "clickThroughUrl": {
+                  "url": "https://finance.yahoo.com/video/why-q2-earnings-will-be-so-important-according-to-liz-ann-sonders-151500887.html"
+                }
+              }
+            },
+            {
+              "content": {
+                "id": "d7991513-364b-482b-ab5f-2f1e6d714178",
+                "contentType": "STORY",
+                "isHosted": true,
+                "title": "OpenAI just raised a historic amount of money. Here are 2 stunning numbers you shouldn't forget.",
+                "thumbnail": {
+                  "originalUrl": "https://s.yimg.com/os/creatr-uploaded-images/2026-04/16e6e370-2dca-11f1-8bcb-8f40fbb57e99",
+                  "originalWidth": 3500,
+                  "originalHeight": 2138,
+                  "caption": "",
+                  "resolutions": null
+                },
+                "provider": {
+                  "displayName": "Yahoo Finance",
+                  "sourceId": "yahoofinance.com"
+                },
+                "previewUrl": null,
+                "providerContentUrl": "",
+                "canonicalUrl": {
+                  "url": "https://finance.yahoo.com/news/openai-just-raised-a-historic-amount-of-money-here-are-2-stunning-numbers-you-shouldnt-forget-133202041.html"
+                },
+                "clickThroughUrl": {
+                  "url": "https://finance.yahoo.com/news/openai-just-raised-a-historic-amount-of-money-here-are-2-stunning-numbers-you-shouldnt-forget-133202041.html"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "b7dfc9e8-7b0e-401f-91a2-f699857689f9",
+      "content": {
+        "id": "b7dfc9e8-7b0e-401f-91a2-f699857689f9",
+        "contentType": "STORY",
+        "title": "Morning Brief: Stocks roar back, plus our giant, action-packed Q1 roundup",
+        "description": "",
+        "summary": "Power rankings, winners and losers, and the questions we have for Q2.",
+        "pubDate": "2026-04-01T10:00:33Z",
+        "displayTime": "2026-04-01T10:00:33Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://s.yimg.com/os/creatr-uploaded-images/2026-03/83749d00-2d4f-11f1-9ffb-4401fdca197c",
+          "originalWidth": 4197,
+          "originalHeight": 2798,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/Pv5jD6A580loAocJ6qUtAw--~B/aD0yNzk4O3c9NDE5NzthcHBpZD15dGFjaHlvbg--/https://s.yimg.com/os/creatr-uploaded-images/2026-03/83749d00-2d4f-11f1-9ffb-4401fdca197c",
+              "width": 4197,
+              "height": 2798,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/sdZTfUcqZa2jzV6SR5oj_w--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://s.yimg.com/os/creatr-uploaded-images/2026-03/83749d00-2d4f-11f1-9ffb-4401fdca197c",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Yahoo Finance",
+          "url": "http://finance.yahoo.com/",
+          "sourceId": "yahoofinance.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/news/morning-brief-stocks-roar-back-plus-our-giant-action-packed-q1-roundup-100033568.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/news/morning-brief-stocks-roar-back-plus-our-giant-action-packed-q1-roundup-100033568.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": true
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "9cf4648a-06b1-44b9-a4e8-5c481ef963ae",
+      "content": {
+        "id": "9cf4648a-06b1-44b9-a4e8-5c481ef963ae",
+        "contentType": "STORY",
+        "title": "Nvidia investors just had a surprising first quarter",
+        "description": "",
+        "summary": "It's been a rough start to the year for the often-Teflon stock that is Nvidia.",
+        "pubDate": "2026-03-31T20:45:46Z",
+        "displayTime": "2026-04-01T08:13:11Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://s.yimg.com/os/creatr-uploaded-images/2026-03/eedd36e0-2d29-11f1-bffa-adf1fbfd44d1",
+          "originalWidth": 6676,
+          "originalHeight": 4012,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/ltV9hMBfF57N8EiY9rPNZQ--~B/aD00MDEyO3c9NjY3NjthcHBpZD15dGFjaHlvbg--/https://s.yimg.com/os/creatr-uploaded-images/2026-03/eedd36e0-2d29-11f1-bffa-adf1fbfd44d1",
+              "width": 6676,
+              "height": 4012,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/MiAaUJ4wMz4HuYk4Oh.FNA--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://s.yimg.com/os/creatr-uploaded-images/2026-03/eedd36e0-2d29-11f1-bffa-adf1fbfd44d1",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Yahoo Finance",
+          "url": "http://finance.yahoo.com/",
+          "sourceId": "yahoofinance.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/news/nvidia-investors-just-had-a-surprising-first-quarter-204546936.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/news/nvidia-investors-just-had-a-surprising-first-quarter-204546936.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": true
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "611ed8d5-2327-373f-91cb-431a26177dc1",
+      "content": {
+        "id": "611ed8d5-2327-373f-91cb-431a26177dc1",
+        "contentType": "STORY",
+        "title": "The Under-the-Radar Nuclear Energy Stock That Could Supercharge Your Passive Income",
+        "description": "",
+        "summary": "Pinnacle West is a less-obvious nuclear power company that has maintained a high yield despite last year's nuclear stock bull run.",
+        "pubDate": "2026-04-01T22:59:00Z",
+        "displayTime": "2026-04-01T22:59:00Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/motleyfool.com/1afa6f4c8866e2e9a80a65fc66e4f76d",
+          "originalWidth": 1400,
+          "originalHeight": 932,
+          "caption": "A nuclear power plant in operation. ",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/vsUcJ2UEI5WL3OUL3RYx1A--~B/aD05MzI7dz0xNDAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/motleyfool.com/1afa6f4c8866e2e9a80a65fc66e4f76d",
+              "width": 1400,
+              "height": 932,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/qrgs9_WlWxeUeXyYsg2fhw--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/motleyfool.com/1afa6f4c8866e2e9a80a65fc66e4f76d",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Motley Fool",
+          "url": "http://www.fool.com/",
+          "sourceId": "motleyfool.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.fool.com/investing/2026/04/01/the-under-the-radar-nuclear-energy-stock-that-coul/",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/sectors/energy/articles/under-radar-nuclear-energy-stock-225900784.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "6977d6a2-66b3-371a-98b7-6994c66e8b6e",
+      "content": {
+        "id": "6977d6a2-66b3-371a-98b7-6994c66e8b6e",
+        "contentType": "STORY",
+        "title": "Why Dave & Buster's Stock Surged Today",
+        "description": "",
+        "summary": "CEO Tarun Lal is \"highly confident\" in the sports and gaming destination's ability to crank out free cash flow.",
+        "pubDate": "2026-04-01T22:55:12Z",
+        "displayTime": "2026-04-01T22:55:12Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/motleyfool.com/7d14ecaecf72f4cc24a8584acc1b5b04",
+          "originalWidth": 1400,
+          "originalHeight": 819,
+          "caption": "People are having fun in an arcade. ",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/8CDNDrFfd7_JeJmfMR8elw--~B/aD04MTk7dz0xNDAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/motleyfool.com/7d14ecaecf72f4cc24a8584acc1b5b04",
+              "width": 1400,
+              "height": 819,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/Gam8wvUxDuL6817T5KstZg--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/motleyfool.com/7d14ecaecf72f4cc24a8584acc1b5b04",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Motley Fool",
+          "url": "http://www.fool.com/",
+          "sourceId": "motleyfool.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.fool.com/investing/2026/04/01/why-dave-busters-stock-is-up-today/",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/why-dave-busters-stock-surged-225512034.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "736ea1bc-38df-3db8-b0a6-6c414e538785",
+      "content": {
+        "id": "736ea1bc-38df-3db8-b0a6-6c414e538785",
+        "contentType": "STORY",
+        "title": "Nvidia Stock Just Did This for the First Time in 13 Years. History Shows What May Happen Next.",
+        "description": "",
+        "summary": "Nvidia, as the biggest chip designer, is a central player in the AI story.",
+        "pubDate": "2026-04-01T22:35:00Z",
+        "displayTime": "2026-04-01T22:35:00Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/motleyfool.com/22dc1d1ea8662069d59ad0c836297937",
+          "originalWidth": 1400,
+          "originalHeight": 842,
+          "caption": "Three investors look at something on a laptop in a darkened office.",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/RRUxAF0.yjjYxZ9ohSTfzQ--~B/aD04NDI7dz0xNDAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/motleyfool.com/22dc1d1ea8662069d59ad0c836297937",
+              "width": 1400,
+              "height": 842,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/wUCa0EoqrX9.MEIONc7_.A--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/motleyfool.com/22dc1d1ea8662069d59ad0c836297937",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Motley Fool",
+          "url": "http://www.fool.com/",
+          "sourceId": "motleyfool.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.fool.com/investing/2026/04/01/nvidia-stock-just-did-this-for-the-first-time-in-1/",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/nvidia-stock-just-did-first-223500846.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "b1390eb1-40e1-3111-a532-6473f3532fe5",
+      "content": {
+        "id": "b1390eb1-40e1-3111-a532-6473f3532fe5",
+        "contentType": "STORY",
+        "title": "Stocks making big moves yesterday: Chewy, Broadcom, Microsoft, RXO, and JPMorgan Chase",
+        "description": "",
+        "summary": "Check out the companies making headlines yesterday:",
+        "pubDate": "2026-04-01T22:31:26Z",
+        "displayTime": "2026-04-01T22:31:26Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/stockstory_922/9fb6a0edf56bb6fcc7eed36a9a6ddadf",
+          "originalWidth": 1400,
+          "originalHeight": 700,
+          "caption": "CHWY Cover Image",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/ZdKV_ZGOd5T.0_aldDrcag--~B/aD03MDA7dz0xNDAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/stockstory_922/9fb6a0edf56bb6fcc7eed36a9a6ddadf",
+              "width": 1400,
+              "height": 700,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/Ep.iwO3bRyPQdz4xB2gMZg--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/stockstory_922/9fb6a0edf56bb6fcc7eed36a9a6ddadf",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "StockStory",
+          "url": "https://stockstory.org/",
+          "sourceId": "stockstory_922"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/stocks-making-big-moves-yesterday-223126314.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/stocks-making-big-moves-yesterday-223126314.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "2dbd8de6-8ddf-3c73-95b9-fad6d7368399",
+      "content": {
+        "id": "2dbd8de6-8ddf-3c73-95b9-fad6d7368399",
+        "contentType": "STORY",
+        "title": "Cathie Wood Just Snapped Up This Nvidia Cloud Play \u2014 Here's Everything Else Ark Traded Monday",
+        "description": "",
+        "summary": "On Monday, Ark Invest, led by Cathie Wood, made significant trades, notably acquiring shares of CoreWeave Inc. This purchase aligns with Ark\u2019s strategy of investing in innovative technology companies. CoreWeave, a cloud platform built on NVIDIA\u2019s infrastructure, has been a focal point for investors, especially after NVIDIA\u2019s substantial investment in the company earlier this year. The CoreWeave Trade Ark Invest\u2019s flagship fund, ARK Innovation ETF, purchased 41,830 shares of CoreWeave on Monday.",
+        "pubDate": "2026-04-01T22:31:11Z",
+        "displayTime": "2026-04-01T22:31:11Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/Benzinga/e0e9eaabdb6dda97429e30dbf0d2aa03",
+          "originalWidth": 1024,
+          "originalHeight": 683,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/Cl9sx64wwJA7IgXCOymSHA--~B/aD02ODM7dz0xMDI0O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/Benzinga/e0e9eaabdb6dda97429e30dbf0d2aa03",
+              "width": 1024,
+              "height": 683,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/ZTqQEUBK.FJhfz6wjr64LA--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/Benzinga/e0e9eaabdb6dda97429e30dbf0d2aa03",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Benzinga",
+          "url": "http://www.benzinga.com/",
+          "sourceId": "Benzinga"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/cathie-wood-just-snapped-nvidia-223111976.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/cathie-wood-just-snapped-nvidia-223111976.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "cfc7d9c2-182b-3b06-9e9a-25acabf37800",
+      "content": {
+        "id": "cfc7d9c2-182b-3b06-9e9a-25acabf37800",
+        "contentType": "STORY",
+        "title": "Penguin Solutions Q2 Earnings Call Highlights",
+        "description": "",
+        "summary": "Penguin Solutions (NASDAQ:PENG) used its fiscal second-quarter earnings call to outline what CEO Kash Shaikh described as a market shift in artificial intelligence from model training toward production deployments increasingly focused on real-time inference. Shaikh, who led his first earnings call a",
+        "pubDate": "2026-04-01T22:14:33Z",
+        "displayTime": "2026-04-01T22:14:33Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/marketbeat_955/6abbb1385b4a108a115767bb2060880c",
+          "originalWidth": 1200,
+          "originalHeight": 675,
+          "caption": "Penguin Solutions logo",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/j3S6thgzMiTCSd23930ebA--~B/aD02NzU7dz0xMjAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/marketbeat_955/6abbb1385b4a108a115767bb2060880c",
+              "width": 1200,
+              "height": 675,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/SQliN4rSsTXF0HP7v.qpBQ--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/marketbeat_955/6abbb1385b4a108a115767bb2060880c",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "MarketBeat",
+          "url": "https://www.marketbeat.com/",
+          "sourceId": "marketbeat_955"
+        },
+        "canonicalUrl": {
+          "url": "https://www.marketbeat.com/instant-alerts/penguin-solutions-q2-earnings-call-highlights-2026-04-01/?utm_source=yahoofinance&utm_medium=yahoofinance",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/penguin-solutions-q2-earnings-call-221433064.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "c6e816ed-c71a-34bf-a6a7-5e8760ae9de9",
+      "content": {
+        "id": "c6e816ed-c71a-34bf-a6a7-5e8760ae9de9",
+        "contentType": "STORY",
+        "title": "1 Artificial Intelligence (AI) Software Stock to Buy Hand Over Fist Before It Soars 62%, According to Dan Ives",
+        "description": "",
+        "summary": "Dan Ives of Wedbush Securities recently upgraded his price target on Palantir stock to $230.",
+        "pubDate": "2026-04-01T22:11:00Z",
+        "displayTime": "2026-04-01T22:11:00Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/motleyfool.com/230c5123762f66dbf0c6ebecfa1f5998",
+          "originalWidth": 1200,
+          "originalHeight": 800,
+          "caption": "Palantir logo in front of backdrop with corporate building in background.",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/vRbhkOKO0OosmuPxd1K54g--~B/aD04MDA7dz0xMjAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/motleyfool.com/230c5123762f66dbf0c6ebecfa1f5998",
+              "width": 1200,
+              "height": 800,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/9HwnDBVTVawmLXkkxQFlnQ--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/motleyfool.com/230c5123762f66dbf0c6ebecfa1f5998",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Motley Fool",
+          "url": "http://www.fool.com/",
+          "sourceId": "motleyfool.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.fool.com/investing/2026/04/01/artificial-intelligence-ai-stock-buy-dan-ives/",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/1-artificial-intelligence-ai-software-221100345.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    }
+  ]
+}

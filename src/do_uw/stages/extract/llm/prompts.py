@@ -20,7 +20,7 @@ _PREAMBLE = (
     "1. Extract ONLY what is explicitly stated in the document.\n"
     "2. If information is not found, leave the field as null or empty.\n"
     "3. NEVER fabricate, infer, or guess data that is not in the text.\n"
-    "4. Use exact quotes for source_passage fields (max 200-300 chars).\n"
+    "4. Use exact quotes for source_passage fields (max 200-300 chars). If you need to truncate, end at the last complete word before the limit — never cut words mid-word.\n"
     "5. For monetary amounts, use USD unless otherwise stated.\n"
     "6. For dates, use YYYY-MM-DD format when possible.\n"
 )
@@ -31,8 +31,7 @@ _PREAMBLE = (
 # ---------------------------------------------------------------------------
 
 TEN_K_SYSTEM_PROMPT = (
-    _PREAMBLE
-    + "\nYou are extracting data from a 10-K annual report.\n\n"
+    _PREAMBLE + "\nYou are extracting data from a 10-K annual report.\n\n"
     "FOCUS AREAS for D&O underwriting:\n"
     "- Item 1 (Business): Company structure, dual-class shares, VIEs, "
     "customer/supplier concentration -- these create governance and "
@@ -76,8 +75,7 @@ TEN_K_SYSTEM_PROMPT = (
 )
 
 DEF14A_SYSTEM_PROMPT = (
-    _PREAMBLE
-    + "\nYou are extracting data from a DEF 14A proxy statement.\n\n"
+    _PREAMBLE + "\nYou are extracting data from a DEF 14A proxy statement.\n\n"
     "FOCUS AREAS for D&O underwriting:\n"
     "- Board composition: Independence ratio, classified board, "
     "CEO-chair duality, director tenure, overboarding -- these are "
@@ -117,8 +115,7 @@ DEF14A_SYSTEM_PROMPT = (
 )
 
 EIGHT_K_SYSTEM_PROMPT = (
-    _PREAMBLE
-    + "\nYou are extracting data from an 8-K current report.\n\n"
+    _PREAMBLE + "\nYou are extracting data from an 8-K current report.\n\n"
     "CRITICAL: Always populate items_covered with ALL Item numbers "
     "found in this 8-K (e.g. ['2.02', '9.01']). This is essential.\n\n"
     "FOCUS AREAS for D&O underwriting:\n"
@@ -150,8 +147,7 @@ EIGHT_K_SYSTEM_PROMPT = (
 )
 
 TEN_Q_SYSTEM_PROMPT = (
-    _PREAMBLE
-    + "\nYou are extracting data from a 10-Q quarterly report.\n\n"
+    _PREAMBLE + "\nYou are extracting data from a 10-Q quarterly report.\n\n"
     "FOCUS AREAS for D&O underwriting:\n"
     "- Focus on CHANGES since the last filing, not comprehensive "
     "data (that comes from the 10-K).\n"
@@ -166,8 +162,7 @@ TEN_Q_SYSTEM_PROMPT = (
 )
 
 OWNERSHIP_SYSTEM_PROMPT = (
-    _PREAMBLE
-    + "\nYou are extracting data from a beneficial ownership filing "
+    _PREAMBLE + "\nYou are extracting data from a beneficial ownership filing "
     "(SC 13D or SC 13G).\n\n"
     "FOCUS AREAS for D&O underwriting:\n"
     "- Filer identity: Who is acquiring shares and what type of "
@@ -186,8 +181,7 @@ OWNERSHIP_SYSTEM_PROMPT = (
 )
 
 CAPITAL_SYSTEM_PROMPT = (
-    _PREAMBLE
-    + "\nYou are extracting data from a securities offering filing "
+    _PREAMBLE + "\nYou are extracting data from a securities offering filing "
     "(S-3, S-1, or 424B prospectus).\n\n"
     "FOCUS AREAS for D&O underwriting:\n"
     "- Offering type and size: IPOs and secondary offerings create "
@@ -233,9 +227,6 @@ def get_prompt(prompt_key: str) -> str:
         KeyError: If prompt_key is not recognized.
     """
     if prompt_key not in _PROMPTS:
-        msg = (
-            f"Unknown prompt key: {prompt_key!r}. "
-            f"Valid keys: {sorted(_PROMPTS.keys())}"
-        )
+        msg = f"Unknown prompt key: {prompt_key!r}. Valid keys: {sorted(_PROMPTS.keys())}"
         raise KeyError(msg)
     return _PROMPTS[prompt_key]

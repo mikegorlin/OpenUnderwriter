@@ -1,0 +1,60 @@
+{
+  "sec_filings": {
+    "timestamp": "2026-04-02T01:42:53.424331+00:00",
+    "duration_seconds": 1.705221,
+    "success": true,
+    "error": null
+  },
+  "market_data": {
+    "timestamp": "2026-04-02T01:42:55.129625+00:00",
+    "duration_seconds": 0.006646,
+    "success": true,
+    "error": null
+  },
+  "litigation": {
+    "timestamp": "2026-04-02T01:42:55.136341+00:00",
+    "duration_seconds": 0.000141,
+    "success": true,
+    "error": null
+  },
+  "news_sentiment": {
+    "timestamp": "2026-04-02T01:42:55.136515+00:00",
+    "duration_seconds": 8.5e-05,
+    "success": true,
+    "error": null
+  },
+  "sec_enforcement": {
+    "timestamp": "2026-04-02T01:42:55.136622+00:00",
+    "duration_seconds": 0.00244,
+    "success": true,
+    "error": null
+  },
+  "reference_data": {
+    "timestamp": "2026-04-02T01:42:55.139085+00:00",
+    "duration_seconds": 1.5e-05,
+    "success": true,
+    "error": null
+  },
+  "brain_coverage": {
+    "satisfied": [
+      "MARKET_PRICE",
+      "MARKET_SHORT",
+      "REFERENCE_DATA",
+      "SCAC_SEARCH",
+      "SEC_10K",
+      "SEC_10Q",
+      "SEC_13DG",
+      "SEC_8K",
+      "SEC_DEF14A",
+      "SEC_ENFORCEMENT",
+      "SEC_FORM4",
+      "SEC_S1",
+      "SEC_S3",
+      "WEB_SEARCH"
+    ],
+    "missing": [
+      "SEC_FRAMES"
+    ],
+    "coverage_pct": 93.33333333333333
+  }
+}

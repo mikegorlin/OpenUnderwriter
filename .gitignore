@@ -55,6 +55,9 @@ pricing/
 .agents/
 skills/
 skills-lock.json
+.claude/hooks/
+.claude/settings.json
+.codegraph/
 
 # Reference snapshot baselines (machine-specific, not version controlled)
 .planning/baselines/*.json

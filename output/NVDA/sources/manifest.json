@@ -1,0 +1,650 @@
+[
+  {
+    "type": "sec_filing",
+    "form_type": "10-K",
+    "accession": "0001045810-26-000021",
+    "filing_date": "2026-02-25",
+    "file": "filings/10-K_2026-02-25_000104581026000021.txt",
+    "size_bytes": 362300
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "10-K",
+    "accession": "0001045810-25-000023",
+    "filing_date": "2025-02-26",
+    "file": "filings/10-K_2025-02-26_000104581025000023.txt",
+    "size_bytes": 370114
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "10-K",
+    "accession": "0001045810-24-000029",
+    "filing_date": "2024-02-21",
+    "file": "filings/10-K_2024-02-21_000104581024000029.txt",
+    "size_bytes": 360673
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "10-Q",
+    "accession": "0001045810-25-000230",
+    "filing_date": "2025-11-19",
+    "file": "filings/10-Q_2025-11-19_000104581025000230.txt",
+    "size_bytes": 169639
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "10-Q",
+    "accession": "0001045810-25-000209",
+    "filing_date": "2025-08-27",
+    "file": "filings/10-Q_2025-08-27_000104581025000209.txt",
+    "size_bytes": 151354
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "10-Q",
+    "accession": "0001045810-25-000116",
+    "filing_date": "2025-05-28",
+    "file": "filings/10-Q_2025-05-28_000104581025000116.txt",
+    "size_bytes": 147018
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "10-Q",
+    "accession": "0001045810-24-000316",
+    "filing_date": "2024-11-20",
+    "file": "filings/10-Q_2024-11-20_000104581024000316.txt",
+    "size_bytes": 158880
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "10-Q",
+    "accession": "0001045810-24-000264",
+    "filing_date": "2024-08-28",
+    "file": "filings/10-Q_2024-08-28_000104581024000264.txt",
+    "size_bytes": 164227
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "10-Q",
+    "accession": "0001045810-24-000124",
+    "filing_date": "2024-05-29",
+    "file": "filings/10-Q_2024-05-29_000104581024000124.txt",
+    "size_bytes": 149893
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "10-Q",
+    "accession": "0001045810-23-000227",
+    "filing_date": "2023-11-21",
+    "file": "filings/10-Q_2023-11-21_000104581023000227.txt",
+    "size_bytes": 172047
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "10-Q",
+    "accession": "0001045810-23-000175",
+    "filing_date": "2023-08-28",
+    "file": "filings/10-Q_2023-08-28_000104581023000175.txt",
+    "size_bytes": 162503
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "10-Q",
+    "accession": "0001045810-23-000093",
+    "filing_date": "2023-05-26",
+    "file": "filings/10-Q_2023-05-26_000104581023000093.txt",
+    "size_bytes": 148459
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "DEF 14A",
+    "accession": "0001045810-25-000095",
+    "filing_date": "2025-05-13",
+    "file": "filings/DEF_14A_2025-05-13_000104581025000095.txt",
+    "size_bytes": 282983
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "DEF 14A",
+    "accession": "0001045810-24-000104",
+    "filing_date": "2024-05-14",
+    "file": "filings/DEF_14A_2024-05-14_000104581024000104.txt",
+    "size_bytes": 261604
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "DEF 14A",
+    "accession": "0001045810-23-000080",
+    "filing_date": "2023-05-08",
+    "file": "filings/DEF_14A_2023-05-08_000104581023000080.txt",
+    "size_bytes": 260190
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "8-K",
+    "accession": "0001045810-26-000024",
+    "filing_date": "2026-03-06",
+    "file": "filings/8-K_2026-03-06_000104581026000024.txt",
+    "size_bytes": 4930
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "8-K",
+    "accession": "0001045810-26-000019",
+    "filing_date": "2026-02-25",
+    "file": "filings/8-K_2026-02-25_000104581026000019.txt",
+    "size_bytes": 4052
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "8-K",
+    "accession": "0001045810-26-000003",
+    "filing_date": "2026-01-23",
+    "file": "filings/8-K_2026-01-23_000104581026000003.txt",
+    "size_bytes": 3016
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "8-K",
+    "accession": "0001045810-25-000228",
+    "filing_date": "2025-11-19",
+    "file": "filings/8-K_2025-11-19_000104581025000228.txt",
+    "size_bytes": 4043
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "8-K",
+    "accession": "0001045810-25-000207",
+    "filing_date": "2025-08-27",
+    "file": "filings/8-K_2025-08-27_000104581025000207.txt",
+    "size_bytes": 4031
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "8-K",
+    "accession": "0001045810-25-000197",
+    "filing_date": "2025-08-05",
+    "file": "filings/8-K_2025-08-05_000104581025000197.txt",
+    "size_bytes": 3012
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "8-K",
+    "accession": "0001045810-25-000179",
+    "filing_date": "2025-07-01",
+    "file": "filings/8-K_2025-07-01_000104581025000179.txt",
+    "size_bytes": 7481
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "8-K",
+    "accession": "0001045810-25-000115",
+    "filing_date": "2025-05-28",
+    "file": "filings/8-K_2025-05-28_000104581025000115.txt",
+    "size_bytes": 4018
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "8-K",
+    "accession": "0001045810-25-000082",
+    "filing_date": "2025-04-15",
+    "file": "filings/8-K_2025-04-15_000104581025000082.txt",
+    "size_bytes": 5001
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001199039-26-000003",
+    "filing_date": "2026-03-24",
+    "file": "filings/4_2026-03-24_000119903926000003.txt",
+    "size_bytes": 7287
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001725292-26-000002",
+    "filing_date": "2026-03-20",
+    "file": "filings/4_2026-03-20_000172529226000002.txt",
+    "size_bytes": 7347
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001526111-26-000005",
+    "filing_date": "2026-03-20",
+    "file": "filings/4_2026-03-20_000152611126000005.txt",
+    "size_bytes": 14600
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001696841-26-000006",
+    "filing_date": "2026-03-20",
+    "file": "filings/4_2026-03-20_000169684126000006.txt",
+    "size_bytes": 4808
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001283854-26-000006",
+    "filing_date": "2026-03-20",
+    "file": "filings/4_2026-03-20_000128385426000006.txt",
+    "size_bytes": 4502
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001347842-26-000011",
+    "filing_date": "2026-03-20",
+    "file": "filings/4_2026-03-20_000134784226000011.txt",
+    "size_bytes": 10833
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001588670-26-000010",
+    "filing_date": "2026-03-20",
+    "file": "filings/4_2026-03-20_000158867026000010.txt",
+    "size_bytes": 42371
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001197649-26-000005",
+    "filing_date": "2026-03-20",
+    "file": "filings/4_2026-03-20_000119764926000005.txt",
+    "size_bytes": 15013
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001197652-26-000003",
+    "filing_date": "2026-03-19",
+    "file": "filings/4_2026-03-19_000119765226000003.txt",
+    "size_bytes": 4205
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001818224-26-000002",
+    "filing_date": "2026-03-17",
+    "file": "filings/4_2026-03-17_000181822426000002.txt",
+    "size_bytes": 3322
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001696841-26-000004",
+    "filing_date": "2026-03-11",
+    "file": "filings/4_2026-03-11_000169684126000004.txt",
+    "size_bytes": 4555
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001283854-26-000004",
+    "filing_date": "2026-03-11",
+    "file": "filings/4_2026-03-11_000128385426000004.txt",
+    "size_bytes": 4491
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001588670-26-000008",
+    "filing_date": "2026-03-11",
+    "file": "filings/4_2026-03-11_000158867026000008.txt",
+    "size_bytes": 9212
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001347842-26-000009",
+    "filing_date": "2026-03-11",
+    "file": "filings/4_2026-03-11_000134784226000009.txt",
+    "size_bytes": 8889
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001347842-26-000007",
+    "filing_date": "2026-03-04",
+    "file": "filings/4_2026-03-04_000134784226000007.txt",
+    "size_bytes": 7665
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001283854-26-000002",
+    "filing_date": "2026-03-04",
+    "file": "filings/4_2026-03-04_000128385426000002.txt",
+    "size_bytes": 6628
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001588670-26-000006",
+    "filing_date": "2026-03-04",
+    "file": "filings/4_2026-03-04_000158867026000006.txt",
+    "size_bytes": 11341
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001696841-26-000002",
+    "filing_date": "2026-03-04",
+    "file": "filings/4_2026-03-04_000169684126000002.txt",
+    "size_bytes": 6692
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001197649-26-000003",
+    "filing_date": "2026-03-04",
+    "file": "filings/4_2026-03-04_000119764926000003.txt",
+    "size_bytes": 13680
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001588670-26-000004",
+    "filing_date": "2026-02-06",
+    "file": "filings/4_2026-02-06_000158867026000004.txt",
+    "size_bytes": 45399
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001636665-26-000002",
+    "filing_date": "2026-01-23",
+    "file": "filings/4_2026-01-23_000163666526000002.txt",
+    "size_bytes": 1839
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001347842-26-000004",
+    "filing_date": "2026-01-23",
+    "file": "filings/4_2026-01-23_000134784226000004.txt",
+    "size_bytes": 5642
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001588670-26-000002",
+    "filing_date": "2026-01-15",
+    "file": "filings/4_2026-01-15_000158867026000002.txt",
+    "size_bytes": 30706
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001347842-26-000002",
+    "filing_date": "2026-01-09",
+    "file": "filings/4_2026-01-09_000134784226000002.txt",
+    "size_bytes": 9530
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001526111-26-000002",
+    "filing_date": "2026-01-06",
+    "file": "filings/4_2026-01-06_000152611126000002.txt",
+    "size_bytes": 10866
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001199039-25-000015",
+    "filing_date": "2025-12-22",
+    "file": "filings/4_2025-12-22_000119903925000015.txt",
+    "size_bytes": 7162
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001526111-25-000011",
+    "filing_date": "2025-12-22",
+    "file": "filings/4_2025-12-22_000152611125000011.txt",
+    "size_bytes": 10864
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001588670-25-000017",
+    "filing_date": "2025-12-19",
+    "file": "filings/4_2025-12-19_000158867025000017.txt",
+    "size_bytes": 8972
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001197649-25-000061",
+    "filing_date": "2025-12-19",
+    "file": "filings/4_2025-12-19_000119764925000061.txt",
+    "size_bytes": 19232
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001197650-25-000009",
+    "filing_date": "2025-12-17",
+    "file": "filings/4_2025-12-17_000119765025000009.txt",
+    "size_bytes": 4404
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001347842-25-000007",
+    "filing_date": "2025-12-12",
+    "file": "filings/4_2025-12-12_000134784225000007.txt",
+    "size_bytes": 5504
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001283854-25-000011",
+    "filing_date": "2025-12-12",
+    "file": "filings/4_2025-12-12_000128385425000011.txt",
+    "size_bytes": 36819
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001526111-25-000008",
+    "filing_date": "2025-12-12",
+    "file": "filings/4_2025-12-12_000152611125000008.txt",
+    "size_bytes": 3612
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001696841-25-000006",
+    "filing_date": "2025-12-12",
+    "file": "filings/4_2025-12-12_000169684125000006.txt",
+    "size_bytes": 4777
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001588670-25-000015",
+    "filing_date": "2025-12-12",
+    "file": "filings/4_2025-12-12_000158867025000015.txt",
+    "size_bytes": 46941
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001197649-25-000058",
+    "filing_date": "2025-12-12",
+    "file": "filings/4_2025-12-12_000119764925000058.txt",
+    "size_bytes": 12584
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001283854-25-000009",
+    "filing_date": "2025-12-10",
+    "file": "filings/4_2025-12-10_000128385425000009.txt",
+    "size_bytes": 8522
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001199039-25-000012",
+    "filing_date": "2025-12-09",
+    "file": "filings/4_2025-12-09_000119903925000012.txt",
+    "size_bytes": 5233
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001197652-25-000009",
+    "filing_date": "2025-12-04",
+    "file": "filings/4_2025-12-04_000119765225000009.txt",
+    "size_bytes": 5322
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001197652-25-000007",
+    "filing_date": "2025-11-26",
+    "file": "filings/4_2025-11-26_000119765225000007.txt",
+    "size_bytes": 5062
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001818224-25-000005",
+    "filing_date": "2025-11-26",
+    "file": "filings/4_2025-11-26_000181822425000005.txt",
+    "size_bytes": 3289
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001588670-25-000013",
+    "filing_date": "2025-11-05",
+    "file": "filings/4_2025-11-05_000158867025000013.txt",
+    "size_bytes": 29301
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001197649-25-000056",
+    "filing_date": "2025-10-31",
+    "file": "filings/4_2025-10-31_000119764925000056.txt",
+    "size_bytes": 21470
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001197649-25-000054",
+    "filing_date": "2025-10-28",
+    "file": "filings/4_2025-10-28_000119764925000054.txt",
+    "size_bytes": 42794
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001588670-25-000011",
+    "filing_date": "2025-10-23",
+    "file": "filings/4_2025-10-23_000158867025000011.txt",
+    "size_bytes": 19498
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001197649-25-000052",
+    "filing_date": "2025-10-23",
+    "file": "filings/4_2025-10-23_000119764925000052.txt",
+    "size_bytes": 33918
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001197649-25-000050",
+    "filing_date": "2025-10-20",
+    "file": "filings/4_2025-10-20_000119764925000050.txt",
+    "size_bytes": 32141
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001197649-25-000048",
+    "filing_date": "2025-10-15",
+    "file": "filings/4_2025-10-15_000119764925000048.txt",
+    "size_bytes": 39246
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001197649-25-000046",
+    "filing_date": "2025-10-10",
+    "file": "filings/4_2025-10-10_000119764925000046.txt",
+    "size_bytes": 44575
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "4",
+    "accession": "0001197649-25-000044",
+    "filing_date": "2025-10-07",
+    "file": "filings/4_2025-10-07_000119764925000044.txt",
+    "size_bytes": 33920
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "S-3",
+    "accession": "0001045810-25-000118",
+    "filing_date": "2025-05-28",
+    "file": "filings/S-3_2025-05-28_000104581025000118.txt",
+    "size_bytes": 91545
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "S-3",
+    "accession": "0001045810-23-000095",
+    "filing_date": "2023-05-26",
+    "file": "filings/S-3_2023-05-26_000104581023000095.txt",
+    "size_bytes": 112896
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "SC 13G",
+    "accession": "0000102909-26-000426",
+    "filing_date": "2026-03-26",
+    "file": "filings/SC_13G_2026-03-26_000010290926000426.txt",
+    "size_bytes": 6204
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "SC 13G",
+    "accession": "0000102909-26-000226",
+    "filing_date": "2026-01-30",
+    "file": "filings/SC_13G_2026-01-30_000010290926000226.txt",
+    "size_bytes": 6171
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "SC 13G",
+    "accession": "0001045810-26-000008",
+    "filing_date": "2026-01-26",
+    "file": "filings/SC_13G_2026-01-26_000104581026000008.txt",
+    "size_bytes": 4799
+  },
+  {
+    "type": "sec_filing",
+    "form_type": "SC 13G",
+    "accession": "0001045810-25-000103",
+    "filing_date": "2025-05-15",
+    "file": "filings/SC_13G_2025-05-15_000104581025000103.txt",
+    "size_bytes": 4334
+  },
+  {
+    "type": "web_search",
+    "file": "web_search_results.json"
+  },
+  {
+    "type": "litigation",
+    "file": "litigation_data.json"
+  }
+]

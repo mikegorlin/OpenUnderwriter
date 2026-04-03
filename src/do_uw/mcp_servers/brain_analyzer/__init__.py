@@ -1,0 +1,1 @@
+"""Brain Analyzer MCP Server."""

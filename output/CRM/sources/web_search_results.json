@@ -1,0 +1,666 @@
+{
+  "web_news": [
+    {
+      "title": "Salesforce Newsroom",
+      "url": "https://www.salesforce.com/news/",
+      "snippet": "... News & Insights. News & Insights. Latest. News. All News opens in a new window ... Salesforce, inc. All rights reserved. Various trademarks held by their ..."
+    },
+    {
+      "title": "Salesforce, Inc. (CRM) Stock Price, News, Quote & History",
+      "url": "https://finance.yahoo.com/quote/CRM/",
+      "snippet": "Salesforce, Inc. (CRM) \u00b7 News headlines Salesforce (CRM) is seeing a positive outlook from analysts, with 74% bullish sentiment and a consensus price target of ..."
+    },
+    {
+      "title": "Salesforce Investor Relations: Salesforce.com, Inc.",
+      "url": "https://investor.salesforce.com/overview/default.aspx",
+      "snippet": "Recent News. 03/26/2026. VHA Deploys Salesforce-Powered Agentic Operating ... Salesforce, Inc. Salesforce Tower, 415 Mission Street, 3rd Floor, San ..."
+    },
+    {
+      "title": "CRM: Salesforce Inc - Stock Price, Quote and News - CNBC",
+      "url": "https://www.cnbc.com/quotes/CRM",
+      "snippet": "Get Salesforce Inc (CRM:NYSE) real-time stock quotes, news, price and financial information from CNBC."
+    },
+    {
+      "title": "Salesforce, Inc. (CRM) Latest Press Releases & Corporate News",
+      "url": "https://finance.yahoo.com/quote/CRM/press-releases/",
+      "snippet": "Get the latest Salesforce, Inc. (CRM) stock news and headlines to help you in your trading and investing decisions."
+    },
+    {
+      "title": "Financials - Quarterly Results - Salesforce.com, Inc.",
+      "url": "https://investor.salesforce.com/financials/quarterly-results/",
+      "snippet": "News \u00b7 Stock Quote \u00b7 Governance; Governance. Corporate Governance \u00b7 Executive ... Salesforce, Inc. Salesforce Tower, 415 Mission Street, 3rd Floor, San ..."
+    },
+    {
+      "title": "Salesforce: The #1 AI CRM | Salesforce",
+      "url": "https://www.salesforce.com/",
+      "snippet": "... news, insights, and inspiration. Salesblazer. Grow your career with the ... Salesforce, Inc. All rights reserved. Various trademarks held by their ..."
+    },
+    {
+      "title": "SALESFORCE, INC. (CRM) Stock, Price, News, Quotes, Forecast ...",
+      "url": "https://www.msn.com/en-us/money/stockdetails/crm-us-stock/fi-a1qc1h?ocid=superapp-news",
+      "snippet": "SALESFORCE, INC. (CRM). 214.03. at close. \u200e-13.93 ... Salesforce, Inc. is a provider of customer ... 22,875.46\u25b3. \u200e+75.36\u200e+0.33%. News. Overview."
+    }
+  ],
+  "yfinance_news": [
+    {
+      "id": "e1fe661f-27cb-3875-897a-f74b0dda9966",
+      "content": {
+        "id": "e1fe661f-27cb-3875-897a-f74b0dda9966",
+        "contentType": "STORY",
+        "title": "Stifel Reiterates \u201cBuy\u201d Rating on Salesforce (CRM) Following Meetings with Executives",
+        "description": "",
+        "summary": "Salesforce, Inc. (NYSE:CRM) earns a place on our list of the 8 Most Undervalued Value Stocks to Buy Right Now. By March 30, 2026, 74% of covering analysts were bullish on Salesforce, Inc. (NYSE:CRM), with a consensus price target of $252.00, implying a 40.5% increase. The most recent catalyst occurred on March 30, 2026, when [\u2026]",
+        "pubDate": "2026-04-02T19:01:07Z",
+        "displayTime": "2026-04-02T19:01:07Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/insidermonkey.com/bb83c4cf6e17dcd0f8e57f62df9e0417",
+          "originalWidth": 1063,
+          "originalHeight": 598,
+          "caption": "Stifel Reiterates \"Buy\" Rating on Salesforce (CRM) Following Meetings with Executives",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/d.Ofr3M7jFNG4mx1tNiP6g--~B/aD01OTg7dz0xMDYzO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/bb83c4cf6e17dcd0f8e57f62df9e0417",
+              "width": 1063,
+              "height": 598,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/BOgBK9Iqa9N6wOavqOV0Hw--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/insidermonkey.com/bb83c4cf6e17dcd0f8e57f62df9e0417",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Insider Monkey",
+          "url": "http://www.insidermonkey.com",
+          "sourceId": "insidermonkey.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/stifel-reiterates-buy-rating-salesforce-190107812.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/stifel-reiterates-buy-rating-salesforce-190107812.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "e313c52b-c070-349d-b8bb-e2a978eac97f",
+      "content": {
+        "id": "e313c52b-c070-349d-b8bb-e2a978eac97f",
+        "contentType": "VIDEO",
+        "title": "Does Sacrificing Your Health Degrade Your Ability to Lead?",
+        "description": "Executives, authors, and wellness professionals examine how a leader\u2019s ability to perform is directly linked to physical and cognitive health.",
+        "summary": "Executives, authors, and wellness professionals examine how a leader\u2019s ability to perform is directly linked to physical and cognitive health.",
+        "pubDate": "2026-04-02T18:47:00Z",
+        "displayTime": "",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/wall_street_journal_733/227cc9797879235f42bf1aebe4baa053",
+          "originalWidth": 1280,
+          "originalHeight": 720,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/GqobfjzcSlSX_biG25eehg--~B/aD03MjA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wall_street_journal_733/227cc9797879235f42bf1aebe4baa053",
+              "width": 1280,
+              "height": 720,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/1oMj5tj4cPvrZIhepTd3DA--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/wall_street_journal_733/227cc9797879235f42bf1aebe4baa053",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "WSJ",
+          "url": "https://www.wsj.com/",
+          "sourceId": "wall_street_journal_733"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/video/does-sacrificing-health-degrade-ability-184700359.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/video/does-sacrificing-health-degrade-ability-184700359.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "151f2801-9ed2-303e-b7be-5db403b314e6",
+      "content": {
+        "id": "151f2801-9ed2-303e-b7be-5db403b314e6",
+        "contentType": "STORY",
+        "title": "'People Have The Wrong Intuition,' Yale Economist Pascual Restrepo Says AI Could Cut Pay To $10 An Hour \u2014 But 'What You Can Buy' May Rise",
+        "description": "",
+        "summary": "Artificial intelligence could lower wages without lowering living standards, Yale economics associate professor Pascual Restrepo said. Restrepo said that could happen if AI makes goods and services cheaper. \"People have the wrong intuition when they say that if AI can do my job for ten dollars an hour, then my wage falls to $10 and my life is terrible,\" he said recently in Q&A with Yale University's Tobin Center for Economic Policy. The key question, Restrepo said, is whether lower prices would",
+        "pubDate": "2026-04-02T14:45:54Z",
+        "displayTime": "2026-04-02T14:45:54Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/Benzinga/57c23342ad27e5425b59169c171a47c1",
+          "originalWidth": 1024,
+          "originalHeight": 683,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/La3AFFYh3hpEJWk9tfHz9g--~B/aD02ODM7dz0xMDI0O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/Benzinga/57c23342ad27e5425b59169c171a47c1",
+              "width": 1024,
+              "height": 683,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/Wsno3sQ.NqkXR2lMJ015NQ--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/Benzinga/57c23342ad27e5425b59169c171a47c1",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Benzinga",
+          "url": "http://www.benzinga.com/",
+          "sourceId": "Benzinga"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/economy/articles/people-wrong-intuition-yale-economist-144554895.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/economy/articles/people-wrong-intuition-yale-economist-144554895.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "6b89ae7f-f0ad-3025-9cc3-253bb8c5ab63",
+      "content": {
+        "id": "6b89ae7f-f0ad-3025-9cc3-253bb8c5ab63",
+        "contentType": "STORY",
+        "title": "Latest News In E-Commerce - Designkit Revolutionizes Product Imagery With AI-Driven Solutions",
+        "description": "",
+        "summary": "Designkit has launched an innovative e-commerce design platform aimed at streamlining product visuals for global sellers. This platform addresses the bottlenecks of traditional product photography, offering digital merchants quicker and more cost-effective solutions for producing high-quality, conversion-ready product images. Supported by two integrated suites\u2014the Generative AI Suite and the AI Photo Editor Suite\u2014Designkit enables sellers to create comprehensive image sets, including...",
+        "pubDate": "2026-04-02T12:39:37Z",
+        "displayTime": "2026-04-02T12:39:37Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/simply_wall_st__316/d0bd720f24381ca758d4adc12e9dc4d5",
+          "originalWidth": 1194,
+          "originalHeight": 432,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/hQ28Z7lPPHayzwICr6TD1Q--~B/aD00MzI7dz0xMTk0O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/simply_wall_st__316/d0bd720f24381ca758d4adc12e9dc4d5",
+              "width": 1194,
+              "height": 432,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/MGzVhOG_S8oB_qoTWj6s0w--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/simply_wall_st__316/d0bd720f24381ca758d4adc12e9dc4d5",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Simply Wall St.",
+          "url": "https://simplywall.st/",
+          "sourceId": "simply_wall_st__316"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/sectors/technology/articles/latest-news-e-commerce-designkit-123937293.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/sectors/technology/articles/latest-news-e-commerce-designkit-123937293.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "21519a38-9a60-338c-a474-b94a0bd3df8b",
+      "content": {
+        "id": "21519a38-9a60-338c-a474-b94a0bd3df8b",
+        "contentType": "STORY",
+        "title": "Zacks Market Edge Highlights: ServiceNow, Salesforce, Palantir, Adobe and AppLovin",
+        "description": "",
+        "summary": "ServiceNow, Salesforce, Palantir, Adobe and AppLovin have been highlighted in this Market Edge article.",
+        "pubDate": "2026-04-02T09:18:00Z",
+        "displayTime": "2026-04-02T09:18:00Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/zacks.com/a93223749b9366fe082c80e40b692962",
+          "originalWidth": 635,
+          "originalHeight": 400,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/zpOfEMFsWdiCEQGjpX9FHA--~B/aD00MDA7dz02MzU7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/zacks.com/a93223749b9366fe082c80e40b692962",
+              "width": 635,
+              "height": 400,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/sRGcuTYUGZOy6xK3Dv1tdg--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/zacks.com/a93223749b9366fe082c80e40b692962",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Zacks",
+          "url": "http://www.zacks.com/",
+          "sourceId": "zacks.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/zacks-market-edge-highlights-servicenow-091800457.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/zacks-market-edge-highlights-servicenow-091800457.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "363d9f1e-e3c4-377a-9407-e7b1786089ea",
+      "content": {
+        "id": "363d9f1e-e3c4-377a-9407-e7b1786089ea",
+        "contentType": "STORY",
+        "title": "Should Salesforce\u2019s US$25 Billion Buyback and Ecosystem Push Reframe the Capital Story for CRM Investors?",
+        "description": "",
+        "summary": "In recent days, Salesforce filed a US$41.18 million shelf registration for 220,624 common shares tied to its employee stock ownership plan and saw multiple partners and customers, including Solutions by Text, the U.S. Department of Labor, and Mister Spex, expand integrations on its platform. Together with Salesforce\u2019s commencement of a US$25 billion accelerated share repurchase and AI-focused initiatives like Agentforce and Slack enhancements, these developments highlight the company\u2019s push...",
+        "pubDate": "2026-04-02T08:11:39Z",
+        "displayTime": "2026-04-02T08:11:39Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/simply_wall_st__316/c383a1868433f40263d37ccb92c84ec0",
+          "originalWidth": 1194,
+          "originalHeight": 432,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/3svovWX4mVGlRX2glSDYuA--~B/aD00MzI7dz0xMTk0O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/simply_wall_st__316/c383a1868433f40263d37ccb92c84ec0",
+              "width": 1194,
+              "height": 432,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/htRV3EcYu1WVFnNhs8EWnw--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/simply_wall_st__316/c383a1868433f40263d37ccb92c84ec0",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Simply Wall St.",
+          "url": "https://simplywall.st/",
+          "sourceId": "simply_wall_st__316"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/salesforce-us-25-billion-buyback-081139175.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/salesforce-us-25-billion-buyback-081139175.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "3f67cfc7-0bd0-3d28-8d8b-32335dd74206",
+      "content": {
+        "id": "3f67cfc7-0bd0-3d28-8d8b-32335dd74206",
+        "contentType": "STORY",
+        "title": "Salesforce, Inc. (CRM) Asserts Growth and Cash Trajectory with Accelerated $25B Buyback",
+        "description": "",
+        "summary": "Salesforce Inc. (NYSE:CRM) is one of Motley Fool\u2019s high-growth stock picks. On March 27, BNP Paribas Exane reiterated an Outperform rating on Salesforce Inc. (NYSE:CRM) and raised the price target to $230 from $220. The price target hike comes amid expectations that the company is poised to conduct significant share buybacks in its fiscal 2027. [\u2026]",
+        "pubDate": "2026-04-01T19:43:08Z",
+        "displayTime": "2026-04-01T19:43:08Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/insidermonkey.com/bc79275d8ac820aca3ae09d71e3d99a4",
+          "originalWidth": 848,
+          "originalHeight": 565,
+          "caption": "Salesforce, Inc. (CRM) Asserts Growth and Cash Trajectory with Accelerated $25B Buyback",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/k1Q_79Pgnkc8u3TaC6AbTQ--~B/aD01NjU7dz04NDg7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/insidermonkey.com/bc79275d8ac820aca3ae09d71e3d99a4",
+              "width": 848,
+              "height": 565,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/DIGgBDMDNrpj8fbkquqF4w--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/insidermonkey.com/bc79275d8ac820aca3ae09d71e3d99a4",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Insider Monkey",
+          "url": "http://www.insidermonkey.com",
+          "sourceId": "insidermonkey.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/salesforce-inc-crm-asserts-growth-194308959.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/salesforce-inc-crm-asserts-growth-194308959.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "4e056590-132c-3ee5-9345-6149b50107c7",
+      "content": {
+        "id": "4e056590-132c-3ee5-9345-6149b50107c7",
+        "contentType": "STORY",
+        "title": "Salesforce, Inc. (CRM): Billionaire Ray Dalio Discloses Minor Reduction in Holding",
+        "description": "",
+        "summary": "Salesforce, Inc. (NYSE:CRM) is one of the 15 Best Stocks to Buy According to Billionaire Ray Dalio. Salesforce, Inc. (NYSE:CRM) has featured in the 13F portfolio of Bridgewater Associates since late 2011. Back then, the position was a small one, consisting of just 34,000 shares. Dalio started buying up the stock again in 2024, growing [\u2026]",
+        "pubDate": "2026-04-01T18:52:03Z",
+        "displayTime": "2026-04-01T18:52:03Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/insidermonkey.com/a8f024ecfa3663ddc0cdb5ab0a0e0018",
+          "originalWidth": 1456,
+          "originalHeight": 816,
+          "caption": "Why Palantir (PLTR) Stock Jumped 7% Today",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/My3XufxJ7dkT1fQogUOK2Q--~B/aD04MTY7dz0xNDU2O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/a8f024ecfa3663ddc0cdb5ab0a0e0018",
+              "width": 1456,
+              "height": 816,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/uJlRZbjo2YLbnLUt8wnqQA--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/insidermonkey.com/a8f024ecfa3663ddc0cdb5ab0a0e0018",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Insider Monkey",
+          "url": "http://www.insidermonkey.com",
+          "sourceId": "insidermonkey.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/salesforce-inc-crm-billionaire-ray-185203158.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/salesforce-inc-crm-billionaire-ray-185203158.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "01ee232c-7d32-36c4-ae51-bee5eea27b24",
+      "content": {
+        "id": "01ee232c-7d32-36c4-ae51-bee5eea27b24",
+        "contentType": "STORY",
+        "title": "ServiceNow Drops 32% Year to Date: Should You Still Buy the Stock?",
+        "description": "",
+        "summary": "NOW shares drop 31.7% YTD amid AI-native competition and slower growth, even as its expanding AI platform and $600B TAM fuel demand.",
+        "pubDate": "2026-04-01T16:31:00Z",
+        "displayTime": "2026-04-01T16:31:00Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/zacks.com/8390e0028236160f539c9407eccea98d",
+          "originalWidth": 635,
+          "originalHeight": 400,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/4ygg_t7sr.oR4qZzolpR0g--~B/aD00MDA7dz02MzU7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/zacks.com/8390e0028236160f539c9407eccea98d",
+              "width": 635,
+              "height": 400,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/Rrh9P2JoFMR.2RjsnP95pg--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/zacks.com/8390e0028236160f539c9407eccea98d",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Zacks",
+          "url": "http://www.zacks.com/",
+          "sourceId": "zacks.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/servicenow-drops-32-date-still-163100612.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/servicenow-drops-32-date-still-163100612.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "dc120546-cad7-3f93-a56b-ff0602d5d6e2",
+      "content": {
+        "id": "dc120546-cad7-3f93-a56b-ff0602d5d6e2",
+        "contentType": "STORY",
+        "title": "Software Stocks: Values or Traps?",
+        "description": "",
+        "summary": "The software stocks are selling off again. Is it a buying opportunity?",
+        "pubDate": "2026-04-01T14:38:00Z",
+        "displayTime": "2026-04-01T14:38:00Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/zacks.com/124f1f4e4fcc578e5486ea52e0d08740",
+          "originalWidth": 620,
+          "originalHeight": 413,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/SZN1KtruvN1kE7KHISHrJw--~B/aD00MTM7dz02MjA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/zacks.com/124f1f4e4fcc578e5486ea52e0d08740",
+              "width": 620,
+              "height": 413,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/JJQStPgTUEgppFqeV7_jvA--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/zacks.com/124f1f4e4fcc578e5486ea52e0d08740",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Zacks",
+          "url": "http://www.zacks.com/",
+          "sourceId": "zacks.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/software-stocks-values-traps-143800079.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/software-stocks-values-traps-143800079.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    }
+  ]
+}

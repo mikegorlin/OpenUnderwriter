@@ -1,0 +1,619 @@
+{
+  "web_news": [
+    {
+      "title": "Investor Information - UnitedHealth Group",
+      "url": "https://www.unitedhealthgroup.com/investors.html",
+      "snippet": "Latest investor news. UnitedHealth Group announces earnings release date ... Common stock. UnitedHealth Group, Inc. (UNH). $ 276.91 4/2/2026, 10:05:00 AM ..."
+    },
+    {
+      "title": "UNH: UnitedHealth Group Inc - Stock Price, Quote and News - CNBC",
+      "url": "https://www.cnbc.com/quotes/UNH",
+      "snippet": "Latest On UnitedHealth Group Inc ; FDA approves Eli Lilly's GLP-1 pill, opening next phase for weight loss drugs 19 Hours Ago ; Private sector hiring totaled ..."
+    },
+    {
+      "title": "UnitedHealth Group Inc | Reuters",
+      "url": "https://www.reuters.com/company/unitedhealth-group-inc/",
+      "snippet": "The latest international UnitedHealth Group Inc news and views from Reuters - one of the world's largest news agencies."
+    },
+    {
+      "title": "UnitedHealth Group Inc (UNH.DU) Latest Stock News & Headlines ...",
+      "url": "https://finance.yahoo.com/quote/UNH.DU/news/",
+      "snippet": "Get the latest UnitedHealth Group Inc (UNH.DU) stock news and headlines to help you in your trading and investing decisions."
+    },
+    {
+      "title": "UnitedHealth: UNH Stock Price Quote & News - Robinhood",
+      "url": "https://robinhood.com/stocks/UNH",
+      "snippet": "UnitedHealth Group, Inc. engages in the provision of health care coverage, software, and data consultancy services."
+    },
+    {
+      "title": "Unitedhealth Group Inc UNH | US News Best Stocks",
+      "url": "https://money.usnews.com/investing/stocks/unh-unitedhealth-group-inc",
+      "snippet": "UnitedHealth Group, Inc. engages in the provision of health care coverage, software, and data consultancy services."
+    },
+    {
+      "title": "UNH Stock Quote Price and Forecast - CNN",
+      "url": "https://www.cnn.com/markets/stocks/UNH",
+      "snippet": "View UnitedHealth Group Incorporated UNH stock quote prices, financial information, real-time forecasts, and company news from CNN ... UnitedHealth Group, Inc."
+    },
+    {
+      "title": "[PDF] UnitedHealth Group Reports 2025 Results and Issues 2026 Outlook",
+      "url": "https://www.unitedhealthgroup.com/content/dam/UHG/PDF/investors/2025/unh-reports-2025-results-and-issues-2026-outlook.pdf",
+      "snippet": "\u00a9 2026 UnitedHealth Group, Inc. All rights reserved. 1. Full Year 2025 Revenues of $447.6 Billion Grew 12% Year-. Over-Year; Earnings of ..."
+    },
+    {
+      "title": "UNH - UnitedHealth Group Inc News - Morningstar",
+      "url": "https://www.morningstar.com/stocks/tbsx/unh/news",
+      "snippet": "Read about UnitedHealth Group Inc (UNH:TBSX) stock and today's latest news and financial updates."
+    },
+    {
+      "title": "UnitedHealth Group Inc | Financial Times",
+      "url": "https://www.ft.com/stream/18f33bb8-a001-46e0-b5dd-008add1d3437",
+      "snippet": "The latest news, analysis and opinion on UnitedHealth Group Inc. In-depth analysis, industry insights and expert opinion."
+    }
+  ],
+  "yfinance_news": [
+    {
+      "id": "eefe9d42-e262-34a6-b1be-9d31265d2927",
+      "content": {
+        "id": "eefe9d42-e262-34a6-b1be-9d31265d2927",
+        "contentType": "STORY",
+        "title": "Why UnitedHealth Group (UNH) Outpaced the Stock Market Today",
+        "description": "",
+        "summary": "UnitedHealth Group (UNH) concluded the recent trading session at $277.26, signifying a +1.2% move from its prior day's close.",
+        "pubDate": "2026-04-02T21:50:05Z",
+        "displayTime": "2026-04-02T21:50:05Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/zacks.com/d2f7ed3d1940141716bfd200f5c94c6b",
+          "originalWidth": 900,
+          "originalHeight": 711,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/eeFsK50..hTdRBoBNDEyoA--~B/aD03MTE7dz05MDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/zacks.com/d2f7ed3d1940141716bfd200f5c94c6b",
+              "width": 900,
+              "height": 711,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/sgfeS33aHDXh6DZ3gYwjVQ--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/zacks.com/d2f7ed3d1940141716bfd200f5c94c6b",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Zacks",
+          "url": "http://www.zacks.com/",
+          "sourceId": "zacks.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/why-unitedhealth-group-unh-outpaced-215005983.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/why-unitedhealth-group-unh-outpaced-215005983.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "eea241a3-d0b9-35fa-8b95-a16e752c25ee",
+      "content": {
+        "id": "eea241a3-d0b9-35fa-8b95-a16e752c25ee",
+        "contentType": "STORY",
+        "title": "UnitedHealth Group (UNH): One of the Stocks That Can Make You Richer in 2026",
+        "description": "",
+        "summary": "UnitedHealth Group Incorporated (NYSE:UNH) is one of the Stocks That Can Make You Richer in 2026. On March 25, UBS reiterated a Buy rating on UnitedHealth Group Incorporated (NYSE:UNH) with a price target of $410. \u200bThe rating comes after the firm met with the management. During the meeting, management reaffirmed its 2026 EPS seasonality split [\u2026]",
+        "pubDate": "2026-04-02T13:26:34Z",
+        "displayTime": "2026-04-02T13:26:34Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/insidermonkey.com/c34a56642082d17e3fa7c8675c6742b3",
+          "originalWidth": 1456,
+          "originalHeight": 816,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/1bfBDItN9gRB3yoZ6996Zg--~B/aD04MTY7dz0xNDU2O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/c34a56642082d17e3fa7c8675c6742b3",
+              "width": 1456,
+              "height": 816,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/9qB3DEDzhZm_JxOjrZMe4w--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/insidermonkey.com/c34a56642082d17e3fa7c8675c6742b3",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Insider Monkey",
+          "url": "http://www.insidermonkey.com",
+          "sourceId": "insidermonkey.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/unitedhealth-group-unh-one-stocks-132634445.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/unitedhealth-group-unh-one-stocks-132634445.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "68ff2695-fb97-3f97-bdf3-243dc48d2d7b",
+      "content": {
+        "id": "68ff2695-fb97-3f97-bdf3-243dc48d2d7b",
+        "contentType": "STORY",
+        "title": "Which global stocks offer high-quality dividends with low cut risk?",
+        "description": "",
+        "summary": "Investing.com -- UBS has published its latest global high-quality dividend stock list, identifying names across sectors and regions that its quantitative models flag as unlikely to cut their payouts, with U.S. equities standing out.",
+        "pubDate": "2026-04-02T13:25:11Z",
+        "displayTime": "2026-04-02T13:25:11Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": null,
+        "provider": {
+          "displayName": "Investing.com",
+          "url": "https://www.investing.com/",
+          "sourceId": "investing_com_631"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/global-stocks-offer-high-quality-132511458.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/global-stocks-offer-high-quality-132511458.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "7186387a-8055-30d2-9c02-8bf069858034",
+      "content": {
+        "id": "7186387a-8055-30d2-9c02-8bf069858034",
+        "contentType": "STORY",
+        "title": "Health Insurance Providers Stocks Q4 Recap: Benchmarking UnitedHealth (NYSE:UNH)",
+        "description": "",
+        "summary": "The end of the earnings season is always a good time to take a step back and see who shined (and who not so much). Let\u2019s take a look at how health insurance providers stocks fared in Q4, starting with UnitedHealth (NYSE:UNH).",
+        "pubDate": "2026-04-02T11:20:20Z",
+        "displayTime": "2026-04-02T11:20:20Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/stockstory_922/53d74f26714ec6a8aea44a4e0b4716a0",
+          "originalWidth": 1400,
+          "originalHeight": 700,
+          "caption": "UNH Cover Image",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/6QErVPAseQsGXH6adNX0FA--~B/aD03MDA7dz0xNDAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/stockstory_922/53d74f26714ec6a8aea44a4e0b4716a0",
+              "width": 1400,
+              "height": 700,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/LR6BkKx2G9fTbMhQu_H1WA--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/stockstory_922/53d74f26714ec6a8aea44a4e0b4716a0",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "StockStory",
+          "url": "https://stockstory.org/",
+          "sourceId": "stockstory_922"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/sectors/healthcare/articles/health-insurance-providers-stocks-q4-112020720.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/sectors/healthcare/articles/health-insurance-providers-stocks-q4-112020720.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "0f1155b8-2ba7-3cdc-b05a-adb5ebdca0bd",
+      "content": {
+        "id": "0f1155b8-2ba7-3cdc-b05a-adb5ebdca0bd",
+        "contentType": "STORY",
+        "title": "Is UnitedHealth Group (UNH) Now A Potential Opportunity After Recent Share Price Weakness",
+        "description": "",
+        "summary": "Wondering if UnitedHealth Group at a last close of US$273.98 now reflects a potential opportunity or lingering risk? This overview focuses squarely on what the current price might say about value. The stock has returned 1.3% over the past 7 days, while the 30 day, year to date and 1 year returns of 7.1%, 18.6% and 46.2% declines highlight a very different recent and longer term picture. Recent coverage around the stock has focused on how investors are reassessing large US healthcare names,...",
+        "pubDate": "2026-04-02T02:11:20Z",
+        "displayTime": "2026-04-02T02:11:20Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/simply_wall_st__316/4d58843d812aaad1f116a601fa4b94ab",
+          "originalWidth": 1194,
+          "originalHeight": 432,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/fX9gw.aXpZpsQHTfuEf0dA--~B/aD00MzI7dz0xMTk0O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/simply_wall_st__316/4d58843d812aaad1f116a601fa4b94ab",
+              "width": 1194,
+              "height": 432,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/DR0PKD0cpdlTX6RlLVSfCg--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/simply_wall_st__316/4d58843d812aaad1f116a601fa4b94ab",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Simply Wall St.",
+          "url": "https://simplywall.st/",
+          "sourceId": "simply_wall_st__316"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/unitedhealth-group-unh-now-potential-021120887.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/unitedhealth-group-unh-now-potential-021120887.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "a73cded6-535f-3370-b39f-73aca1ea32b9",
+      "content": {
+        "id": "a73cded6-535f-3370-b39f-73aca1ea32b9",
+        "contentType": "STORY",
+        "title": "UnitedHealth Stock Has Lost Nearly Half Its Value in the Last Year. This Analyst Says It's Time to Buy.",
+        "description": "",
+        "summary": "UnitedHealth Group's stock got an upgrade from Raymond James analysts, who suggest its recent slump could leave the stock poised for a rebound.",
+        "pubDate": "2026-04-01T20:48:44Z",
+        "displayTime": "2026-04-01T20:48:44Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/investopedia_245/974a16d40ce629b36792da5dadce3667",
+          "originalWidth": 6799,
+          "originalHeight": 4533,
+          "caption": "UnitedHealth stock has lost nearly half its value in the last 12 monthsCredit: Cheng Xin / Getty Images",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/6jKxQTF0FrUhvNcqYHTUCw--~B/aD00NTMzO3c9Njc5OTthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/investopedia_245/974a16d40ce629b36792da5dadce3667",
+              "width": 6799,
+              "height": 4533,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/Yat1_C4ZiXQ2T9NcBFguAA--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/investopedia_245/974a16d40ce629b36792da5dadce3667",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Investopedia",
+          "url": "https://www.investopedia.com/",
+          "sourceId": "investopedia_245"
+        },
+        "canonicalUrl": {
+          "url": "https://www.investopedia.com/unitedhealth-stock-has-lost-nearly-half-its-value-in-the-last-year-this-analyst-says-it-is-time-to-buy-11940679",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/unitedhealth-stock-lost-nearly-half-204844636.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "5d720ce3-0d71-38c2-820a-c5af20b934ac",
+      "content": {
+        "id": "5d720ce3-0d71-38c2-820a-c5af20b934ac",
+        "contentType": "STORY",
+        "title": "Should You Buy the 3 Highest-Paying Dividend Stocks in the Dow Jones?",
+        "description": "",
+        "summary": "You can get yields as high as 5.6% if you cherry-pick from the Dow Jones right now.",
+        "pubDate": "2026-04-01T20:35:00Z",
+        "displayTime": "2026-04-01T20:35:00Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/motleyfool.com/79658d965fb6f71ec9f103dba2a6b7a0",
+          "originalWidth": 1400,
+          "originalHeight": 932,
+          "caption": "A pile of papers with percentages and one on top of the pile with a question mark.",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/8jlq09nOAeHEkvVTijWCDA--~B/aD05MzI7dz0xNDAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/motleyfool.com/79658d965fb6f71ec9f103dba2a6b7a0",
+              "width": 1400,
+              "height": 932,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/Gnfqcrcv_WDGJPNwO3udQw--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/motleyfool.com/79658d965fb6f71ec9f103dba2a6b7a0",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Motley Fool",
+          "url": "http://www.fool.com/",
+          "sourceId": "motleyfool.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.fool.com/investing/2026/04/01/should-you-buy-the-3-highest-paying-dividend-stock/",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/buy-3-highest-paying-dividend-203500180.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "cc9a03aa-df70-3dcd-a262-514b6b9b020f",
+      "content": {
+        "id": "cc9a03aa-df70-3dcd-a262-514b6b9b020f",
+        "contentType": "STORY",
+        "title": "Will UnitedHealth (UNH) Beat Estimates Again in Its Next Earnings Report?",
+        "description": "",
+        "summary": "UnitedHealth (UNH) has an impressive earnings surprise history and currently possesses the right combination of the two key ingredients for a likely beat in its next quarterly report.",
+        "pubDate": "2026-04-01T16:10:04Z",
+        "displayTime": "2026-04-01T16:10:04Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/zacks.com/45c083e4721b0d0d1f6e431ec0bb5cc1",
+          "originalWidth": 900,
+          "originalHeight": 602,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/XxozWWpdDFgGg6m0CzltLg--~B/aD02MDI7dz05MDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/zacks.com/45c083e4721b0d0d1f6e431ec0bb5cc1",
+              "width": 900,
+              "height": 602,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/v3NNmw3GO3h96zvTjY7gSg--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/zacks.com/45c083e4721b0d0d1f6e431ec0bb5cc1",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Zacks",
+          "url": "http://www.zacks.com/",
+          "sourceId": "zacks.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/unitedhealth-unh-beat-estimates-again-161004605.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/unitedhealth-unh-beat-estimates-again-161004605.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "a711c7df-7a93-3260-9ec9-19ada91be043",
+      "content": {
+        "id": "a711c7df-7a93-3260-9ec9-19ada91be043",
+        "contentType": "STORY",
+        "title": "UnitedHealth Stock Rises on Raymond James Upgrade",
+        "description": "",
+        "summary": "UnitedHealth Stock Edges Up. Raymond James Sees Hidden Upside",
+        "pubDate": "2026-04-01T16:03:10Z",
+        "displayTime": "2026-04-01T16:03:10Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": null,
+        "provider": {
+          "displayName": "GuruFocus.com",
+          "url": "http://www.gurufocus.com/",
+          "sourceId": "us.finance.gurufocus"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/unitedhealth-stock-rises-raymond-james-160310825.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/unitedhealth-stock-rises-raymond-james-160310825.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "595dbf82-0b88-360d-a60f-f5dad861a873",
+      "content": {
+        "id": "595dbf82-0b88-360d-a60f-f5dad861a873",
+        "contentType": "STORY",
+        "title": "Raymond James upgrades UnitedHealth to Outperform, sees AI-driven margin upside",
+        "description": "",
+        "summary": "Investing.com -- Raymond James upgraded UnitedHealth Group to Outperform from Market Perform in a note on Wednesday and established a $330 price target, arguing that artificial intelligence initiatives and margin improvement at its Optum Health unit could drive earnings materially above Wall Street expectations.",
+        "pubDate": "2026-04-01T15:27:56Z",
+        "displayTime": "2026-04-01T15:27:56Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": null,
+        "provider": {
+          "displayName": "Investing.com",
+          "url": "https://www.investing.com/",
+          "sourceId": "investing_com_631"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/sectors/healthcare/articles/raymond-james-upgrades-unitedhealth-outperform-152756388.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/sectors/healthcare/articles/raymond-james-upgrades-unitedhealth-outperform-152756388.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    }
+  ]
+}

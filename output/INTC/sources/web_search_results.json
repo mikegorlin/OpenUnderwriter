@@ -1,0 +1,625 @@
+{
+  "web_news": [],
+  "yfinance_news": [
+    {
+      "id": "afb4f9e1-bb6e-4ecd-96d0-88391cc6ef3c",
+      "content": {
+        "id": "afb4f9e1-bb6e-4ecd-96d0-88391cc6ef3c",
+        "contentType": "VIDEO",
+        "title": "Intel to spend $14.2B to buy back Ireland fab stake, Cal-Maine stock pops",
+        "description": "<p>Yahoo Finance Anchor Josh Lipton tracks today's top moving stocks and biggest market stories in this Market Minute, including Intel stocks (<a target=\"_blank\" rel=\"\" class=\"link\" href=\"https://finance.yahoo.com/quote/INTC/\" data-i13n=\"cpos:1;pos:1\">INTC</a>) riding high after agreeing to repurchase 49% equity interest in a joint chip venture in Ireland from Apollo Global Management (<a target=\"_blank\" rel=\"\" class=\"link\" href=\"https://finance.yahoo.com/quote/APO/\" data-i13n=\"cpos:2;pos:1\">APO</a>).<br><br>Shares of Cal-Maine Foods (<a target=\"_blank\" rel=\"\" class=\"link\" href=\"https://finance.yahoo.com/quote/CALM/\" data-i13n=\"cpos:3;pos:1\">CALM</a>) are also rising after posting third quarter earnings.</p><p>Stay up to date on the latest market action, minute-by-minute, with\u00a0<a target=\"_blank\" rel=\"\" class=\"link\" href=\"https://finance.yahoo.com/videos/series/market-minute/\" data-i13n=\"slk:Yahoo Finance's Market Minute.;cpos:4;pos:1\">Yahoo Finance's Market Minute.</a></p><p><em>Disclosure: Yahoo is a portfolio company of funds managed by affiliates of Apollo Global Management.</em></p>",
+        "summary": "Yahoo Finance Anchor Josh Lipton tracks today's top moving stocks and biggest market stories in this Market Minute, including Intel stocks (INTC) riding high after agreeing to repurchase 49% equity interest in a joint chip venture in Ireland from Apollo Global Management (APO).Shares of Cal-Maine Foods (CALM) are also rising after posting third quarter earnings.Stay up to date on the latest market action, minute-by-minute, with&nbsp;Yahoo Finance's Market Minute.Disclosure: Yahoo is a portfolio company of funds managed by affiliates of Apollo Global Management.",
+        "pubDate": "2026-04-01T18:10:32Z",
+        "displayTime": "",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://s.yimg.com/uu/api/res/1.2/CB3DVHTF_UzFnN7Vq3nd2Q--~B/aD0xNTUyO3c9Mjc2MDthcHBpZD15dGFjaHlvbg--/https://d29szjachogqwa.cloudfront.net/images/user-uploaded/99426542-d78d-4e83-b8cd-7bd8a767689b_8956de36e043dafc98de8a4a5ee1682d2aa2e1bba2c9707148e386a5359f569a.net/images/2026-04/99426542-d78d-4e83-b8cd-7bd8a767689b",
+          "originalWidth": 2760,
+          "originalHeight": 1552,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/CB3DVHTF_UzFnN7Vq3nd2Q--~B/aD0xNTUyO3c9Mjc2MDthcHBpZD15dGFjaHlvbg--/https://d29szjachogqwa.cloudfront.net/images/user-uploaded/99426542-d78d-4e83-b8cd-7bd8a767689b_8956de36e043dafc98de8a4a5ee1682d2aa2e1bba2c9707148e386a5359f569a.net/images/2026-04/99426542-d78d-4e83-b8cd-7bd8a767689b",
+              "width": 2760,
+              "height": 1552,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/vkrb8c2K7rnm72glEFa48g--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://d29szjachogqwa.cloudfront.net/images/user-uploaded/99426542-d78d-4e83-b8cd-7bd8a767689b_8956de36e043dafc98de8a4a5ee1682d2aa2e1bba2c9707148e386a5359f569a.net/images/2026-04/99426542-d78d-4e83-b8cd-7bd8a767689b",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Yahoo Finance Video",
+          "url": "https://finance.yahoo.com/",
+          "sourceId": "video.yahoofinance.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/video/intel-to-spend-142b-to-buy-back-ireland-fab-stake-cal-maine-stock-pops-181032277.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/video/intel-to-spend-142b-to-buy-back-ireland-fab-stake-cal-maine-stock-pops-181032277.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": true
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "8044a152-6252-4d96-9f49-0ffa4f09cbc5",
+      "content": {
+        "id": "8044a152-6252-4d96-9f49-0ffa4f09cbc5",
+        "contentType": "STORY",
+        "title": "Intel stock climbs more than 9% on chip plant buyout news",
+        "description": "",
+        "summary": "Intel stock climbed on Wednesday as the company moved to repurchase an equity stake it previously sold in one of its chip plants.",
+        "pubDate": "2026-04-01T16:28:39Z",
+        "displayTime": "2026-04-01T16:28:39Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://s.yimg.com/uu/api/res/1.2/pnIj8y4B2fMf8EqRymXoyQ--~B/aD0yMDAxO3c9MzAwMDthcHBpZD15dGFjaHlvbg--/https://d29szjachogqwa.cloudfront.net/images/2026-04/900a4548-fa25-4259-b558-abafefd42b26",
+          "originalWidth": 3000,
+          "originalHeight": 2001,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/pnIj8y4B2fMf8EqRymXoyQ--~B/aD0yMDAxO3c9MzAwMDthcHBpZD15dGFjaHlvbg--/https://d29szjachogqwa.cloudfront.net/images/2026-04/900a4548-fa25-4259-b558-abafefd42b26",
+              "width": 3000,
+              "height": 2001,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/vvasBKPd3HZh70wdBpd9hA--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://d29szjachogqwa.cloudfront.net/images/2026-04/900a4548-fa25-4259-b558-abafefd42b26",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Yahoo Finance",
+          "url": "http://finance.yahoo.com/",
+          "sourceId": "yahoofinance.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/article/intel-stock-climbs-more-than-9-on-chip-plant-buyout-news-162839014.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/article/intel-stock-climbs-more-than-9-on-chip-plant-buyout-news-162839014.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": true
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "bf828e71-3527-3797-ad9e-5bfe8039912d",
+      "content": {
+        "id": "bf828e71-3527-3797-ad9e-5bfe8039912d",
+        "contentType": "STORY",
+        "title": "Why EchoStar Stock Zoomed 3% Higher Today",
+        "description": "",
+        "summary": "A peer company is apparently about to IPO.",
+        "pubDate": "2026-04-01T23:29:22Z",
+        "displayTime": "2026-04-01T23:29:22Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/motleyfool.com/ad1ff079e60fa52ef1cd4ba4a5f62a5c",
+          "originalWidth": 1400,
+          "originalHeight": 972,
+          "caption": "A rocket in the process of launching.",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/yTkxAWpfZd3FyahAkAB0_A--~B/aD05NzI7dz0xNDAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/motleyfool.com/ad1ff079e60fa52ef1cd4ba4a5f62a5c",
+              "width": 1400,
+              "height": 972,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/mOpnu_lTGjNB2bNSU_pDiA--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/motleyfool.com/ad1ff079e60fa52ef1cd4ba4a5f62a5c",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Motley Fool",
+          "url": "http://www.fool.com/",
+          "sourceId": "motleyfool.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.fool.com/investing/2026/04/01/why-echostar-stock-zoomed-3-higher-today/",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/why-echostar-stock-zoomed-3-232922870.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "55401bee-02a0-38cf-af7c-add1be7546d8",
+      "content": {
+        "id": "55401bee-02a0-38cf-af7c-add1be7546d8",
+        "contentType": "STORY",
+        "title": "Intel Reclaims Fab 34 As AI Manufacturing Stakes Rise For Investors",
+        "description": "",
+        "summary": "Intel has agreed to repurchase Apollo Global Management's 49% stake in the Ireland Fab 34 joint venture. The transaction is valued at about $14.2b and returns full ownership of Fab 34 to Intel. The deal centers on a major manufacturing site that is intended to support next generation AI chips. Intel (NasdaqGS: INTC) is taking back full control of Fab 34 at a time when its shares trade around $48.03 and have returned 22.0% year to date. Over the past year, the stock has delivered a very...",
+        "pubDate": "2026-04-01T23:14:20Z",
+        "displayTime": "2026-04-01T23:14:20Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/simply_wall_st__316/c6a7ec75e35ec3575683f5d897862705",
+          "originalWidth": 1194,
+          "originalHeight": 432,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/dsDcVK8k0xOUs1ivM6h0XA--~B/aD00MzI7dz0xMTk0O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/simply_wall_st__316/c6a7ec75e35ec3575683f5d897862705",
+              "width": 1194,
+              "height": 432,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/fmz3iTitiY.RvyYOwSxvfg--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/simply_wall_st__316/c6a7ec75e35ec3575683f5d897862705",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Simply Wall St.",
+          "url": "https://simplywall.st/",
+          "sourceId": "simply_wall_st__316"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/intel-reclaims-fab-34-ai-231420986.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/intel-reclaims-fab-34-ai-231420986.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "611ed8d5-2327-373f-91cb-431a26177dc1",
+      "content": {
+        "id": "611ed8d5-2327-373f-91cb-431a26177dc1",
+        "contentType": "STORY",
+        "title": "The Under-the-Radar Nuclear Energy Stock That Could Supercharge Your Passive Income",
+        "description": "",
+        "summary": "Pinnacle West is a less-obvious nuclear power company that has maintained a high yield despite last year's nuclear stock bull run.",
+        "pubDate": "2026-04-01T22:59:00Z",
+        "displayTime": "2026-04-01T22:59:00Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/motleyfool.com/1afa6f4c8866e2e9a80a65fc66e4f76d",
+          "originalWidth": 1400,
+          "originalHeight": 932,
+          "caption": "A nuclear power plant in operation. ",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/vsUcJ2UEI5WL3OUL3RYx1A--~B/aD05MzI7dz0xNDAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/motleyfool.com/1afa6f4c8866e2e9a80a65fc66e4f76d",
+              "width": 1400,
+              "height": 932,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/qrgs9_WlWxeUeXyYsg2fhw--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/motleyfool.com/1afa6f4c8866e2e9a80a65fc66e4f76d",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Motley Fool",
+          "url": "http://www.fool.com/",
+          "sourceId": "motleyfool.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.fool.com/investing/2026/04/01/the-under-the-radar-nuclear-energy-stock-that-coul/",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/sectors/energy/articles/under-radar-nuclear-energy-stock-225900784.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "6977d6a2-66b3-371a-98b7-6994c66e8b6e",
+      "content": {
+        "id": "6977d6a2-66b3-371a-98b7-6994c66e8b6e",
+        "contentType": "STORY",
+        "title": "Why Dave & Buster's Stock Surged Today",
+        "description": "",
+        "summary": "CEO Tarun Lal is \"highly confident\" in the sports and gaming destination's ability to crank out free cash flow.",
+        "pubDate": "2026-04-01T22:55:12Z",
+        "displayTime": "2026-04-01T22:55:12Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/motleyfool.com/7d14ecaecf72f4cc24a8584acc1b5b04",
+          "originalWidth": 1400,
+          "originalHeight": 819,
+          "caption": "People are having fun in an arcade. ",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/8CDNDrFfd7_JeJmfMR8elw--~B/aD04MTk7dz0xNDAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/motleyfool.com/7d14ecaecf72f4cc24a8584acc1b5b04",
+              "width": 1400,
+              "height": 819,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/Gam8wvUxDuL6817T5KstZg--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/motleyfool.com/7d14ecaecf72f4cc24a8584acc1b5b04",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Motley Fool",
+          "url": "http://www.fool.com/",
+          "sourceId": "motleyfool.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.fool.com/investing/2026/04/01/why-dave-busters-stock-is-up-today/",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/why-dave-busters-stock-surged-225512034.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "172259d3-5e53-390a-85e1-badd7a2e76e1",
+      "content": {
+        "id": "172259d3-5e53-390a-85e1-badd7a2e76e1",
+        "contentType": "STORY",
+        "title": "Exclusive-Intel looks to put millions more into SambaNova startup chaired by CEO Tan",
+        "description": "",
+        "summary": "Chipmaker Intel has planned to invest another $15 million in SambaNova, a chip startup chaired by Intel CEO Lip-Bu Tan, a Reuters review of corporate records showed.  The investment, subject to regulatory approval, would increase Intel's ownership of SambaNova to 9%, the review showed. \u200cThe backing follows another $35 million that Intel put into SambaNova in February, which, along with other financing, had boosted Intel\u2019s stake in the startup to 8.2%, from 6.8% last \u200cyear.  The specifics of this deal and others, previously unreported, show how Intel continues to pursue transactions that may increase the personal fortune of Tan, a wealthy venture capitalist whom the chipmaker hired a \u200byear ago to turn the company around.",
+        "pubDate": "2026-04-01T22:47:00Z",
+        "displayTime": "2026-04-01T22:47:00Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/reuters-finance.com/7733494cd5682dee347d4a7cb068b05a",
+          "originalWidth": 800,
+          "originalHeight": 533,
+          "caption": "FILE PHOTO: Intel CEO Lip-Bu Tan makes a speech on stage in Taipei",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/.fehxaQhIhFqikVcE.z7eA--~B/aD01MzM7dz04MDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/reuters-finance.com/7733494cd5682dee347d4a7cb068b05a",
+              "width": 800,
+              "height": 533,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/b3i8b57Ez6dSc_N8uOIglQ--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/reuters-finance.com/7733494cd5682dee347d4a7cb068b05a",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Reuters",
+          "url": "http://www.reuters.com/",
+          "sourceId": "reuters-finance.com"
+        },
+        "canonicalUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/exclusive-intel-looks-put-millions-224700202.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/exclusive-intel-looks-put-millions-224700202.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "c6e816ed-c71a-34bf-a6a7-5e8760ae9de9",
+      "content": {
+        "id": "c6e816ed-c71a-34bf-a6a7-5e8760ae9de9",
+        "contentType": "STORY",
+        "title": "1 Artificial Intelligence (AI) Software Stock to Buy Hand Over Fist Before It Soars 62%, According to Dan Ives",
+        "description": "",
+        "summary": "Dan Ives of Wedbush Securities recently upgraded his price target on Palantir stock to $230.",
+        "pubDate": "2026-04-01T22:11:00Z",
+        "displayTime": "2026-04-01T22:11:00Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/motleyfool.com/230c5123762f66dbf0c6ebecfa1f5998",
+          "originalWidth": 1200,
+          "originalHeight": 800,
+          "caption": "Palantir logo in front of backdrop with corporate building in background.",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/vRbhkOKO0OosmuPxd1K54g--~B/aD04MDA7dz0xMjAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/motleyfool.com/230c5123762f66dbf0c6ebecfa1f5998",
+              "width": 1200,
+              "height": 800,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/9HwnDBVTVawmLXkkxQFlnQ--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/motleyfool.com/230c5123762f66dbf0c6ebecfa1f5998",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Motley Fool",
+          "url": "http://www.fool.com/",
+          "sourceId": "motleyfool.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.fool.com/investing/2026/04/01/artificial-intelligence-ai-stock-buy-dan-ives/",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/1-artificial-intelligence-ai-software-221100345.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "f34397b9-b1aa-39af-9c42-d3fb6cc4d60f",
+      "content": {
+        "id": "f34397b9-b1aa-39af-9c42-d3fb6cc4d60f",
+        "contentType": "STORY",
+        "title": "Stock Market Today, April 1: Intel Surges on $14.2 Billion Fab Buyback",
+        "description": "",
+        "summary": "On April 1, 2026, a massive fab buyback sharpened Intel\u2019s AI foundry ambitions.",
+        "pubDate": "2026-04-01T22:08:59Z",
+        "displayTime": "2026-04-01T22:08:59Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/motleyfool.com/9e9235dfcb1746703e6f502dd20e9488",
+          "originalWidth": 384,
+          "originalHeight": 384,
+          "caption": "",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/hIeCx24HBN0.tNQm6UylIg--~B/aD0zODQ7dz0zODQ7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/motleyfool.com/9e9235dfcb1746703e6f502dd20e9488",
+              "width": 384,
+              "height": 384,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/qQhf50LEas5B.V07iWdR7A--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/motleyfool.com/9e9235dfcb1746703e6f502dd20e9488",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Motley Fool",
+          "url": "http://www.fool.com/",
+          "sourceId": "motleyfool.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.fool.com/coverage/stock-market-today/2026/04/01/stock-market-today-april-1-intel-surges-on-142-billion-fab-buyback/",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-april-1-220859231.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    },
+    {
+      "id": "e5d6c478-54b0-3b27-b102-b07886b29f0b",
+      "content": {
+        "id": "e5d6c478-54b0-3b27-b102-b07886b29f0b",
+        "contentType": "STORY",
+        "title": "Why Charles Schwab Stock Slumped on Wednesday",
+        "description": "",
+        "summary": "An analyst cut his price target on the prominent brokerage.",
+        "pubDate": "2026-04-01T22:08:05Z",
+        "displayTime": "2026-04-01T22:08:05Z",
+        "isHosted": true,
+        "bypassModal": false,
+        "previewUrl": null,
+        "thumbnail": {
+          "originalUrl": "https://media.zenfs.com/en/motleyfool.com/48552c69c41a52555b887c0d5e1d142a",
+          "originalWidth": 1400,
+          "originalHeight": 933,
+          "caption": "Downward red arrow with a background of U.S. currency.",
+          "resolutions": [
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/ecNWpYHH4kJLGP.w.j4iow--~B/aD05MzM7dz0xNDAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/motleyfool.com/48552c69c41a52555b887c0d5e1d142a",
+              "width": 1400,
+              "height": 933,
+              "tag": "original"
+            },
+            {
+              "url": "https://s.yimg.com/uu/api/res/1.2/ntwk8mPRoIigwwafCgi4uw--~B/Zmk9c3RyaW07aD0xMjg7dz0xNzA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/motleyfool.com/48552c69c41a52555b887c0d5e1d142a",
+              "width": 170,
+              "height": 128,
+              "tag": "170x128"
+            }
+          ]
+        },
+        "provider": {
+          "displayName": "Motley Fool",
+          "url": "http://www.fool.com/",
+          "sourceId": "motleyfool.com"
+        },
+        "canonicalUrl": {
+          "url": "https://www.fool.com/investing/2026/04/01/why-charles-schwab-stock-slumped-on-wednesday/",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "clickThroughUrl": {
+          "url": "https://finance.yahoo.com/markets/stocks/articles/why-charles-schwab-stock-slumped-220805642.html",
+          "site": "finance",
+          "region": "US",
+          "lang": "en-US"
+        },
+        "metadata": {
+          "editorsPick": false
+        },
+        "finance": {
+          "premiumFinance": {
+            "isPremiumNews": false,
+            "isPremiumFreeNews": false
+          }
+        },
+        "storyline": null
+      }
+    }
+  ]
+}
